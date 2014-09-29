@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30501.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jxqy", "Jxqy\Jxqy.csproj", "{F0C2E895-3D03-496B-A3A8-241A0ACAA7FD}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "JxqyContent", "JxqyContent\JxqyContent.contentproj", "{B582C00C-00B0-43FC-9DAE-57CD7267E701}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine", "Engine\Engine.csproj", "{823E410E-FD01-4AFD-A1B9-EA84D6CE155D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F0C2E895-3D03-496B-A3A8-241A0ACAA7FD}.Debug|x86.ActiveCfg = Debug|x86
+		{F0C2E895-3D03-496B-A3A8-241A0ACAA7FD}.Debug|x86.Build.0 = Debug|x86
+		{F0C2E895-3D03-496B-A3A8-241A0ACAA7FD}.Release|x86.ActiveCfg = Release|x86
+		{F0C2E895-3D03-496B-A3A8-241A0ACAA7FD}.Release|x86.Build.0 = Release|x86
+		{B582C00C-00B0-43FC-9DAE-57CD7267E701}.Debug|x86.ActiveCfg = Debug|x86
+		{B582C00C-00B0-43FC-9DAE-57CD7267E701}.Release|x86.ActiveCfg = Release|x86
+		{823E410E-FD01-4AFD-A1B9-EA84D6CE155D}.Debug|x86.ActiveCfg = Debug|x86
+		{823E410E-FD01-4AFD-A1B9-EA84D6CE155D}.Debug|x86.Build.0 = Debug|x86
+		{823E410E-FD01-4AFD-A1B9-EA84D6CE155D}.Release|x86.ActiveCfg = Release|x86
+		{823E410E-FD01-4AFD-A1B9-EA84D6CE155D}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

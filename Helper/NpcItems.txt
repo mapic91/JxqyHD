@@ -1,0 +1,83 @@
+Action			char
+Attack			long
+AttackLevel		char
+AttackRadius	char
+BodyIni			string
+DeathScript		string
+Defend(Defence) long
+DialogRadius	char
+Dir				char
+Evade			long
+Exp				long
+ExpBonus		long
+FixedPos		string
+FlyIni			string
+FlyIni2			string
+Idle			char
+Kind			char
+Level			long
+LevelUpExp		long
+Life			long
+LifeMax			long
+Lum				long
+Mana			long
+ManaMax			long
+MapX			long
+MapY			long
+Name			string
+NpcIni			string
+PathFinder		char
+Relation		char
+ScriptFile		string
+(ShowName)		string - 新剑
+State			char
+Thew			long
+ThewMax			long
+VisionRadius	char
+WalkSpeed		char
+
+/////////////////////////
+////////////////////////
+MapX			long
+MapY			long
+
+姓名------Name        
+类型------Kind       
+关系------Relation   
+寻路------PathFinder  
+状态------State       
+（新剑）--ShowName
+视野半径--VisionRadius
+对话半径--DialogRadius
+攻击半径--AttackRadius
+方向------Dir         
+亮度------Lum         
+动作------Action      
+行走速度--WalkSpeed   
+
+闪避------Evade      
+攻击力----Attack      
+攻击等级--AttackLevel
+防御------Defend     
+
+经验------Exp        
+升级经验--LevelUpExp 
+等级------Level      
+
+生命------Life      
+最大生命--LifeMax   
+体力------Thew      
+最大体力--ThewMax   
+内力------Mana      
+最大内力--ManaMax   
+
+人物图像--NpcIni   
+尸体图像--BodyIni   
+攻击------FlyIni   
+攻击2-----FlyIni2   
+对话脚本--ScriptFile 
+死亡脚本--DeathScript
+
+----------ExpBonus   
+----------FixedPos   
+----------Idle       
