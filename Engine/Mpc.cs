@@ -63,7 +63,7 @@ namespace Engine
                         }
                     }
                 }
-                var texture = new Texture2D(Game.GraphicsDevice, width, height);
+                var texture = new Texture2D(GlobalData.TheGame.GraphicsDevice, width, height);
                 texture.SetData(data);
                 Frames.Add(texture);
             }
@@ -71,9 +71,9 @@ namespace Engine
             Palette = null;//palette can be released now
         }
 
-        public Mpc(Game game, string path)
+        public Mpc(string path)
         {
-            Load(game, path);
+            Load(path);
         }
     }
 }

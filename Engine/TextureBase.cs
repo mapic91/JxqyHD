@@ -17,7 +17,6 @@ namespace Engine
 
         protected FileHead Head;
         protected Color[] Palette;
-        protected Game Game;
 
         #region Properties
         public bool IsOk
@@ -97,9 +96,8 @@ namespace Engine
             }
         }
 
-        public void Load(Game game, string path)
+        public void Load(string path)
         {
-            this.Game = game;
             LoadTexture(path);
         }
         

@@ -187,7 +187,7 @@ namespace Engine
                     mpcFileName[i] = buf[offset + i];
                 }
                 if (i == 0) break;
-                _mpcList.Add(new Mpc(_game,
+                _mpcList.Add(new Mpc(
                             _mpcDirPath + "\\" + Encoding.GetEncoding(936).GetString(mpcFileName, 0, i)));
                 offset += 64;
             }

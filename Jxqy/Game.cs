@@ -42,11 +42,15 @@ namespace Jxqy
         /// </summary>
         protected override void Initialize()
         {
+            GlobalData.TheGame = this;
+            Log.DebugOn = true;
+
+            Log.LogMessageToFile("Game is running...\n\n\n");
+
             _graphics.PreferredBackBufferWidth = 640;
             _graphics.PreferredBackBufferHeight = 480;
             _graphics.ApplyChanges();
 
-            Log.DebugOn = true;
             _map.ViewWidth = _graphics.PreferredBackBufferWidth;
             _map.ViewHeight = _graphics.PreferredBackBufferHeight;
 
@@ -65,10 +69,10 @@ namespace Jxqy
             _map.ViewBeginX = 0;
             _map.ViewBeginY = 0;
             _cam = new Carmera(_map.ViewBeginX, _map.ViewBeginY,_map.ViewWidth, _map.ViewHeight,_map.MapPixelWidth, _map.MapPixelHeight);
-            _stand = new Asf(this, @"asf\character\npc006_st2.asf");
-            _walk = new Asf(this, @"asf\character\npc006_wlk2.asf");
+            _stand = new Asf(@"asf\character\npc006_st2.asf");
+            _walk = new Asf(@"asf\character\npc006_wlk2.asf");
             _testNpc1 = new Sprite(new Vector2(800f), 50, _stand);
-            _testNpc2 = new Sprite(new Vector2(80f), 5, new Asf(this, @"asf\effect\mag038-2-¶¾Òº.asf"));
+            _testNpc2 = new Sprite(new Vector2(80f), 5, new Asf(@"asf\effect\mag038-2-¶¾Òº.asf"));
 
             BackgroundMusic.Play(@"music/Mc003.mp3");
 

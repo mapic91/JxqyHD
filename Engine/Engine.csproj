@@ -64,6 +64,7 @@
     <Compile Include="Carmera.cs" />
     <Compile Include="Character.cs" />
     <Compile Include="Dialog.cs" />
+    <Compile Include="GlobalData.cs" />
     <Compile Include="IMoveControlInWorld.cs" />
     <Compile Include="IScreen.cs" />
     <Compile Include="Log.cs" />

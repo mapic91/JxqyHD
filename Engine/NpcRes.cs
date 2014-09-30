@@ -25,8 +25,9 @@ namespace Engine
                     var state = GetState(lines[i++]);
                     if (state != NpcState.NpcStateEnd)
                     {
-                        var stateInfo = GetStateInfo(game, lines[i++], lines[i++]);
-                        info[state] = stateInfo;
+                        var stateInfo = GetStateInfo(lines[i++], lines[i++]);
+                        if(stateInfo.Image != null)
+                            info[state] = stateInfo;
                     }
                 }
             }
@@ -38,7 +39,7 @@ namespace Engine
             return info;
         }
 
-        private static NpcStateInfo GetStateInfo(Game game, string image, string sound)
+        private static NpcStateInfo GetStateInfo(string image, string sound)
         {
             var info = new NpcStateInfo();
             var groups = Regex.Match(image, "Image=(.+)").Groups;
@@ -46,7 +47,8 @@ namespace Engine
             {
                 var asfFileName = groups[1].Value;
                 var asfPath = GetAsfFilePath(asfFileName);
-                info.Image = new Asf(game, asfPath);
+                var asf = new Asf(asfPath);
+                info.Image = asf.IsOk ? asf : null;
             }
             groups = Regex.Match(sound, "Sound=(.+)").Groups;
             if (groups[0].Success)
