@@ -64,13 +64,13 @@
     <Compile Include="Carmera.cs" />
     <Compile Include="Character.cs" />
     <Compile Include="Dialog.cs" />
-    <Compile Include="GlobalData.cs" />
+    <Compile Include="Globals.cs" />
     <Compile Include="IMoveControlInWorld.cs" />
     <Compile Include="IScreen.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="Mpc.cs" />
-    <Compile Include="NpcRes.cs" />
+    <Compile Include="ResFile.cs" />
     <Compile Include="Sprite.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TextDrawer.cs" />

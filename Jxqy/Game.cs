@@ -25,6 +25,7 @@ namespace Jxqy
         private Carmera _cam;
         private Map _map = new Map();
         private Asf _stand, _walk;
+        private Character _character1 = new Character();
 
         public Game()
         {
@@ -42,7 +43,7 @@ namespace Jxqy
         /// </summary>
         protected override void Initialize()
         {
-            GlobalData.TheGame = this;
+            Globals.TheGame = this;
             Log.DebugOn = true;
 
             Log.LogMessageToFile("Game is running...\n\n\n");
@@ -73,6 +74,8 @@ namespace Jxqy
             _walk = new Asf(@"asf\character\npc006_wlk2.asf");
             _testNpc1 = new Sprite(new Vector2(800f), 50, _stand);
             _testNpc2 = new Sprite(new Vector2(80f), 5, new Asf(@"asf\effect\mag038-2-¶¾Òº.asf"));
+
+            _character1.LoadCharacter(@"ini\npc\×¿·Ç·².ini");
 
             BackgroundMusic.Play(@"music/Mc003.mp3");
 

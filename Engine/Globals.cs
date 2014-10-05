@@ -7,8 +7,9 @@ using Microsoft.Xna.Framework;
 namespace Engine
 {
     //Must load GlobalData when game is initialize
-    public static class GlobalData
+    public static class Globals
     {
         public static Game TheGame;
+        public static Dictionary<string, Asf> AsfFiles = new Dictionary<string, Asf>();
     }
 }

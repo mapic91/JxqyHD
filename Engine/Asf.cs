@@ -60,7 +60,7 @@ namespace Engine
                         }
                     }
                 }
-                var texture = new Texture2D(GlobalData.TheGame.GraphicsDevice, width, height);
+                var texture = new Texture2D(Globals.TheGame.GraphicsDevice, width, height);
                 texture.SetData(data);
                 Frames.Add(texture);
             }
