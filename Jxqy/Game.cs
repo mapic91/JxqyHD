@@ -46,8 +46,8 @@ namespace Jxqy
 
             Log.LogMessageToFile("Game is running...\n\n\n");
 
-            _graphics.PreferredBackBufferWidth = 1366;
-            _graphics.PreferredBackBufferHeight = 768;
+            _graphics.PreferredBackBufferWidth = 640;
+            _graphics.PreferredBackBufferHeight = 480;
             _graphics.ApplyChanges();
 
             Globals.TheMap.ViewWidth = _graphics.PreferredBackBufferWidth;
@@ -125,7 +125,10 @@ namespace Jxqy
             {
                 var tilePositionUnderMouse = Map.ToTilePosition(mouseWorldPosition);
                 var startTile = Map.ToTilePosition(_player1.Figure.PositionInWorld);
-                _player1.SetPath(PathFinder.FindPath(startTile, tilePositionUnderMouse));
+                var path = PathFinder.FindPath(startTile, tilePositionUnderMouse);
+                if(keyboardState.IsKeyDown(Keys.LeftShift)) 
+                    _player1.SetPath(path, NpcState.Run);
+                else _player1.SetPath(path, NpcState.Walk);
             }
             //else if (_lastMouseState.LeftButton == ButtonState.Pressed)
             //    _testNpc1.Texture = _stand;

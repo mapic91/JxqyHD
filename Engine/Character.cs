@@ -373,16 +373,22 @@ namespace Engine
         }
 
         private List<Vector2> _path;
-        public void SetPath(List<Vector2> path)
+        public void SetPath(List<Vector2> path, NpcState state = NpcState.Stand)
         {
             if (path != null && path.Count > 1)
             {
+                SetState(state);
                 _path = path;
                 _path.RemoveAt(0);
                 var target = Map.ToPixelPosition(_path[0]);
                 _remainDistance = Vector2.Distance(target, Figure.PositionInWorld);
             }
-            else _path = null;
+
+            if (path == null)
+            {
+                _path = null;
+                SetState(NpcState.Stand);
+            }
         }
 
         public void SetState(NpcState state)
@@ -404,14 +410,24 @@ namespace Engine
             var speed = 1;
             if (_path != null)
             {
-                SetState(NpcState.Walk);
-                if (_path.Count != 0 && NpcIni.ContainsKey((int)NpcState.Walk))
+                if (_path.Count != 0 && NpcIni.ContainsKey(State))
                 {
-                    speed = WalkSpeed;
+                    int speedLevel = 1;
+                    switch (State)
+                    {
+                        case (int)NpcState.Walk:
+                            speed = WalkSpeed;
+                            speedLevel = WalkSpeed;
+                            break;
+                        case (int)NpcState.Run:
+                            speedLevel = 8;
+                            break;
+                    }
+                    
                     var target = Map.ToPixelPosition(_path[0]);
                     var lastPosition = Figure.PositionInWorld;
                     var dir = target - lastPosition;
-                    Figure.MoveTo(dir, (float)gameTime.ElapsedGameTime.TotalSeconds * WalkSpeed);
+                    Figure.MoveTo(dir, (float) gameTime.ElapsedGameTime.TotalSeconds*speedLevel);
                     _remainDistance -= Vector2.Distance(lastPosition, Figure.PositionInWorld);
 
                     if (_remainDistance < 1)
@@ -425,10 +441,11 @@ namespace Engine
                         }
                     }
                 }
-                else _path = null;
+                else
+                {
+                    SetPath(null);
+                }
             }
-            else
-                SetState(NpcState.Stand);
 
             Figure.Update(gameTime, direction, speed);
         }

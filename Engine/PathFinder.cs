@@ -14,6 +14,9 @@ namespace Engine
             if (Globals.TheMap.IsObstacleForCharacter((int)endTile.X, (int)endTile.Y))
                 return null;
 
+            var path = new List<Vector2>();
+            if (startTile == endTile) return path;
+
             var cameFrom = new Dictionary<Vector2, Vector2>();
             var costSoFar = new Dictionary<Vector2, float>();
             var frontier = new IntervalHeap<Node>();
@@ -41,7 +44,6 @@ namespace Engine
 
             if (cameFrom.ContainsKey(endTile))
             {
-                var path = new List<Vector2>();
                 var current = endTile;
                 path.Add(current);
                 while (current != startTile)
