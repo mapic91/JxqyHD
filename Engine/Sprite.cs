@@ -16,14 +16,24 @@ namespace Engine
         private int _currentDirection;
         private Asf _texture;
 
+        public Sprite() { }
+
         public Sprite(Vector2 positionInWorld, int velocity, Asf texture, int direction = 0)
+        {
+            Set(positionInWorld, velocity, texture, direction);
+        }
+
+        public void Set(Vector2 positionInWorld, int velocity, Asf texture, int direction = 0)
         {
             PositionInWorld = positionInWorld;
             Velocity = velocity;
+
+            if (texture == null) return;
             Texture = texture;
             CurrentDirection = direction;
         }
-        #region Properties
+
+        #region Public properties
         public Asf Texture
         {
             get { return _texture; }
@@ -44,6 +54,7 @@ namespace Engine
                 _currentDirection = value % (_texture.DirectionCounts == 0 ? 1 : _texture.DirectionCounts);
                 _frameBegin = _currentDirection*_texture.FrameCountsPerDirection;
                 _frameEnd = _frameBegin + _texture.FrameCountsPerDirection - 1;
+                CurrentFrameIndex = CurrentFrameIndex;
             }
         }
 
@@ -113,13 +124,14 @@ namespace Engine
             }
         }
 
-        public void Update(GameTime gameTime, Vector2 direction)
+        public void Update(GameTime gameTime, Vector2 direction, int speed = 1)
         {
-            MoveTo(direction, (float)gameTime.ElapsedGameTime.TotalSeconds);
-            _elapsedMilliSecond += (int)gameTime.ElapsedGameTime.TotalMilliseconds;
-            if (_elapsedMilliSecond > _texture.Interval)
+            var elapsedTime = new TimeSpan(gameTime.ElapsedGameTime.Ticks * speed);
+            MoveTo(direction, (float)elapsedTime.TotalSeconds);
+            _elapsedMilliSecond += (int)elapsedTime.TotalMilliseconds;
+            if (_elapsedMilliSecond > Texture.Interval)
             {
-                _elapsedMilliSecond -= _texture.Interval;
+                _elapsedMilliSecond -= Texture.Interval;
                 CurrentFrameIndex++;
             }
         }
@@ -142,14 +154,15 @@ namespace Engine
 
         }
 
-        public void Draw(SpriteBatch spriteBatch, Carmera cam)
+        public void Draw(SpriteBatch spriteBatch, int offX = 0, int offY = 0)
         {
-            var texture = _texture.GetFrame(CurrentFrameIndex);
+            if(Texture == null) return;
+            var texture = Texture.GetFrame(CurrentFrameIndex);
             if(texture == null) return;
 
             Rectangle des =
-                cam.ToViewRegion(new Rectangle((int)PositionInWorld.X - Texture.Left,
-                    (int)PositionInWorld.Y - Texture.Bottom, 
+                 Globals.TheCarmera.ToViewRegion(new Rectangle((int)PositionInWorld.X - Texture.Left + offX,
+                    (int)PositionInWorld.Y - Texture.Bottom + offY, 
                     texture.Width, 
                     texture.Height));
             spriteBatch.Draw(texture, 

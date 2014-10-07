@@ -10,6 +10,8 @@ namespace Engine
     public static class Globals
     {
         public static Game TheGame;
+        public static Carmera TheCarmera;
+        public static Map TheMap = new Map();
         public static Dictionary<string, Asf> AsfFiles = new Dictionary<string, Asf>();
     }
 }

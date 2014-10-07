@@ -50,11 +50,10 @@ namespace Engine
                 var asfPath = GetAsfFilePath(asfFileName, type);
                 info.Image = Utils.GetAsf(asfPath);
             }
-            groups = Regex.Match(sound, "Sound=(.+).wav").Groups;
+            groups = Regex.Match(sound, "Sound=(.+)").Groups;
             if (groups[0].Success)
             {
-                var assertName = @"sound\" + groups[1].Value;
-                info.Sound = Utils.GetSoundEffect(assertName);
+                info.Sound = Utils.GetSoundEffect(groups[1].Value);
             }
             return info;
         }

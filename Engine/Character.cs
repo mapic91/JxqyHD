@@ -1,16 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Engine
 {
     using StateMapList = Dictionary<int, ResStateInfo>;
-    public class Character
+    public abstract class Character
     {
-        private Sprite _image;
+        private const int Basespeed = 100;
+
+        private float _remainDistance;
+        private Sprite _figure = new Sprite();
         private int _dir;
         private string _name;
         private int _kind;
@@ -24,7 +29,7 @@ namespace Engine
         private int _mapY;
         private int _lum;
         private int _action;
-        private int _walkSpeed;
+        private int _walkSpeed = 1;
         private int _evade;
         private int _attack;
         private int _attackLevel;
@@ -39,9 +44,9 @@ namespace Engine
         private int _mana;
         private int _manaMax;
         private StateMapList _npcIni;
-        private StateMapList _objIni;
-        private int _flyIni;
-        private int _flyIni2;
+        private Obj _bodyIni;
+        private string _flyIni;
+        private string _flyIni2;
         private string _scriptFile;
         private string _deathScript;
         private int _expBonus;
@@ -55,10 +60,10 @@ namespace Engine
             set { _dir = value % 8; }
         }
 
-        public Sprite Image
+        public Sprite Figure
         {
-            get { return _image; }
-            set { _image = value; }
+            get { return _figure; }
+            set { _figure = value; }
         }
 
         public string Name
@@ -111,14 +116,22 @@ namespace Engine
 
         public int MapX
         {
-            get { return _mapX; }
-            set { _mapX = value; }
+            get { return (int)Map.ToTilePosition(Figure.PositionInWorld).X; }
+            set
+            {
+                _mapX = value;
+                Figure.PositionInWorld = Map.ToPixelPosition(value, MapY);
+            }
         }
 
         public int MapY
         {
-            get { return _mapY; }
-            set { _mapY = value; }
+            get { return (int)Map.ToTilePosition(Figure.PositionInWorld).Y; }
+            set
+            {
+                _mapY = value;
+                Figure.PositionInWorld = Map.ToPixelPosition(MapX, value);
+            }
         }
 
         public int Lum
@@ -136,7 +149,7 @@ namespace Engine
         public int WalkSpeed
         {
             get { return _walkSpeed; }
-            set { _walkSpeed = value; }
+            set { _walkSpeed = value < 1 ? 1 : value; }
         }
 
         public int Evade
@@ -223,19 +236,19 @@ namespace Engine
             set { _npcIni = value; }
         }
 
-        public StateMapList ObjIni
+        public Obj BodyIni
         {
-            get { return _objIni; }
-            set { _objIni = value; }
+            get { return _bodyIni; }
+            set { _bodyIni = value; }
         }
 
-        public int FlyIni
+        public string FlyIni
         {
             get { return _flyIni; }
             set { _flyIni = value; }
         }
 
-        public int FlyIni2
+        public string FlyIni2
         {
             get { return _flyIni2; }
             set { _flyIni2 = value; }
@@ -273,32 +286,22 @@ namespace Engine
 
         #endregion
 
-        public bool LoadCharacter(string filePath)
+        public Character(string filePath)
         {
-            try
-            {
-                var lines = File.ReadAllLines(filePath, Encoding.GetEncoding(936));
-                return LoadCharacter(lines);
-            }
-            catch (Exception exception)
-            {
-                Log.LogMessageToFile("Character load failed [" + filePath + "]." + exception);
-                return false;
-            }
+            Load(filePath);
         }
 
-        public bool LoadCharacter(string[] lines)
-        {
-            foreach (var line in lines)
-            {
-                var nameValue = Utils.GetNameValue(line);
-                if(!string.IsNullOrEmpty(nameValue[0]))
-                    AssignToValue(nameValue);
-            }
-            return true;
-        }
+        public Character() { }
 
-        #region Public static method
+        private void InitlizeFigure()
+        {
+            if (NpcIni.ContainsKey((int)NpcState.Stand))
+            {
+                Figure.Set(Map.ToPixelPosition(MapX, MapY),
+                    Basespeed,
+                    NpcIni[(int)NpcState.Stand].Image, Dir);
+            }
+        }
 
         private void AssignToValue(string[] nameValue)
         {
@@ -316,13 +319,21 @@ namespace Engine
                         info.SetValue(this, nameValue[1], null);
                         break;
                     case "NpcIni":
-                        NpcIni = ResFile.ReadFile(@"ini\npcres\" + nameValue[1], ResType.Npc);
+                        info.SetValue(this,
+                            ResFile.ReadFile(@"ini\npcres\" + nameValue[1], ResType.Npc),
+                            null);
                         break;
                     case "BodyIni":
-                        ObjIni = ResFile.ReadFile(@"ini\objres\" + nameValue[1], ResType.Obj);
+                        info.SetValue(this, new Obj(@"ini\obj\" + nameValue[1]), null);
+                        break;
+                    case "Defence":
+                        Defend = int.Parse(nameValue[1]);
+                        break;
+                    case "LevelIni":
+                        info.SetValue(this, Utils.GetLevelLists(@"ini\level\" + nameValue[1]), null);
                         break;
                     default:
-                        var integerValue = Convert.ToInt32(nameValue[1]);
+                        var integerValue = int.Parse(nameValue[1]);
                         info.SetValue(this, integerValue, null);
                         break;
                 }
@@ -334,6 +345,97 @@ namespace Engine
             }
 
         }
-        #endregion
+
+        public bool Load(string filePath)
+        {
+            try
+            {
+                var lines = File.ReadAllLines(filePath, Encoding.GetEncoding(936));
+                return Load(lines);
+            }
+            catch (Exception exception)
+            {
+                Log.LogMessageToFile("Character load failed [" + filePath + "]." + exception);
+                return false;
+            }
+        }
+
+        public bool Load(string[] lines)
+        {
+            foreach (var line in lines)
+            {
+                var nameValue = Utils.GetNameValue(line);
+                if (!string.IsNullOrEmpty(nameValue[0]))
+                    AssignToValue(nameValue);
+            }
+            InitlizeFigure();
+            return true;
+        }
+
+        private List<Vector2> _path;
+        public void SetPath(List<Vector2> path)
+        {
+            if (path != null && path.Count > 1)
+            {
+                _path = path;
+                _path.RemoveAt(0);
+                var target = Map.ToPixelPosition(_path[0]);
+                _remainDistance = Vector2.Distance(target, Figure.PositionInWorld);
+            }
+            else _path = null;
+        }
+
+        public void SetState(NpcState state)
+        {
+            if (State != (int)state)
+            {
+                State = (int)state;
+
+                if (NpcIni.ContainsKey((int)state))
+                {
+                    Figure.Texture = NpcIni[(int)state].Image;
+                }
+            }
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            var direction = Vector2.Zero;
+            var speed = 1;
+            if (_path != null)
+            {
+                SetState(NpcState.Walk);
+                if (_path.Count != 0 && NpcIni.ContainsKey((int)NpcState.Walk))
+                {
+                    speed = WalkSpeed;
+                    var target = Map.ToPixelPosition(_path[0]);
+                    var lastPosition = Figure.PositionInWorld;
+                    var dir = target - lastPosition;
+                    Figure.MoveTo(dir, (float)gameTime.ElapsedGameTime.TotalSeconds * WalkSpeed);
+                    _remainDistance -= Vector2.Distance(lastPosition, Figure.PositionInWorld);
+
+                    if (_remainDistance < 1)
+                    {
+                        Figure.PositionInWorld = target;
+                        _path.RemoveAt(0);
+                        if (_path.Count != 0)
+                        {
+                            var newTarget = Map.ToPixelPosition(_path[0]);
+                            _remainDistance = Vector2.Distance(newTarget, target);
+                        }
+                    }
+                }
+                else _path = null;
+            }
+            else
+                SetState(NpcState.Stand);
+
+            Figure.Update(gameTime, direction, speed);
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            Figure.Draw(spriteBatch);
+        }
     }
 }

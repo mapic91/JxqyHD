@@ -22,10 +22,8 @@ namespace Jxqy
         GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;
         private Sprite _testNpc1, _testNpc2;
-        private Carmera _cam;
-        private Map _map = new Map();
         private Asf _stand, _walk;
-        private Character _character1 = new Character();
+        private Player _player1;
 
         public Game()
         {
@@ -48,12 +46,12 @@ namespace Jxqy
 
             Log.LogMessageToFile("Game is running...\n\n\n");
 
-            _graphics.PreferredBackBufferWidth = 640;
-            _graphics.PreferredBackBufferHeight = 480;
+            _graphics.PreferredBackBufferWidth = 1366;
+            _graphics.PreferredBackBufferHeight = 768;
             _graphics.ApplyChanges();
 
-            _map.ViewWidth = _graphics.PreferredBackBufferWidth;
-            _map.ViewHeight = _graphics.PreferredBackBufferHeight;
+            Globals.TheMap.ViewWidth = _graphics.PreferredBackBufferWidth;
+            Globals.TheMap.ViewHeight = _graphics.PreferredBackBufferHeight;
 
             base.Initialize();
         }
@@ -66,20 +64,25 @@ namespace Jxqy
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            _map.LoadMap(this, @"map\map_003_武当山下.map");
-            _map.ViewBeginX = 0;
-            _map.ViewBeginY = 0;
-            _cam = new Carmera(_map.ViewBeginX, _map.ViewBeginY,_map.ViewWidth, _map.ViewHeight,_map.MapPixelWidth, _map.MapPixelHeight);
+            Globals.TheMap.LoadMap(@"map\map_003_武当山下.map");
+            Globals.TheMap.ViewBeginX = 0;
+            Globals.TheMap.ViewBeginY = 0;
+            Globals.TheCarmera = new Carmera(Globals.TheMap.ViewBeginX, 
+                Globals.TheMap.ViewBeginY,
+                Globals.TheMap.ViewWidth, 
+                Globals.TheMap.ViewHeight,
+                Globals.TheMap.MapPixelWidth, 
+                Globals.TheMap.MapPixelHeight);
             _stand = new Asf(@"asf\character\npc006_st2.asf");
             _walk = new Asf(@"asf\character\npc006_wlk2.asf");
             _testNpc1 = new Sprite(new Vector2(800f), 50, _stand);
             _testNpc2 = new Sprite(new Vector2(80f), 5, new Asf(@"asf\effect\mag038-2-毒液.asf"));
 
-            _character1.LoadCharacter(@"ini\npc\卓非凡.ini");
+            _player1 = new Player(@"ini\save\player0.ini");
 
             BackgroundMusic.Play(@"music/Mc003.mp3");
 
-            _cam.Follow(_testNpc1); 
+            Globals.TheCarmera.Follow(_player1.Figure); 
         }
 
         /// <summary>
@@ -105,34 +108,35 @@ namespace Jxqy
                 this.Exit();
 
             var mouseState = Mouse.GetState();
-            var screenPosition = _cam.ToViewPosition(_testNpc1.PositionInWorld);
-            var mousePosition = new Vector2(mouseState.X, mouseState.Y);
+            var screenPosition = Globals.TheCarmera.ToViewPosition(_testNpc1.PositionInWorld);
+            var mouseScreenPosition = new Vector2(mouseState.X, mouseState.Y);
+            var mouseWorldPosition = Globals.TheCarmera.ToWorldPosition(mouseScreenPosition);
             var dir = Vector2.Zero;
 
             var keyboardState = Keyboard.GetState();
             if(keyboardState.IsKeyDown(Keys.D1) && _lastKeyboardState.IsKeyUp(Keys.D1))
-                _map.SwitchLayerDraw(0);
+                Globals.TheMap.SwitchLayerDraw(0);
             if (keyboardState.IsKeyDown(Keys.D2) && _lastKeyboardState.IsKeyUp(Keys.D2))
-                _map.SwitchLayerDraw(1);
+                Globals.TheMap.SwitchLayerDraw(1);
             if (keyboardState.IsKeyDown(Keys.D3) && _lastKeyboardState.IsKeyUp(Keys.D3))
-                _map.SwitchLayerDraw(2);
+                Globals.TheMap.SwitchLayerDraw(2);
 
             if (mouseState.LeftButton == ButtonState.Pressed)
             {
-                if(_lastMouseState.LeftButton == ButtonState.Released)
-                    _testNpc1.Texture = _walk;
-                dir = mousePosition - screenPosition;
+                var tilePositionUnderMouse = Map.ToTilePosition(mouseWorldPosition);
+                var startTile = Map.ToTilePosition(_player1.Figure.PositionInWorld);
+                _player1.SetPath(PathFinder.FindPath(startTile, tilePositionUnderMouse));
             }
-            else if(_lastMouseState.LeftButton == ButtonState.Pressed)
-                _testNpc1.Texture = _stand;
+            //else if (_lastMouseState.LeftButton == ButtonState.Pressed)
+            //    _testNpc1.Texture = _stand;
 
-            
+            _player1.Update(gameTime);
             _testNpc1.Update(gameTime, dir);
             _testNpc2.Update(gameTime, Vector2.Zero);
 
-            _cam.Update(gameTime);
-            _map.ViewBeginX = _cam.ViewBeginX;
-            _map.ViewBeginY = _cam.ViewBeginY;
+            Globals.TheCarmera.Update(gameTime);
+            Globals.TheMap.ViewBeginX = Globals.TheCarmera.ViewBeginX;
+            Globals.TheMap.ViewBeginY = Globals.TheCarmera.ViewBeginY;
 
             _lastKeyboardState = keyboardState;
             _lastMouseState = mouseState;
@@ -148,25 +152,26 @@ namespace Jxqy
             GraphicsDevice.Clear(Color.Black);
 
             _spriteBatch.Begin(SpriteSortMode.Deferred,null);
-            _map.DrawLayer(_spriteBatch, 0);
+            Globals.TheMap.DrawLayer(_spriteBatch, 0);
 
-            var start = _map.GetStartTileInView();
-            var end = _map.GetEndTileInView();
-            var npc1Position = Map.ToTilePosition(_testNpc1.PositionInWorld, _testNpc1.Texture);
+            var start = Globals.TheMap.GetStartTileInView();
+            var end = Globals.TheMap.GetEndTileInView();
+            var npc1Position = Map.ToTilePosition(_testNpc1.PositionInWorld);
             for (var y = (int)start.Y; y < (int)end.Y; y++)
             {
                 for (var x = (int)start.X; x < (int)end.X; x++)
                 {
-                    Texture2D texture = _map.GetTileTexture(x, y, 1);
-                    _map.DrawTile(_spriteBatch, texture, new Vector2(x, y), 1f);
+                    Texture2D texture = Globals.TheMap.GetTileTexture(x, y, 1);
+                    Globals.TheMap.DrawTile(_spriteBatch, texture, new Vector2(x, y), 1f);
                     if (y == (int) npc1Position.Y && x == (int) npc1Position.X)
                     {
-                        _testNpc1.Draw(_spriteBatch, _cam);
+                        _testNpc1.Draw(_spriteBatch);
                     }
                 }
             }
-            _testNpc2.Draw(_spriteBatch, _cam);
-            _map.DrawLayer(_spriteBatch, 2);
+            _testNpc2.Draw(_spriteBatch);
+            _player1.Draw(_spriteBatch);
+            Globals.TheMap.DrawLayer(_spriteBatch, 2);
             _spriteBatch.End();
             base.Draw(gameTime);
         }

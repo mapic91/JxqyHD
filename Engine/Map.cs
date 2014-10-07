@@ -17,14 +17,28 @@ namespace Engine
             public byte MpcIndex;
         }
 
+        struct MapTileInfo
+        {
+            public byte TrapIndex;
+            public byte BarrierType;
+        }
+
+
+        private const byte None = 0; //无
+        private const byte Obstacle = 0x80; //障
+        private const byte CanOverObstacle = 0xA0; //跳障，可跳过
+        private const byte Trans = 0x40; //透，武功可以透过，人不能透过
+        private const byte CanOverTrans = 0x60; //跳透，可跳过
+        private const byte CanOver = 0x20; //可跳过
+
         private List<Mpc> _mpcList;
-        private Game _game;
         private string _mpcDirPath;
         private int _mapColumnCounts;
         private int _mapRowCounts;
         private int _mapPixelWidth;
         private int _mapPixelHeight;
         private MapMpcIndex[] _layer1, _layer2, _layer3;
+        private MapTileInfo[] _tileInfos;
         private readonly bool[] _isLayerDraw = new bool[3]{true, true, true};
 
         private int _viewBeginX;
@@ -132,13 +146,6 @@ namespace Engine
             return ToTilePosition((int)pixelPositionInWorld.X, (int)pixelPositionInWorld.Y);
         }
 
-        public static Vector2 ToTilePosition(Vector2 pixelPositionInWorld, Asf asf)
-        {
-            //Add back offset
-            var positionAtTileCenter = pixelPositionInWorld + new Vector2(asf.Left, asf.Bottom);
-            return ToTilePosition(positionAtTileCenter);
-        }
-
         //Return pixel position of tile center in world
         public static Vector2 ToPixelPosition(int col, int row)
         {
@@ -156,12 +163,13 @@ namespace Engine
         }
         #endregion public static method
 
-        private void LoadMapLayer(byte[] buf, ref int offset)
+        private void LoadMapTiles(byte[] buf, ref int offset)
         {
             var totalTile = _mapColumnCounts * _mapRowCounts;
             _layer1 = new MapMpcIndex[totalTile];
             _layer2 = new MapMpcIndex[totalTile];
             _layer3 = new MapMpcIndex[totalTile];
+            _tileInfos = new MapTileInfo[totalTile];
             for (var i = 0; i < totalTile; i++)
             {
                 _layer1[i].Frame = buf[offset++];
@@ -170,7 +178,9 @@ namespace Engine
                 _layer2[i].MpcIndex = buf[offset++];
                 _layer3[i].Frame = buf[offset++];
                 _layer3[i].MpcIndex = buf[offset++];
-                offset += 4;
+                _tileInfos[i].BarrierType = buf[offset++];
+                _tileInfos[i].TrapIndex = buf[offset++];
+                offset += 2;
             }
         }
 
@@ -270,6 +280,67 @@ namespace Engine
             return _mpcList[idx[pos].MpcIndex - 1].GetFrame(idx[pos].Frame);
         }
 
+        public bool IsTileInMap(int col, int row)
+        {
+            return (col < MapColumnCounts && 
+                row < MapRowCounts && 
+                col >= 0 && 
+                row >= 0);
+        }
+
+        public bool IsObstacleForCharacter(int col, int row)
+        {
+            if (IsTileInMap(col, row))
+            {
+                var type = _tileInfos[col + row*MapColumnCounts].BarrierType;
+                if (type == None)
+                    return false;
+                else return true;
+            }
+            return true;
+        }
+
+        public bool IsObstacleForCharacter(Vector2 tilePosition)
+        {
+            return IsObstacleForCharacter((int)tilePosition.X, (int)tilePosition.Y);
+        }
+
+        public bool IsObstacleForCharacterJump(int col, int row)
+        {
+            if (IsTileInMap(col, row))
+            {
+                var type = _tileInfos[col + row * MapColumnCounts].BarrierType;
+                if (type == None || 
+                    (type & CanOver) != 0)
+                    return false;
+                else return true;
+            }
+            return true;
+        }
+
+        public bool IsObstacleForCharacterJump(Vector2 tilePosition)
+        {
+            return IsObstacleForCharacterJump((int) tilePosition.X, (int) tilePosition.Y);
+        }
+
+        public bool IsObstacleForMagic(int col, int row)
+        {
+            if (IsTileInMap(col, row))
+            {
+                var type = _tileInfos[col + row * MapColumnCounts].BarrierType;
+                if (type == None || 
+                    (type & Trans) != 0)
+                    return false;
+                else return true;
+            }
+            return true;
+        }
+
+        public bool IsObstacleForMagic(Vector2 tilePosition)
+        {
+            return IsObstacleForMagic((int) tilePosition.X, (int) tilePosition.Y);
+        }
+
         public void DrawTile(SpriteBatch spriteBatch, Texture2D texture, Vector2 tilePos, float depth)
         {
             if (texture == null) return;
@@ -301,12 +372,12 @@ namespace Engine
             }
         }
 
-        public void LoadMap(Game game, string path)
+        public void LoadMap(string path)
         {
             try
             {
                 var buf = File.ReadAllBytes(path);
-                LoadMap(game, buf);
+                LoadMap(buf);
             }
             catch (Exception e)
             {
@@ -314,15 +385,14 @@ namespace Engine
             }
         }
 
-        public void LoadMap(Game game, byte[] buf)
+        public void LoadMap(byte[] buf)
         {
-            _game = game;
             var offset = 0;
             try
             {
                 if (!LoadHead(buf, ref offset)) return;
                 LoadMpc(buf, ref offset);
-                LoadMapLayer(buf, ref offset);
+                LoadMapTiles(buf, ref offset);
             }
             catch (Exception e)
             {

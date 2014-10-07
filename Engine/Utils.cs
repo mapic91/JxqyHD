@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Xna.Framework.Audio;
 
@@ -32,7 +35,7 @@ namespace Engine
         static public string[] GetNameValue(string nameValue)
         {
             var result = new String[2];
-            var groups = Regex.Match(nameValue, "(.+)=(.+)").Groups;
+            var groups = Regex.Match(nameValue, "(.*)=(.*)").Groups;
             if (groups[0].Success)
             {
                 result[0] = groups[1].Value;
@@ -60,16 +63,97 @@ namespace Engine
             }
         }
 
-        static public SoundEffect GetSoundEffect(string assertName)
+        static public SoundEffect GetSoundEffect(string wavFileName)
         {
             try
             {
+                var groups = Regex.Match(wavFileName, @"(.+)\.wav").Groups;
+                string assertName = wavFileName;
+                if (groups[0].Success)
+                {
+                    assertName = @"sound\" + groups[1].Value;
+                }
                 return Globals.TheGame.Content.Load<SoundEffect>(assertName);
             }
             catch (Exception)
             {
                 return null;
             }
+        }
+
+        public static Dictionary<int, LevelDetail> GetLevelLists(string filePath)
+        {
+            var lists = new Dictionary<int, LevelDetail>();
+
+            try
+            {
+                var lines = File.ReadAllLines(filePath, Encoding.GetEncoding(936));
+                var counts = lines.Length;
+                for (var i = 0; i < counts;)
+                {
+                    var groups = Regex.Match(lines[i], @"\[Level([0-9]+)\]").Groups;
+                    i++;
+                    if (groups[0].Success)
+                    {
+                        var detail = new LevelDetail();
+                        var index = int.Parse(groups[1].Value);
+                        while (i < counts && !string.IsNullOrEmpty(lines[i]))
+                        {
+                            var nameValue = GetNameValue(lines[i]);
+                            int value;
+                            int.TryParse(nameValue[1], out value);
+                            switch (nameValue[0])
+                            {
+                                case "LevelUpExp":
+                                    detail.LevelUpExp = value;
+                                    break;
+                                case "LifeMax":
+                                    detail.LifeMax = value;
+                                    break;
+                                case "ThewMax":
+                                    detail.ThewMax = value;
+                                    break;
+                                case "ManaMax":
+                                    detail.ManaMax = value;
+                                    break;
+                                case "Attack":
+                                    detail.Attack = value;
+                                    break;
+                                case "Defend":
+                                    detail.Defend = value;
+                                    break;
+                                case "Evade":
+                                    detail.Evade = value;
+                                    break;
+                                case "NewMagic":
+                                    detail.NewMagic = nameValue[1];
+                                    break;
+                            }
+                            i++;
+                        }
+                        lists[index] = detail;
+                    }
+                }
+
+            }
+            catch (Exception)
+            {
+                return lists;
+            }
+
+            return lists;
+        }
+
+        public struct LevelDetail
+        {
+            public int LevelUpExp;
+            public int LifeMax;
+            public int ThewMax;
+            public int ManaMax;
+            public int Attack;
+            public int Defend;
+            public int Evade;
+            public string NewMagic;
         }
     }
 }
