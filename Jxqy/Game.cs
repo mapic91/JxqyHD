@@ -24,6 +24,7 @@ namespace Jxqy
         private Sprite _testNpc1, _testNpc2;
         private Asf _stand, _walk;
         private Player _player1;
+        private NpcManager _npcManager;
 
         public Game()
         {
@@ -46,8 +47,8 @@ namespace Jxqy
 
             Log.LogMessageToFile("Game is running...\n\n\n");
 
-            _graphics.PreferredBackBufferWidth = 640;
-            _graphics.PreferredBackBufferHeight = 480;
+            _graphics.PreferredBackBufferWidth = 1366;
+            _graphics.PreferredBackBufferHeight = 768;
             _graphics.ApplyChanges();
 
             Globals.TheMap.ViewWidth = _graphics.PreferredBackBufferWidth;
@@ -64,7 +65,7 @@ namespace Jxqy
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            Globals.TheMap.LoadMap(@"map\map_003_武当山下.map");
+            Globals.TheMap.LoadMap(@"map\map_012_惠安镇.map");
             Globals.TheMap.ViewBeginX = 0;
             Globals.TheMap.ViewBeginY = 0;
             Globals.TheCarmera = new Carmera(Globals.TheMap.ViewBeginX, 
@@ -77,8 +78,8 @@ namespace Jxqy
             _walk = new Asf(@"asf\character\npc006_wlk2.asf");
             _testNpc1 = new Sprite(new Vector2(800f), 50, _stand);
             _testNpc2 = new Sprite(new Vector2(80f), 5, new Asf(@"asf\effect\mag038-2-毒液.asf"));
-
             _player1 = new Player(@"ini\save\player0.ini");
+            _npcManager = new NpcManager(@"ini\save\huianzhen.npc");
 
             BackgroundMusic.Play(@"music/Mc003.mp3");
 
@@ -121,21 +122,23 @@ namespace Jxqy
             if (keyboardState.IsKeyDown(Keys.D3) && _lastKeyboardState.IsKeyUp(Keys.D3))
                 Globals.TheMap.SwitchLayerDraw(2);
 
+            _player1.Update(gameTime);
+            _testNpc1.Update(gameTime, dir);
+            _testNpc2.Update(gameTime, Vector2.Zero);
+            _npcManager.Update(gameTime);
+
+
             if (mouseState.LeftButton == ButtonState.Pressed)
             {
                 var tilePositionUnderMouse = Map.ToTilePosition(mouseWorldPosition);
                 var startTile = Map.ToTilePosition(_player1.Figure.PositionInWorld);
                 var path = PathFinder.FindPath(startTile, tilePositionUnderMouse);
-                if(keyboardState.IsKeyDown(Keys.LeftShift)) 
+                if (keyboardState.IsKeyDown(Keys.LeftShift))
                     _player1.SetPath(path, NpcState.Run);
                 else _player1.SetPath(path, NpcState.Walk);
             }
             //else if (_lastMouseState.LeftButton == ButtonState.Pressed)
             //    _testNpc1.Texture = _stand;
-
-            _player1.Update(gameTime);
-            _testNpc1.Update(gameTime, dir);
-            _testNpc2.Update(gameTime, Vector2.Zero);
 
             Globals.TheCarmera.Update(gameTime);
             Globals.TheMap.ViewBeginX = Globals.TheCarmera.ViewBeginX;
@@ -173,6 +176,7 @@ namespace Jxqy
                 }
             }
             _testNpc2.Draw(_spriteBatch);
+            _npcManager.Draw(_spriteBatch);
             _player1.Draw(_spriteBatch);
             Globals.TheMap.DrawLayer(_spriteBatch, 2);
             _spriteBatch.End();

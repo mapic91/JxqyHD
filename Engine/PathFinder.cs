@@ -67,7 +67,7 @@ namespace Engine
 
         private static List<Vector2> FindNeighbors(Vector2 location)
         {
-            var listAll = new Dictionary<int, Vector2>();
+            var list = new List<Vector2>();
             var x = location.X;
             var y = location.Y;
             // 7  0  1
@@ -75,62 +75,34 @@ namespace Engine
             // 5  4  3
             if ((int) y%2 == 0)
             {
-                listAll[0] = (new Vector2(x, y - 2f));
-                listAll[1] = (new Vector2(x, y - 1f));
-                listAll[2] = (new Vector2(x + 1f, y));
-                listAll[3] = (new Vector2(x, y + 1f));
-                listAll[4] = (new Vector2(x, y + 2f));
-                listAll[5] = (new Vector2(x - 1f, y + 1f));
-                listAll[6] = (new Vector2(x - 1f, y));
-                listAll[7] = (new Vector2(x - 1f, y - 1f));
+                list.Add(new Vector2(x, y - 2f));
+                list.Add(new Vector2(x, y - 1f));
+                list.Add(new Vector2(x + 1f, y));
+                list.Add(new Vector2(x, y + 1f));
+                list.Add(new Vector2(x, y + 2f));
+                list.Add(new Vector2(x - 1f, y + 1f));
+                list.Add(new Vector2(x - 1f, y));
+                list.Add(new Vector2(x - 1f, y - 1f));
             }
             else
             {
-                listAll[0] = (new Vector2(x, y - 2f));
-                listAll[1] = (new Vector2(x + 1f, y - 1f));
-                listAll[2] = (new Vector2(x + 1f, y));
-                listAll[3] = (new Vector2(x + 1f, y + 1f));
-                listAll[4] = (new Vector2(x, y + 2f));
-                listAll[5] = (new Vector2(x, y + 1f));
-                listAll[6] = (new Vector2(x - 1f, y));
-                listAll[7] = (new Vector2(x, y - 1f));
+                list.Add(new Vector2(x, y - 2f));
+                list.Add(new Vector2(x + 1f, y - 1f));
+                list.Add(new Vector2(x + 1f, y));
+                list.Add(new Vector2(x + 1f, y + 1f));
+                list.Add(new Vector2(x, y + 2f));
+                list.Add(new Vector2(x, y + 1f));
+                list.Add(new Vector2(x - 1f, y));
+                list.Add(new Vector2(x, y - 1f));
             }
 
-            var list = new List<Vector2>();
-            var removeList = new List<int>();
-            var count = listAll.Count;
-            for (var i = 0; i < count; i++)
+            var count = list.Count;
+            for (var i = count - 1; i >= 0; i--)
             {
-                if (Globals.TheMap.IsObstacleForCharacter(listAll[i]))
+                if (Globals.TheMap.IsObstacleForCharacter(list[i]))
                 {
-                    AddIfNotExist(removeList, i);
-                    switch (i)
-                    {
-                        case 1:
-                            AddIfNotExist(removeList, 0);
-                            AddIfNotExist(removeList, 2);
-                            break;
-                        case 3:
-                            AddIfNotExist(removeList, 2);
-                            AddIfNotExist(removeList, 4);
-                            break;
-                        case 5:
-                            AddIfNotExist(removeList, 4);
-                            AddIfNotExist(removeList, 6);
-                            break;
-                        case 7:
-                            AddIfNotExist(removeList, 0);
-                            AddIfNotExist(removeList, 6);
-                            break;
-                    }
-
+                    list.RemoveAt(i);
                 }
-            }
-
-            for (var j = 0; j < count; j++)
-            {
-                if(!removeList.Contains(j))
-                    list.Add(listAll[j]);
             }
 
             return list;

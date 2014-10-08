@@ -68,6 +68,8 @@ namespace Engine
             Palette = null;//palette can be released now
         }
 
+        public Asf() { }
+
         public Asf(string path)
         {
             Load(path);

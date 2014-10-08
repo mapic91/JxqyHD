@@ -13,28 +13,14 @@ namespace Engine
         private int _belong;
         private int _fight;
         private int _money;
-        private int _canRun = 1;
-        private int _canJump = 1;
         private Dictionary<int, Utils.LevelDetail> _levelIni;
 
         #region Public properties
-
-        public int CanJump
-        {
-            get { return _canJump; }
-            set { _canJump = value; }
-        }
 
         public Dictionary<int, Utils.LevelDetail> LevelIni
         {
             get { return _levelIni; }
             set { _levelIni = value; }
-        }
-
-        public int CanRun
-        {
-            get { return _canRun; }
-            set { _canRun = value; }
         }
 
         public int Money

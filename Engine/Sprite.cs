@@ -14,7 +14,7 @@ namespace Engine
         private int _frameEnd;
         private int _elapsedMilliSecond;
         private int _currentDirection;
-        private Asf _texture;
+        private Asf _texture = new Asf();
 
         public Sprite() { }
 
@@ -124,9 +124,9 @@ namespace Engine
             }
         }
 
-        public void Update(GameTime gameTime, Vector2 direction, int speed = 1)
+        public void Update(GameTime gameTime, Vector2 direction, int speedFold = 1)
         {
-            var elapsedTime = new TimeSpan(gameTime.ElapsedGameTime.Ticks * speed);
+            var elapsedTime = new TimeSpan(gameTime.ElapsedGameTime.Ticks * speedFold);
             MoveTo(direction, (float)elapsedTime.TotalSeconds);
             _elapsedMilliSecond += (int)elapsedTime.TotalMilliseconds;
             if (_elapsedMilliSecond > Texture.Interval)

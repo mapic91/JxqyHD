@@ -73,6 +73,8 @@
     <Compile Include="Log.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="Mpc.cs" />
+    <Compile Include="Npc.cs" />
+    <Compile Include="NpcManager.cs" />
     <Compile Include="Obj.cs" />
     <Compile Include="PathFinder.cs" />
     <Compile Include="Player.cs" />
