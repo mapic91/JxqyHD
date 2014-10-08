@@ -24,8 +24,10 @@ namespace Engine
             frontier.Add(new Node(startTile, 0f));
             costSoFar[startTile] = 0f;
 
+            var tryCount = 0; //For performance
             while (!frontier.IsEmpty)
             {
+                if (tryCount++ > 2000) return null;
                 var current = frontier.DeleteMin().Location;
                 if (current.Equals(endTile)) break;
                 foreach (var next in FindNeighbors(current))

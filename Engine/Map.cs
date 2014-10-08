@@ -280,17 +280,17 @@ namespace Engine
             return _mpcList[idx[pos].MpcIndex - 1].GetFrame(idx[pos].Frame);
         }
 
-        public bool IsTileInMap(int col, int row)
+        public bool IsTileInMapViewRange(int col, int row)
         {
-            return (col < MapColumnCounts && 
-                row < MapRowCounts && 
+            return (col < MapColumnCounts - 1 && 
+                row < MapRowCounts - 3 && 
                 col >= 0 && 
                 row >= 0);
         }
 
         public bool IsObstacleForCharacter(int col, int row)
         {
-            if (IsTileInMap(col, row))
+            if (IsTileInMapViewRange(col, row))
             {
                 var type = _tileInfos[col + row*MapColumnCounts].BarrierType;
                 if (type == None)
@@ -307,7 +307,7 @@ namespace Engine
 
         public bool IsObstacleForCharacterJump(int col, int row)
         {
-            if (IsTileInMap(col, row))
+            if (IsTileInMapViewRange(col, row))
             {
                 var type = _tileInfos[col + row * MapColumnCounts].BarrierType;
                 if (type == None || 
@@ -325,7 +325,7 @@ namespace Engine
 
         public bool IsObstacleForMagic(int col, int row)
         {
-            if (IsTileInMap(col, row))
+            if (IsTileInMapViewRange(col, row))
             {
                 var type = _tileInfos[col + row * MapColumnCounts].BarrierType;
                 if (type == None || 
