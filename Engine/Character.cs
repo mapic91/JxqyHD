@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Engine
@@ -14,6 +15,7 @@ namespace Engine
     {
         private const int Basespeed = 100;
 
+        private SoundEffectInstance _sound;
         private float _remainDistance;
         private Sprite _figure = new Sprite();
         private int _dir;
@@ -407,9 +409,27 @@ namespace Engine
             {
                 State = (int)state;
 
+                if (_sound != null)
+                {
+                    _sound.Stop(true);
+                    _sound = null;
+                }
                 if (NpcIni.ContainsKey((int)state))
                 {
-                    Figure.Texture = NpcIni[(int)state].Image;
+                    var image = NpcIni[(int) state].Image;
+                    var sound = NpcIni[(int) state].Sound;
+                    if(image != null)Figure.Texture = NpcIni[(int)state].Image;
+                    if (sound != null)
+                    {
+                        if (State == (int) NpcState.Walk ||
+                            State == (int) NpcState.Run)
+                        {
+                            _sound = sound.CreateInstance();
+                            _sound.IsLooped = true;
+                            _sound.Play();
+                        }
+                        else sound.Play();
+                    }
                 }
             }
         }
@@ -484,7 +504,6 @@ namespace Engine
                             }
                             break;
                     }
-
                 }
             }
 

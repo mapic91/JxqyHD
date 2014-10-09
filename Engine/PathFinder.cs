@@ -83,14 +83,45 @@ namespace Engine
 
         private static List<Vector2> FindNeighbors(Vector2 location)
         {
-            var list = FindAllNeighbors(location);
+            var listAll = FindAllNeighbors(location);
 
-            var count = list.Count;
-            bool isRemove = false;
-            for (var i = count - 1; i >= 0; i--)
+            var list = new List<Vector2>();
+            var removeList = new List<int>();
+            var count = listAll.Count;
+            for (var i = 0; i < count; i++)
             {
-                if (Globals.TheMap.IsObstacleForCharacter(list[i]))
-                    list.RemoveAt(i);
+                if (Globals.TheMap.IsObstacleForCharacter(listAll[i]))
+                {
+                    AddIfNotExist(removeList, i);
+                    if (Globals.TheMap.IsObstacle(listAll[i]))
+                    {
+                        switch (i)
+                        {
+                            case 1:
+                                AddIfNotExist(removeList, 0);
+                                AddIfNotExist(removeList, 2);
+                                break;
+                            case 3:
+                                AddIfNotExist(removeList, 2);
+                                AddIfNotExist(removeList, 4);
+                                break;
+                            case 5:
+                                AddIfNotExist(removeList, 4);
+                                AddIfNotExist(removeList, 6);
+                                break;
+                            case 7:
+                                AddIfNotExist(removeList, 0);
+                                AddIfNotExist(removeList, 6);
+                                break;
+                        }
+                    }
+                }
+            }
+
+            for (var j = 0; j < count; j++)
+            {
+                if (!removeList.Contains(j))
+                    list.Add(listAll[j]);
             }
 
             return list;
@@ -129,8 +160,12 @@ namespace Engine
 
             return list;
         }
-    }
 
+        private static void AddIfNotExist(List<int> removeList, int value)
+        {
+            if (!removeList.Contains(value)) removeList.Add(value);
+        }
+    }
 
     public struct Node : IComparable<Node>
     {

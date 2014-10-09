@@ -288,6 +288,22 @@ namespace Engine
                 row >= 0);
         }
 
+        public bool IsObstacle(int col, int row)
+        {
+            if (IsTileInMapViewRange(col, row))
+            {
+                var type = _tileInfos[col + row * MapColumnCounts].BarrierType;
+                if ((type & Obstacle) == 0)
+                    return false;
+            }
+            return true;
+        }
+
+        public bool IsObstacle(Vector2 tilePosition)
+        {
+            return IsObstacle((int) tilePosition.X, (int) tilePosition.Y);
+        }
+
         public bool IsObstacleForCharacter(int col, int row)
         {
             if (IsTileInMapViewRange(col, row))
@@ -295,7 +311,6 @@ namespace Engine
                 var type = _tileInfos[col + row*MapColumnCounts].BarrierType;
                 if (type == None)
                     return false;
-                else return true;
             }
             return true;
         }
@@ -313,7 +328,6 @@ namespace Engine
                 if (type == None || 
                     (type & CanOver) != 0)
                     return false;
-                else return true;
             }
             return true;
         }
@@ -331,7 +345,6 @@ namespace Engine
                 if (type == None || 
                     (type & Trans) != 0)
                     return false;
-                else return true;
             }
             return true;
         }

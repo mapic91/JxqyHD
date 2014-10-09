@@ -76,7 +76,7 @@ namespace Jxqy
             _player1 = new Player(@"ini\save\player0.ini");
             _npcManager = new NpcManager(@"ini\save\huianzhen.npc");
 
-            BackgroundMusic.Play(@"music/Mc003.mp3");
+            //BackgroundMusic.Play(@"music/Mc003.mp3");
 
             Globals.TheCarmera.Follow(_player1.Figure); 
         }

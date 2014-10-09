@@ -138,6 +138,11 @@ namespace Engine
             return !_isPlayingCurrentDirOnce;
         }
 
+        public bool IsFrameAtBegin()
+        {
+            return CurrentFrameIndex == _frameBegin;
+        }
+
         public void Update(GameTime gameTime, Vector2 direction, int speedFold = 1)
         {
             var elapsedTime = new TimeSpan(gameTime.ElapsedGameTime.Ticks * speedFold);
