@@ -15,6 +15,7 @@ namespace Engine
         private int _elapsedMilliSecond;
         private int _currentDirection;
         private Asf _texture = new Asf();
+        private bool _isPlayingCurrentDirOnce;
 
         public Sprite() { }
 
@@ -51,6 +52,7 @@ namespace Engine
             get { return _currentDirection; }
             private set
             {
+                if (_isPlayingCurrentDirOnce) return; //Can't set when playing
                 _currentDirection = value % (_texture.DirectionCounts == 0 ? 1 : _texture.DirectionCounts);
                 _frameBegin = _currentDirection*_texture.FrameCountsPerDirection;
                 _frameEnd = _frameBegin + _texture.FrameCountsPerDirection - 1;
@@ -124,19 +126,39 @@ namespace Engine
             }
         }
 
+        public void PlayCurrentDirOnce()
+        {
+            if(_isPlayingCurrentDirOnce) return;
+            _isPlayingCurrentDirOnce = true;
+            CurrentFrameIndex = _frameBegin;//Reset frame
+        }
+
+        public bool IsPlayCurrentDirOnceEnd()
+        {
+            return !_isPlayingCurrentDirOnce;
+        }
+
         public void Update(GameTime gameTime, Vector2 direction, int speedFold = 1)
         {
             var elapsedTime = new TimeSpan(gameTime.ElapsedGameTime.Ticks * speedFold);
             MoveTo(direction, (float)elapsedTime.TotalSeconds);
+            Update(gameTime, speedFold);
+        }
+
+        public void Update(GameTime gameTime, int speedFold = 1)
+        {
+            var elapsedTime = new TimeSpan(gameTime.ElapsedGameTime.Ticks * speedFold);
             _elapsedMilliSecond += (int)elapsedTime.TotalMilliseconds;
             if (_elapsedMilliSecond > Texture.Interval)
             {
                 _elapsedMilliSecond -= Texture.Interval;
                 CurrentFrameIndex++;
+                if (_isPlayingCurrentDirOnce && CurrentFrameIndex == _frameEnd)
+                    _isPlayingCurrentDirOnce = false;
             }
         }
 
-        private void SetDirection(Vector2 direction)
+        public void SetDirection(Vector2 direction)
         {
             if (direction == Vector2.Zero) return;
             direction.Normalize();

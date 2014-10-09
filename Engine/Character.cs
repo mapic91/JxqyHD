@@ -373,17 +373,27 @@ namespace Engine
         }
 
         private List<Vector2> _path;
-        public void SetPath(List<Vector2> path, NpcState state = NpcState.Stand)
+        public void SetPathAndState(List<Vector2> path, PathType type = PathType.WalkRun, NpcState state = NpcState.Stand)
         {
-            if (path != null && path.Count > 1)
+            if (path != null)
             {
-                SetState(state);
-                _path = path;
-                _path.RemoveAt(0);
-                var target = Map.ToPixelPosition(_path[0]);
-                _remainDistance = Vector2.Distance(target, Figure.PositionInWorld);
+                if (path.Count > 1 && type == PathType.WalkRun)
+                {
+                    SetState(state);
+                    _path = path;
+                    _path.RemoveAt(0);
+                    var target = _path[0];
+                    _remainDistance = Vector2.Distance(target, Figure.PositionInWorld);
+                }
+                else if (path.Count == 2 && type == PathType.Jump)
+                {
+                    SetState(state);
+                    _path = path;
+                    var dir = path[1] - Figure.PositionInWorld;
+                    Figure.SetDirection(dir);
+                    Figure.PlayCurrentDirOnce();
+                }
             }
-
             if (path == null)
             {
                 _path = null;
@@ -404,9 +414,8 @@ namespace Engine
             }
         }
 
-        public void Update(GameTime gameTime)
+        public virtual void Update(GameTime gameTime)
         {
-            var direction = Vector2.Zero;
             var speed = 1;
             if (_path != null)
             {
@@ -420,34 +429,66 @@ namespace Engine
                             speedLevel = WalkSpeed;
                             break;
                         case (int)NpcState.Run:
+                        case (int)NpcState.Jump:
                             speedLevel = 8;
                             break;
                     }
-                    
-                    var target = Map.ToPixelPosition(_path[0]);
-                    var lastPosition = Figure.PositionInWorld;
-                    var dir = target - lastPosition;
-                    Figure.MoveTo(dir, (float) gameTime.ElapsedGameTime.TotalSeconds*speedLevel);
-                    _remainDistance -= Vector2.Distance(lastPosition, Figure.PositionInWorld);
 
-                    if (_remainDistance < 1)
+                    switch (State)
                     {
-                        Figure.PositionInWorld = target;
-                        _path.RemoveAt(0);
-                        if (_path.Count != 0)
-                        {
-                            var newTarget = Map.ToPixelPosition(_path[0]);
-                            _remainDistance = Vector2.Distance(newTarget, target);
-                        }
+                        case (int)NpcState.Walk:
+                        case (int)NpcState.Run:
+                            {
+                                var targetPosition = _path[0];
+                                var lastPosition = Figure.PositionInWorld;
+                                var dir = targetPosition - lastPosition;
+                                Figure.MoveTo(dir, (float)gameTime.ElapsedGameTime.TotalSeconds * speedLevel);
+                                _remainDistance -= Vector2.Distance(lastPosition, Figure.PositionInWorld);
+                                if (_remainDistance < 1)
+                                {
+                                    Figure.PositionInWorld = targetPosition;
+                                    _path.RemoveAt(0);
+                                    if (_path.Count != 0)
+                                    {
+                                        var newTarget = _path[0];
+                                        _remainDistance = Vector2.Distance(newTarget, targetPosition);
+                                    }
+                                    else SetPathAndState(null);
+                                }
+                            }
+                            break;
+                        case (int)NpcState.Jump:
+                            {
+                                if (_path[1] != Vector2.Zero)
+                                {
+                                    var targetPosition = _path[1];
+                                    var lastPosition = Figure.PositionInWorld;
+                                    var dir = targetPosition - lastPosition;
+                                    Figure.MoveTo(dir, (float)gameTime.ElapsedGameTime.TotalSeconds * speedLevel);
+                                    if (Globals.TheMap.IsObstacleForCharacterJump(Map.ToTilePosition(Figure.PositionInWorld)))
+                                    {
+                                        Figure.PositionInWorld = lastPosition;
+                                        _path[1] = Vector2.Zero;
+                                    }
+                                    if (Vector2.Distance(targetPosition, Figure.PositionInWorld) < 10)
+                                    {
+                                        Figure.PositionInWorld = targetPosition;
+                                        _path[1] = Vector2.Zero;
+                                    }
+                                }
+                                else
+                                {
+                                    if(Figure.IsPlayCurrentDirOnceEnd())
+                                        SetPathAndState(null);
+                                }
+                            }
+                            break;
                     }
-                }
-                else
-                {
-                    SetPath(null);
+
                 }
             }
 
-            Figure.Update(gameTime, direction, speed);
+            Figure.Update(gameTime, speed);
         }
 
         public void Draw(SpriteBatch spriteBatch)

@@ -7,15 +7,28 @@ using Microsoft.Xna.Framework;
 
 namespace Engine
 {
+    public enum PathType
+    {
+        WalkRun,
+        Jump
+    }
     public static class PathFinder
     {
-        public static List<Vector2> FindPath(Vector2 startTile, Vector2 endTile)
+        //Returned path is in pixel position
+        public static List<Vector2> FindPath(Vector2 startTile, Vector2 endTile, PathType type)
         {
-            if (Globals.TheMap.IsObstacleForCharacter((int)endTile.X, (int)endTile.Y))
-                return null;
-
             var path = new List<Vector2>();
             if (startTile == endTile) return path;
+
+            if (type == PathType.Jump)
+            {
+                path.Add(Map.ToPixelPosition(startTile));
+                path.Add(Map.ToPixelPosition(endTile));
+                return path;
+            }
+
+            if (Globals.TheMap.IsObstacleForCharacter((int)endTile.X, (int)endTile.Y))
+                return null;
 
             var cameFrom = new Dictionary<Vector2, Vector2>();
             var costSoFar = new Dictionary<Vector2, float>();
@@ -42,16 +55,17 @@ namespace Engine
                         cameFrom[next] = current;
                     }
                 }
+
             }
 
             if (cameFrom.ContainsKey(endTile))
             {
                 var current = endTile;
-                path.Add(current);
+                path.Add(Map.ToPixelPosition(current));
                 while (current != startTile)
                 {
                     current = cameFrom[current];
-                    path.Insert(0, current);
+                    path.Insert(0, Map.ToPixelPosition(current));
                 }
                 return path;
             }
@@ -69,13 +83,28 @@ namespace Engine
 
         private static List<Vector2> FindNeighbors(Vector2 location)
         {
+            var list = FindAllNeighbors(location);
+
+            var count = list.Count;
+            bool isRemove = false;
+            for (var i = count - 1; i >= 0; i--)
+            {
+                if (Globals.TheMap.IsObstacleForCharacter(list[i]))
+                    list.RemoveAt(i);
+            }
+
+            return list;
+        }
+
+        private static List<Vector2> FindAllNeighbors(Vector2 location)
+        {
             var list = new List<Vector2>();
             var x = location.X;
             var y = location.Y;
             // 7  0  1
             // 6     2
             // 5  4  3
-            if ((int) y%2 == 0)
+            if ((int)y % 2 == 0)
             {
                 list.Add(new Vector2(x, y - 2f));
                 list.Add(new Vector2(x, y - 1f));
@@ -98,21 +127,7 @@ namespace Engine
                 list.Add(new Vector2(x, y - 1f));
             }
 
-            var count = list.Count;
-            for (var i = count - 1; i >= 0; i--)
-            {
-                if (Globals.TheMap.IsObstacleForCharacter(list[i]))
-                {
-                    list.RemoveAt(i);
-                }
-            }
-
             return list;
-        }
-
-        private static void AddIfNotExist(List<int> removeList, int value)
-        {
-            if(!removeList.Contains(value)) removeList.Add(value);
         }
     }
 

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 
 namespace Engine
 {
@@ -66,6 +68,34 @@ namespace Engine
         public Player(string filePath) : base(filePath)
         {
 
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            var mouseState = Mouse.GetState();
+            var keyboardState = Keyboard.GetState();
+            var mouseScreenPosition = new Vector2(mouseState.X, mouseState.Y);
+            var mouseWorldPosition = Globals.TheCarmera.ToWorldPosition(mouseScreenPosition);
+
+            if (mouseState.LeftButton == ButtonState.Pressed &&
+                State != (int)NpcState.Jump)
+            {
+                var tilePositionUnderMouse = Map.ToTilePosition(mouseWorldPosition);
+                var startTile = Map.ToTilePosition(Figure.PositionInWorld);
+                var pathType = PathType.WalkRun;
+                var npcState = NpcState.Walk;
+                if (keyboardState.IsKeyDown(Keys.LeftShift))
+                    npcState = NpcState.Run;
+                else if (keyboardState.IsKeyDown(Keys.LeftAlt))
+                {
+                    pathType = PathType.Jump;
+                    npcState = NpcState.Jump;
+                }
+                var path = Engine.PathFinder.FindPath(startTile, tilePositionUnderMouse, pathType);
+                SetPathAndState(path, pathType, npcState);
+            }
+
+            base.Update(gameTime);
         }
     }
 }

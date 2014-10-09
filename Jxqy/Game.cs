@@ -21,8 +21,6 @@ namespace Jxqy
     {
         GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;
-        private Sprite _testNpc1, _testNpc2;
-        private Asf _stand, _walk;
         private Player _player1;
         private NpcManager _npcManager;
 
@@ -74,10 +72,7 @@ namespace Jxqy
                 Globals.TheMap.ViewHeight,
                 Globals.TheMap.MapPixelWidth, 
                 Globals.TheMap.MapPixelHeight);
-            _stand = new Asf(@"asf\character\npc006_st2.asf");
-            _walk = new Asf(@"asf\character\npc006_wlk2.asf");
-            _testNpc1 = new Sprite(new Vector2(800f), 50, _stand);
-            _testNpc2 = new Sprite(new Vector2(80f), 5, new Asf(@"asf\effect\mag038-2-¶¾Òº.asf"));
+
             _player1 = new Player(@"ini\save\player0.ini");
             _npcManager = new NpcManager(@"ini\save\huianzhen.npc");
 
@@ -109,10 +104,6 @@ namespace Jxqy
                 this.Exit();
 
             var mouseState = Mouse.GetState();
-            var screenPosition = Globals.TheCarmera.ToViewPosition(_testNpc1.PositionInWorld);
-            var mouseScreenPosition = new Vector2(mouseState.X, mouseState.Y);
-            var mouseWorldPosition = Globals.TheCarmera.ToWorldPosition(mouseScreenPosition);
-            var dir = Vector2.Zero;
 
             var keyboardState = Keyboard.GetState();
             if(keyboardState.IsKeyDown(Keys.D1) && _lastKeyboardState.IsKeyUp(Keys.D1))
@@ -123,20 +114,10 @@ namespace Jxqy
                 Globals.TheMap.SwitchLayerDraw(2);
 
             _player1.Update(gameTime);
-            _testNpc1.Update(gameTime, dir);
-            _testNpc2.Update(gameTime, Vector2.Zero);
             _npcManager.Update(gameTime);
 
 
-            if (mouseState.LeftButton == ButtonState.Pressed)
-            {
-                var tilePositionUnderMouse = Map.ToTilePosition(mouseWorldPosition);
-                var startTile = Map.ToTilePosition(_player1.Figure.PositionInWorld);
-                var path = PathFinder.FindPath(startTile, tilePositionUnderMouse);
-                if (keyboardState.IsKeyDown(Keys.LeftShift))
-                    _player1.SetPath(path, NpcState.Run);
-                else _player1.SetPath(path, NpcState.Walk);
-            }
+           
             //else if (_lastMouseState.LeftButton == ButtonState.Pressed)
             //    _testNpc1.Texture = _stand;
 
@@ -162,22 +143,20 @@ namespace Jxqy
 
             var start = Globals.TheMap.GetStartTileInView();
             var end = Globals.TheMap.GetEndTileInView();
-            var npc1Position = Map.ToTilePosition(_testNpc1.PositionInWorld);
+            var player1Position = Map.ToTilePosition(_player1.Figure.PositionInWorld);
             for (var y = (int)start.Y; y < (int)end.Y; y++)
             {
                 for (var x = (int)start.X; x < (int)end.X; x++)
                 {
                     Texture2D texture = Globals.TheMap.GetTileTexture(x, y, 1);
                     Globals.TheMap.DrawTile(_spriteBatch, texture, new Vector2(x, y), 1f);
-                    if (y == (int) npc1Position.Y && x == (int) npc1Position.X)
+                    if (y == (int) player1Position.Y && x == (int) player1Position.X)
                     {
-                        _testNpc1.Draw(_spriteBatch);
+                        _player1.Draw(_spriteBatch);
                     }
                 }
             }
-            _testNpc2.Draw(_spriteBatch);
             _npcManager.Draw(_spriteBatch);
-            _player1.Draw(_spriteBatch);
             Globals.TheMap.DrawLayer(_spriteBatch, 2);
             _spriteBatch.End();
             base.Draw(gameTime);
