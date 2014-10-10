@@ -111,7 +111,10 @@ namespace Engine
         {
             get
             {
-                return new Rectangle((int)PositionInWorld.X, (int)PositionInWorld.Y, Width, Height);
+                return new Rectangle((int)PositionInWorld.X - Texture.Left, 
+                    (int)PositionInWorld.Y - Texture.Bottom
+                    , Width
+                    , Height);
             }
         }
         #endregion Properties

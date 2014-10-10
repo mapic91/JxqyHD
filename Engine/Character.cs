@@ -288,12 +288,7 @@ namespace Engine
 
         public Rectangle RegionInWorld
         {
-            get
-            {
-                var regin = Figure.RegionInWorld;
-                regin.Offset(-Figure.Texture.Left, -Figure.Texture.Bottom);
-                return regin;
-            }
+            get { return  Figure.RegionInWorld; }
         }
 
         #endregion
