@@ -286,6 +286,16 @@ namespace Engine
             set { _idle = value; }
         }
 
+        public Rectangle RegionInWorld
+        {
+            get
+            {
+                var regin = Figure.RegionInWorld;
+                regin.Offset(-Figure.Texture.Left, -Figure.Texture.Bottom);
+                return regin;
+            }
+        }
+
         #endregion
 
         public Character(string filePath)

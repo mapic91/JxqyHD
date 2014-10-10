@@ -66,6 +66,7 @@
     <Compile Include="BackgroundMusic.cs" />
     <Compile Include="Carmera.cs" />
     <Compile Include="Character.cs" />
+    <Compile Include="Collider.cs" />
     <Compile Include="Dialog.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="IMoveControlInWorld.cs" />

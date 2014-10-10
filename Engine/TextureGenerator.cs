@@ -37,7 +37,7 @@ namespace Engine
 
             for (var i = 0; i < total; i++)
             {
-                if (IsColorTransparent(data[i])) continue;
+                if (IsColorTransparentForNpcObj(data[i])) continue;
                 var neighbers = new int[]
                 {
                     i - width,
@@ -53,7 +53,7 @@ namespace Engine
                 {
                     if (neighber >= 0 && neighber < total)
                     {
-                        if (IsColorTransparent(data[neighber]))
+                        if (IsColorTransparentForNpcObj(data[neighber]))
                         {
                             edge.Add(i);
                             break;
@@ -66,18 +66,18 @@ namespace Engine
             var beginBottom = (height - 1)*width;
             for (var w = 0; w < width; w++)
             {
-                if(!IsColorTransparent(data[w]))
+                if(!IsColorTransparentForNpcObj(data[w]))
                     edge.Add(w);
-                if(!IsColorTransparent(data[beginBottom + w]))
+                if(!IsColorTransparentForNpcObj(data[beginBottom + w]))
                     edge.Add(beginBottom + w);
             }
             var beginLeft = 0;
             var beginRight = width - 1;
             for (var h = 0; h < height; h++)
             {
-                if(!IsColorTransparent(data[beginLeft]))
+                if(!IsColorTransparentForNpcObj(data[beginLeft]))
                     edge.Add(beginLeft);
-                if(!IsColorTransparent(data[beginRight]))
+                if(!IsColorTransparentForNpcObj(data[beginRight]))
                     edge.Add(beginRight);
                 beginLeft += width;
                 beginRight += width;
@@ -92,7 +92,7 @@ namespace Engine
             return tex;
         }
 
-        private static bool IsColorTransparent(Color color)
+        public static bool IsColorTransparentForNpcObj(Color color)
         {
             var col = color;
             col.A = 0xFF;

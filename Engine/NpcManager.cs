@@ -12,7 +12,7 @@ namespace Engine
 {
     public class NpcManager
     {
-        private List<Npc> _list = new List<Npc>(); 
+        private List<Npc> _list = new List<Npc>();
 
         public NpcManager() { }
 
@@ -40,7 +40,7 @@ namespace Engine
             _list.Clear();
 
             var count = lines.Count();
-            for (var i = 0; i < count;)
+            for (var i = 0; i < count; )
             {
                 var groups = Regex.Match(lines[i++], @"\[NPC([0-9]+)\]").Groups;
                 if (groups[0].Success)
@@ -86,10 +86,13 @@ namespace Engine
         public void Draw(SpriteBatch spriteBatch)
         {
             var mouseState = Mouse.GetState();
-            var mouseTilePosition = Map.ToTilePosition(Globals.TheCarmera.ToWorldPosition(new Vector2(mouseState.X, mouseState.Y)));
+            var mousePosition = Globals.TheCarmera.ToWorldPosition(new Vector2(mouseState.X, mouseState.Y));
+            var mousePositionInPoint = new Point((int)mousePosition.X, (int)mousePosition.Y);
             foreach (var npc in _list)
             {
-                if(mouseTilePosition == Map.ToTilePosition(npc.Figure.PositionInWorld))
+                if (Collider.IsPixelCollideForNpcObj(mousePositionInPoint,
+                    npc.RegionInWorld,
+                    npc.Figure.GetCurrentTexture()))
                     npc.Draw(spriteBatch, Color.Red);
                 else npc.Draw(spriteBatch);
             }
