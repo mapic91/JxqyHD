@@ -1,30 +1,75 @@
-Name
-Intro
-Speed
+Name 武功名称
+Intro 介绍
+Speed 速度
 Count
 Region
 MoveKind
 SpecialKind
-AlphaBlend
-FlyingLum
-VanishLum
-Image
-Icon
-WaitFrame
-LifeFrame
-FlyingImage
-FlyingSound
-VanishImage
-VanishSound
-SuperModeImage
-Belong
-ActionFile
-AttackFile
+AlphaBlend 可忽视
+FlyingLum 可忽视
+VanishLum 可忽视
+Image 介绍图象
+Icon 技能图标
+WaitFrame 可忽视
+LifeFrame 持续帧
+FlyingImage 飞行图像
+FlyingSound 飞行声音
+VanishImage 消亡图像
+VanishSound 消亡声音
+SuperModeImage 超级模式图像（MoveKide=15）
+Belong 可忽视
+ActionFile 可忽视
+AttackFile 可忽视
 
 Level 1-10
-Effect
-ManaCost
-LevelupExp
+Effect 效果值
+ManaCost 消耗蓝
+LevelupExp 升级所需经验
 MoveKind
 Speed
 LifeFrame
+
+
+MoveKind：
+0  无
+1  单个固定类
+在鼠标处释放一个，碰到敌人就爆炸，飞行图像第一个方向（dir）放完也爆炸
+2  单个飞行类
+一个直线飞行
+3 直线类 
+一串32个的形成直线状
+4  环状  
+一次发出32个,形成椭圆状
+5 心环状
+先行成正心形，在形成倒心形
+6 螺旋状
+依次延迟发出32个，形成螺旋
+7 扇型
+3个
+8 随机扇形
+在扇形的基础上加上随机延迟 
+9 墙类
+在鼠标处形成32个一条不动的直线的墙
+10 移动墙类
+形成32个一条移动的直线的墙
+11 区域类
+根据 Region 的值分为:
+[2] - 十字，武功等级越高十字四个方向上的个数越多
+[3] - 矩形
+[4] - 等边三角形，一个角在施放者处
+12 无
+13  图像跟随主角
+根据 SpecialKind 的值分为 :
+[1] - 增加生命
+[2] - 增加体力
+[3] - 不受伤害
+14 无
+15 全屏
+暂停游戏，在施放者处播放SuperModeImage，完后在全屏每个敌人处放VanishImage并受到伤害
+16 跟随敌人
+释放一个跟随敌人
+17 抛掷类
+抛物线抛出FlyingImage，落地爆炸VanishImage。等级越高抛出的越多。
+
+
+
