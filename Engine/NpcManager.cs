@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Engine
 {
@@ -84,9 +85,13 @@ namespace Engine
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            var mouseState = Mouse.GetState();
+            var mouseTilePosition = Map.ToTilePosition(Globals.TheCarmera.ToWorldPosition(new Vector2(mouseState.X, mouseState.Y)));
             foreach (var npc in _list)
             {
-                npc.Draw(spriteBatch);
+                if(mouseTilePosition == Map.ToTilePosition(npc.Figure.PositionInWorld))
+                    npc.Draw(spriteBatch, Color.Red);
+                else npc.Draw(spriteBatch);
             }
         }
     }

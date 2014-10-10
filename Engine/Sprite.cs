@@ -181,24 +181,37 @@ namespace Engine
 
         }
 
+        public Texture2D GetCurrentTexture()
+        {
+            if (Texture == null) return null;
+            return Texture.GetFrame(CurrentFrameIndex);
+        }
+
         public void Draw(SpriteBatch spriteBatch, int offX = 0, int offY = 0)
         {
-            if(Texture == null) return;
-            var texture = Texture.GetFrame(CurrentFrameIndex);
-            if(texture == null) return;
+            Draw(spriteBatch, GetCurrentTexture(), offX, offY);
+        }
 
+        public void Draw(SpriteBatch spriteBatch, Color edgeColor, int offX = 0, int offY = 0)
+        {
+            Draw(spriteBatch, TextureGenerator.AddOuterEdge(GetCurrentTexture(), Color.Red), offX, offY);
+        }
+
+        public void Draw(SpriteBatch spriteBatch, Texture2D texture, int offX = 0, int offY = 0)
+        {
+            if(texture == null) return;
             Rectangle des =
                  Globals.TheCarmera.ToViewRegion(new Rectangle((int)PositionInWorld.X - Texture.Left + offX,
-                    (int)PositionInWorld.Y - Texture.Bottom + offY, 
-                    texture.Width, 
+                    (int)PositionInWorld.Y - Texture.Bottom + offY,
+                    texture.Width,
                     texture.Height));
-            spriteBatch.Draw(texture, 
-                des, 
-                null, 
-                Color.White, 
-                0, 
-                new Vector2(0), 
-                SpriteEffects.None, 
+            spriteBatch.Draw(texture,
+                des,
+                null,
+                Color.White,
+                0,
+                new Vector2(0),
+                SpriteEffects.None,
                 0);
         }
     }

@@ -12,6 +12,6 @@ namespace Engine
         public static Game TheGame;
         public static Carmera TheCarmera;
         public static Map TheMap = new Map();
-        public static Dictionary<string, Asf> AsfFiles = new Dictionary<string, Asf>();
+        public static Dictionary<int, Asf> AsfFiles = new Dictionary<int, Asf>();
     }
 }

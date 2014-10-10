@@ -46,14 +46,15 @@ namespace Engine
 
         static public Asf GetAsf(string path)
         {
-            if (Globals.AsfFiles.ContainsKey(path))
-                return Globals.AsfFiles[path];
+            var hashCode = path.GetHashCode();
+            if (Globals.AsfFiles.ContainsKey(hashCode))
+                return Globals.AsfFiles[hashCode];
             else
             {
                 var asf = new Asf(path);
                 if (asf.IsOk)
                 {
-                    Globals.AsfFiles[path] = asf;
+                    Globals.AsfFiles[hashCode] = asf;
                     return asf;
                 }
                 else

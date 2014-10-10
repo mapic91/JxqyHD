@@ -514,5 +514,10 @@ namespace Engine
         {
             Figure.Draw(spriteBatch);
         }
+
+        public void Draw(SpriteBatch spriteBatch, Color edgeColor)
+        {
+            Figure.Draw(spriteBatch, edgeColor);
+        }
     }
 }

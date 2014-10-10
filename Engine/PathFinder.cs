@@ -92,26 +92,26 @@ namespace Engine
             {
                 if (Globals.TheMap.IsObstacleForCharacter(listAll[i]))
                 {
-                    AddIfNotExist(removeList, i);
+                    removeList.Add(i);
                     if (Globals.TheMap.IsObstacle(listAll[i]))
                     {
                         switch (i)
                         {
                             case 1:
-                                AddIfNotExist(removeList, 0);
-                                AddIfNotExist(removeList, 2);
+                                removeList.Add(0);
+                                removeList.Add(2);
                                 break;
                             case 3:
-                                AddIfNotExist(removeList, 2);
-                                AddIfNotExist(removeList, 4);
+                                removeList.Add(2);
+                                removeList.Add(4);
                                 break;
                             case 5:
-                                AddIfNotExist(removeList, 4);
-                                AddIfNotExist(removeList, 6);
+                                removeList.Add(4);
+                                removeList.Add(6);
                                 break;
                             case 7:
-                                AddIfNotExist(removeList, 0);
-                                AddIfNotExist(removeList, 6);
+                                removeList.Add(0);
+                                removeList.Add(6);
                                 break;
                         }
                     }
@@ -159,11 +159,6 @@ namespace Engine
             }
 
             return list;
-        }
-
-        private static void AddIfNotExist(List<int> removeList, int value)
-        {
-            if (!removeList.Contains(value)) removeList.Add(value);
         }
     }
 
