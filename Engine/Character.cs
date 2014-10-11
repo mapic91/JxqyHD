@@ -13,8 +13,6 @@ namespace Engine
     using StateMapList = Dictionary<int, ResStateInfo>;
     public abstract class Character
     {
-        private const int Basespeed = 100;
-
         private SoundEffectInstance _sound;
         private float _remainDistance;
         private Sprite _figure = new Sprite();
@@ -47,8 +45,8 @@ namespace Engine
         private int _manaMax;
         private StateMapList _npcIni;
         private Obj _bodyIni;
-        private string _flyIni;
-        private string _flyIni2;
+        private Magic _flyIni;
+        private Magic _flyIni2;
         private string _scriptFile;
         private string _deathScript;
         private int _expBonus;
@@ -134,6 +132,12 @@ namespace Engine
                 _mapY = value;
                 Figure.PositionInWorld = Map.ToPixelPosition(MapX, value);
             }
+        }
+
+        public Vector2 PositionInWorld
+        {
+            get { return Figure.PositionInWorld; }
+            set { Figure.PositionInWorld = value; }
         }
 
         public int Lum
@@ -244,13 +248,13 @@ namespace Engine
             set { _bodyIni = value; }
         }
 
-        public string FlyIni
+        public Magic FlyIni
         {
             get { return _flyIni; }
             set { _flyIni = value; }
         }
 
-        public string FlyIni2
+        public Magic FlyIni2
         {
             get { return _flyIni2; }
             set { _flyIni2 = value; }
@@ -305,7 +309,7 @@ namespace Engine
             if (NpcIni.ContainsKey((int)NpcState.Stand))
             {
                 Figure.Set(Map.ToPixelPosition(MapX, MapY),
-                    Basespeed,
+                    Globals.Basespeed,
                     NpcIni[(int)NpcState.Stand].Image, Dir);
             }
         }
@@ -319,8 +323,6 @@ namespace Engine
                 {
                     case "DeathScript":
                     case "FixedPos":
-                    case "FlyIni":
-                    case "FlyIni2":
                     case "Name":
                     case "ScriptFile":
                         info.SetValue(this, nameValue[1], null);
@@ -338,6 +340,10 @@ namespace Engine
                         break;
                     case "LevelIni":
                         info.SetValue(this, Utils.GetLevelLists(@"ini\level\" + nameValue[1]), null);
+                        break;
+                    case "FlyIni":
+                    case "FlyIni2":
+                        info.SetValue(this, Utils.GetMagic(@"ini\magic\" + nameValue[1]), null);
                         break;
                     default:
                         var integerValue = int.Parse(nameValue[1]);
@@ -357,7 +363,7 @@ namespace Engine
         {
             try
             {
-                var lines = File.ReadAllLines(filePath, Encoding.GetEncoding(936));
+                var lines = File.ReadAllLines(filePath, Encoding.GetEncoding(Globals.SimpleChinaeseCode));
                 return Load(lines);
             }
             catch (Exception exception)
@@ -431,9 +437,10 @@ namespace Engine
                         {
                             _sound = sound.CreateInstance();
                             _sound.IsLooped = true;
+                            _sound.Volume = Globals.SoundEffectVolume;
                             _sound.Play();
                         }
-                        else sound.Play();
+                        else sound.Play(Globals.SoundEffectVolume, 0f, 0f);
                     }
                 }
             }

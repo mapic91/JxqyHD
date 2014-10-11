@@ -16,6 +16,7 @@ namespace Engine
         private int _currentDirection;
         private Asf _texture = new Asf();
         private bool _isPlayingCurrentDirOnce;
+        private const double TwoPi = Math.PI * 2;
 
         public Sprite() { }
 
@@ -28,8 +29,6 @@ namespace Engine
         {
             PositionInWorld = positionInWorld;
             Velocity = velocity;
-
-            if (texture == null) return;
             Texture = texture;
             CurrentDirection = direction;
         }
@@ -40,10 +39,12 @@ namespace Engine
             get { return _texture; }
             set
             {
-                _texture = value;
+                if(value == null)
+                    _texture = new Asf();
+                else _texture = value;
                 _elapsedMilliSecond = 0;
                 CurrentDirection = CurrentDirection;
-                CurrentFrameIndex = CurrentFrameIndex;
+                CurrentFrameIndex = 0;
             }
         }
 
@@ -166,22 +167,22 @@ namespace Engine
             }
         }
 
+        //Please see ../Helper/SetDirection.jpg
         public void SetDirection(Vector2 direction)
         {
             if (direction == Vector2.Zero) return;
             direction.Normalize();
-            var angle = Math.Acos(Vector2.Dot(direction, new Vector2(1, 0)));
-            if (angle >= 0 && angle < Math.PI/8f)
-                CurrentDirection = 6;
-            else if (angle >= Math.PI/8f && angle < Math.PI*3f/8f)
-                CurrentDirection = direction.Y <= 0 ? 5 : 7;
-            else if (angle >= Math.PI*3f/8f && angle < Math.PI*5f/8f)
-                CurrentDirection = direction.Y <= 0 ? 4 : 0;
-            else if (angle >= Math.PI*5f/8f && angle < Math.PI*7f/8f)
-                CurrentDirection = direction.Y <= 0 ? 3 : 1;
-            else if (angle >= Math.PI*7f/8f && angle <= Math.PI)
-                CurrentDirection = 2;
-
+            var angle = Math.Acos(Vector2.Dot(direction, new Vector2(0, 1)));
+            if (direction.X > 0) angle = TwoPi - angle;
+            if (Texture.DirectionCounts != 0)
+            {
+                // 2*PI/2*directionCount
+                var halfAnglePerDirection = Math.PI/Texture.DirectionCounts;
+                var region = (int)(angle/halfAnglePerDirection);
+                if (region%2 != 0) region++;
+                region %= 2*Texture.DirectionCounts;
+                CurrentDirection = region/2;
+            }
         }
 
         public Texture2D GetCurrentTexture()

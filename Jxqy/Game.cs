@@ -63,7 +63,7 @@ namespace Jxqy
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            Globals.TheMap.LoadMap(@"map\map_012_»Ý°²Õò.map");
+            Globals.TheMap.LoadMap(@"map\map_015_²Ø½£É½×¯.map");
             Globals.TheMap.ViewBeginX = 0;
             Globals.TheMap.ViewBeginY = 0;
             Globals.TheCarmera = new Carmera(Globals.TheMap.ViewBeginX, 
@@ -74,7 +74,7 @@ namespace Jxqy
                 Globals.TheMap.MapPixelHeight);
 
             _player1 = new Player(@"ini\save\player0.ini");
-            _npcManager = new NpcManager(@"ini\save\huianzhen.npc");
+            _npcManager = new NpcManager(@"ini\save\cangjian.npc");
 
             //BackgroundMusic.Play(@"music/Mc003.mp3");
 
@@ -127,6 +127,8 @@ namespace Jxqy
 
             _lastKeyboardState = keyboardState;
             _lastMouseState = mouseState;
+
+            MagicManager.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -158,6 +160,7 @@ namespace Jxqy
             }
             _npcManager.Draw(_spriteBatch);
             Globals.TheMap.DrawLayer(_spriteBatch, 2);
+            MagicManager.Draw(_spriteBatch);
             _spriteBatch.End();
             base.Draw(gameTime);
         }

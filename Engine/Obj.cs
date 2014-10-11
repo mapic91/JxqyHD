@@ -122,7 +122,7 @@ namespace Engine
         {
             try
             {
-                var lines = File.ReadAllLines(filePath, Encoding.GetEncoding(936));
+                var lines = File.ReadAllLines(filePath, Encoding.GetEncoding(Globals.SimpleChinaeseCode));
                 return Load(lines);
             }
             catch (Exception exception)

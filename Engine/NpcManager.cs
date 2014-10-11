@@ -12,7 +12,7 @@ namespace Engine
 {
     public class NpcManager
     {
-        private List<Npc> _list = new List<Npc>();
+        private LinkedList<Npc> _list = new LinkedList<Npc>();
 
         public NpcManager() { }
 
@@ -25,7 +25,7 @@ namespace Engine
         {
             try
             {
-                var lines = File.ReadAllLines(filePath, Encoding.GetEncoding(936));
+                var lines = File.ReadAllLines(filePath, Encoding.GetEncoding(Globals.SimpleChinaeseCode));
                 Load(lines);
             }
             catch (Exception)
@@ -67,7 +67,7 @@ namespace Engine
 
         public void AddNpc(Npc npc)
         {
-            _list.Add(npc);
+            _list.AddLast(npc);
         }
 
         public void ClearAllNpc()

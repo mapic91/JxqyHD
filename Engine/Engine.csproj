@@ -73,6 +73,8 @@
     <Compile Include="IScreen.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Magic.cs" />
+    <Compile Include="MagicManager.cs" />
+    <Compile Include="MagicSprite.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="Mpc.cs" />
     <Compile Include="Npc.cs" />

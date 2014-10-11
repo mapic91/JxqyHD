@@ -19,16 +19,19 @@ VanishSound 消亡声音
 SuperModeImage 超级模式图像（MoveKide=15）
 Belong 可忽视
 ActionFile 可忽视
-AttackFile 可忽视
+AttackFile 修炼此武功时刀劈时使用此文件中的武功
 
 Level 1-10
 Effect 效果值
 ManaCost 消耗蓝
 LevelupExp 升级所需经验
-MoveKind
-Speed
-LifeFrame
 
+
+SpecialKind: 额外特效
+0 无（默认）
+1 冰冻（减缓速度）
+2 中毒（持续减血一段时间）
+3 石化（持续很短的一段时间不动）
 
 MoveKind：
 0  无

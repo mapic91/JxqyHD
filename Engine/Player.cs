@@ -70,6 +70,7 @@ namespace Engine
 
         }
 
+        private MouseState _lastMouseState;
         public override void Update(GameTime gameTime)
         {
             var mouseState = Mouse.GetState();
@@ -94,7 +95,13 @@ namespace Engine
                 var path = Engine.PathFinder.FindPath(startTile, tilePositionUnderMouse, pathType);
                 SetPathAndState(path, pathType, npcState);
             }
+            if (mouseState.RightButton == ButtonState.Pressed && 
+                _lastMouseState.RightButton == ButtonState.Released)
+            {
+                Magic.UseMagic(this, FlyIni, mouseWorldPosition - PositionInWorld);
+            }
 
+                _lastMouseState = mouseState;
             base.Update(gameTime);
         }
     }

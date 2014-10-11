@@ -46,21 +46,28 @@ namespace Engine
 
         static public Asf GetAsf(string path)
         {
-            var hashCode = path.GetHashCode();
-            if (Globals.AsfFiles.ContainsKey(hashCode))
-                return Globals.AsfFiles[hashCode];
-            else
+            try
             {
-                var asf = new Asf(path);
-                if (asf.IsOk)
-                {
-                    Globals.AsfFiles[hashCode] = asf;
-                    return asf;
-                }
+                var hashCode = path.GetHashCode();
+                if (Globals.AsfFiles.ContainsKey(hashCode))
+                    return Globals.AsfFiles[hashCode];
                 else
                 {
-                    return null;
+                    var asf = new Asf(path);
+                    if (asf.IsOk)
+                    {
+                        Globals.AsfFiles[hashCode] = asf;
+                        return asf;
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 }
+            }
+            catch (Exception)
+            {
+                return null;
             }
         }
 
@@ -82,15 +89,39 @@ namespace Engine
             }
         }
 
+        static public Magic GetMagic(string filePath)
+        {
+            try
+            {
+                var hashCode = filePath.GetHashCode();
+                if (Globals.Magics.ContainsKey(hashCode))
+                    return Globals.Magics[hashCode];
+                else
+                {
+                    var magic = new Magic(filePath);
+                    if (magic.IsOk)
+                    {
+                        Globals.Magics[hashCode] = magic;
+                        return magic;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            return null;
+        }
+
         public static Dictionary<int, LevelDetail> GetLevelLists(string filePath)
         {
             var lists = new Dictionary<int, LevelDetail>();
 
             try
             {
-                var lines = File.ReadAllLines(filePath, Encoding.GetEncoding(936));
+                var lines = File.ReadAllLines(filePath, Encoding.GetEncoding(Globals.SimpleChinaeseCode));
                 var counts = lines.Length;
-                for (var i = 0; i < counts;)
+                for (var i = 0; i < counts; )
                 {
                     var groups = Regex.Match(lines[i], @"\[Level([0-9]+)\]").Groups;
                     i++;

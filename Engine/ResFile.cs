@@ -18,7 +18,7 @@ namespace Engine
             var info = new Dictionary<int, ResStateInfo>();
             try
             {
-                var enumerables = File.ReadLines(path, Encoding.GetEncoding(936));
+                var enumerables = File.ReadLines(path, Encoding.GetEncoding(Globals.SimpleChinaeseCode));
                 var lines = enumerables as string[] ?? enumerables.ToArray();
                 var counts = lines.Count();
                 for (var i = 0; i < counts;)
