@@ -10,18 +10,11 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Engine
 {
-    public class NpcManager
+    static public class NpcManager
     {
-        private LinkedList<Npc> _list = new LinkedList<Npc>();
+        private static LinkedList<Npc> _list = new LinkedList<Npc>();
 
-        public NpcManager() { }
-
-        public NpcManager(string filePath)
-        {
-            Load(filePath);
-        }
-
-        public bool Load(string filePath)
+        public static bool Load(string filePath)
         {
             try
             {
@@ -35,7 +28,7 @@ namespace Engine
             return true;
         }
 
-        public bool Load(string[] lines)
+        public static bool Load(string[] lines)
         {
             _list.Clear();
 
@@ -58,24 +51,24 @@ namespace Engine
             return true;
         }
 
-        public void AddNpc(string[] lines)
+        public static void AddNpc(string[] lines)
         {
             var npc = new Npc();
             npc.Load(lines);
             AddNpc(npc);
         }
 
-        public void AddNpc(Npc npc)
+        public static void AddNpc(Npc npc)
         {
             _list.AddLast(npc);
         }
 
-        public void ClearAllNpc()
+        public static void ClearAllNpc()
         {
             _list.Clear();
         }
 
-        public void Update(GameTime gameTime)
+        public static void Update(GameTime gameTime)
         {
             foreach (var npc in _list)
             {
@@ -83,7 +76,7 @@ namespace Engine
             }
         }
 
-        public List<Npc> GetNpcsInView()
+        public static List<Npc> GetNpcsInView()
         {
             var viewRegion = Globals.TheCarmera.CarmerRegionInWorld;
             var list = new List<Npc>(_list.Count);
@@ -95,7 +88,7 @@ namespace Engine
             return list;
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public static void Draw(SpriteBatch spriteBatch)
         {
             var mouseState = Mouse.GetState();
             var mousePosition = Globals.TheCarmera.ToWorldPosition(new Vector2(mouseState.X, mouseState.Y));

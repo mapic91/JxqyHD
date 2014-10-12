@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -32,6 +33,7 @@ namespace Engine
         private const byte CanOver = 0x20; //可跳过
 
         private List<Mpc> _mpcList;
+        private List<Mpc> _loopingList;
         private string _mpcDirPath;
         private int _mapColumnCounts;
         private int _mapRowCounts;
@@ -186,9 +188,10 @@ namespace Engine
 
         private void LoadMpc(byte[] buf, ref int offset)
         {
-            _mpcList = new List<Mpc>();
+            _mpcList = new List<Mpc>(255);
+            _loopingList = new List<Mpc>();
             offset = 192;
-            while (true)
+            for(var k = 0; k < 255; k++)
             {
                 var mpcFileName = new byte[32];
                 var i = 0;
@@ -196,9 +199,15 @@ namespace Engine
                 {
                     mpcFileName[i] = buf[offset + i];
                 }
-                if (i == 0) break;
-                _mpcList.Add(new Mpc(
-                            _mpcDirPath + "\\" + Encoding.GetEncoding(Globals.SimpleChinaeseCode).GetString(mpcFileName, 0, i)));
+                if (i == 0) _mpcList.Add(null);
+                else
+                {
+                    var mpc = new Mpc(
+                        _mpcDirPath + "\\" +
+                        Encoding.GetEncoding(Globals.SimpleChinaeseCode).GetString(mpcFileName, 0, i));
+                    _mpcList.Add(mpc);
+                    if(buf[offset + 36] ==  1) _loopingList.Add(mpc);
+                }
                 offset += 64;
             }
             offset = 16512;
@@ -278,6 +287,17 @@ namespace Engine
             var pos = x + y * _mapColumnCounts;
             if (idx[pos].MpcIndex == 0) return null;
             return _mpcList[idx[pos].MpcIndex - 1].GetFrame(idx[pos].Frame);
+        }
+
+        public Texture2D GetTileTextureAndRegion(int x, int y, int layer, ref Rectangle region)
+        {
+            var texture = GetTileTexture(x, y, layer);
+            if (texture != null)
+            {
+                var position = Map.ToPixelPosition(x, y) - new Vector2(texture.Width/2f, texture.Height - 16f);
+                region = new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height);
+            }
+            return texture;
         }
 
         public bool IsTileInMapViewRange(int col, int row)
@@ -428,6 +448,15 @@ namespace Engine
         public void SwitchLayerDraw(int layer)
         {
             SetLayerDraw(layer, !IsLayerDraw(layer));
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            //在月影传说中，禁用了地图的循环功能
+            foreach (var mpc in _loopingList)
+            {
+                mpc.Update(gameTime);
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch)

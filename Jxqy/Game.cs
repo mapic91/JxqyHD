@@ -22,7 +22,6 @@ namespace Jxqy
         GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;
         private Player _player1;
-        private NpcManager _npcManager;
 
         public Game()
         {
@@ -74,7 +73,7 @@ namespace Jxqy
                 Globals.TheMap.MapPixelHeight);
 
             _player1 = new Player(@"ini\save\player0.ini");
-            _npcManager = new NpcManager(@"ini\save\cangjian.npc");
+            NpcManager.Load(@"ini\save\cangjian.npc");
 
             //BackgroundMusic.Play(@"music/Mc003.mp3");
 
@@ -99,7 +98,6 @@ namespace Jxqy
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
@@ -114,7 +112,7 @@ namespace Jxqy
                 Globals.TheMap.SwitchLayerDraw(2);
 
             _player1.Update(gameTime);
-            _npcManager.Update(gameTime);
+            NpcManager.Update(gameTime);
 
 
            
@@ -156,17 +154,13 @@ namespace Jxqy
             var start = Globals.TheMap.GetStartTileInView();
             var end = Globals.TheMap.GetEndTileInView();
             var magicSprites = MagicManager.GetMagicSpritesInView();
-            var npcs = _npcManager.GetNpcsInView();
+            var npcs = NpcManager.GetNpcsInView();
             for (var y = (int)start.Y; y < (int)end.Y; y++)
             {
                 for (var x = (int)start.X; x < (int)end.X; x++)
                 {
                     Texture2D texture = Globals.TheMap.GetTileTexture(x, y, 1);
                     Globals.TheMap.DrawTile(_spriteBatch, texture, new Vector2(x, y), 1f);
-                    if ( x == _player1.MapX && y == (int) _player1.MapY)
-                    {
-                        _player1.Draw(_spriteBatch);
-                    }
                     foreach (var magicSprite in magicSprites)
                     {
                         if(x == magicSprite.MapX && y == magicSprite.MapY)
@@ -180,6 +174,7 @@ namespace Jxqy
                 }
             }
             Globals.TheMap.DrawLayer(_spriteBatch, 2);
+            _player1.Draw(_spriteBatch, npcs);
             if (Globals.OutEdgeSprite != null)
             {
                 Globals.OutEdgeSprite.Draw(_spriteBatch, 

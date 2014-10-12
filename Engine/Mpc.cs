@@ -11,6 +11,9 @@ namespace Engine
 {
     public class Mpc : TextureBase
     {
+        private int _frameOff;
+        private int _elapsedMilliSecond;
+
         protected override bool LoadHead(byte[] buf, ref int offset)
         {
             var headinfo = Encoding.GetEncoding(Globals.SimpleChinaeseCode).GetString(buf, 0, "MPC File Ver".Length);
@@ -74,6 +77,24 @@ namespace Engine
         public Mpc(string path)
         {
             Load(path);
+        }
+
+        public new Texture2D GetFrame(int index)
+        {
+            if (index >= 0 && index < FrameCounts)
+                return Frames[(index + _frameOff)%FrameCounts];
+            return null;
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            _elapsedMilliSecond += (int)gameTime.ElapsedGameTime.TotalMilliseconds;
+            if (_elapsedMilliSecond > Interval)
+            {
+                _elapsedMilliSecond -= Interval;
+                _frameOff++;
+                if (_frameOff >= FrameCounts) _frameOff = 0;
+            }
         }
     }
 }

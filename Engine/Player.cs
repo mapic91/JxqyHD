@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace Engine
 {
-    public class Player: Character
+    public class Player : Character
     {
         private int _doing;
         private int _desX;
@@ -65,7 +66,8 @@ namespace Engine
 
         public Player() { }
 
-        public Player(string filePath) : base(filePath)
+        public Player(string filePath)
+            : base(filePath)
         {
 
         }
@@ -96,7 +98,7 @@ namespace Engine
                 var path = Engine.PathFinder.FindPath(startTile, tilePositionUnderMouse, pathType);
                 SetPathAndState(path, pathType, npcState);
             }
-            if (mouseState.RightButton == ButtonState.Pressed && 
+            if (mouseState.RightButton == ButtonState.Pressed &&
                 _lastMouseState.RightButton == ButtonState.Released)
             {
                 UseMagic(FlyIni, mouseWorldPosition);
@@ -104,6 +106,47 @@ namespace Engine
 
             _lastMouseState = mouseState;
             base.Update(gameTime);
+        }
+
+        public new void Draw(SpriteBatch spriteBatch, IEnumerable<Npc> npcsInView)
+        {
+            var texture = Figure.GetCurrentTexture();
+            if(texture == null) return;
+
+            var data = new Color[texture.Width*texture.Height];
+            texture.GetData(data);
+            texture = new Texture2D(texture.GraphicsDevice, texture.Width, texture.Height);
+            texture.SetData(data);
+
+            var tilePosition = new Vector2(MapX, MapY);
+            var start = tilePosition - new Vector2(3, 15);
+            var end = tilePosition + new Vector2(3, 15);
+            if (start.X < 0) start.X = 0;
+            if (start.Y < 0) start.Y = 0;
+            if (end.X > Globals.TheMap.MapColumnCounts) end.X = Globals.TheMap.MapColumnCounts;
+            if (end.Y > Globals.TheMap.MapRowCounts) end.Y = Globals.TheMap.MapRowCounts;
+            var textureRegion = new Rectangle();
+            var region = RegionInWorld;
+            foreach (var npc in npcsInView)
+            {
+                if(npc.MapY > MapY)
+                    Collider.MakePixelCollidedTransparent(region, texture, npc.RegionInWorld, npc.Figure.GetCurrentTexture());
+            }
+            for (var y = (int)start.Y; y < (int)end.Y; y++)
+            {
+                for (var x = (int)start.X; x < (int)end.X; x++)
+                {
+                    Texture2D tileTexture;
+                    if (y > MapY)
+                    {
+                        tileTexture = Globals.TheMap.GetTileTextureAndRegion(x, y, 1, ref textureRegion);
+                        Collider.MakePixelCollidedTransparent(region, texture, textureRegion, tileTexture);
+                    }
+                    tileTexture = Globals.TheMap.GetTileTextureAndRegion(x, y, 2, ref textureRegion);
+                    Collider.MakePixelCollidedTransparent(region, texture, textureRegion, tileTexture);
+                }
+            }
+            Figure.Draw(spriteBatch, texture);
         }
     }
 }
