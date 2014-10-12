@@ -535,7 +535,7 @@ namespace Engine
                 {
                     Magic.UseMagic(this, _magicUse, _magicDestination - PositionInWorld);
                     var sound = NpcIni[State].Sound;
-                    if (sound != null) sound.Play();
+                    if (sound != null) sound.Play(Globals.SoundEffectVolume, 0f, 0f);
                     SetState(NpcState.FightStand);
                 }
             }

@@ -13,6 +13,7 @@ namespace Engine
         public const int SimpleChinaeseCode = 936;
         public const int Basespeed = 100;
         public const float SoundMaxDistance = 1000f;
+        public const float Sound3DMaxDistance = 8f;
 
         public static Color NpcEdgeColor = Color.Yellow*0.8f;
         public static Color EnemyEdgeColor = Color.Red*0.8f;

@@ -81,16 +81,8 @@ namespace Engine
                 Texture = BelongMagic.VanishImage;
                 PlayCurrentDirOnce();
             }
-            else _isDestroyed = true;
-            if (BelongMagic.VanishSound != null)
-            {
-                var distance = Vector2.Distance(BelongCharacter.PositionInWorld, PositionInWorld);
-                if (distance < Globals.SoundMaxDistance)
-                {
-                    var volume = 1f - distance/Globals.SoundMaxDistance;
-                    BelongMagic.VanishSound.Play(volume * Globals.SoundEffectVolume, 0f, 0f);
-                }
-            }
+            SoundManager.Play3DSoundOnece(BelongMagic.VanishSound, 
+                PositionInWorld - BelongCharacter.PositionInWorld);
         }
 
         public void SetPath(List<Vector2> paths)
@@ -111,12 +103,16 @@ namespace Engine
             }
             else
             {
-                if (
+                if (Globals.TheMap.IsObstacleForMagic(MapX, MapY))
+                {
+                    Destroy();
+                }
+                else if (
                 (BelongMagic.LifeFrame == 0 && IsPlayCurrentDirOnceEnd()) ||
                 (BelongMagic.LifeFrame != 0 && BelongMagic.LifeFrame < _elaspedFrameSum)
                 )
                 {
-                    Destroy();
+                    _isDestroyed = true;
                 }
             }
             base.Update(gameTime);

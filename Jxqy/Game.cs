@@ -129,6 +129,7 @@ namespace Jxqy
             _lastMouseState = mouseState;
 
             MagicManager.Update(gameTime);
+            SoundManager.Update();
             base.Update(gameTime);
         }
 
