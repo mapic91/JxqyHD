@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Engine
 {
@@ -12,8 +13,20 @@ namespace Engine
         public const int SimpleChinaeseCode = 936;
         public const int Basespeed = 100;
         public const float SoundMaxDistance = 1000f;
+
+        public static Color NpcEdgeColor = Color.Yellow*0.8f;
+        public static Color EnemyEdgeColor = Color.Red*0.8f;
+        public static Color ObjEdgeColor = Color.Yellow*0.8f;
+
         public static float MusicVolume = 1f;
         public static float SoundEffectVolume = 1f;
+
+        //Sprite out edge
+        public static Sprite OutEdgeSprite;
+        public static Texture2D OutEdgeTexture;
+        public static int OffX;
+        public static int OffY;
+
         public static Game TheGame;
         public static Carmera TheCarmera;
         public static Map TheMap = new Map();

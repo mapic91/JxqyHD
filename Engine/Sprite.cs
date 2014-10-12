@@ -8,6 +8,9 @@ namespace Engine
     public class Sprite : IMoveControlInWorld
     {
         private Vector2 _positionInWorld;
+        private int _mapX;
+        private int _mapY;
+        private bool _isTilePostionNew;
         private int _velocity;
         private int _currentFrameIndex;
         private int _frameBegin;
@@ -44,7 +47,7 @@ namespace Engine
                 else _texture = value;
                 _elapsedMilliSecond = 0;
                 CurrentDirection = CurrentDirection;
-                CurrentFrameIndex = 0;
+                CurrentFrameIndex = _frameBegin;
             }
         }
 
@@ -83,7 +86,53 @@ namespace Engine
         public Vector2 PositionInWorld
         {
             get { return _positionInWorld; }
-            set { _positionInWorld = value; }
+            set
+            {
+                _positionInWorld = value;
+                _isTilePostionNew = false;
+            }
+        }
+
+        public int MapX
+        {
+            get
+            {
+                if (IsTilePostionNew) return _mapX;
+                IsTilePostionNew = true;
+                var position = Map.ToTilePosition(PositionInWorld);
+                _mapX = (int)position.X;
+                _mapY = (int)position.Y;
+                return _mapX;
+            }
+            set
+            {
+                _mapX = value;
+                PositionInWorld = Map.ToPixelPosition(value, MapY);
+            }
+        }
+
+        public int MapY
+        {
+            get
+            {
+                if (IsTilePostionNew) return _mapY;
+                IsTilePostionNew = true;
+                var position = Map.ToTilePosition(PositionInWorld);
+                _mapX = (int)position.X;
+                _mapY = (int)position.Y;
+                return _mapY;
+            }
+            set
+            {
+                _mapY = value;
+                PositionInWorld = Map.ToPixelPosition(MapX, value);
+            }
+        }
+
+        public bool IsTilePostionNew
+        {
+            get { return _isTilePostionNew; }
+            set { _isTilePostionNew = value; }
         }
 
         public int Width
@@ -126,7 +175,7 @@ namespace Engine
             {
                 SetDirection(direction);
                 direction.Normalize();
-                _positionInWorld += direction*_velocity*elapsedSeconds;
+                PositionInWorld += direction*_velocity*elapsedSeconds;
             }
         }
 
@@ -194,11 +243,6 @@ namespace Engine
         public void Draw(SpriteBatch spriteBatch, int offX = 0, int offY = 0)
         {
             Draw(spriteBatch, GetCurrentTexture(), offX, offY);
-        }
-
-        public void Draw(SpriteBatch spriteBatch, Color edgeColor, int offX = 0, int offY = 0)
-        {
-            Draw(spriteBatch, TextureGenerator.AddOuterEdge(GetCurrentTexture(), Color.Red), offX, offY);
         }
 
         public void Draw(SpriteBatch spriteBatch, Texture2D texture, int offX = 0, int offY = 0)

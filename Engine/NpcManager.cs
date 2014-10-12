@@ -83,19 +83,25 @@ namespace Engine
             }
         }
 
+        public List<Npc> GetNpcsInView()
+        {
+            var viewRegion = Globals.TheCarmera.CarmerRegionInWorld;
+            var list = new List<Npc>(_list.Count);
+            foreach (var npc in _list)
+            {
+                if(viewRegion.Intersects(npc.RegionInWorld))
+                    list.Add(npc);
+            }
+            return list;
+        }
+
         public void Draw(SpriteBatch spriteBatch)
         {
             var mouseState = Mouse.GetState();
             var mousePosition = Globals.TheCarmera.ToWorldPosition(new Vector2(mouseState.X, mouseState.Y));
             var mousePositionInPoint = new Point((int)mousePosition.X, (int)mousePosition.Y);
             foreach (var npc in _list)
-            {
-                if (Collider.IsPixelCollideForNpcObj(mousePositionInPoint,
-                    npc.RegionInWorld,
-                    npc.Figure.GetCurrentTexture()))
-                    npc.Draw(spriteBatch, Color.Red);
-                else npc.Draw(spriteBatch);
-            }
+                npc.Draw(spriteBatch, mousePositionInPoint);
         }
     }
 }

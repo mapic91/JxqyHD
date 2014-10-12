@@ -138,29 +138,54 @@ namespace Jxqy
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            //Out edge
+            Globals.OutEdgeSprite = null;
+            Globals.OutEdgeTexture = null;
+            Globals.OffX = Globals.OffY = 0;
+
             GraphicsDevice.Clear(Color.Black);
 
             _spriteBatch.Begin(SpriteSortMode.Deferred,null);
             Globals.TheMap.DrawLayer(_spriteBatch, 0);
 
+            var mouseState = Mouse.GetState();
+            var mousePosition = Globals.TheCarmera.ToWorldPosition(new Vector2(mouseState.X, mouseState.Y));
+            var mousePositionInPoint = new Point((int)mousePosition.X, (int)mousePosition.Y);
+
             var start = Globals.TheMap.GetStartTileInView();
             var end = Globals.TheMap.GetEndTileInView();
-            var player1Position = Map.ToTilePosition(_player1.Figure.PositionInWorld);
+            var magicSprites = MagicManager.GetMagicSpritesInView();
+            var npcs = _npcManager.GetNpcsInView();
             for (var y = (int)start.Y; y < (int)end.Y; y++)
             {
                 for (var x = (int)start.X; x < (int)end.X; x++)
                 {
                     Texture2D texture = Globals.TheMap.GetTileTexture(x, y, 1);
                     Globals.TheMap.DrawTile(_spriteBatch, texture, new Vector2(x, y), 1f);
-                    if (y == (int) player1Position.Y && x == (int) player1Position.X)
+                    if ( x == _player1.MapX && y == (int) _player1.MapY)
                     {
                         _player1.Draw(_spriteBatch);
                     }
+                    foreach (var magicSprite in magicSprites)
+                    {
+                        if(x == magicSprite.MapX && y == magicSprite.MapY)
+                            magicSprite.Draw(_spriteBatch);
+                    }
+                    foreach (var npc in npcs)
+                    {
+                        if(x == npc.MapX && y == npc.MapY)
+                            npc.Draw(_spriteBatch, mousePositionInPoint);
+                    }
                 }
             }
-            _npcManager.Draw(_spriteBatch);
             Globals.TheMap.DrawLayer(_spriteBatch, 2);
-            MagicManager.Draw(_spriteBatch);
+            if (Globals.OutEdgeSprite != null)
+            {
+                Globals.OutEdgeSprite.Draw(_spriteBatch, 
+                    Globals.OutEdgeTexture, 
+                    Globals.OffX,
+                    Globals.OffY);
+            }
             _spriteBatch.End();
             base.Draw(gameTime);
         }

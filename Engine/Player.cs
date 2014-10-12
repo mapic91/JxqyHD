@@ -79,10 +79,11 @@ namespace Engine
             var mouseWorldPosition = Globals.TheCarmera.ToWorldPosition(mouseScreenPosition);
 
             if (mouseState.LeftButton == ButtonState.Pressed &&
-                State != (int)NpcState.Jump)
+                State != (int)NpcState.Jump &&
+                State != (int)NpcState.Magic)
             {
                 var tilePositionUnderMouse = Map.ToTilePosition(mouseWorldPosition);
-                var startTile = Map.ToTilePosition(Figure.PositionInWorld);
+                var startTile = Map.ToTilePosition(PositionInWorld);
                 var pathType = PathType.WalkRun;
                 var npcState = NpcState.Walk;
                 if (keyboardState.IsKeyDown(Keys.LeftShift))
@@ -98,10 +99,10 @@ namespace Engine
             if (mouseState.RightButton == ButtonState.Pressed && 
                 _lastMouseState.RightButton == ButtonState.Released)
             {
-                Magic.UseMagic(this, FlyIni, mouseWorldPosition - PositionInWorld);
+                UseMagic(FlyIni, mouseWorldPosition);
             }
 
-                _lastMouseState = mouseState;
+            _lastMouseState = mouseState;
             base.Update(gameTime);
         }
     }

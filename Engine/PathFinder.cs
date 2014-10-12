@@ -132,30 +132,30 @@ namespace Engine
             var list = new List<Vector2>();
             var x = location.X;
             var y = location.Y;
-            // 7  0  1
-            // 6     2
-            // 5  4  3
+            // 3  4  5
+            // 2     6
+            // 1  0  7
             if ((int)y % 2 == 0)
             {
-                list.Add(new Vector2(x, y - 2f));
-                list.Add(new Vector2(x, y - 1f));
-                list.Add(new Vector2(x + 1f, y));
-                list.Add(new Vector2(x, y + 1f));
                 list.Add(new Vector2(x, y + 2f));
                 list.Add(new Vector2(x - 1f, y + 1f));
                 list.Add(new Vector2(x - 1f, y));
                 list.Add(new Vector2(x - 1f, y - 1f));
+                list.Add(new Vector2(x, y - 2f));
+                list.Add(new Vector2(x, y - 1f));
+                list.Add(new Vector2(x + 1f, y));
+                list.Add(new Vector2(x, y + 1f));
             }
             else
             {
-                list.Add(new Vector2(x, y - 2f));
-                list.Add(new Vector2(x + 1f, y - 1f));
-                list.Add(new Vector2(x + 1f, y));
-                list.Add(new Vector2(x + 1f, y + 1f));
                 list.Add(new Vector2(x, y + 2f));
                 list.Add(new Vector2(x, y + 1f));
                 list.Add(new Vector2(x - 1f, y));
                 list.Add(new Vector2(x, y - 1f));
+                list.Add(new Vector2(x, y - 2f));
+                list.Add(new Vector2(x + 1f, y - 1f));
+                list.Add(new Vector2(x + 1f, y));
+                list.Add(new Vector2(x + 1f, y + 1f));
             }
 
             return list;

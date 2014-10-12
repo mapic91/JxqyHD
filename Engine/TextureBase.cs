@@ -60,6 +60,7 @@ namespace Engine
         public int FrameCountsPerDirection
         {
             get { return _frameCountsPerDirection; }
+            private set { _frameCountsPerDirection = value < 1 ? 1 : value; }
         }
 
         #endregion Properties
@@ -74,8 +75,8 @@ namespace Engine
                 LoadPalette(buf, ref offset);
                 LoadFrame(buf, ref offset);
                 if (Head.Direction != 0)
-                    _frameCountsPerDirection = FrameCounts/DirectionCounts;
-                else _frameCountsPerDirection = FrameCounts;
+                    FrameCountsPerDirection = FrameCounts / DirectionCounts;
+                else FrameCountsPerDirection = FrameCounts;
                 _isOk = true;
             }
             catch (Exception e)

@@ -57,6 +57,23 @@ namespace Engine
             }
         }
 
+        public static List<MagicSprite> GetMagicSpritesInView()
+        {
+            var viewRegion = Globals.TheCarmera.CarmerRegionInWorld;
+            var list = new List<MagicSprite>(_npcSprites.Count + _playerSprites.Count);
+            foreach (var sprite in _npcSprites)
+            {
+                if (viewRegion.Intersects(sprite.RegionInWorld))
+                    list.Add(sprite);
+            }
+            foreach (var sprite in _playerSprites)
+            {
+                if (viewRegion.Intersects(sprite.RegionInWorld))
+                    list.Add(sprite);
+            }
+            return list;
+        }
+
         public static void Draw(SpriteBatch spriteBatch)
         {
             foreach (var sprite in _npcSprites)

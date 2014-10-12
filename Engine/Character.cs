@@ -25,8 +25,6 @@ namespace Engine
         private int _visionRadius;
         private int _dialogRadius;
         private int _attackRadius;
-        private int _mapX;
-        private int _mapY;
         private int _lum;
         private int _action;
         private int _walkSpeed = 1;
@@ -52,6 +50,8 @@ namespace Engine
         private int _expBonus;
         private int _fixedPos;
         private int _idle;
+        private Vector2 _magicDestination;
+        private Magic _magicUse;
 
         #region Public properties
         public int Dir
@@ -116,22 +116,14 @@ namespace Engine
 
         public int MapX
         {
-            get { return (int)Map.ToTilePosition(Figure.PositionInWorld).X; }
-            set
-            {
-                _mapX = value;
-                Figure.PositionInWorld = Map.ToPixelPosition(value, MapY);
-            }
+            get { return Figure.MapX; }
+            set { Figure.MapX = value; }
         }
 
         public int MapY
         {
-            get { return (int)Map.ToTilePosition(Figure.PositionInWorld).Y; }
-            set
-            {
-                _mapY = value;
-                Figure.PositionInWorld = Map.ToPixelPosition(MapX, value);
-            }
+            get { return Figure.MapY; }
+            set { Figure.MapY = value; }
         }
 
         public Vector2 PositionInWorld
@@ -292,7 +284,7 @@ namespace Engine
 
         public Rectangle RegionInWorld
         {
-            get { return  Figure.RegionInWorld; }
+            get { return Figure.RegionInWorld; }
         }
 
         #endregion
@@ -396,13 +388,13 @@ namespace Engine
                     _path = path;
                     _path.RemoveAt(0);
                     var target = _path[0];
-                    _remainDistance = Vector2.Distance(target, Figure.PositionInWorld);
+                    _remainDistance = Vector2.Distance(target, PositionInWorld);
                 }
                 else if (path.Count == 2 && type == PathType.Jump)
                 {
                     SetState(state);
                     _path = path;
-                    var dir = path[1] - Figure.PositionInWorld;
+                    var dir = path[1] - PositionInWorld;
                     Figure.SetDirection(dir);
                     Figure.PlayCurrentDirOnce();
                 }
@@ -414,12 +406,21 @@ namespace Engine
             }
         }
 
+        public void UseMagic(Magic magic, Vector2 magicDestination)
+        {
+            if (State != (int)NpcState.Magic)
+            {
+                _magicDestination = magicDestination;
+                _magicUse = magic;
+                Figure.SetDirection(magicDestination - PositionInWorld);
+                SetState(NpcState.Magic);
+            }
+        }
+
         public void SetState(NpcState state)
         {
             if (State != (int)state)
             {
-                State = (int)state;
-
                 if (_sound != null)
                 {
                     _sound.Stop(true);
@@ -427,22 +428,31 @@ namespace Engine
                 }
                 if (NpcIni.ContainsKey((int)state))
                 {
-                    var image = NpcIni[(int) state].Image;
-                    var sound = NpcIni[(int) state].Sound;
-                    if(image != null)Figure.Texture = NpcIni[(int)state].Image;
+                    var image = NpcIni[(int)state].Image;
+                    var sound = NpcIni[(int)state].Sound;
+                    Figure.Texture = image;
+                    if (state == NpcState.Magic)
+                    {
+                        Figure.PlayCurrentDirOnce();
+                    }
                     if (sound != null)
                     {
-                        if (State == (int) NpcState.Walk ||
-                            State == (int) NpcState.Run)
+                        if (state == NpcState.Walk ||
+                            state == NpcState.Run)
                         {
                             _sound = sound.CreateInstance();
                             _sound.IsLooped = true;
                             _sound.Volume = Globals.SoundEffectVolume;
                             _sound.Play();
                         }
+                        else if (state == NpcState.Magic)
+                        {
+                            //do nothing
+                        }
                         else sound.Play(Globals.SoundEffectVolume, 0f, 0f);
                     }
                 }
+                State = (int)state;
             }
         }
 
@@ -472,13 +482,13 @@ namespace Engine
                         case (int)NpcState.Run:
                             {
                                 var targetPosition = _path[0];
-                                var lastPosition = Figure.PositionInWorld;
+                                var lastPosition = PositionInWorld;
                                 var dir = targetPosition - lastPosition;
                                 Figure.MoveTo(dir, (float)gameTime.ElapsedGameTime.TotalSeconds * speedLevel);
-                                _remainDistance -= Vector2.Distance(lastPosition, Figure.PositionInWorld);
+                                _remainDistance -= Vector2.Distance(lastPosition, PositionInWorld);
                                 if (_remainDistance < 1)
                                 {
-                                    Figure.PositionInWorld = targetPosition;
+                                    PositionInWorld = targetPosition;
                                     _path.RemoveAt(0);
                                     if (_path.Count != 0)
                                     {
@@ -494,28 +504,39 @@ namespace Engine
                                 if (_path[1] != Vector2.Zero)
                                 {
                                     var targetPosition = _path[1];
-                                    var lastPosition = Figure.PositionInWorld;
+                                    var lastPosition = PositionInWorld;
                                     var dir = targetPosition - lastPosition;
                                     Figure.MoveTo(dir, (float)gameTime.ElapsedGameTime.TotalSeconds * speedLevel);
-                                    if (Globals.TheMap.IsObstacleForCharacterJump(Map.ToTilePosition(Figure.PositionInWorld)))
+                                    if (Globals.TheMap.IsObstacleForCharacterJump(Map.ToTilePosition(PositionInWorld)))
                                     {
-                                        Figure.PositionInWorld = lastPosition;
+                                        PositionInWorld = lastPosition;
                                         _path[1] = Vector2.Zero;
                                     }
-                                    if (Vector2.Distance(targetPosition, Figure.PositionInWorld) < 10)
+                                    if (Vector2.Distance(targetPosition, PositionInWorld) < 10)
                                     {
-                                        Figure.PositionInWorld = targetPosition;
+                                        PositionInWorld = targetPosition;
                                         _path[1] = Vector2.Zero;
                                     }
                                 }
                                 else
                                 {
-                                    if(Figure.IsPlayCurrentDirOnceEnd())
+                                    if (Figure.IsPlayCurrentDirOnceEnd())
                                         SetPathAndState(null);
                                 }
                             }
                             break;
                     }
+                }
+            }
+
+            if (State == (int)NpcState.Magic)
+            {
+                if (Figure.IsPlayCurrentDirOnceEnd())
+                {
+                    Magic.UseMagic(this, _magicUse, _magicDestination - PositionInWorld);
+                    var sound = NpcIni[State].Sound;
+                    if (sound != null) sound.Play();
+                    SetState(NpcState.FightStand);
                 }
             }
 
@@ -525,11 +546,6 @@ namespace Engine
         public void Draw(SpriteBatch spriteBatch)
         {
             Figure.Draw(spriteBatch);
-        }
-
-        public void Draw(SpriteBatch spriteBatch, Color edgeColor)
-        {
-            Figure.Draw(spriteBatch, edgeColor);
         }
     }
 }

@@ -208,12 +208,13 @@ namespace Engine
 
         public Magic() { }
 
-        public Magic(string filePath)
+        //noAttackFile - resolve recursive problem of AttackFile
+        public Magic(string filePath, bool noLevel = false, bool noAttackFile = false)
         {
-            Load(filePath);
+            Load(filePath, noLevel, noAttackFile);
         }
 
-        private void AssignToValue(string[] nameValue)
+        private void AssignToValue(string[] nameValue, bool noAttackFile)
         {
             try
             {
@@ -235,8 +236,8 @@ namespace Engine
                         info.SetValue(this, Utils.GetAsf(@"asf\effect\" + nameValue[1]), null);
                         break;
                     case "AttackFile":
-                        if (File.Exists(@"ini\magic\" + nameValue[1]))
-                            info.SetValue(this, new Magic(@"ini\magic\" + nameValue[1]), null);
+                        if (File.Exists(@"ini\magic\" + nameValue[1]) && !noAttackFile)
+                            info.SetValue(this, new Magic(@"ini\magic\" + nameValue[1], true, true), null);
                         break;
                     case "FlyingSound":
                     case "VanishSound":
@@ -255,11 +256,12 @@ namespace Engine
             }
         }
 
-        public bool Load(string filePath)
+        public bool Load(string filePath, bool noLevel = false, bool noAttackFile = false)
         {
             try
             {
-                return Load(File.ReadAllLines(filePath, Encoding.GetEncoding(Globals.SimpleChinaeseCode)));
+                return Load(File.ReadAllLines(filePath, Encoding.GetEncoding(Globals.SimpleChinaeseCode)),
+                    noLevel, noAttackFile);
             }
             catch (Exception ecxeption)
             {
@@ -268,7 +270,7 @@ namespace Engine
             }
         }
 
-        public bool Load(string[] lines)
+        public bool Load(string[] lines, bool noLevel = false, bool noAttackFile = false)
         {
             var count = lines.Count();
             var i = 0;
@@ -283,16 +285,16 @@ namespace Engine
 
                 var nameValue = Utils.GetNameValue(lines[i]);
                 if (!string.IsNullOrEmpty(nameValue[0]))
-                    AssignToValue(nameValue);
+                    AssignToValue(nameValue, noAttackFile);
             }
 
             _level = null;
-            if (hasLevel)
+            if (!noLevel && hasLevel)
             {
                 var levelList = new Dictionary<int, Magic>();
                 for (var li = 1; li < 11; li++)
                 {
-                    var levelMagic = (Magic) this.MemberwiseClone();
+                    var levelMagic = (Magic)this.MemberwiseClone();
                     levelMagic.CurrentLevel = li;
                     levelList.Add(li, levelMagic);
                 }
@@ -310,7 +312,7 @@ namespace Engine
                             var magic = _level[key];
                             while (i < count && !string.IsNullOrEmpty(lines[i]))
                             {
-                                magic.AssignToValue(Utils.GetNameValue(lines[i]));
+                                magic.AssignToValue(Utils.GetNameValue(lines[i]), noAttackFile);
                                 i++;
                             }
                         }
@@ -322,15 +324,21 @@ namespace Engine
             return true;
         }
 
+        public Magic GetLevel(int level)
+        {
+            if (_level == null ||
+                !_level.ContainsKey(level)) return this;
+            return _level[level];
+        }
+
         public static void UseMagic(Character user, Magic magic, Vector2 direction)
         {
-            if(user == null || magic == null) return;
-
+            if (user == null || magic == null) return;
             MagicManager.AddPlayerMagicSprite(new MagicSprite(
-                user.PositionInWorld, 
-                Globals.Basespeed * magic.Speed, 
-                magic, 
-                user, 
+                user.PositionInWorld,
+                Globals.Basespeed * magic.Speed,
+                magic,
+                user,
                 direction));
         }
     }

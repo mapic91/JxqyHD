@@ -25,7 +25,7 @@ namespace Engine
             return tex;
         }
 
-        public static Texture2D AddOuterEdge(Texture2D texture2D, Color color)
+        public static Texture2D GetOuterEdge(Texture2D texture2D, Color color)
         {
             if (texture2D == null) return null;
             int width = texture2D.Width, height = texture2D.Height;
@@ -37,7 +37,7 @@ namespace Engine
 
             for (var i = 0; i < total; i++)
             {
-                if (IsColorTransparentForNpcObj(data[i])) continue;
+                if (!IsColorTransparentForNpcObj(data[i])) continue;
                 var neighbers = new int[]
                 {
                     i - width,
@@ -53,7 +53,7 @@ namespace Engine
                 {
                     if (neighber >= 0 && neighber < total)
                     {
-                        if (IsColorTransparentForNpcObj(data[neighber]))
+                        if (!IsColorTransparentForNpcObj(data[neighber]))
                         {
                             edge.Add(i);
                             break;
@@ -83,6 +83,7 @@ namespace Engine
                 beginRight += width;
             }
 
+            data = new Color[total];
             foreach (var i in edge)
             {
                 data[i] = color;
@@ -94,9 +95,7 @@ namespace Engine
 
         public static bool IsColorTransparentForNpcObj(Color color)
         {
-            var col = color;
-            col.A = 0xFF;
-            return (color.A == 0 || col == Color.Black);
+            return (color.A < 200);
         }
     }
 }
