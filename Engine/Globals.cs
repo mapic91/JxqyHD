@@ -15,6 +15,8 @@ namespace Engine
         public const float SoundMaxDistance = 1000f;
         public const float Sound3DMaxDistance = 8f;
 
+        public const float DistanceOffset = 2f;
+
         public static Color NpcEdgeColor = Color.Yellow*0.8f;
         public static Color EnemyEdgeColor = Color.Red*0.8f;
         public static Color ObjEdgeColor = Color.Yellow*0.8f;

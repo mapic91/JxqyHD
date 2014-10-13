@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using C5;
 using Microsoft.Xna.Framework;
 
 namespace Engine
@@ -15,15 +14,15 @@ namespace Engine
     public static class PathFinder
     {
         //Returned path is in pixel position
-        public static List<Vector2> FindPath(Vector2 startTile, Vector2 endTile, PathType type)
+        public static LinkedList<Vector2> FindPath(Vector2 startTile, Vector2 endTile, PathType type)
         {
-            var path = new List<Vector2>();
+            var path = new LinkedList<Vector2>();
             if (startTile == endTile) return path;
 
             if (type == PathType.Jump)
             {
-                path.Add(Map.ToPixelPosition(startTile));
-                path.Add(Map.ToPixelPosition(endTile));
+                path.AddLast(Map.ToPixelPosition(startTile));
+                path.AddLast(Map.ToPixelPosition(endTile));
                 return path;
             }
 
@@ -32,15 +31,17 @@ namespace Engine
 
             var cameFrom = new Dictionary<Vector2, Vector2>();
             var costSoFar = new Dictionary<Vector2, float>();
-            var frontier = new IntervalHeap<Node>();
+            var frontier = new C5.IntervalHeap<Node>();
 
             frontier.Add(new Node(startTile, 0f));
             costSoFar[startTile] = 0f;
 
+            var endNpc = NpcManager.GetObstacle(endTile);
+            if (endNpc != null) endNpc.IsObstacle = false;//Temporary set non obstacle
             var tryCount = 0; //For performance
             while (!frontier.IsEmpty)
             {
-                if (tryCount++ > 2000) return null;
+                if (tryCount++ > 2000) break;
                 var current = frontier.DeleteMin().Location;
                 if (current.Equals(endTile)) break;
                 foreach (var next in FindNeighbors(current))
@@ -57,15 +58,17 @@ namespace Engine
                 }
 
             }
+            if (endNpc != null) endNpc.IsObstacle = true;//restore
 
             if (cameFrom.ContainsKey(endTile))
             {
                 var current = endTile;
-                path.Add(Map.ToPixelPosition(current));
+                if(endNpc == null) 
+                    path.AddFirst(Map.ToPixelPosition(current));
                 while (current != startTile)
                 {
                     current = cameFrom[current];
-                    path.Insert(0, Map.ToPixelPosition(current));
+                    path.AddFirst(Map.ToPixelPosition(current));
                 }
                 return path;
             }
@@ -116,6 +119,8 @@ namespace Engine
                         }
                     }
                 }
+                else if(NpcManager.IsObstacle(listAll[i]))
+                    removeList.Add(i);
             }
 
             for (var j = 0; j < count; j++)

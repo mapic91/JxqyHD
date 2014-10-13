@@ -14,7 +14,7 @@ namespace Engine
         private Character _belongCharacter;
         private Magic _belongMagic;
         private Vector2 _moveDirection;
-        private List<Vector2> _paths;
+        private LinkedList<Vector2> _paths;
         private int _elaspedFrameSum;
         private bool _isDestroyed;
         private bool _isInDestroy;
@@ -85,7 +85,7 @@ namespace Engine
                 PositionInWorld - BelongCharacter.PositionInWorld);
         }
 
-        public void SetPath(List<Vector2> paths)
+        public void SetPath(LinkedList<Vector2> paths)
         {
             _paths = paths;
         }
@@ -94,8 +94,26 @@ namespace Engine
         {
             if (IsDestroyed) return;
 
-            var lastPosition = PositionInWorld;
-            MoveTo(MoveDirection, (float)gameTime.ElapsedGameTime.TotalSeconds);
+            if (_paths != null)
+            {
+                if (_paths.Count > 1)
+                {
+                    var beginPosition = _paths.First.Value;
+                    var endPosition = _paths.First.Next.Value;
+                    var distance = Vector2.Distance(beginPosition, endPosition);
+                    MoveTo(endPosition - beginPosition, (float)gameTime.ElapsedGameTime.TotalSeconds);
+                    if (MovedDistance + Globals.DistanceOffset > distance)
+                    {
+                        MovedDistance = 0f;
+                        PositionInWorld = endPosition;
+                        _paths.RemoveFirst();
+                    }
+                }
+            }
+            else
+            {
+                MoveTo(MoveDirection, (float)gameTime.ElapsedGameTime.TotalSeconds);
+            }
             _elaspedFrameSum++;
             if (IsInDestroy)
             {

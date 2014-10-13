@@ -14,6 +14,11 @@ namespace Engine
     {
         private static LinkedList<Npc> _list = new LinkedList<Npc>();
 
+        public static LinkedList<Npc> NpcList
+        {
+            get { return _list; }
+        }
+
         public static bool Load(string filePath)
         {
             try
@@ -66,6 +71,36 @@ namespace Engine
         public static void ClearAllNpc()
         {
             _list.Clear();
+        }
+
+        public static bool IsObstacle(int tileX, int tileY)
+        {
+            foreach (var npc in _list)
+            {
+                if (npc.MapX == tileX && npc.MapY == tileY && npc.IsObstacle)
+                    return true;
+            }
+            return false;
+        }
+
+        public static bool IsObstacle(Vector2 tilePosition)
+        {
+            return IsObstacle((int) tilePosition.X, (int) tilePosition.Y);
+        }
+
+        public static Npc GetObstacle(int tileX, int tileY)
+        {
+            foreach (var npc in _list)
+            {
+                if (npc.MapX == tileX && npc.MapY == tileY && npc.IsObstacle)
+                    return npc;
+            }
+            return null;
+        }
+
+        public static Npc GetObstacle(Vector2 tilePosition)
+        {
+            return GetObstacle((int)tilePosition.X, (int)tilePosition.Y);
         }
 
         public static void Update(GameTime gameTime)

@@ -20,6 +20,7 @@ namespace Engine
         private Asf _texture = new Asf();
         private bool _isPlayingCurrentDirOnce;
         private const double TwoPi = Math.PI * 2;
+        private float _movedDistance;
 
         public Sprite() { }
 
@@ -167,6 +168,13 @@ namespace Engine
                     , Height);
             }
         }
+
+        public float MovedDistance
+        {
+            get { return _movedDistance; }
+            set { _movedDistance = value; }
+        }
+
         #endregion Properties
 
         public void MoveTo(Vector2 direction, float elapsedSeconds)
@@ -175,7 +183,9 @@ namespace Engine
             {
                 SetDirection(direction);
                 direction.Normalize();
-                PositionInWorld += direction*_velocity*elapsedSeconds;
+                var move = direction*_velocity*elapsedSeconds;
+                PositionInWorld += move;
+                MovedDistance += move.Length();
             }
         }
 
