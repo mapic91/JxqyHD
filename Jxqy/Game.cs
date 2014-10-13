@@ -111,6 +111,8 @@ namespace Jxqy
             if (keyboardState.IsKeyDown(Keys.D3) && _lastKeyboardState.IsKeyUp(Keys.D3))
                 Globals.TheMap.SwitchLayerDraw(2);
 
+
+            MagicManager.Update(gameTime);
             _player1.Update(gameTime);
             NpcManager.Update(gameTime);
 
@@ -126,7 +128,7 @@ namespace Jxqy
             _lastKeyboardState = keyboardState;
             _lastMouseState = mouseState;
 
-            MagicManager.Update(gameTime);
+            
             SoundManager.Update();
             base.Update(gameTime);
         }

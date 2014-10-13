@@ -330,16 +330,5 @@ namespace Engine
                 !_level.ContainsKey(level)) return this;
             return _level[level];
         }
-
-        public static void UseMagic(Character user, Magic magic, Vector2 direction)
-        {
-            if (user == null || magic == null) return;
-            MagicManager.AddPlayerMagicSprite(new MagicSprite(
-                user.PositionInWorld,
-                Globals.Basespeed * magic.Speed,
-                magic,
-                user,
-                direction));
-        }
     }
 }

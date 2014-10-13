@@ -313,7 +313,7 @@ namespace Engine
             if (NpcIni.ContainsKey((int)NpcState.Stand))
             {
                 Figure.Set(Map.ToPixelPosition(MapX, MapY),
-                    Globals.Basespeed,
+                    Globals.BaseSpeed,
                     NpcIni[(int)NpcState.Stand].Image, Dir);
             }
         }
@@ -551,7 +551,7 @@ namespace Engine
             {
                 if (Figure.IsPlayCurrentDirOnceEnd())
                 {
-                    Magic.UseMagic(this, _magicUse, _magicDestination - PositionInWorld);
+                    MagicManager.UseMagic(this, _magicUse, PositionInWorld, _magicDestination);
                     var sound = NpcIni[State].Sound;
                     if (sound != null) sound.Play(Globals.SoundEffectVolume, 0f, 0f);
                     SetState(NpcState.FightStand);

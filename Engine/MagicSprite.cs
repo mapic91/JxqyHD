@@ -18,6 +18,7 @@ namespace Engine
         private int _elaspedFrameSum;
         private bool _isDestroyed;
         private bool _isInDestroy;
+        private bool _destroyOnEnd;
 
         #region Public properties
         public Magic BelongMagic
@@ -52,20 +53,39 @@ namespace Engine
 
         public MagicSprite() : base() { }
 
-        public MagicSprite(Vector2 positionInWorld, int velocity, Magic belongMagic, Character belongCharacter,
-            Vector2 moveDirection)
-            : base(positionInWorld, velocity, belongMagic.FlyingImage, 0)
+        public MagicSprite(Magic belongMagic, Character belongCharacter, Vector2 positionInWorld, int velocity, 
+            Vector2 moveDirection, bool destroyOnEnd)
         {
+            if (belongMagic == null || belongCharacter == null)
+            {
+                _isDestroyed = true;
+                return;
+            }
+            base.Set(positionInWorld, velocity, belongMagic.FlyingImage, 0);
             BelongMagic = belongMagic;
             BelongCharacter = belongCharacter;
             MoveDirection = moveDirection;
+            _destroyOnEnd = destroyOnEnd;
+            SetDirection(MoveDirection);
+            Begin();
+        }
+
+        public MagicSprite(Magic belongMagic, Character belongCharacter, Vector2 positionInWorld, int direction, bool destroyOnEnd)
+        {
+            if (belongMagic == null || belongCharacter == null)
+            {
+                _isDestroyed = true;
+                return;
+            }
+            base.Set(positionInWorld, 0, belongMagic.FlyingImage,  direction);
+            BelongMagic = belongMagic;
+            BelongCharacter = belongCharacter;
+            _destroyOnEnd = destroyOnEnd;
             Begin();
         }
 
         public void Begin()
         {
-            Texture = BelongMagic.FlyingImage;
-            SetDirection(MoveDirection);
             if (BelongMagic.FlyingSound != null)
                 BelongMagic.FlyingSound.Play(Globals.SoundEffectVolume, 0f, 0f);
             if (BelongMagic.LifeFrame == 0)
@@ -130,7 +150,8 @@ namespace Engine
                 (BelongMagic.LifeFrame != 0 && BelongMagic.LifeFrame < _elaspedFrameSum)
                 )
                 {
-                    _isDestroyed = true;
+                    if(_destroyOnEnd)Destroy();
+                    else _isDestroyed = true;
                 }
             }
             base.Update(gameTime);

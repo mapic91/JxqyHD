@@ -11,7 +11,9 @@ namespace Engine
     public static class Globals
     {
         public const int SimpleChinaeseCode = 936;
-        public const int Basespeed = 100;
+        public const int BaseSpeed = 100;
+        public const int MagicBasespeed = 60;
+        public const float MagicDelayMilliseconds = 60f;
         public const float SoundMaxDistance = 1000f;
         public const float Sound3DMaxDistance = 8f;
 
