@@ -76,9 +76,8 @@ namespace Engine
             }
         }
 
-        public static void AddFixedPositionMagicSprite(Character user, Magic magic, Vector2 destination, bool destroyOnEnd)
+        private static void AddFixedPositionMagicSprite(Character user, Magic magic, Vector2 destination, bool destroyOnEnd)
         {
-            if (user == null || magic == null) return;
             var sprite = new MagicSprite(
                 magic,
                 user,
@@ -88,39 +87,40 @@ namespace Engine
             AddMagicSprite(sprite);
         }
 
-        public static void AddMagicSprite(MagicSprite sprite)
+        private static void AddMagicSprite(MagicSprite sprite)
         {
             if (sprite.BelongCharacter.IsPlayer) AddPlayerMagicSprite(sprite);
             else AddNpcMagicSprite(sprite);
         }
 
-        public static MagicSprite GetMoveMagicSprite(Character user, Magic magic, Vector2 origin, Vector2 destination, bool destroyOnEnd)
+        private static MagicSprite GetMoveMagicSprite(Character user, Magic magic, Vector2 origin, Vector2 destination, bool destroyOnEnd, float speedRatio = 1f)
         {
-            if (user == null || magic == null) return null;
+            var speed = Globals.MagicBasespeed * magic.Speed;
+            speed = (int)(speed * speedRatio);
             return new MagicSprite(
                 magic,
                 user,
                 origin,
-                Globals.MagicBasespeed*magic.Speed,
+                speed,
                 destination - origin,
                 destroyOnEnd);
         }
 
-        public static MagicSprite GetMoveMagicSpriteOnDirection(Character user, Magic magic, Vector2 origin, Vector2 direction, bool destroyOnEnd)
+        private static MagicSprite GetMoveMagicSpriteOnDirection(Character user, Magic magic, Vector2 origin, Vector2 direction, bool destroyOnEnd, float speedRatio = 1f)
         {
-            if (user == null || magic == null) return null;
+            var speed = Globals.MagicBasespeed * magic.Speed;
+            speed = (int)(speed * speedRatio);
             return new MagicSprite(
                 magic,
                 user,
                 origin,
-                Globals.MagicBasespeed * magic.Speed,
+                speed,
                 direction, 
                 destroyOnEnd);
         }
 
-        public static void AddCircleMoveMagicSprite(Character user, Magic magic, Vector2 origin, bool destroyOnEnd)
+        private static void AddCircleMoveMagicSprite(Character user, Magic magic, Vector2 origin, bool destroyOnEnd)
         {
-            if (user == null || magic == null) return;
             var list = Utils.GetDirection32List();
             foreach (var dir in list)
             {
@@ -136,36 +136,47 @@ namespace Engine
             }
         }
 
-        public static void AddHeartMoveMagicSprite(Character user, Magic magic, Vector2 origin, bool destroyOnEnd)
+        private static void AddHeartMoveMagicSprite(Character user, Magic magic, Vector2 origin, bool destroyOnEnd)
         {
             var list = Utils.GetDirection32List();
             const float delayTime = 30;
             //First one
-            AddMagicSprite(GetMoveMagicSpriteOnDirection(user, magic, origin, list[0], destroyOnEnd));
+            var direction = list[0];
+            var speedRatio = 1f - 0.5f*Math.Abs(direction.Y);
+            AddMagicSprite(GetMoveMagicSpriteOnDirection(user, magic, origin, direction, destroyOnEnd, speedRatio));
             for (var i = 1; i < 1 + 15; i++)
             {
                 var delay = i*delayTime;
+                direction = list[i];
+                speedRatio = 1f - 0.5f * Math.Abs(direction.Y);
                 _workList.AddLast(new WorkItem(delay,
-                    GetMoveMagicSpriteOnDirection(user, magic, origin, list[i], destroyOnEnd)));
+                    GetMoveMagicSpriteOnDirection(user, magic, origin, direction, destroyOnEnd, speedRatio)));
+                direction = list[32 - i];
+                speedRatio = 1f - 0.5f * Math.Abs(direction.Y);
                 _workList.AddLast(new WorkItem(delay,
-                    GetMoveMagicSpriteOnDirection(user, magic, origin, list[32 - i], destroyOnEnd)));
+                    GetMoveMagicSpriteOnDirection(user, magic, origin, direction, destroyOnEnd, speedRatio)));
             }
+            direction = list[16];
+            speedRatio = 1f - 0.5f * Math.Abs(direction.Y);
             _workList.AddLast(new WorkItem(16*delayTime,
-                GetMoveMagicSpriteOnDirection(user, magic, origin, list[16], destroyOnEnd)));
+                GetMoveMagicSpriteOnDirection(user, magic, origin, direction, destroyOnEnd, speedRatio)));
             //Second
             _workList.AddLast(new WorkItem(17 * delayTime,
-                GetMoveMagicSpriteOnDirection(user, magic, origin, list[16], destroyOnEnd)));
-            for (var j = 18; j < 18 + 15; j++)
+                GetMoveMagicSpriteOnDirection(user, magic, origin, direction, destroyOnEnd, speedRatio)));
+            for (var j = 15; j > 0; j--)
             {
-                var delay = j * delayTime;
-                var index = 15 - (j - 18);
+                var delay = (18 + 15 - j) * delayTime;
+                direction = list[j];
+                speedRatio = 1f - 0.5f * Math.Abs(direction.Y);
                 _workList.AddLast(new WorkItem(delay,
-                    GetMoveMagicSpriteOnDirection(user, magic, origin, list[index], destroyOnEnd)));
+                    GetMoveMagicSpriteOnDirection(user, magic, origin, direction, destroyOnEnd, speedRatio)));
+                direction = list[32 - j];
+                speedRatio = 1f - 0.5f * Math.Abs(direction.Y);
                 _workList.AddLast(new WorkItem(delay,
-                    GetMoveMagicSpriteOnDirection(user, magic, origin, list[16 + (16 - index)], destroyOnEnd)));
+                    GetMoveMagicSpriteOnDirection(user, magic, origin, direction, destroyOnEnd, speedRatio)));
             }
             _workList.AddLast(new WorkItem((18 + 15) * delayTime,
-                GetMoveMagicSpriteOnDirection(user, magic, origin, list[0], destroyOnEnd)));
+                GetMoveMagicSpriteOnDirection(user, magic, origin, list[0], destroyOnEnd, 1f - 0.5f * Math.Abs(list[0].Y))));
         }
 
         public static void Update(GameTime gameTime)
