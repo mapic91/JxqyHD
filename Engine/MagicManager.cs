@@ -95,8 +95,7 @@ namespace Engine
 
         private static MagicSprite GetMoveMagicSprite(Character user, Magic magic, Vector2 origin, Vector2 destination, bool destroyOnEnd, float speedRatio = 1f)
         {
-            var speed = Globals.MagicBasespeed * magic.Speed;
-            speed = (int)(speed * speedRatio);
+            var speed = (int)(Globals.MagicBasespeed * magic.Speed * speedRatio);
             return new MagicSprite(
                 magic,
                 user,
@@ -108,8 +107,7 @@ namespace Engine
 
         private static MagicSprite GetMoveMagicSpriteOnDirection(Character user, Magic magic, Vector2 origin, Vector2 direction, bool destroyOnEnd, float speedRatio = 1f)
         {
-            var speed = Globals.MagicBasespeed * magic.Speed;
-            speed = (int)(speed * speedRatio);
+            var speed = (int)(Globals.MagicBasespeed * magic.Speed * speedRatio);
             return new MagicSprite(
                 magic,
                 user,
