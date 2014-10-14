@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
+using C5;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -9,9 +11,9 @@ namespace Engine
 {
     public static class MagicManager
     {
-        private static LinkedList<MagicSprite> _npcSprites = new LinkedList<MagicSprite>();
-        private static LinkedList<MagicSprite> _playerSprites = new LinkedList<MagicSprite>();
-        private static LinkedList<WorkItem> _workList = new LinkedList<WorkItem>();
+        private static System.Collections.Generic.LinkedList<MagicSprite> _npcSprites = new System.Collections.Generic.LinkedList<MagicSprite>();
+        private static System.Collections.Generic.LinkedList<MagicSprite> _playerSprites = new System.Collections.Generic.LinkedList<MagicSprite>();
+        private static System.Collections.Generic.LinkedList<WorkItem> _workList = new System.Collections.Generic.LinkedList<WorkItem>();
 
         public static void AddNpcMagicSprite(MagicSprite magicSprite)
         {
@@ -45,21 +47,31 @@ namespace Engine
         public static void UseMagic(Character user, Magic magic, Vector2 origin, Vector2 destination)
         {
             if (user == null || magic == null) return;
+            if (magic.FlyingSound != null)
+                magic.FlyingSound.Play(Globals.SoundEffectVolume, 0f, 0f);
             switch (magic.MoveKind)
             {
                 case 1:
                     AddFixedPositionMagicSprite(user, magic, destination, true);
                     break;
                 case 2:
-                    AddMoveMagicSprite(user, magic, origin, destination, false);
+                    AddMagicSprite(GetMoveMagicSprite(user, magic, origin, destination, false));
                     break;
                 case 3:
-                    AddMoveMagicSprite(user, magic, origin, destination, false);
+                    AddMagicSprite(GetMoveMagicSprite(user, magic, origin, destination, false));
                     for (var i = 1; i < magic.CurrentLevel; i++)
                     {
-                        _workList.AddLast(new WorkItem(Globals.MagicDelayMilliseconds*i, user, magic, origin, destination, null,
-                            SpriteType.Moveing, false));
+                        const float magicDelayMilliseconds = 60f;
+                        _workList.AddLast(new WorkItem(
+                            magicDelayMilliseconds*i, 
+                            GetMoveMagicSprite(user, magic, origin, destination, false)));
                     }
+                    break;
+                case 4:
+                    AddCircleMoveMagicSprite(user, magic, origin, false);
+                    break;
+                case 5:
+                    AddHeartMoveMagicSprite(user, magic, origin, false);
                     break;
             }
         }
@@ -67,24 +79,93 @@ namespace Engine
         public static void AddFixedPositionMagicSprite(Character user, Magic magic, Vector2 destination, bool destroyOnEnd)
         {
             if (user == null || magic == null) return;
-            AddPlayerMagicSprite(new MagicSprite(
+            var sprite = new MagicSprite(
                 magic,
                 user,
                 destination,
                 0,
-                destroyOnEnd));
+                destroyOnEnd);
+            AddMagicSprite(sprite);
         }
 
-        public static void AddMoveMagicSprite(Character user, Magic magic, Vector2 origin, Vector2 destination, bool destroyOnEnd)
+        public static void AddMagicSprite(MagicSprite sprite)
         {
-            if (user == null || magic == null) return;
-            AddPlayerMagicSprite(new MagicSprite(
+            if (sprite.BelongCharacter.IsPlayer) AddPlayerMagicSprite(sprite);
+            else AddNpcMagicSprite(sprite);
+        }
+
+        public static MagicSprite GetMoveMagicSprite(Character user, Magic magic, Vector2 origin, Vector2 destination, bool destroyOnEnd)
+        {
+            if (user == null || magic == null) return null;
+            return new MagicSprite(
+                magic,
+                user,
+                origin,
+                Globals.MagicBasespeed*magic.Speed,
+                destination - origin,
+                destroyOnEnd);
+        }
+
+        public static MagicSprite GetMoveMagicSpriteOnDirection(Character user, Magic magic, Vector2 origin, Vector2 direction, bool destroyOnEnd)
+        {
+            if (user == null || magic == null) return null;
+            return new MagicSprite(
                 magic,
                 user,
                 origin,
                 Globals.MagicBasespeed * magic.Speed,
-                destination - origin,
-                destroyOnEnd));
+                direction, 
+                destroyOnEnd);
+        }
+
+        public static void AddCircleMoveMagicSprite(Character user, Magic magic, Vector2 origin, bool destroyOnEnd)
+        {
+            if (user == null || magic == null) return;
+            var list = Utils.GetDirection32List();
+            foreach (var dir in list)
+            {
+                var speed = Globals.MagicBasespeed*magic.Speed;
+                speed = (int) (speed*(1 - 0.5*Math.Abs(dir.Y)));
+                var sprite = new MagicSprite(magic, 
+                    user, 
+                    origin, 
+                    speed, 
+                    dir, 
+                    destroyOnEnd);
+                AddMagicSprite(sprite);
+            }
+        }
+
+        public static void AddHeartMoveMagicSprite(Character user, Magic magic, Vector2 origin, bool destroyOnEnd)
+        {
+            var list = Utils.GetDirection32List();
+            const float delayTime = 30;
+            //First one
+            AddMagicSprite(GetMoveMagicSpriteOnDirection(user, magic, origin, list[0], destroyOnEnd));
+            for (var i = 1; i < 1 + 15; i++)
+            {
+                var delay = i*delayTime;
+                _workList.AddLast(new WorkItem(delay,
+                    GetMoveMagicSpriteOnDirection(user, magic, origin, list[i], destroyOnEnd)));
+                _workList.AddLast(new WorkItem(delay,
+                    GetMoveMagicSpriteOnDirection(user, magic, origin, list[32 - i], destroyOnEnd)));
+            }
+            _workList.AddLast(new WorkItem(16*delayTime,
+                GetMoveMagicSpriteOnDirection(user, magic, origin, list[16], destroyOnEnd)));
+            //Second
+            _workList.AddLast(new WorkItem(17 * delayTime,
+                GetMoveMagicSpriteOnDirection(user, magic, origin, list[16], destroyOnEnd)));
+            for (var j = 18; j < 18 + 15; j++)
+            {
+                var delay = j * delayTime;
+                var index = 15 - (j - 18);
+                _workList.AddLast(new WorkItem(delay,
+                    GetMoveMagicSpriteOnDirection(user, magic, origin, list[index], destroyOnEnd)));
+                _workList.AddLast(new WorkItem(delay,
+                    GetMoveMagicSpriteOnDirection(user, magic, origin, list[16 + (16 - index)], destroyOnEnd)));
+            }
+            _workList.AddLast(new WorkItem((18 + 15) * delayTime,
+                GetMoveMagicSpriteOnDirection(user, magic, origin, list[0], destroyOnEnd)));
         }
 
         public static void Update(GameTime gameTime)
@@ -128,15 +209,9 @@ namespace Engine
                 item.LeftMilliseconds -= elapsedMilliseconds;
                 if (item.LeftMilliseconds <= 0)
                 {
-                    switch (item.Type)
-                    {
-                        case SpriteType.FixedPosition:
-                            AddFixedPositionMagicSprite(item.TheUser, item.TheMagic, item.Destination, item.DestroyOnEnd);
-                            break;
-                        case SpriteType.Moveing:
-                            AddMoveMagicSprite(item.TheUser, item.TheMagic, item.Orgion, item.Destination, item.DestroyOnEnd);
-                            break;
-                    }
+                    if (item.TheSprite.BelongCharacter.IsPlayer)
+                        _playerSprites.AddLast(item.TheSprite);
+                    else _npcSprites.AddLast(item.TheSprite);
                     _workList.Remove(node);
                 }
                 node = next;
@@ -158,38 +233,13 @@ namespace Engine
         class WorkItem
         {
             public float LeftMilliseconds;
-            public Character TheUser;
-            public Magic TheMagic;
-            public Vector2 Orgion;
-            public Vector2 Destination;
-            public LinkedList<Vector2> Path;
-            public SpriteType Type;
-            public bool DestroyOnEnd;
+            public MagicSprite TheSprite;
 
-            public WorkItem(float leftMilliseconds,
-                Character user,
-                Magic magic,
-                Vector2 orgion,
-                Vector2 destination,
-                LinkedList<Vector2> path,
-                SpriteType type,
-                bool destroyOnEnd)
+            public WorkItem(float leftMilliseconds, MagicSprite theSprite)
             {
                 LeftMilliseconds = leftMilliseconds;
-                TheUser = user;
-                TheMagic = magic;
-                Orgion = orgion;
-                Destination = destination;
-                Path = path;
-                Type = type;
-                DestroyOnEnd = destroyOnEnd;
+                TheSprite = theSprite;
             }
-        }
-
-        enum SpriteType
-        {
-            FixedPosition,
-            Moveing
         }
     }
 }

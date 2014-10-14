@@ -289,7 +289,7 @@ namespace Engine
             }
 
             _level = null;
-            if (!noLevel && hasLevel)
+            if (!noLevel)
             {
                 var levelList = new Dictionary<int, Magic>();
                 for (var li = 1; li < 11; li++)
@@ -300,24 +300,27 @@ namespace Engine
                 }
                 _level = levelList;
 
-                while (i < count)
+                if (hasLevel)
                 {
-                    var groups = Regex.Match(lines[i], @"\[Level([0-9]+)\]").Groups;
-                    if (groups[0].Success)
+                    while (i < count)
                     {
-                        i++;
-                        int key;
-                        if (int.TryParse(groups[1].Value, out key))
+                        var groups = Regex.Match(lines[i], @"\[Level([0-9]+)\]").Groups;
+                        if (groups[0].Success)
                         {
-                            var magic = _level[key];
-                            while (i < count && !string.IsNullOrEmpty(lines[i]))
+                            i++;
+                            int key;
+                            if (int.TryParse(groups[1].Value, out key))
                             {
-                                magic.AssignToValue(Utils.GetNameValue(lines[i]), noAttackFile);
-                                i++;
+                                var magic = _level[key];
+                                while (i < count && !string.IsNullOrEmpty(lines[i]))
+                                {
+                                    magic.AssignToValue(Utils.GetNameValue(lines[i]), noAttackFile);
+                                    i++;
+                                }
                             }
                         }
+                        i++;
                     }
-                    i++;
                 }
             }
             _isOk = true;

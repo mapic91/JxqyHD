@@ -177,6 +177,30 @@ namespace Engine
             return lists;
         }
 
+        //axes:x point to (1,0), y point to is (1,0) in game axes
+        //direction: 0-31 clockwise, 0 point to (0,1)
+        private static List<Vector2> _direction32List; 
+        public static Vector2 GetDirection32(int direction)
+        {
+            if (direction < 0 || direction > 31)
+                direction = 0;
+            return GetDirection32List()[direction];
+        }
+
+        public static List<Vector2> GetDirection32List()
+        {
+            if (_direction32List == null)
+            {
+                _direction32List = new List<Vector2>();
+                var angle = Math.PI * 2 / 32;
+                for (var i = 0; i < 32; i++)
+                {
+                    _direction32List.Add(new Vector2((float)-Math.Sin(angle * i), (float)Math.Cos(angle * i))); ;
+                }
+            }
+            return _direction32List;
+        }
+
         public struct LevelDetail
         {
             public int LevelUpExp;

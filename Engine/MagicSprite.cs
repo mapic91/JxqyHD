@@ -15,7 +15,8 @@ namespace Engine
         private Magic _belongMagic;
         private Vector2 _moveDirection;
         private LinkedList<Vector2> _paths;
-        private int _elaspedFrameSum;
+        private float _elaspedMilliseconds;
+        private float _lifeMilliseconds;
         private bool _isDestroyed;
         private bool _isInDestroy;
         private bool _destroyOnEnd;
@@ -86,10 +87,20 @@ namespace Engine
 
         public void Begin()
         {
-            if (BelongMagic.FlyingSound != null)
-                BelongMagic.FlyingSound.Play(Globals.SoundEffectVolume, 0f, 0f);
-            if (BelongMagic.LifeFrame == 0)
-                PlayCurrentDirOnce();
+            if (BelongMagic.FlyingImage == null)
+                _lifeMilliseconds = 50f*BelongMagic.LifeFrame;
+            else
+            {
+                if (BelongMagic.LifeFrame == 0)
+                    PlayCurrentDirOnce();
+                else
+                    _lifeMilliseconds = BelongMagic.LifeFrame*BelongMagic.FlyingImage.Interval;
+            }
+            if (Velocity != 0)//Move 32
+            {
+                var second = 32f/Velocity;
+                MoveTo(MoveDirection, second);
+            }
         }
 
         public void Destroy()
@@ -134,7 +145,7 @@ namespace Engine
             {
                 MoveTo(MoveDirection, (float)gameTime.ElapsedGameTime.TotalSeconds);
             }
-            _elaspedFrameSum++;
+            _elaspedMilliseconds += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
             if (IsInDestroy)
             {
                 if (IsPlayCurrentDirOnceEnd()) _isDestroyed = true;
@@ -147,7 +158,7 @@ namespace Engine
                 }
                 else if (
                 (BelongMagic.LifeFrame == 0 && IsPlayCurrentDirOnceEnd()) ||
-                (BelongMagic.LifeFrame != 0 && BelongMagic.LifeFrame < _elaspedFrameSum)
+                (BelongMagic.LifeFrame != 0 && _lifeMilliseconds < _elaspedMilliseconds)
                 )
                 {
                     if(_destroyOnEnd)Destroy();

@@ -54,6 +54,7 @@ namespace Engine
         private Magic _magicUse;
         private LinkedList<Vector2> _path;
         private bool _isObstacle = true;
+        private bool _isPlayer;
 
         #region Public properties
         public int Dir
@@ -81,6 +82,7 @@ namespace Engine
             {
                 _kind = value;
                 if (value == 7) IsObstacle = false;
+                if (value == 2 || value == 3) _isPlayer = true;
             }
         }
 
@@ -297,6 +299,11 @@ namespace Engine
         {
             get { return _isObstacle; }
             set { _isObstacle = value; }
+        }
+
+        public bool IsPlayer
+        {
+            get { return _isPlayer; }
         }
 
         #endregion

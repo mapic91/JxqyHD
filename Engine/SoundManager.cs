@@ -9,15 +9,32 @@ namespace Engine
 {
     public static class SoundManager
     {
-        static private LinkedList<SoundEffectInstance> _soundEffectInstances = new LinkedList<SoundEffectInstance>(); 
+        static private readonly Dictionary<int,SoundEffectInstance> _soundEffectInstances = new Dictionary<int, SoundEffectInstance>();
         static public void Play3DSoundOnece(SoundEffect soundEffect, Vector2 direction)
         {
             if (soundEffect == null) return;
+
+            SoundEffectInstance instance;
+            var hash = soundEffect.GetHashCode();
+            if (_soundEffectInstances.ContainsKey(hash))
+            {
+                instance = _soundEffectInstances[hash];
+            }
+            else
+            {
+                instance = soundEffect.CreateInstance();
+                _soundEffectInstances[hash] = instance;
+            }
+            if(instance.State == SoundState.Playing) return;
+            instance.Volume = Globals.SoundEffectVolume;
+
             var length = direction.Length();
-            if ((int)length == 0) soundEffect.Play(Globals.SoundEffectVolume, 0, 0);
+            if ((int) length == 0)
+            {
+                instance.Play();
+            }
             if (length < Globals.SoundMaxDistance)
             {
-                var instance = soundEffect.CreateInstance();
                 direction.Normalize();
                 var percent = length / Globals.SoundMaxDistance;
                 direction *= (percent * Globals.Sound3DMaxDistance);
@@ -27,21 +44,12 @@ namespace Engine
                 emitter.Position = new Vector3(direction.X, 0, direction.Y);
                 instance.Apply3D(listener, emitter);
                 instance.Play();
-                _soundEffectInstances.AddLast(instance);
             }
         }
 
-        static public void Update()
+        public static void ClearCache()
         {
-            for (var node = _soundEffectInstances.First; node != null;)
-            {
-                var next = node.Next;
-                if (node.Value.State == SoundState.Stopped)
-                {
-                    _soundEffectInstances.Remove(node);
-                }
-                node = next;
-            }
+            _soundEffectInstances.Clear();
         }
     }
 }
