@@ -96,9 +96,9 @@ namespace Engine
                 else
                     _lifeMilliseconds = BelongMagic.LifeFrame*BelongMagic.FlyingImage.Interval;
             }
-            if (Velocity != 0)//Move 32
+            if (Velocity != 0)//Move 30
             {
-                var second = 32f/Velocity;
+                var second = 30f/Velocity;
                 MoveTo(MoveDirection, second);
             }
         }

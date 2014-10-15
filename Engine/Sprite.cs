@@ -19,7 +19,6 @@ namespace Engine
         private int _currentDirection;
         private Asf _texture = new Asf();
         private bool _isPlayingCurrentDirOnce;
-        private const double TwoPi = Math.PI * 2;
         private float _movedDistance;
 
         public Sprite() { }
@@ -43,7 +42,7 @@ namespace Engine
             get { return _texture; }
             set
             {
-                if(value == null)
+                if (value == null)
                     _texture = new Asf();
                 else _texture = value;
                 _elapsedMilliSecond = 0;
@@ -59,7 +58,7 @@ namespace Engine
             {
                 if (_isPlayingCurrentDirOnce) return; //Can't set when playing
                 _currentDirection = value % (_texture.DirectionCounts == 0 ? 1 : _texture.DirectionCounts);
-                _frameBegin = _currentDirection*_texture.FrameCountsPerDirection;
+                _frameBegin = _currentDirection * _texture.FrameCountsPerDirection;
                 _frameEnd = _frameBegin + _texture.FrameCountsPerDirection - 1;
                 CurrentFrameIndex = CurrentFrameIndex;
             }
@@ -162,7 +161,7 @@ namespace Engine
         {
             get
             {
-                return new Rectangle((int)PositionInWorld.X - Texture.Left, 
+                return new Rectangle((int)PositionInWorld.X - Texture.Left,
                     (int)PositionInWorld.Y - Texture.Bottom
                     , Width
                     , Height);
@@ -183,7 +182,7 @@ namespace Engine
             {
                 SetDirection(direction);
                 direction.Normalize();
-                var move = direction*_velocity*elapsedSeconds;
+                var move = direction * _velocity * elapsedSeconds;
                 PositionInWorld += move;
                 MovedDistance += move.Length();
             }
@@ -191,7 +190,7 @@ namespace Engine
 
         public void PlayCurrentDirOnce()
         {
-            if(_isPlayingCurrentDirOnce) return;
+            if (_isPlayingCurrentDirOnce) return;
             _isPlayingCurrentDirOnce = true;
             CurrentFrameIndex = _frameBegin;//Reset frame
         }
@@ -226,21 +225,12 @@ namespace Engine
             }
         }
 
-        //Please see ../Helper/SetDirection.jpg
+        
         public void SetDirection(Vector2 direction)
         {
-            if (direction == Vector2.Zero) return;
-            direction.Normalize();
-            var angle = Math.Acos(Vector2.Dot(direction, new Vector2(0, 1)));
-            if (direction.X > 0) angle = TwoPi - angle;
-            if (Texture.DirectionCounts != 0)
+            if (direction != Vector2.Zero && Texture.DirectionCounts != 0)
             {
-                // 2*PI/2*directionCount
-                var halfAnglePerDirection = Math.PI/Texture.DirectionCounts;
-                var region = (int)(angle/halfAnglePerDirection);
-                if (region%2 != 0) region++;
-                region %= 2*Texture.DirectionCounts;
-                CurrentDirection = region/2;
+                CurrentDirection = Utils.GetDirection(direction, Texture.DirectionCounts);
             }
         }
 
@@ -257,7 +247,7 @@ namespace Engine
 
         public void Draw(SpriteBatch spriteBatch, Texture2D texture, int offX = 0, int offY = 0)
         {
-            if(texture == null) return;
+            if (texture == null) return;
             Rectangle des =
                  Globals.TheCarmera.ToViewRegion(new Rectangle((int)PositionInWorld.X - Texture.Left + offX,
                     (int)PositionInWorld.Y - Texture.Bottom + offY,

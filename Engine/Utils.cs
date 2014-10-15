@@ -201,6 +201,23 @@ namespace Engine
             return _direction32List;
         }
 
+        //Please see ../Helper/SetDirection.jpg
+        public static int GetDirection(Vector2 direction, int directionCount)
+        {
+            if (direction == Vector2.Zero || directionCount < 1) return 0;
+            const double twoPi = Math.PI * 2;
+            direction.Normalize();
+            var angle = Math.Acos(Vector2.Dot(direction, new Vector2(0, 1)));
+            if (direction.X > 0) angle = twoPi - angle;
+
+            // 2*PI/2*directionCount
+            var halfAnglePerDirection = Math.PI / directionCount;
+            var region = (int)(angle / halfAnglePerDirection);
+            if (region % 2 != 0) region++;
+            region %= 2 * directionCount;
+            return region / 2;
+        }
+
         public struct LevelDetail
         {
             public int LevelUpExp;
