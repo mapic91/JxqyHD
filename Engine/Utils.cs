@@ -201,6 +201,30 @@ namespace Engine
             return _direction32List;
         }
 
+        //axes:x point to (1,0), y point to is (1,0) in game axes
+        //direction: 0-7 clockwise, 0 point to (0,1)
+        private static List<Vector2> _direction8List;
+        public static Vector2 GetDirection8(int direction)
+        {
+            if (direction < 0 || direction > 7)
+                direction = 0;
+            return GetDirection8List()[direction];
+        }
+
+        public static List<Vector2> GetDirection8List()
+        {
+            if (_direction8List == null)
+            {
+                _direction8List = new List<Vector2>();
+                var angle = Math.PI * 2 / 8;
+                for (var i = 0; i < 8; i++)
+                {
+                    _direction8List.Add(new Vector2((float)-Math.Sin(angle * i), (float)Math.Cos(angle * i))); ;
+                }
+            }
+            return _direction8List;
+        }
+
         //Please see ../Helper/SetDirection.jpg
         public static int GetDirection(Vector2 direction, int directionCount)
         {

@@ -54,7 +54,7 @@ namespace Engine
                     AddFixedPositionMagicSprite(user, magic, destination, true);
                     break;
                 case 2:
-                    AddMagicSprite(GetMoveMagicSprite(user, magic, origin, destination, false));
+                    AddMagicSprite(GetMoveMagicSprite(user, magic, origin, destination, false, GetSpeedRatio(destination - origin)));
                     break;
                 case 3:
                     AddLineMoveMagicSprite(user, magic, origin, destination, false);
@@ -74,7 +74,54 @@ namespace Engine
                 case 8:
                     AddRandomSectorMoveMagicSprite(user, magic, origin, destination, false);
                     break;
+                case 9:
+                    AddFixedWallMagicSprite(user, magic, origin, destination, true);
+                    break;
+                case 10:
+                    AddWallMoveMagicSprite(user, magic, origin, destination, false);
+                    break;
             }
+        }
+
+        private static Vector2 GetDirectionOffsetOf8(Vector2 direction)
+        {
+            var directionIndex = Utils.GetDirection(direction, 8);
+            switch (directionIndex)
+            {
+                case 0:
+                case 4:
+                    direction = new Vector2(64, 0);
+                    break;
+                case 2:
+                case 6:
+                    direction = new Vector2(0, 32);
+                    break;
+                case 1:
+                case 5:
+                    direction = new Vector2(32, 16);
+                    break;
+                case 3:
+                case 7:
+                    direction = new Vector2(-32, 16);
+                    break;
+            }
+            return direction;
+        }
+
+        private static float GetSpeedRatio(Vector2 direction)
+        {
+            var speedRatio = 1f;
+            if (direction != Vector2.Zero)
+            {
+                direction.Normalize();
+                speedRatio = GetSpeedRatio(direction.Y);
+            }
+            return speedRatio;
+        }
+
+        private static float GetSpeedRatio(float normalizedDirectionY)
+        {
+            return 1f - 0.5f * Math.Abs(normalizedDirectionY);
         }
 
         private static MagicSprite GetMoveMagicSprite(Character user, Magic magic, Vector2 origin, Vector2 destination, bool destroyOnEnd, float speedRatio = 1f)
@@ -101,15 +148,23 @@ namespace Engine
                 destroyOnEnd);
         }
 
-        private static void AddFixedPositionMagicSprite(Character user, Magic magic, Vector2 destination, bool destroyOnEnd)
+        private static MagicSprite GetFixedPositionMagicSprite(Character user, Magic magic, Vector2 destination, bool destroyOnEnd)
         {
-            var sprite = new MagicSprite(
+            return new MagicSprite(
                 magic,
                 user,
                 destination,
                 0,
                 destroyOnEnd);
-            AddMagicSprite(sprite);
+        }
+
+        private static void AddFixedPositionMagicSprite(Character user, Magic magic, Vector2 destination, bool destroyOnEnd)
+        {
+            AddMagicSprite(GetFixedPositionMagicSprite(
+                user,
+                magic,
+                destination,
+                destroyOnEnd));
         }
 
         private static void AddMagicSprite(MagicSprite sprite)
@@ -120,13 +175,14 @@ namespace Engine
 
         private static void AddLineMoveMagicSprite(Character user, Magic magic, Vector2 origin, Vector2 destination, bool destroyOnEnd)
         {
-            AddMagicSprite(GetMoveMagicSprite(user, magic, origin, destination, destroyOnEnd));
+            var speedRatio = GetSpeedRatio(destination - origin);
+            AddMagicSprite(GetMoveMagicSprite(user, magic, origin, destination, destroyOnEnd, speedRatio));
             for (var i = 1; i < magic.CurrentLevel; i++)
             {
                 const float magicDelayMilliseconds = 60f;
                 _workList.AddLast(new WorkItem(
                     magicDelayMilliseconds * i,
-                    GetMoveMagicSprite(user, magic, origin, destination, destroyOnEnd)));
+                    GetMoveMagicSprite(user, magic, origin, destination, destroyOnEnd, speedRatio)));
             }
         }
 
@@ -135,15 +191,13 @@ namespace Engine
             var list = Utils.GetDirection32List();
             foreach (var dir in list)
             {
-                var speed = Globals.MagicBasespeed*magic.Speed;
-                speed = (int) (speed*(1 - 0.5*Math.Abs(dir.Y)));
-                var sprite = new MagicSprite(magic, 
-                    user, 
-                    origin, 
-                    speed, 
-                    dir, 
-                    destroyOnEnd);
-                AddMagicSprite(sprite);
+                AddMagicSprite(GetMoveMagicSpriteOnDirection(
+                    user,
+                    magic,
+                    origin,
+                    dir,
+                    false,
+                    GetSpeedRatio(dir.Y)));
             }
         }
 
@@ -153,23 +207,23 @@ namespace Engine
             const float delayTime = 30;
             //First one
             var direction = list[0];
-            var speedRatio = 1f - 0.5f*Math.Abs(direction.Y);
+            var speedRatio = GetSpeedRatio(direction.Y);
             AddMagicSprite(GetMoveMagicSpriteOnDirection(user, magic, origin, direction, destroyOnEnd, speedRatio));
             for (var i = 1; i < 1 + 15; i++)
             {
-                var delay = i*delayTime;
+                var delay = i * delayTime;
                 direction = list[i];
-                speedRatio = 1f - 0.5f * Math.Abs(direction.Y);
+                speedRatio = GetSpeedRatio(direction.Y);
                 _workList.AddLast(new WorkItem(delay,
                     GetMoveMagicSpriteOnDirection(user, magic, origin, direction, destroyOnEnd, speedRatio)));
                 direction = list[32 - i];
-                speedRatio = 1f - 0.5f * Math.Abs(direction.Y);
+                speedRatio = GetSpeedRatio(direction.Y);
                 _workList.AddLast(new WorkItem(delay,
                     GetMoveMagicSpriteOnDirection(user, magic, origin, direction, destroyOnEnd, speedRatio)));
             }
             direction = list[16];
-            speedRatio = 1f - 0.5f * Math.Abs(direction.Y);
-            _workList.AddLast(new WorkItem(16*delayTime,
+            speedRatio = GetSpeedRatio(direction.Y);
+            _workList.AddLast(new WorkItem(16 * delayTime,
                 GetMoveMagicSpriteOnDirection(user, magic, origin, direction, destroyOnEnd, speedRatio)));
             //Second
             _workList.AddLast(new WorkItem(17 * delayTime,
@@ -178,11 +232,11 @@ namespace Engine
             {
                 var delay = (18 + 15 - j) * delayTime;
                 direction = list[j];
-                speedRatio = 1f - 0.5f * Math.Abs(direction.Y);
+                speedRatio = GetSpeedRatio(direction.Y);
                 _workList.AddLast(new WorkItem(delay,
                     GetMoveMagicSpriteOnDirection(user, magic, origin, direction, destroyOnEnd, speedRatio)));
                 direction = list[32 - j];
-                speedRatio = 1f - 0.5f * Math.Abs(direction.Y);
+                speedRatio = GetSpeedRatio(direction.Y);
                 _workList.AddLast(new WorkItem(delay,
                     GetMoveMagicSpriteOnDirection(user, magic, origin, direction, destroyOnEnd, speedRatio)));
             }
@@ -196,14 +250,14 @@ namespace Engine
             var direction = destination - origin;
             var directionIndex = Utils.GetDirection(direction, 32);
             var list = Utils.GetDirection32List();
-            AddMagicSprite(GetMoveMagicSpriteOnDirection(user, magic, origin, list[directionIndex], false));
+            AddMagicSprite(GetMoveMagicSpriteOnDirection(user, magic, origin, list[directionIndex], false, GetSpeedRatio(list[directionIndex].Y)));
             const float magicDelayMilliseconds = 30f;
             for (var i = 1; i < 32; i++)
             {
-                var dir = (directionIndex + i)%32;
-                var delay = i*magicDelayMilliseconds;
+                var dir = (directionIndex + i) % 32;
+                var delay = i * magicDelayMilliseconds;
                 _workList.AddLast(new WorkItem(delay,
-                    GetMoveMagicSpriteOnDirection(user, magic, origin, list[dir], false)));
+                    GetMoveMagicSpriteOnDirection(user, magic, origin, list[dir], false, GetSpeedRatio(list[dir].Y))));
             }
         }
 
@@ -212,7 +266,7 @@ namespace Engine
         {
             var direction = destination - origin;
             var directionIndex = Utils.GetDirection(direction, 8);
-            directionIndex = 4*directionIndex;
+            directionIndex = 4 * directionIndex;
             var list = Utils.GetDirection32List();
             var count = 1;
             if (magic.CurrentLevel > 0)
@@ -220,15 +274,15 @@ namespace Engine
                 count += (magic.CurrentLevel - 1) / 3;
             }
             direction = list[directionIndex];
-            var speedRatio = 1f - 0.5f * Math.Abs(direction.Y);
+            var speedRatio = GetSpeedRatio(direction.Y);
             AddMagicSprite(GetMoveMagicSpriteOnDirection(user, magic, origin, direction, false, speedRatio));
             for (var i = 1; i <= count; i++)
             {
-                direction = list[(directionIndex + i)%32];
-                speedRatio = 1f - 0.5f * Math.Abs(direction.Y);
+                direction = list[(directionIndex + i) % 32];
+                speedRatio = GetSpeedRatio(direction.Y);
                 AddMagicSprite(GetMoveMagicSpriteOnDirection(user, magic, origin, direction, false, speedRatio));
-                direction = list[(directionIndex + 32 - i)%32];
-                speedRatio = 1f - 0.5f * Math.Abs(direction.Y);
+                direction = list[(directionIndex + 32 - i) % 32];
+                speedRatio = GetSpeedRatio(direction.Y);
                 AddMagicSprite(GetMoveMagicSpriteOnDirection(user, magic, origin, direction, false, speedRatio));
             }
         }
@@ -249,7 +303,7 @@ namespace Engine
                 count += (magic.CurrentLevel - 1) / 3;
             }
             direction = list[directionIndex];
-            var speedRatio = 1f - 0.5f * Math.Abs(direction.Y);
+            var speedRatio = GetSpeedRatio(direction.Y);
             var sprite = GetMoveMagicSpriteOnDirection(user, magic, origin, direction, false, speedRatio);
             if (raandom.Next(2) == 0)
                 AddMagicSprite(sprite);
@@ -258,14 +312,14 @@ namespace Engine
             for (var i = 1; i <= count; i++)
             {
                 direction = list[(directionIndex + i) % 32];
-                speedRatio = 1f - 0.5f * Math.Abs(direction.Y);
+                speedRatio = GetSpeedRatio(direction.Y);
                 sprite = GetMoveMagicSpriteOnDirection(user, magic, origin, direction, false, speedRatio);
                 if (raandom.Next(2) == 0)
                     AddMagicSprite(sprite);
                 else
                     _workList.AddLast(new WorkItem(magicDelayMilliseconds, sprite));
                 direction = list[(directionIndex + 32 - i) % 32];
-                speedRatio = 1f - 0.5f * Math.Abs(direction.Y);
+                speedRatio = GetSpeedRatio(direction.Y);
                 sprite = GetMoveMagicSpriteOnDirection(user, magic, origin, direction, false, speedRatio);
                 if (raandom.Next(2) == 0)
                     AddMagicSprite(sprite);
@@ -273,6 +327,52 @@ namespace Engine
                     _workList.AddLast(new WorkItem(magicDelayMilliseconds, sprite));
             }
         }
+
+        private static void AddFixedWallMagicSprite(Character user, Magic magic, Vector2 origin, Vector2 destination,
+            bool destroyOnEnd)
+        {
+            var offset = GetDirectionOffsetOf8(destination - origin);
+
+            var count = 3;
+            if (magic.CurrentLevel > 1) count += (magic.CurrentLevel - 1)*2;
+            AddFixedWallMagicSprite(user, magic, destination, offset, count, destroyOnEnd);
+        }
+
+        private static void AddFixedWallMagicSprite(Character user, Magic magic, Vector2 destination, Vector2 offset,
+            int count, bool destroyOnEnd)
+        {
+            count = (count - 1)/2;
+            AddMagicSprite(GetFixedPositionMagicSprite(user, magic, destination, destroyOnEnd));
+            for (var i = 1; i <= count; i++)
+            {
+                var position = destination + i * offset;
+                AddMagicSprite(GetFixedPositionMagicSprite(user, magic, position, destroyOnEnd));
+                position = destination - i * offset;
+                AddMagicSprite(GetFixedPositionMagicSprite(user, magic, position, destroyOnEnd));
+            }
+        }
+
+        private static void AddWallMoveMagicSprite(Character user, Magic magic, Vector2 origin, Vector2 destination,
+            bool destroyOnEnd)
+        {
+            var direction = destination - origin;
+            var offset = GetDirectionOffsetOf8(direction);
+            direction = Utils.GetDirection8(Utils.GetDirection(direction, 8));
+            var speedRatio = GetSpeedRatio(direction);
+
+            var count = 1;
+            if (magic.CurrentLevel > 1) count += magic.CurrentLevel - 1;
+            AddMagicSprite(GetMoveMagicSpriteOnDirection(user, magic, origin, direction, false, speedRatio));
+            for (var i = 1; i <= count; i++)
+            {
+                var position = origin + i * offset;
+                AddMagicSprite(GetMoveMagicSpriteOnDirection(user, magic, position, direction, false, speedRatio));
+                position = origin - i * offset;
+                AddMagicSprite(GetMoveMagicSpriteOnDirection(user, magic, position, direction, false, speedRatio));
+            }
+        }
+
+
 
         public static void Update(GameTime gameTime)
         {
