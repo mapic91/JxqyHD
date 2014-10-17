@@ -226,7 +226,7 @@ namespace Engine
         }
 
         //Please see ../Helper/SetDirection.jpg
-        public static int GetDirection(Vector2 direction, int directionCount)
+        public static int GetDirectionIndex(Vector2 direction, int directionCount)
         {
             if (direction == Vector2.Zero || directionCount < 1) return 0;
             const double twoPi = Math.PI * 2;

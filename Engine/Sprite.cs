@@ -230,7 +230,7 @@ namespace Engine
         {
             if (direction != Vector2.Zero && Texture.DirectionCounts != 0)
             {
-                CurrentDirection = Utils.GetDirection(direction, Texture.DirectionCounts);
+                CurrentDirection = Utils.GetDirectionIndex(direction, Texture.DirectionCounts);
             }
         }
 
