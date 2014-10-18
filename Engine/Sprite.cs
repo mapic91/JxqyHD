@@ -11,7 +11,7 @@ namespace Engine
         private int _mapX;
         private int _mapY;
         private bool _isTilePostionNew;
-        private int _velocity;
+        private float _velocity;
         private int _currentFrameIndex;
         private int _frameBegin;
         private int _frameEnd;
@@ -23,12 +23,12 @@ namespace Engine
 
         public Sprite() { }
 
-        public Sprite(Vector2 positionInWorld, int velocity, Asf texture, int direction = 0)
+        public Sprite(Vector2 positionInWorld, float velocity, Asf texture, int direction = 0)
         {
             Set(positionInWorld, velocity, texture, direction);
         }
 
-        public void Set(Vector2 positionInWorld, int velocity, Asf texture, int direction = 0)
+        public void Set(Vector2 positionInWorld, float velocity, Asf texture, int direction = 0)
         {
             PositionInWorld = positionInWorld;
             Velocity = velocity;
@@ -77,7 +77,7 @@ namespace Engine
             }
         }
 
-        public int Velocity
+        public float Velocity
         {
             get { return _velocity; }
             set { _velocity = value; }

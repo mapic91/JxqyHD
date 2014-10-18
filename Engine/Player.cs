@@ -17,6 +17,8 @@ namespace Engine
         private int _fight;
         private int _money;
         private Dictionary<int, Utils.LevelDetail> _levelIni;
+        private float _totalNonFightingTime;
+        private const float MaxNonFightingTime = 7f;
 
         #region Public properties
 
@@ -84,19 +86,7 @@ namespace Engine
                 State != (int)NpcState.Jump &&
                 State != (int)NpcState.Magic)
             {
-                var tilePositionUnderMouse = Map.ToTilePosition(mouseWorldPosition);
-                var startTile = Map.ToTilePosition(PositionInWorld);
-                var pathType = PathType.WalkRun;
-                var npcState = NpcState.Walk;
-                if (keyboardState.IsKeyDown(Keys.LeftShift))
-                    npcState = NpcState.Run;
-                else if (keyboardState.IsKeyDown(Keys.LeftAlt))
-                {
-                    pathType = PathType.Jump;
-                    npcState = NpcState.Jump;
-                }
-                var path = Engine.PathFinder.FindPath(startTile, tilePositionUnderMouse, pathType);
-                SetPathAndState(path, pathType, npcState);
+                
             }
             if (mouseState.RightButton == ButtonState.Pressed &&
                 _lastMouseState.RightButton == ButtonState.Released)

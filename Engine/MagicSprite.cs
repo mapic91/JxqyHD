@@ -54,7 +54,7 @@ namespace Engine
 
         public MagicSprite() : base() { }
 
-        public MagicSprite(Magic belongMagic, Character belongCharacter, Vector2 positionInWorld, int velocity, 
+        public MagicSprite(Magic belongMagic, Character belongCharacter, Vector2 positionInWorld, float velocity, 
             Vector2 moveDirection, bool destroyOnEnd)
         {
             if (belongMagic == null || belongCharacter == null)
