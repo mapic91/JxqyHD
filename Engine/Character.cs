@@ -11,10 +11,9 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Engine
 {
     using StateMapList = Dictionary<int, ResStateInfo>;
-    public abstract class Character
+    public abstract class Character : Sprite
     {
         private SoundEffectInstance _sound;
-        private Sprite _figure = new Sprite();
         private int _dir;
         private string _name;
         private int _kind;
@@ -53,6 +52,9 @@ namespace Engine
         private Magic _magicUse;
         private bool _isObstacle = true;
         private bool _isPlayer;
+        private bool _isInFighting;
+        private float _totalNonFightingSeconds;
+        private const float MaxNonFightSeconds = 7f;
         private Vector2 _destinationPositionInWorld = Vector2.Zero;
         private Vector2 _destinationTilePosition = Vector2.Zero;
         private LinkedList<Vector2> _path;
@@ -62,12 +64,6 @@ namespace Engine
         {
             get { return _dir; }
             set { _dir = value % 8; }
-        }
-
-        public Sprite Figure
-        {
-            get { return _figure; }
-            set { _figure = value; }
         }
 
         public string Name
@@ -121,30 +117,6 @@ namespace Engine
         {
             get { return _attackRadius; }
             set { _attackRadius = value; }
-        }
-
-        public int MapX
-        {
-            get { return Figure.MapX; }
-            set { Figure.MapX = value; }
-        }
-
-        public int MapY
-        {
-            get { return Figure.MapY; }
-            set { Figure.MapY = value; }
-        }
-
-        public Vector2 TilePosition
-        {
-            get { return Figure.TilePosition; }
-            set { Figure.TilePosition = value; }
-        }
-
-        public Vector2 PositionInWorld
-        {
-            get { return Figure.PositionInWorld; }
-            set { Figure.PositionInWorld = value; }
         }
 
         public int Lum
@@ -297,11 +269,6 @@ namespace Engine
             set { _idle = value; }
         }
 
-        public Rectangle RegionInWorld
-        {
-            get { return Figure.RegionInWorld; }
-        }
-
         public bool IsObstacle
         {
             get { return _isObstacle; }
@@ -334,10 +301,14 @@ namespace Engine
             }
         }
 
-        public float MovedDistance
+        protected LinkedList<Vector2> Path
         {
-            get { return Figure.MovedDistance; }
-            set { Figure.MovedDistance = value; }
+            get { return _path; }
+            set
+            {
+                _path = value;
+                MovedDistance = 0;
+            }
         }
 
         #endregion
@@ -353,7 +324,7 @@ namespace Engine
         {
             if (NpcIni.ContainsKey((int)NpcState.Stand))
             {
-                Figure.Set(Map.ToPixelPosition(MapX, MapY),
+                Set(Map.ToPixelPosition(MapX, MapY),
                     Globals.BaseSpeed,
                     NpcIni[(int)NpcState.Stand].Image, Dir);
             }
@@ -404,6 +375,85 @@ namespace Engine
 
         }
 
+        private void MoveAlongPath(float elapsedSeconds, int speedFold)
+        {
+            if (Path == null || Path.Count < 2)
+            {
+                Standing();
+                return;
+            }
+            var tilePosition = Map.ToTilePosition(Path.First.Next.Value);
+            if (NpcManager.IsObstacle(tilePosition))
+            {
+                if (tilePosition == DestinationTilePosition)
+                {
+                    Path = null;
+                    Standing();
+                    return;
+                }
+                Path = Engine.PathFinder.FindPath(TilePosition, DestinationTilePosition);
+                MovedDistance = 0;
+            }
+            var from = Path.First.Value;
+            var to = Path.First.Next.Value;
+            var distance = Vector2.Distance(from, to);
+            MoveTo(to - PositionInWorld, elapsedSeconds * speedFold);
+            if (MovedDistance >= distance ||
+                Vector2.Distance(PositionInWorld, to) < Globals.DistanceOffset)
+            {
+                if (DestinationTilePosition != Map.ToTilePosition(Path.Last.Value))
+                {
+                    var destination = DestinationPositionInWorld;
+                    PositionInWorld = to;
+                    Path = Engine.PathFinder.FindPath(TilePosition, Map.ToTilePosition(destination));
+                    if (Path == null) Standing();
+                }
+                else
+                {
+                    MovedDistance = 0;
+                    if (Path.Count > 2)
+                    {
+                        Path.RemoveFirst();
+                    }
+                    else Standing();
+                }
+            }
+        }
+
+        private void JumpAlongPath(float elapsedSeconds)
+        {
+            if (Path == null)
+            {
+                Standing();
+                return;
+            }
+            if (Path.Count == 2)
+            {
+                var from = Path.First.Value;
+                var to = Path.First.Next.Value;
+                var distance = Vector2.Distance(from, to);
+                var lastPosition = PositionInWorld;
+                MoveTo(to - from, elapsedSeconds * 8);
+                bool isOver = false;
+                if (Globals.TheMap.IsObstacleForCharacterJump(TilePosition))
+                {
+                    PositionInWorld = lastPosition;
+                    isOver = true;
+                }
+                else if (MovedDistance >= distance - Globals.DistanceOffset)
+                {
+                    MovedDistance = 0;
+                    PositionInWorld = to;
+                    isOver = true;
+                }
+                if (isOver)
+                {
+                    Path.RemoveFirst();
+                }
+            }
+            if (IsPlayCurrentDirOnceEnd()) Standing();
+        }
+
         public bool Load(string filePath)
         {
             try
@@ -430,114 +480,307 @@ namespace Engine
             return true;
         }
 
-        public void MoveTo(Vector2 direction, float elapsedSeconds)
-        {
-            Figure.MoveTo(direction, elapsedSeconds);
-        }
-
-        public void UseMagic(Magic magic, Vector2 magicDestination)
-        {
-            if (State != (int)NpcState.Magic)
-            {
-                _magicDestination = magicDestination;
-                _magicUse = magic;
-                Figure.SetDirection(magicDestination - PositionInWorld);
-                SetState(NpcState.Magic);
-            }
-        }
-
         public void SetState(NpcState state)
         {
-            if (State != (int)state)
+            if (State != (int)state && NpcIni.ContainsKey((int)state))
             {
                 if (_sound != null)
                 {
                     _sound.Stop(true);
                     _sound = null;
                 }
-                if (NpcIni.ContainsKey((int)state))
+
+                var image = NpcIni[(int)state].Image;
+                var sound = NpcIni[(int)state].Sound;
+                Texture = image;
+                if (sound != null)
                 {
-                    var image = NpcIni[(int)state].Image;
-                    var sound = NpcIni[(int)state].Sound;
-                    Figure.Texture = image;
-                    if (state == NpcState.Magic)
+                    switch (state)
                     {
-                        Figure.PlayCurrentDirOnce();
-                    }
-                    if (sound != null)
-                    {
-                        if (state == NpcState.Walk ||
-                            state == NpcState.Run ||
-                            state == NpcState.FightWalk ||
-                            state == NpcState.FightRun)
-                        {
-                            _sound = sound.CreateInstance();
-                            _sound.IsLooped = true;
-                            _sound.Volume = Globals.SoundEffectVolume;
-                            _sound.Play();
-                        }
-                        else if (state == NpcState.Magic)
-                        {
-                            //do nothing
-                        }
-                        else sound.Play(Globals.SoundEffectVolume, 0f, 0f);
+                        case NpcState.Walk:
+                        case NpcState.FightWalk:
+                        case NpcState.Run:
+                        case NpcState.FightRun:
+                            {
+                                _sound = sound.CreateInstance();
+                                _sound.IsLooped = true;
+                                _sound.Volume = Globals.SoundEffectVolume;
+                                _sound.Play();
+                            }
+                            break;
+                        case NpcState.Magic:
+                            {
+                                //do nothing
+                            }
+                            break;
+                        default:
+                            sound.Play(Globals.SoundEffectVolume, 0f, 0f);
+                            break;
                     }
                 }
                 State = (int)state;
             }
         }
 
-        public virtual void Update(GameTime gameTime)
+        #region Perform action
+        public void Standing()
         {
-            var elapsedGameTime = gameTime.ElapsedGameTime;
-            switch ((NpcState)State)
+            StateInitialize();
+            if (_isInFighting && NpcIni.ContainsKey((int)NpcState.FightStand)) SetState(NpcState.FightStand);
+            else
             {
-                case NpcState.Walk:
-                case NpcState.FightWalk:
-                case NpcState.Run:
-                case NpcState.FightRun:
+                if (NpcIni.ContainsKey((int)NpcState.Stand1) &&
+                    Globals.TheRandom.Next(2) == 1) SetState(NpcState.Stand1);
+                else SetState(NpcState.Stand);
+                PlayCurrentDirOnce();
+            }
+        }
+
+        public bool PerformActionOk()
+        {
+            if (State == (int)NpcState.Jump ||
+                State == (int)NpcState.Attack ||
+                State == (int)NpcState.Attack1 ||
+                State == (int)NpcState.Attack2 ||
+                State == (int)NpcState.Magic ||
+                State == (int)NpcState.Hurt ||
+                State == (int)NpcState.Death ||
+                State == (int)NpcState.FightJump) return false;
+            return true;
+        }
+
+        public void StateInitialize()
+        {
+            EndPlayCurrentDirOnce();
+            DestinationPositionInWorld = Vector2.Zero;
+            Path = null;
+        }
+
+        public bool IsWalking()
+        {
+            return (State == (int)NpcState.Walk ||
+                    State == (int)NpcState.FightWalk);
+        }
+
+        public bool IsRuning()
+        {
+            return (State == (int)NpcState.Run ||
+                    State == (int)NpcState.FightRun);
+        }
+
+        public bool IsSitting()
+        {
+            return State == (int) NpcState.Sit;
+        }
+
+        public void WalkTo(Vector2 destination)
+        {
+            if (PerformActionOk() &&
+                Map.ToTilePosition(destination) != TilePosition)
+            {
+                if (IsWalking())
+                    DestinationPositionInWorld = destination;
+                else
+                {
+                    StateInitialize();
+                    Path = Engine.PathFinder.FindPath(TilePosition, Map.ToTilePosition(destination));
+                    if (Path == null) Standing();
+                    else
                     {
-                        if (DestinationTilePosition != Vector2.Zero && _path == null)
-                        {
-                            _path = Engine.PathFinder.FindPath(TilePosition, DestinationTilePosition);
-                        }
+                        DestinationPositionInWorld = destination;
+                        if (_isInFighting && NpcIni.ContainsKey((int)NpcState.FightWalk)) SetState(NpcState.FightWalk);
+                        else SetState(NpcState.Walk);
                     }
-                    break;
-                case NpcState.Jump:
-                case NpcState.FightJump:
-                    {
-                        if (DestinationTilePosition != Vector2.Zero && _path == null)
-                        {
-                            _path = new LinkedList<Vector2>();
-                            _path.AddLast(PositionInWorld);
-                            _path.AddLast(DestinationPositionInWorld);
-                        }
-                    }
-                    break;
-                case NpcState.FightStand:
-                    break;
+                }
             }
 
-            if (_path != null)
+        }
+
+        public void RunTo(Vector2 destination)
+        {
+            if (PerformActionOk() &&
+                Map.ToTilePosition(destination) != TilePosition)
             {
-                switch ((NpcState)State)
+                if (IsRuning())
+                    DestinationPositionInWorld = destination;
+                else
                 {
-                    case NpcState.Walk:
-                    case NpcState.FightWalk:
+                    StateInitialize();
+                    Path = Engine.PathFinder.FindPath(TilePosition, Map.ToTilePosition(destination));
+                    if (Path == null) Standing();
+                    else
                     {
-                        var from = _path.First.Value;
-                        var to = _path.First.Next.Value;
-                        var distance = Vector2.Distance(from, to);
-                        
+                        DestinationPositionInWorld = destination;
+                        if (_isInFighting && NpcIni.ContainsKey((int)NpcState.FightRun)) SetState(NpcState.FightRun);
+                        else SetState(NpcState.Run);
                     }
-                        break;
                 }
             }
         }
 
+        public void JumpTo(Vector2 destination)
+        {
+            if (PerformActionOk() &&
+                Map.ToTilePosition(destination) != TilePosition)
+            {
+                StateInitialize();
+                Path = new LinkedList<Vector2>();
+                Path.AddLast(PositionInWorld);
+                Path.AddLast(destination);
+
+                DestinationPositionInWorld = destination;
+                if (_isInFighting && NpcIni.ContainsKey((int)NpcState.FightJump)) SetState(NpcState.FightJump);
+                else SetState(NpcState.Jump);
+                SetDirection(destination - PositionInWorld);
+                PlayCurrentDirOnce();
+            }
+
+        }
+
+        public void Sitdown()
+        {
+            if (PerformActionOk())
+            {
+                StateInitialize();
+                if (NpcIni.ContainsKey((int)NpcState.Sit))
+                {
+                    SetState(NpcState.Sit);
+                    PlayCurrentDirOnce();
+                }
+            }
+        }
+
+        public void UseMagic(Magic magic, Vector2 magicDestination)
+        {
+            if (PerformActionOk())
+            {
+                StateInitialize();
+                _isInFighting = true;
+                _totalNonFightingSeconds = 0;
+
+                _magicDestination = magicDestination;
+                _magicUse = magic;
+                SetState(NpcState.Magic);
+                SetDirection(magicDestination - PositionInWorld);
+                PlayCurrentDirOnce();
+            }
+        }
+
+        public void Hurted()
+        {
+            StateInitialize();
+            if (NpcIni.ContainsKey((int)NpcState.Hurt))
+            {
+                SetState(NpcState.Hurt);
+                PlayCurrentDirOnce();
+            }
+        }
+
+        public void Death()
+        {
+            StateInitialize();
+            if (NpcIni.ContainsKey((int)NpcState.Death))
+            {
+                SetState(NpcState.Death);
+                PlayCurrentDirOnce();
+            }
+        }
+
+        public void Attacking(Vector2 direction)
+        {
+            if (PerformActionOk())
+            {
+                StateInitialize();
+                _isInFighting = true;
+                _totalNonFightingSeconds = 0;
+
+                var value = Globals.TheRandom.Next(3);
+                if (value == 1 && NpcIni.ContainsKey((int)NpcState.Attack1))
+                    SetState(NpcState.Attack1);
+                else if (value == 2 && NpcIni.ContainsKey((int)NpcState.Attack2))
+                    SetState(NpcState.Attack2);
+                else SetState(NpcState.Attack);
+                SetDirection(direction);
+                PlayCurrentDirOnce();
+            }
+        }
+
+        public void ToNonFightingState()
+        {
+            _isInFighting = false;
+            if (IsWalking()) SetState(NpcState.Walk);
+            if (IsRuning()) SetState(NpcState.Run);
+        }
+        #endregion Perform action
+
+        public override void Update(GameTime gameTime)
+        {
+            var elapsedGameTime = gameTime.ElapsedGameTime;
+
+            switch ((NpcState)State)
+            {
+                case NpcState.Walk:
+                case NpcState.FightWalk:
+                    {
+                        MoveAlongPath((float)elapsedGameTime.TotalSeconds, WalkSpeed);
+                        Update(gameTime, WalkSpeed);
+                    }
+                    break;
+                case NpcState.Run:
+                case NpcState.FightRun:
+                    MoveAlongPath((float)elapsedGameTime.TotalSeconds, 8);
+                    base.Update(gameTime);
+                    break;
+                case NpcState.Jump:
+                case NpcState.FightJump:
+                    JumpAlongPath((float)elapsedGameTime.TotalSeconds);
+                    base.Update(gameTime);
+                    break;
+                case NpcState.Stand:
+                case NpcState.Stand1:
+                case NpcState.Attack:
+                case NpcState.Attack1:
+                case NpcState.Attack2:
+                case NpcState.Hurt:
+                    if (IsPlayCurrentDirOnceEnd()) Standing();
+                    else base.Update(gameTime);
+                    break;
+                case NpcState.Magic:
+                    if (IsPlayCurrentDirOnceEnd())
+                    {
+                        MagicManager.UseMagic(this, _magicUse, PositionInWorld, _magicDestination);
+                        Standing();
+                    }
+                    else base.Update(gameTime);
+                    break;
+                case NpcState.Sit:
+                    if (!IsPlayCurrentDirOnceEnd()) base.Update(gameTime);
+                    break;
+                case NpcState.Death:
+                    if (IsPlayCurrentDirOnceEnd())
+                    {
+
+                    }
+                    else base.Update(gameTime);
+                    break;
+                default:
+                    base.Update(gameTime);
+                    break;
+            }
+            if (_isInFighting)
+            {
+                _totalNonFightingSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (_totalNonFightingSeconds > MaxNonFightSeconds)
+                {
+                    ToNonFightingState();
+                }
+            }
+
+        }
+
         public void Draw(SpriteBatch spriteBatch)
         {
-            Figure.Draw(spriteBatch);
+            base.Draw(spriteBatch);
         }
     }
 }

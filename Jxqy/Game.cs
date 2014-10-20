@@ -77,7 +77,7 @@ namespace Jxqy
 
             //BackgroundMusic.Play(@"music/Mc003.mp3");
 
-            Globals.TheCarmera.Follow(_player1.Figure); 
+            Globals.TheCarmera.Follow(_player1); 
         }
 
         /// <summary>

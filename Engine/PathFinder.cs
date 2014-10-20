@@ -35,6 +35,7 @@ namespace Engine
                 if (tryCount++ > 2000) break;
                 var current = frontier.DeleteMin().Location;
                 if (current.Equals(endTile)) break;
+                if (NpcManager.IsObstacle(current)) continue;
                 foreach (var next in FindNeighbors(current))
                 {
                     var newCost = costSoFar[current] + GetCost(current, next);

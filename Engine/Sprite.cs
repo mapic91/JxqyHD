@@ -135,12 +135,12 @@ namespace Engine
             set
             {
                 PositionInWorld = Map.ToPixelPosition(value);
-                _mapX = (int) value.X;
-                _mapY = (int) value.Y;
+                _mapX = (int)value.X;
+                _mapY = (int)value.Y;
             }
         }
 
-        public bool IsTilePostionNew
+        private bool IsTilePostionNew
         {
             get { return _isTilePostionNew; }
             set { _isTilePostionNew = value; }
@@ -148,19 +148,11 @@ namespace Engine
 
         public int Width
         {
-            get
-            {
-                if (_texture != null) return _texture.Width;
-                else return 0;
-            }
+            get { return _texture.Width; }
         }
         public int Height
         {
-            get
-            {
-                if (_texture != null) return _texture.Height;
-                else return 0;
-            }
+            get{ return _texture.Height; }
         }
 
         public Vector2 Size
@@ -206,6 +198,11 @@ namespace Engine
             CurrentFrameIndex = _frameBegin;//Reset frame
         }
 
+        public void EndPlayCurrentDirOnce()
+        {
+            _isPlayingCurrentDirOnce = false;
+        }
+
         public bool IsPlayCurrentDirOnceEnd()
         {
             return !_isPlayingCurrentDirOnce;
@@ -223,20 +220,33 @@ namespace Engine
             Update(gameTime, speedFold);
         }
 
-        public void Update(GameTime gameTime, int speedFold = 1)
+        public void Update(GameTime gameTime, int speedFold)
         {
             var elapsedTime = new TimeSpan(gameTime.ElapsedGameTime.Ticks * speedFold);
-            _elapsedMilliSecond += (int)elapsedTime.TotalMilliseconds;
+            Update((int)elapsedTime.TotalMilliseconds);
+        }
+
+        public virtual void Update(GameTime gameTime)
+        {
+            Update((int)gameTime.ElapsedGameTime.TotalMilliseconds);
+        }
+
+        private void Update(int elapsedMilliSecond)
+        {
+            _elapsedMilliSecond += elapsedMilliSecond;
             if (_elapsedMilliSecond > Texture.Interval)
             {
                 _elapsedMilliSecond -= Texture.Interval;
                 CurrentFrameIndex++;
-                if (_isPlayingCurrentDirOnce && CurrentFrameIndex == _frameEnd)
+                if (_isPlayingCurrentDirOnce &&
+                    CurrentFrameIndex == _frameEnd)
+                {
                     _isPlayingCurrentDirOnce = false;
+                }
             }
         }
 
-        
+
         public void SetDirection(Vector2 direction)
         {
             if (direction != Vector2.Zero && Texture.DirectionCounts != 0)

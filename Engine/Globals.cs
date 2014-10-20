@@ -25,6 +25,8 @@ namespace Engine
         public static float MusicVolume = 1f;
         public static float SoundEffectVolume = 1f;
 
+        public static Random TheRandom = new Random();
+
         //Sprite out edge
         public static Sprite OutEdgeSprite;
         public static Texture2D OutEdgeTexture;

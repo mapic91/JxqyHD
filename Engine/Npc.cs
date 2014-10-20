@@ -19,12 +19,12 @@ namespace Engine
 
         public void Draw(SpriteBatch spriteBatch, Point mousePositionInWorld)
         {
-            var texture = Figure.GetCurrentTexture();
+            var texture = GetCurrentTexture();
             if (Collider.IsPixelCollideForNpcObj(mousePositionInWorld,
                 RegionInWorld,
                 texture))
             {
-                Globals.OutEdgeSprite = this.Figure;
+                Globals.OutEdgeSprite = this;
                 Globals.OutEdgeTexture = TextureGenerator.GetOuterEdge(texture, Globals.NpcEdgeColor);
             }
             Draw(spriteBatch);

@@ -75,32 +75,48 @@ namespace Engine
         }
 
         private MouseState _lastMouseState;
+        private KeyboardState _lastKeyboardState;
         public override void Update(GameTime gameTime)
         {
             var mouseState = Mouse.GetState();
             var keyboardState = Keyboard.GetState();
             var mouseScreenPosition = new Vector2(mouseState.X, mouseState.Y);
             var mouseWorldPosition = Globals.TheCarmera.ToWorldPosition(mouseScreenPosition);
+            mouseWorldPosition = Map.ToPixelPosition(Map.ToTilePosition(mouseWorldPosition));
 
-            if (mouseState.LeftButton == ButtonState.Pressed &&
-                State != (int)NpcState.Jump &&
-                State != (int)NpcState.Magic)
+            if (mouseState.LeftButton == ButtonState.Pressed)
             {
-                
+                if(keyboardState.IsKeyDown(Keys.LeftShift) ||
+                    keyboardState.IsKeyDown(Keys.RightShift))
+                    RunTo(mouseWorldPosition);
+                else if(keyboardState.IsKeyDown(Keys.LeftAlt) ||
+                    keyboardState.IsKeyDown(Keys.RightAlt))
+                    JumpTo(mouseWorldPosition);
+                else if(keyboardState.IsKeyDown(Keys.LeftControl) ||
+                    keyboardState.IsKeyDown(Keys.RightControl))
+                    Attacking(mouseWorldPosition - PositionInWorld);
+                else WalkTo(mouseWorldPosition);
             }
             if (mouseState.RightButton == ButtonState.Pressed &&
                 _lastMouseState.RightButton == ButtonState.Released)
             {
                 UseMagic(FlyIni, mouseWorldPosition);
             }
+            if (keyboardState.IsKeyDown(Keys.V) &&
+                _lastKeyboardState.IsKeyUp(Keys.V))
+            {
+                if(IsSitting())Standing();
+                else Sitdown();
+            }
 
             _lastMouseState = mouseState;
+            _lastKeyboardState = keyboardState;
             base.Update(gameTime);
         }
 
         public new void Draw(SpriteBatch spriteBatch, IEnumerable<Npc> npcsInView)
         {
-            var texture = Figure.GetCurrentTexture();
+            var texture = GetCurrentTexture();
             if(texture == null) return;
 
             var data = new Color[texture.Width*texture.Height];
@@ -120,7 +136,7 @@ namespace Engine
             foreach (var npc in npcsInView)
             {
                 if(npc.MapY > MapY)
-                    Collider.MakePixelCollidedTransparent(region, texture, npc.RegionInWorld, npc.Figure.GetCurrentTexture());
+                    Collider.MakePixelCollidedTransparent(region, texture, npc.RegionInWorld, npc.GetCurrentTexture());
             }
             for (var y = (int)start.Y; y < (int)end.Y; y++)
             {
@@ -136,7 +152,7 @@ namespace Engine
                     Collider.MakePixelCollidedTransparent(region, texture, textureRegion, tileTexture);
                 }
             }
-            Figure.Draw(spriteBatch, texture);
+            Draw(spriteBatch, texture);
         }
     }
 }
