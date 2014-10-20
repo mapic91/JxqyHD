@@ -14,17 +14,10 @@ namespace Engine
     public static class PathFinder
     {
         //Returned path is in pixel position
-        public static LinkedList<Vector2> FindPath(Vector2 startTile, Vector2 endTile, PathType type)
+        public static LinkedList<Vector2> FindPath(Vector2 startTile, Vector2 endTile)
         {
+            if (startTile == endTile) return null;
             var path = new LinkedList<Vector2>();
-            if (startTile == endTile) return path;
-
-            if (type == PathType.Jump)
-            {
-                path.AddLast(Map.ToPixelPosition(startTile));
-                path.AddLast(Map.ToPixelPosition(endTile));
-                return path;
-            }
 
             if (Globals.TheMap.IsObstacleForCharacter((int)endTile.X, (int)endTile.Y))
                 return null;
@@ -36,8 +29,6 @@ namespace Engine
             frontier.Add(new Node(startTile, 0f));
             costSoFar[startTile] = 0f;
 
-            var endNpc = NpcManager.GetObstacle(endTile);
-            if (endNpc != null) endNpc.IsObstacle = false;//Temporary set non obstacle
             var tryCount = 0; //For performance
             while (!frontier.IsEmpty)
             {
@@ -58,12 +49,10 @@ namespace Engine
                 }
 
             }
-            if (endNpc != null) endNpc.IsObstacle = true;//restore
 
             if (cameFrom.ContainsKey(endTile))
             {
-                var current = endTile;
-                if(endNpc == null) 
+                var current = endTile; 
                     path.AddFirst(Map.ToPixelPosition(current));
                 while (current != startTile)
                 {
@@ -119,8 +108,6 @@ namespace Engine
                         }
                     }
                 }
-                else if(NpcManager.IsObstacle(listAll[i]))
-                    removeList.Add(i);
             }
 
             for (var j = 0; j < count; j++)

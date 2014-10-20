@@ -14,7 +14,6 @@ namespace Engine
     public abstract class Character
     {
         private SoundEffectInstance _sound;
-        private float _remainDistance;
         private Sprite _figure = new Sprite();
         private int _dir;
         private string _name;
@@ -54,18 +53,11 @@ namespace Engine
         private Magic _magicUse;
         private bool _isObstacle = true;
         private bool _isPlayer;
-        private bool _isInFight;
         private Vector2 _destinationPositionInWorld = Vector2.Zero;
         private Vector2 _destinationTilePosition = Vector2.Zero;
+        private LinkedList<Vector2> _path;
 
         #region Public properties
-
-        public bool IsInFight
-        {
-            get { return _isInFight; }
-            protected set { _isInFight = value; }
-        }
-
         public int Dir
         {
             get { return _dir; }
@@ -141,6 +133,12 @@ namespace Engine
         {
             get { return Figure.MapY; }
             set { Figure.MapY = value; }
+        }
+
+        public Vector2 TilePosition
+        {
+            get { return Figure.TilePosition; }
+            set { Figure.TilePosition = value; }
         }
 
         public Vector2 PositionInWorld
@@ -336,6 +334,12 @@ namespace Engine
             }
         }
 
+        public float MovedDistance
+        {
+            get { return Figure.MovedDistance; }
+            set { Figure.MovedDistance = value; }
+        }
+
         #endregion
 
         public Character(string filePath)
@@ -426,6 +430,11 @@ namespace Engine
             return true;
         }
 
+        public void MoveTo(Vector2 direction, float elapsedSeconds)
+        {
+            Figure.MoveTo(direction, elapsedSeconds);
+        }
+
         public void UseMagic(Magic magic, Vector2 magicDestination)
         {
             if (State != (int)NpcState.Magic)
@@ -485,9 +494,44 @@ namespace Engine
             {
                 case NpcState.Walk:
                 case NpcState.FightWalk:
+                case NpcState.Run:
+                case NpcState.FightRun:
+                    {
+                        if (DestinationTilePosition != Vector2.Zero && _path == null)
+                        {
+                            _path = Engine.PathFinder.FindPath(TilePosition, DestinationTilePosition);
+                        }
+                    }
+                    break;
+                case NpcState.Jump:
+                case NpcState.FightJump:
+                    {
+                        if (DestinationTilePosition != Vector2.Zero && _path == null)
+                        {
+                            _path = new LinkedList<Vector2>();
+                            _path.AddLast(PositionInWorld);
+                            _path.AddLast(DestinationPositionInWorld);
+                        }
+                    }
                     break;
                 case NpcState.FightStand:
                     break;
+            }
+
+            if (_path != null)
+            {
+                switch ((NpcState)State)
+                {
+                    case NpcState.Walk:
+                    case NpcState.FightWalk:
+                    {
+                        var from = _path.First.Value;
+                        var to = _path.First.Next.Value;
+                        var distance = Vector2.Distance(from, to);
+                        
+                    }
+                        break;
+                }
             }
         }
 

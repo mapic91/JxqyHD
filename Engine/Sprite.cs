@@ -10,7 +10,6 @@ namespace Engine
         private Vector2 _positionInWorld;
         private int _mapX;
         private int _mapY;
-        private bool _isTilePostionNew;
         private float _velocity;
         private int _currentFrameIndex;
         private int _frameBegin;
@@ -83,6 +82,7 @@ namespace Engine
             set { _velocity = value; }
         }
 
+        private bool _isTilePostionNew;
         public Vector2 PositionInWorld
         {
             get { return _positionInWorld; }
@@ -126,6 +126,17 @@ namespace Engine
             {
                 _mapY = value;
                 PositionInWorld = Map.ToPixelPosition(MapX, value);
+            }
+        }
+
+        public Vector2 TilePosition
+        {
+            get { return new Vector2(MapX, MapY); }
+            set
+            {
+                PositionInWorld = Map.ToPixelPosition(value);
+                _mapX = (int) value.X;
+                _mapY = (int) value.Y;
             }
         }
 
