@@ -383,25 +383,26 @@ namespace Engine
                 return;
             }
             var tilePosition = Map.ToTilePosition(Path.First.Next.Value);
-            if (NpcManager.IsObstacle(tilePosition))
+            if (NpcManager.IsObstacle(tilePosition)) //Obstacle in the way
             {
-                if (tilePosition == DestinationTilePosition)
+                if (tilePosition == DestinationTilePosition)//Just one step, standing
                 {
                     Path = null;
                     Standing();
                     return;
                 }
+                //More than one step,find new path
+                PositionInWorld = Path.First.Value;
                 Path = Engine.PathFinder.FindPath(TilePosition, DestinationTilePosition);
-                MovedDistance = 0;
             }
             var from = Path.First.Value;
             var to = Path.First.Next.Value;
             var distance = Vector2.Distance(from, to);
             MoveTo(to - PositionInWorld, elapsedSeconds * speedFold);
-            if (MovedDistance >= distance ||
+            if (MovedDistance >= distance - Globals.DistanceOffset ||
                 Vector2.Distance(PositionInWorld, to) < Globals.DistanceOffset)
             {
-                if (DestinationTilePosition != Map.ToTilePosition(Path.Last.Value))
+                if (DestinationPositionInWorld != Path.Last.Value) // new destination
                 {
                     var destination = DestinationPositionInWorld;
                     PositionInWorld = to;
@@ -415,7 +416,11 @@ namespace Engine
                     {
                         Path.RemoveFirst();
                     }
-                    else Standing();
+                    else
+                    {
+                        PositionInWorld = to;
+                        Standing();
+                    }
                 }
             }
         }
@@ -432,15 +437,16 @@ namespace Engine
                 var from = Path.First.Value;
                 var to = Path.First.Next.Value;
                 var distance = Vector2.Distance(from, to);
-                var lastPosition = PositionInWorld;
-                MoveTo(to - from, elapsedSeconds * 8);
                 bool isOver = false;
-                if (Globals.TheMap.IsObstacleForCharacterJump(TilePosition))
+                if (Globals.TheMap.IsObstacleForCharacterJump(
+                        Engine.PathFinder.FindNeighborInDirection(
+                        TilePosition, to - from)))
                 {
-                    PositionInWorld = lastPosition;
+                    TilePosition = TilePosition;//Correcting position
                     isOver = true;
                 }
-                else if (MovedDistance >= distance - Globals.DistanceOffset)
+                else MoveTo(to - from, elapsedSeconds * 8);
+                if (MovedDistance >= distance - Globals.DistanceOffset && !isOver)
                 {
                     MovedDistance = 0;
                     PositionInWorld = to;
@@ -514,7 +520,7 @@ namespace Engine
                             }
                             break;
                         default:
-                            sound.Play(Globals.SoundEffectVolume, 0f, 0f);
+                            SoundManager.PlaySoundEffectOnce(sound);
                             break;
                     }
                 }
@@ -530,7 +536,8 @@ namespace Engine
             else
             {
                 if (NpcIni.ContainsKey((int)NpcState.Stand1) &&
-                    Globals.TheRandom.Next(2) == 1) SetState(NpcState.Stand1);
+                    Globals.TheRandom.Next(4) == 1 &&
+                    State != (int)NpcState.Stand1) SetState(NpcState.Stand1);
                 else SetState(NpcState.Stand);
                 PlayCurrentDirOnce();
             }
@@ -573,21 +580,21 @@ namespace Engine
             return State == (int) NpcState.Sit;
         }
 
-        public void WalkTo(Vector2 destination)
+        public void WalkTo(Vector2 destinationTilePosition)
         {
             if (PerformActionOk() &&
-                Map.ToTilePosition(destination) != TilePosition)
+                destinationTilePosition != TilePosition)
             {
                 if (IsWalking())
-                    DestinationPositionInWorld = destination;
+                    DestinationTilePosition = destinationTilePosition;
                 else
                 {
                     StateInitialize();
-                    Path = Engine.PathFinder.FindPath(TilePosition, Map.ToTilePosition(destination));
+                    Path = Engine.PathFinder.FindPath(TilePosition, destinationTilePosition);
                     if (Path == null) Standing();
                     else
                     {
-                        DestinationPositionInWorld = destination;
+                        DestinationTilePosition = destinationTilePosition;
                         if (_isInFighting && NpcIni.ContainsKey((int)NpcState.FightWalk)) SetState(NpcState.FightWalk);
                         else SetState(NpcState.Walk);
                     }
@@ -596,21 +603,21 @@ namespace Engine
 
         }
 
-        public void RunTo(Vector2 destination)
+        public void RunTo(Vector2 destinationTilePosition)
         {
             if (PerformActionOk() &&
-                Map.ToTilePosition(destination) != TilePosition)
+                destinationTilePosition != TilePosition)
             {
                 if (IsRuning())
-                    DestinationPositionInWorld = destination;
+                    DestinationTilePosition = destinationTilePosition;
                 else
                 {
                     StateInitialize();
-                    Path = Engine.PathFinder.FindPath(TilePosition, Map.ToTilePosition(destination));
+                    Path = Engine.PathFinder.FindPath(TilePosition, destinationTilePosition);
                     if (Path == null) Standing();
                     else
                     {
-                        DestinationPositionInWorld = destination;
+                        DestinationTilePosition = destinationTilePosition;
                         if (_isInFighting && NpcIni.ContainsKey((int)NpcState.FightRun)) SetState(NpcState.FightRun);
                         else SetState(NpcState.Run);
                     }
@@ -618,23 +625,22 @@ namespace Engine
             }
         }
 
-        public void JumpTo(Vector2 destination)
+        public void JumpTo(Vector2 destinationTilePosition)
         {
             if (PerformActionOk() &&
-                Map.ToTilePosition(destination) != TilePosition)
+                destinationTilePosition != TilePosition)
             {
                 StateInitialize();
+                DestinationTilePosition = destinationTilePosition;
                 Path = new LinkedList<Vector2>();
                 Path.AddLast(PositionInWorld);
-                Path.AddLast(destination);
+                Path.AddLast(DestinationPositionInWorld);
 
-                DestinationPositionInWorld = destination;
                 if (_isInFighting && NpcIni.ContainsKey((int)NpcState.FightJump)) SetState(NpcState.FightJump);
                 else SetState(NpcState.Jump);
-                SetDirection(destination - PositionInWorld);
+                SetDirection(DestinationPositionInWorld - PositionInWorld);
                 PlayCurrentDirOnce();
             }
-
         }
 
         public void Sitdown()
@@ -650,7 +656,7 @@ namespace Engine
             }
         }
 
-        public void UseMagic(Magic magic, Vector2 magicDestination)
+        public void UseMagic(Magic magic, Vector2 magicDestinationTilePosition)
         {
             if (PerformActionOk())
             {
@@ -658,10 +664,10 @@ namespace Engine
                 _isInFighting = true;
                 _totalNonFightingSeconds = 0;
 
-                _magicDestination = magicDestination;
+                _magicDestination = Map.ToPixelPosition(magicDestinationTilePosition);
                 _magicUse = magic;
                 SetState(NpcState.Magic);
-                SetDirection(magicDestination - PositionInWorld);
+                SetDirection(_magicDestination - PositionInWorld);
                 PlayCurrentDirOnce();
             }
         }
@@ -710,6 +716,7 @@ namespace Engine
             _isInFighting = false;
             if (IsWalking()) SetState(NpcState.Walk);
             if (IsRuning()) SetState(NpcState.Run);
+            if(State == (int)NpcState.FightStand) SetState(NpcState.Stand);
         }
         #endregion Perform action
 
@@ -748,6 +755,10 @@ namespace Engine
                 case NpcState.Magic:
                     if (IsPlayCurrentDirOnceEnd())
                     {
+                        if (NpcIni.ContainsKey((int) NpcState.Magic))
+                        {
+                            SoundManager.PlaySoundEffectOnce(NpcIni[(int) NpcState.Magic].Sound);
+                        }
                         MagicManager.UseMagic(this, _magicUse, PositionInWorld, _magicDestination);
                         Standing();
                     }

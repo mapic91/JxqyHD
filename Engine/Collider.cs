@@ -14,12 +14,13 @@ namespace Engine
             return boxA.Intersects(boxB);
         }
 
-        public static bool IsPixelCollideForNpcObj(Point position, Rectangle region, Texture2D texture)
+        public static bool IsPixelCollideForNpcObj(Vector2 position, Rectangle region, Texture2D texture)
         {
-            if (texture != null && region.Contains(position))
+            var point = new Point((int)position.X, (int)position.Y);
+            if (texture != null && region.Contains(point))
             {
-                var offX = position.X - region.Left;
-                var offY = position.Y - region.Top;
+                var offX = point.X - region.Left;
+                var offY = point.Y - region.Top;
                 var data = new Color[texture.Width * texture.Height];
                 texture.GetData(data);
                 if (!TextureGenerator.IsColorTransparentForNpcObj(data[offX + offY * texture.Width]))

@@ -392,7 +392,7 @@ namespace Engine
 
         public void DrawLayer(SpriteBatch spriteBatch, int layer)
         {
-            if ((layer < 0 || layer > 2) || !_isLayerDraw[layer]) return;
+            if ((layer < 0 || layer > 2) || !IsLayerDraw(layer)) return;
             var start = GetStartTileInView();
             var end = GetEndTileInView();
             for (var y = (int)start.Y; y < (int)end.Y; y++)
@@ -453,16 +453,41 @@ namespace Engine
         public void Update(GameTime gameTime)
         {
             //在月影传说中，禁用了地图的循环功能
-            foreach (var mpc in _loopingList)
-            {
-                mpc.Update(gameTime);
-            }
+            //foreach (var mpc in _loopingList)
+            //{
+            //    mpc.Update(gameTime);
+            //}
+            Globals.TheCarmera.Update(gameTime);
+            ViewBeginX = Globals.TheCarmera.ViewBeginX;
+            ViewBeginY = Globals.TheCarmera.ViewBeginY;
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
             DrawLayer(spriteBatch, 0);
-            DrawLayer(spriteBatch, 1);
+
+            var start = GetStartTileInView();
+            var end = GetEndTileInView();
+            var magicSprites = MagicManager.MagicSpritesInView;
+            var npcs = NpcManager.NpcsInView;
+            for (var y = (int)start.Y; y < (int)end.Y; y++)
+            {
+                for (var x = (int)start.X; x < (int)end.X; x++)
+                {
+                    Texture2D texture = GetTileTexture(x, y, 1);
+                    if(IsLayerDraw(1))DrawTile(spriteBatch, texture, new Vector2(x, y), 1f);
+                    foreach (var npc in npcs)
+                    {
+                        if (x == npc.MapX && y == npc.MapY)
+                            npc.Draw(spriteBatch);
+                    }
+                    foreach (var magicSprite in magicSprites)
+                    {
+                        if (x == magicSprite.MapX && y == magicSprite.MapY)
+                            magicSprite.Draw(spriteBatch);
+                    }
+                }
+            }
             DrawLayer(spriteBatch, 2);
         }
     }

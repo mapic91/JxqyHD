@@ -13,10 +13,34 @@ namespace Engine
     static public class NpcManager
     {
         private static LinkedList<Npc> _list = new LinkedList<Npc>();
+        private static List<Npc> _npcInView = new List<Npc>();
+        private static Rectangle _lastViewRegion;
+
+        public static List<Npc> NpcsInView
+        {
+            get
+            {
+                if (!_lastViewRegion.Equals(Globals.TheCarmera.CarmerRegionInWorld))
+                    _npcInView = GetNpcsInView();
+                return _npcInView;
+            }
+        }
 
         public static LinkedList<Npc> NpcList
         {
             get { return _list; }
+        }
+
+        private static List<Npc> GetNpcsInView()
+        {
+            var viewRegion = Globals.TheCarmera.CarmerRegionInWorld;
+            var list = new List<Npc>(_list.Count);
+            foreach (var npc in _list)
+            {
+                if (viewRegion.Intersects(npc.RegionInWorld))
+                    list.Add(npc);
+            }
+            return list;
         }
 
         public static bool Load(string filePath)
@@ -111,25 +135,10 @@ namespace Engine
             }
         }
 
-        public static List<Npc> GetNpcsInView()
-        {
-            var viewRegion = Globals.TheCarmera.CarmerRegionInWorld;
-            var list = new List<Npc>(_list.Count);
-            foreach (var npc in _list)
-            {
-                if(viewRegion.Intersects(npc.RegionInWorld))
-                    list.Add(npc);
-            }
-            return list;
-        }
-
         public static void Draw(SpriteBatch spriteBatch)
         {
-            var mouseState = Mouse.GetState();
-            var mousePosition = Globals.TheCarmera.ToWorldPosition(new Vector2(mouseState.X, mouseState.Y));
-            var mousePositionInPoint = new Point((int)mousePosition.X, (int)mousePosition.Y);
             foreach (var npc in _list)
-                npc.Draw(spriteBatch, mousePositionInPoint);
+                npc.Draw(spriteBatch);
         }
     }
 }

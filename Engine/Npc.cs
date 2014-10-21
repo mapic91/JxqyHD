@@ -17,17 +17,9 @@ namespace Engine
             
         }
 
-        public void Draw(SpriteBatch spriteBatch, Point mousePositionInWorld)
+        public void Draw(SpriteBatch spriteBatch)
         {
-            var texture = GetCurrentTexture();
-            if (Collider.IsPixelCollideForNpcObj(mousePositionInWorld,
-                RegionInWorld,
-                texture))
-            {
-                Globals.OutEdgeSprite = this;
-                Globals.OutEdgeTexture = TextureGenerator.GetOuterEdge(texture, Globals.NpcEdgeColor);
-            }
-            Draw(spriteBatch);
+            base.Draw(spriteBatch);
         }
     }
 }

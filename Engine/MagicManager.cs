@@ -13,20 +13,20 @@ namespace Engine
         private static LinkedList<MagicSprite> _npcSprites = new LinkedList<MagicSprite>();
         private static LinkedList<MagicSprite> _playerSprites = new LinkedList<MagicSprite>();
         private static LinkedList<WorkItem> _workList = new LinkedList<WorkItem>();
+        private static List<MagicSprite> _magicSpritesInView = new List<MagicSprite>();
+        private static Rectangle _lastViewRegion;
 
-        public static void AddNpcMagicSprite(MagicSprite magicSprite)
+        public static List<MagicSprite> MagicSpritesInView
         {
-            if (magicSprite == null) return;
-            _npcSprites.AddLast(magicSprite);
+            get
+            {
+                if (!_lastViewRegion.Equals(Globals.TheCarmera.CarmerRegionInWorld))
+                    _magicSpritesInView = GetMagicSpritesInView();
+                return _magicSpritesInView;
+            }
         }
 
-        public static void AddPlayerMagicSprite(MagicSprite magicSprite)
-        {
-            if (magicSprite == null) return;
-            _playerSprites.AddLast(magicSprite);
-        }
-
-        public static List<MagicSprite> GetMagicSpritesInView()
+        private static List<MagicSprite> GetMagicSpritesInView()
         {
             var viewRegion = Globals.TheCarmera.CarmerRegionInWorld;
             var list = new List<MagicSprite>(_npcSprites.Count + _playerSprites.Count);
@@ -41,6 +41,18 @@ namespace Engine
                     list.Add(sprite);
             }
             return list;
+        }
+
+        public static void AddNpcMagicSprite(MagicSprite magicSprite)
+        {
+            if (magicSprite == null) return;
+            _npcSprites.AddLast(magicSprite);
+        }
+
+        public static void AddPlayerMagicSprite(MagicSprite magicSprite)
+        {
+            if (magicSprite == null) return;
+            _playerSprites.AddLast(magicSprite);
         }
 
         public static void UseMagic(Character user, Magic magic, Vector2 origin, Vector2 destination)

@@ -18,7 +18,7 @@ namespace Engine
 
         public const float DistanceOffset = 2f;
 
-        public static Color NpcEdgeColor = Color.Yellow*0.8f;
+        public static Color NpcEdgeColor = Color.Yellow*0.6f;
         public static Color EnemyEdgeColor = Color.Red*0.8f;
         public static Color ObjEdgeColor = Color.Yellow*0.8f;
 
@@ -27,11 +27,19 @@ namespace Engine
 
         public static Random TheRandom = new Random();
 
-        //Sprite out edge
+        #region Sprite out edge
         public static Sprite OutEdgeSprite;
         public static Texture2D OutEdgeTexture;
         public static int OffX;
         public static int OffY;
+
+        public static void ClearGlobalOutEdge()
+        {
+            Globals.OutEdgeSprite = null;
+            Globals.OutEdgeTexture = null;
+            Globals.OffX = Globals.OffY = 0;
+        }
+        #endregion
 
         public static Game TheGame;
         public static Carmera TheCarmera;

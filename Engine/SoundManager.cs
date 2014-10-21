@@ -33,7 +33,7 @@ namespace Engine
             {
                 instance.Play();
             }
-            if (length < Globals.SoundMaxDistance)
+            else if(length < Globals.SoundMaxDistance)
             {
                 direction.Normalize();
                 var percent = length / Globals.SoundMaxDistance;
@@ -45,6 +45,12 @@ namespace Engine
                 instance.Apply3D(listener, emitter);
                 instance.Play();
             }
+        }
+
+        public static void PlaySoundEffectOnce(SoundEffect soundEffect)
+        {
+            if(soundEffect != null)
+                soundEffect.Play(Globals.SoundEffectVolume, 0f, 0f);
         }
 
         public static void ClearCache()

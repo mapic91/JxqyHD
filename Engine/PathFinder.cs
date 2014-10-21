@@ -66,6 +66,16 @@ namespace Engine
             return null;
         }
 
+        public static Vector2 FindNeighborInDirection(Vector2 tilePosition, Vector2 direction)
+        {
+            var neighbor = Vector2.Zero;
+            if (direction != Vector2.Zero)
+            {
+                neighbor =  FindAllNeighbors(tilePosition)[Utils.GetDirectionIndex(direction, 8)];
+            }
+            return neighbor;
+        }
+
         private static float GetCost(Vector2 fromTile, Vector2 toTile)
         {
             var fromPosition = Map.ToPixelPosition(fromTile);
@@ -120,11 +130,11 @@ namespace Engine
             return list;
         }
 
-        private static List<Vector2> FindAllNeighbors(Vector2 location)
+        private static List<Vector2> FindAllNeighbors(Vector2 tilePosition)
         {
             var list = new List<Vector2>();
-            var x = location.X;
-            var y = location.Y;
+            var x = tilePosition.X;
+            var y = tilePosition.Y;
             // 3  4  5
             // 2     6
             // 1  0  7

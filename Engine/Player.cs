@@ -82,30 +82,44 @@ namespace Engine
             var keyboardState = Keyboard.GetState();
             var mouseScreenPosition = new Vector2(mouseState.X, mouseState.Y);
             var mouseWorldPosition = Globals.TheCarmera.ToWorldPosition(mouseScreenPosition);
-            mouseWorldPosition = Map.ToPixelPosition(Map.ToTilePosition(mouseWorldPosition));
+            var mouseTilePosition = Map.ToTilePosition(mouseWorldPosition);
+
+            Globals.ClearGlobalOutEdge();
+            foreach (var npc in NpcManager.NpcsInView)
+            {
+                var texture = npc.GetCurrentTexture();
+                if (Collider.IsPixelCollideForNpcObj(mouseWorldPosition,
+                    npc.RegionInWorld,
+                    texture))
+                {
+                    Globals.OutEdgeSprite = npc;
+                    Globals.OutEdgeTexture = TextureGenerator.GetOuterEdge(texture, Globals.NpcEdgeColor);
+                    break;
+                }
+            }
 
             if (mouseState.LeftButton == ButtonState.Pressed)
             {
-                if(keyboardState.IsKeyDown(Keys.LeftShift) ||
+                if (keyboardState.IsKeyDown(Keys.LeftShift) ||
                     keyboardState.IsKeyDown(Keys.RightShift))
-                    RunTo(mouseWorldPosition);
-                else if(keyboardState.IsKeyDown(Keys.LeftAlt) ||
+                    RunTo(mouseTilePosition);
+                else if (keyboardState.IsKeyDown(Keys.LeftAlt) ||
                     keyboardState.IsKeyDown(Keys.RightAlt))
-                    JumpTo(mouseWorldPosition);
-                else if(keyboardState.IsKeyDown(Keys.LeftControl) ||
+                    JumpTo(mouseTilePosition);
+                else if (keyboardState.IsKeyDown(Keys.LeftControl) ||
                     keyboardState.IsKeyDown(Keys.RightControl))
                     Attacking(mouseWorldPosition - PositionInWorld);
-                else WalkTo(mouseWorldPosition);
+                else WalkTo(mouseTilePosition);
             }
             if (mouseState.RightButton == ButtonState.Pressed &&
                 _lastMouseState.RightButton == ButtonState.Released)
             {
-                UseMagic(FlyIni, mouseWorldPosition);
+                UseMagic(FlyIni, mouseTilePosition);
             }
             if (keyboardState.IsKeyDown(Keys.V) &&
                 _lastKeyboardState.IsKeyUp(Keys.V))
             {
-                if(IsSitting())Standing();
+                if (IsSitting()) Standing();
                 else Sitdown();
             }
 
@@ -114,12 +128,12 @@ namespace Engine
             base.Update(gameTime);
         }
 
-        public new void Draw(SpriteBatch spriteBatch, IEnumerable<Npc> npcsInView)
+        public new void Draw(SpriteBatch spriteBatch)
         {
             var texture = GetCurrentTexture();
-            if(texture == null) return;
+            if (texture == null) return;
 
-            var data = new Color[texture.Width*texture.Height];
+            var data = new Color[texture.Width * texture.Height];
             texture.GetData(data);
             texture = new Texture2D(texture.GraphicsDevice, texture.Width, texture.Height);
             texture.SetData(data);
@@ -133,10 +147,15 @@ namespace Engine
             if (end.Y > Globals.TheMap.MapRowCounts) end.Y = Globals.TheMap.MapRowCounts;
             var textureRegion = new Rectangle();
             var region = RegionInWorld;
-            foreach (var npc in npcsInView)
+            foreach (var npc in NpcManager.NpcsInView)
             {
-                if(npc.MapY > MapY)
+                if (npc.MapY > MapY)
                     Collider.MakePixelCollidedTransparent(region, texture, npc.RegionInWorld, npc.GetCurrentTexture());
+            }
+            foreach (var magicSprite in MagicManager.MagicSpritesInView)
+            {
+                if (magicSprite.MapY >= MapY)
+                    Collider.MakePixelCollidedTransparent(region, texture, magicSprite.RegionInWorld, magicSprite.GetCurrentTexture());
             }
             for (var y = (int)start.Y; y < (int)end.Y; y++)
             {
@@ -153,6 +172,14 @@ namespace Engine
                 }
             }
             Draw(spriteBatch, texture);
+
+            if (Globals.OutEdgeSprite != null)
+            {
+                Globals.OutEdgeSprite.Draw(spriteBatch,
+                    Globals.OutEdgeTexture,
+                    Globals.OffX,
+                    Globals.OffY);
+            }
         }
     }
 }
