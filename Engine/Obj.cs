@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Mime;
 using System.Text;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Engine
 {
     using StateMapList = Dictionary<int, ResStateInfo>;
-    public class Obj
+    public class Obj: Sprite
     {
         private string _objName;
         private int _kind;
@@ -17,8 +20,6 @@ namespace Engine
         private int _frame;
         private int _height;
         private int _lum;
-        private int _mapX;
-        private int _mapY;
         private StateMapList _objFile;
         private string _scriptFile;
         private SoundEffect _wavFile;
@@ -42,7 +43,7 @@ namespace Engine
         public int Dir
         {
             get { return _dir; }
-            set { _dir = value%8; }
+            set { _dir = value; }
         }
 
         public int Damage
@@ -67,18 +68,6 @@ namespace Engine
         {
             get { return _lum; }
             set { _lum = value; }
-        }
-
-        public int MapX
-        {
-            get { return _mapX; }
-            set { _mapX = value; }
-        }
-
-        public int MapY
-        {
-            get { return _mapY; }
-            set { _mapY = value; }
         }
 
         public StateMapList ObjFile
@@ -111,7 +100,33 @@ namespace Engine
             set { _offY = value; }
         }
 
+        public bool IsObstacle
+        {
+            get
+            {
+                if (Kind == 0 || Kind == 1 || Kind == 5)
+                    return true;
+                return false;
+            }
+        }
+
+        public bool IsAutoPlay
+        {
+            get { return (Kind == 0 || Kind == 6); }
+        }
+
+        public bool IsInteractive
+        {
+            get { return !string.IsNullOrEmpty(ScriptFile); }
+        }
+
+        public bool IsTrap
+        {
+            get { return Kind == 6; }
+        }
         #endregion
+
+        public Obj() { }
 
         public Obj(string filePath)
         {
@@ -140,7 +155,18 @@ namespace Engine
                 if (!string.IsNullOrEmpty(nameValue[0]))
                     AssignToValue(nameValue);
             }
+            InitializeFigure();
             return true;
+        }
+
+        public void InitializeFigure()
+        {
+            if (ObjFile.ContainsKey((int) ObjState.Common))
+            {
+                Texture = ObjFile[(int)ObjState.Common].Image;
+            }
+            CurrentDirection = Dir;
+            CurrentFrameIndex = Frame;
         }
 
         private void AssignToValue(string[] nameValue)
@@ -171,6 +197,17 @@ namespace Engine
                 //Do nothing
                 return;
             }
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            if(Texture.FrameCounts > 1 && IsAutoPlay)
+                base.Update(gameTime);
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            Draw(spriteBatch, OffX, OffY);
         }
     }
 }

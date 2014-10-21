@@ -19,8 +19,9 @@ namespace Engine
         public const float DistanceOffset = 2f;
 
         public static Color NpcEdgeColor = Color.Yellow*0.6f;
-        public static Color EnemyEdgeColor = Color.Red*0.8f;
-        public static Color ObjEdgeColor = Color.Yellow*0.8f;
+        public static Color FriendEdgeColor = Color.Green*0.6f;
+        public static Color EnemyEdgeColor = Color.Red*0.6f;
+        public static Color ObjEdgeColor = Color.Yellow*0.6f;
 
         public static float MusicVolume = 1f;
         public static float SoundEffectVolume = 1f;

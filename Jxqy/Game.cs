@@ -74,6 +74,7 @@ namespace Jxqy
 
             _player1 = new Player(@"ini\save\player0.ini");
             NpcManager.Load(@"ini\save\cangjian.npc");
+            ObjManager.Load(@"ini\save\map015-xianglu.obj");
 
             //BackgroundMusic.Play(@"music/Mc003.mp3");
 
@@ -115,6 +116,7 @@ namespace Jxqy
             MagicManager.Update(gameTime);
             _player1.Update(gameTime);
             NpcManager.Update(gameTime);
+            ObjManager.Update(gameTime);
 
             Globals.TheMap.Update(gameTime);
 

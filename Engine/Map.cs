@@ -470,6 +470,7 @@ namespace Engine
             var end = GetEndTileInView();
             var magicSprites = MagicManager.MagicSpritesInView;
             var npcs = NpcManager.NpcsInView;
+            var objs = ObjManager.ObjsInView;
             for (var y = (int)start.Y; y < (int)end.Y; y++)
             {
                 for (var x = (int)start.X; x < (int)end.X; x++)
@@ -480,6 +481,11 @@ namespace Engine
                     {
                         if (x == npc.MapX && y == npc.MapY)
                             npc.Draw(spriteBatch);
+                    }
+                    foreach (var obj in objs)
+                    {
+                        if(x == obj.MapX && y == obj.MapY)
+                            obj.Draw(spriteBatch);
                     }
                     foreach (var magicSprite in magicSprites)
                     {

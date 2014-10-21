@@ -80,6 +80,7 @@
     <Compile Include="Npc.cs" />
     <Compile Include="NpcManager.cs" />
     <Compile Include="Obj.cs" />
+    <Compile Include="ObjManager.cs" />
     <Compile Include="PathFinder.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="ResFile.cs" />

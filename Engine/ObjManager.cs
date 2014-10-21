@@ -6,42 +6,41 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace Engine
 {
-    static public class NpcManager
+    public static class ObjManager
     {
-        private static LinkedList<Npc> _list = new LinkedList<Npc>();
-        private static List<Npc> _npcInView = new List<Npc>();
+        private static LinkedList<Obj> _list = new LinkedList<Obj>();
+        private static List<Obj> _objInView = new List<Obj>();
         private static Rectangle _lastViewRegion;
 
-        public static List<Npc> NpcsInView
+        public static List<Obj> ObjsInView
         {
             get
             {
                 if (!_lastViewRegion.Equals(Globals.TheCarmera.CarmerRegionInWorld))
                 {
-                    _npcInView = GetNpcsInView();
+                    _objInView = GetObjsInView();
                     _lastViewRegion = Globals.TheCarmera.CarmerRegionInWorld;
                 }
-                return _npcInView;
+                return _objInView;
             }
         }
 
-        public static LinkedList<Npc> NpcList
+        public static LinkedList<Obj> ObjList
         {
             get { return _list; }
         }
 
-        private static List<Npc> GetNpcsInView()
+        private static List<Obj> GetObjsInView()
         {
             var viewRegion = Globals.TheCarmera.CarmerRegionInWorld;
-            var list = new List<Npc>(_list.Count);
-            foreach (var npc in _list)
+            var list = new List<Obj>(_list.Count);
+            foreach (var obj in _list)
             {
-                if (viewRegion.Intersects(npc.RegionInWorld))
-                    list.Add(npc);
+                if (viewRegion.Intersects(obj.RegionInWorld))
+                    list.Add(obj);
             }
             return list;
         }
@@ -67,7 +66,7 @@ namespace Engine
             var count = lines.Count();
             for (var i = 0; i < count; )
             {
-                var groups = Regex.Match(lines[i++], @"\[NPC([0-9]+)\]").Groups;
+                var groups = Regex.Match(lines[i++], @"\[OBJ([0-9]+)\]").Groups;
                 if (groups[0].Success)
                 {
                     var contents = new List<string>();
@@ -76,35 +75,35 @@ namespace Engine
                         contents.Add(lines[i]);
                         i++;
                     }
-                    AddNpc(contents.ToArray());
+                    AddObj(contents.ToArray());
                     i++;
                 }
             }
             return true;
         }
 
-        public static void AddNpc(string[] lines)
+        public static void AddObj(string[] lines)
         {
-            var npc = new Npc();
-            npc.Load(lines);
-            AddNpc(npc);
+            var obj = new Obj();
+            obj.Load(lines);
+            AddObj(obj);
         }
 
-        public static void AddNpc(Npc npc)
+        public static void AddObj(Obj obj)
         {
-            _list.AddLast(npc);
+            _list.AddLast(obj);
         }
 
-        public static void ClearAllNpc()
+        public static void ClearAllObj()
         {
             _list.Clear();
         }
 
         public static bool IsObstacle(int tileX, int tileY)
         {
-            foreach (var npc in _list)
+            foreach (var obj in _list)
             {
-                if (npc.MapX == tileX && npc.MapY == tileY && npc.IsObstacle)
+                if (obj.MapX == tileX && obj.MapY == tileY && obj.IsObstacle)
                     return true;
             }
             return false;
@@ -112,36 +111,36 @@ namespace Engine
 
         public static bool IsObstacle(Vector2 tilePosition)
         {
-            return IsObstacle((int) tilePosition.X, (int) tilePosition.Y);
+            return IsObstacle((int)tilePosition.X, (int)tilePosition.Y);
         }
 
-        public static Npc GetObstacle(int tileX, int tileY)
+        public static Obj GetObstacle(int tileX, int tileY)
         {
-            foreach (var npc in _list)
+            foreach (var obj in _list)
             {
-                if (npc.MapX == tileX && npc.MapY == tileY && npc.IsObstacle)
-                    return npc;
+                if (obj.MapX == tileX && obj.MapY == tileY && obj.IsObstacle)
+                    return obj;
             }
             return null;
         }
 
-        public static Npc GetObstacle(Vector2 tilePosition)
+        public static Obj GetObstacle(Vector2 tilePosition)
         {
             return GetObstacle((int)tilePosition.X, (int)tilePosition.Y);
         }
 
         public static void Update(GameTime gameTime)
         {
-            foreach (var npc in _list)
+            foreach (var obj in _list)
             {
-                npc.Update(gameTime);
+                obj.Update(gameTime);
             }
         }
 
         public static void Draw(SpriteBatch spriteBatch)
         {
-            foreach (var npc in _list)
-                npc.Draw(spriteBatch);
+            foreach (var obj in _list)
+                obj.Draw(spriteBatch);
         }
     }
 }

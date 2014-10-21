@@ -53,7 +53,7 @@ namespace Engine
         public int CurrentDirection
         {
             get { return _currentDirection; }
-            private set
+            set
             {
                 if (_isPlayingCurrentDirOnce) return; //Can't set when playing
                 _currentDirection = value % (_texture.DirectionCounts == 0 ? 1 : _texture.DirectionCounts);

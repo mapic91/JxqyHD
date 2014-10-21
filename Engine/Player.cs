@@ -85,16 +85,34 @@ namespace Engine
             var mouseTilePosition = Map.ToTilePosition(mouseWorldPosition);
 
             Globals.ClearGlobalOutEdge();
-            foreach (var npc in NpcManager.NpcsInView)
+            foreach (var one in NpcManager.NpcsInView)
             {
-                var texture = npc.GetCurrentTexture();
+                if (!one.IsInteractive) continue;
+                var texture = one.GetCurrentTexture();
                 if (Collider.IsPixelCollideForNpcObj(mouseWorldPosition,
-                    npc.RegionInWorld,
+                    one.RegionInWorld,
                     texture))
                 {
-                    Globals.OutEdgeSprite = npc;
-                    Globals.OutEdgeTexture = TextureGenerator.GetOuterEdge(texture, Globals.NpcEdgeColor);
+                    Globals.OutEdgeSprite = one;
+                    var edgeColor = Globals.NpcEdgeColor;
+                    if (one.IsEnemy) edgeColor = Globals.EnemyEdgeColor;
+                    else if (one.IsFriend) edgeColor = Globals.FriendEdgeColor;
+                    Globals.OutEdgeTexture = TextureGenerator.GetOuterEdge(texture, edgeColor);
                     break;
+                }
+            }
+            if (Globals.OutEdgeSprite == null) //not finded, try obj
+            {
+                foreach (var one in ObjManager.ObjsInView)
+                {
+                    if (!one.IsInteractive) continue;
+                    var texture = one.GetCurrentTexture();
+                    if (mouseTilePosition == one.TilePosition)
+                    {
+                        Globals.OutEdgeSprite = one;
+                        Globals.OutEdgeTexture = TextureGenerator.GetOuterEdge(texture, Globals.ObjEdgeColor);
+                        break;
+                    }
                 }
             }
 
