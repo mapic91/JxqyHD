@@ -383,7 +383,8 @@ namespace Engine
                 return;
             }
             var tilePosition = Map.ToTilePosition(Path.First.Next.Value);
-            if (NpcManager.IsObstacle(tilePosition)) //Obstacle in the way
+            if (NpcManager.IsObstacle(tilePosition) ||
+                ObjManager.IsObstacle(tilePosition)) //Obstacle in the way
             {
                 if (tilePosition == DestinationTilePosition)//Just one step, standing
                 {
@@ -628,7 +629,10 @@ namespace Engine
         public void JumpTo(Vector2 destinationTilePosition)
         {
             if (PerformActionOk() &&
-                destinationTilePosition != TilePosition)
+                destinationTilePosition != TilePosition &&
+                !Globals.TheMap.IsObstacleForCharacter(destinationTilePosition) &&
+                !NpcManager.IsObstacleInView(destinationTilePosition) &&
+                !ObjManager.IsObstacleInView(destinationTilePosition))
             {
                 StateInitialize();
                 DestinationTilePosition = destinationTilePosition;

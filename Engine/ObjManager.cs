@@ -114,6 +114,23 @@ namespace Engine
             return IsObstacle((int)tilePosition.X, (int)tilePosition.Y);
         }
 
+        //just check objs in view
+        public static bool IsObstacleInView(int tileX, int tileY)
+        {
+            foreach (var obj in ObjsInView)
+            {
+                if (obj.MapX == tileX && obj.MapY == tileY && obj.IsObstacle)
+                    return true;
+            }
+            return false;
+        }
+
+        //just check objs in view
+        public static bool IsObstacleInView(Vector2 tilePosition)
+        {
+            return IsObstacleInView((int)tilePosition.X, (int)tilePosition.Y);
+        }
+
         public static Obj GetObstacle(int tileX, int tileY)
         {
             foreach (var obj in _list)

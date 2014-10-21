@@ -115,6 +115,23 @@ namespace Engine
             return IsObstacle((int) tilePosition.X, (int) tilePosition.Y);
         }
 
+        //just check npcs in view
+        public static bool IsObstacleInView(int tileX, int tileY)
+        {
+            foreach (var npc in NpcsInView)
+            {
+                if (npc.MapX == tileX && npc.MapY == tileY && npc.IsObstacle)
+                    return true;
+            }
+            return false;
+        }
+
+        //just check npcs in view
+        public static bool IsObstacleInView(Vector2 tilePosition)
+        {
+            return IsObstacleInView((int)tilePosition.X, (int)tilePosition.Y);
+        }
+
         public static Npc GetObstacle(int tileX, int tileY)
         {
             foreach (var npc in _list)
