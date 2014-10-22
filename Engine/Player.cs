@@ -133,7 +133,9 @@ namespace Engine
             if (mouseState.RightButton == ButtonState.Pressed &&
                 _lastMouseState.RightButton == ButtonState.Released)
             {
-                UseMagic(FlyIni, mouseTilePosition);
+                if (Globals.OutEdgeNpc != null && Globals.OutEdgeNpc.IsEnemy)
+                    UseMagic(FlyIni, Globals.OutEdgeNpc.PositionInWorld);
+                else UseMagic(FlyIni, mouseWorldPosition);
             }
             if (keyboardState.IsKeyDown(Keys.V) &&
                 _lastKeyboardState.IsKeyUp(Keys.V))

@@ -101,14 +101,22 @@ namespace Engine
                 var second = 30f/Velocity;
                 MoveTo(MoveDirection, second);
             }
+            else 
+            {
+                // can't put fixed position magic sprite in obstacle
+                if (Globals.TheMap.IsObstacleForMagic(MapX, MapY))
+                    _isDestroyed = true;
+            }
         }
 
         public void Destroy()
         {
+            if(IsInDestroy) return;
             _isInDestroy = true;
             MoveDirection = Vector2.Zero;
             if (BelongMagic.VanishImage != null)
             {
+                EndPlayCurrentDirOnce();
                 Texture = BelongMagic.VanishImage;
                 PlayCurrentDirOnce();
             }
@@ -152,6 +160,16 @@ namespace Engine
             }
             else
             {
+                if (BelongCharacter.IsPlayer)
+                {
+                    var npc = NpcManager.GetEnemy(TilePosition);
+                    if (npc != null)
+                    {
+                        npc.Life -= BelongMagic.Effect;
+                        if(npc.Life <= 0)npc.Death();
+                        Destroy();
+                    }
+                }
                 if (Globals.TheMap.IsObstacleForMagic(MapX, MapY))
                 {
                     Destroy();

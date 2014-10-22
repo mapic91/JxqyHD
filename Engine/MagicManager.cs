@@ -599,6 +599,21 @@ namespace Engine
         {
             var elapsedMilliseconds = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
+            for (var node = _workList.First; node != null; )
+            {
+                var item = node.Value;
+                var next = node.Next;
+                item.LeftMilliseconds -= elapsedMilliseconds;
+                if (item.LeftMilliseconds <= 0)
+                {
+                    if (item.TheSprite.BelongCharacter.IsPlayer)
+                        _playerSprites.AddLast(item.TheSprite);
+                    else _npcSprites.AddLast(item.TheSprite);
+                    _workList.Remove(node);
+                }
+                node = next;
+            }
+
             for (var node = _npcSprites.First; node != null; )
             {
                 var sprite = node.Value;
@@ -625,21 +640,6 @@ namespace Engine
                 else
                 {
                     sprite.Update(gameTime);
-                }
-                node = next;
-            }
-
-            for (var node = _workList.First; node != null; )
-            {
-                var item = node.Value;
-                var next = node.Next;
-                item.LeftMilliseconds -= elapsedMilliseconds;
-                if (item.LeftMilliseconds <= 0)
-                {
-                    if (item.TheSprite.BelongCharacter.IsPlayer)
-                        _playerSprites.AddLast(item.TheSprite);
-                    else _npcSprites.AddLast(item.TheSprite);
-                    _workList.Remove(node);
                 }
                 node = next;
             }

@@ -15,12 +15,14 @@ namespace Engine
         private static LinkedList<Npc> _list = new LinkedList<Npc>();
         private static List<Npc> _npcInView = new List<Npc>();
         private static Rectangle _lastViewRegion;
+        private static bool _npcListChanged = true;
 
         public static List<Npc> NpcsInView
         {
             get
             {
-                if (!_lastViewRegion.Equals(Globals.TheCarmera.CarmerRegionInWorld))
+                if (!_lastViewRegion.Equals(Globals.TheCarmera.CarmerRegionInWorld) ||
+                    _npcListChanged)
                 {
                     _npcInView = GetNpcsInView();
                     _lastViewRegion = Globals.TheCarmera.CarmerRegionInWorld;
@@ -46,6 +48,12 @@ namespace Engine
             return list;
         }
 
+        private static void RemoveNpc(LinkedListNode<Npc> node)
+        {
+            _list.Remove(node);
+            _npcListChanged = true;
+        }
+
         public static bool Load(string filePath)
         {
             try
@@ -62,7 +70,7 @@ namespace Engine
 
         public static bool Load(string[] lines)
         {
-            _list.Clear();
+            ClearAllNpc();
 
             var count = lines.Count();
             for (var i = 0; i < count; )
@@ -93,11 +101,43 @@ namespace Engine
         public static void AddNpc(Npc npc)
         {
             _list.AddLast(npc);
+            _npcListChanged = true;
         }
 
         public static void ClearAllNpc()
         {
             _list.Clear();
+            _npcListChanged = true;
+        }
+
+        public static bool IsEnemy(int tileX, int tileY)
+        {
+            foreach (var npc in _list)
+            {
+                if (npc.MapX == tileX && npc.MapY == tileY && npc.IsEnemy)
+                    return true;
+            }
+            return false;
+        }
+
+        public static bool IsEnemy(Vector2 tilePosition)
+        {
+            return IsEnemy((int) tilePosition.X, (int) tilePosition.Y);
+        }
+
+        public static Npc GetEnemy(int tileX, int tileY)
+        {
+            foreach (var npc in _list)
+            {
+                if (npc.MapX == tileX && npc.MapY == tileY && npc.IsEnemy)
+                    return npc;
+            }
+            return null;
+        }
+
+        public static Npc GetEnemy(Vector2 tilePosition)
+        {
+            return GetEnemy((int) tilePosition.X, (int) tilePosition.Y);
         }
 
         public static bool IsObstacle(int tileX, int tileY)
@@ -149,9 +189,13 @@ namespace Engine
 
         public static void Update(GameTime gameTime)
         {
-            foreach (var npc in _list)
+            for (var node = _list.First; node != null;)
             {
+                var npc = node.Value;
+                var next = node.Next;
                 npc.Update(gameTime);
+                if (npc.IsDeath) RemoveNpc(node);
+                node = next;
             }
         }
 

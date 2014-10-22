@@ -25,9 +25,9 @@ namespace Engine
             get { return Kind == 3; }
         }
 
-        public bool IsInteractive
+        public bool  IsInteractive
         {
-            get { return (!string.IsNullOrEmpty(ScriptFile)) || IsEnemy; }
+            get { return (!string.IsNullOrEmpty(ScriptFile) || IsEnemy || IsFriend); }
         }
         #endregion
 

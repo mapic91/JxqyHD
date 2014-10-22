@@ -50,14 +50,13 @@ namespace Engine
         private int _idle;
         private Vector2 _magicDestination;
         private Magic _magicUse;
-        private bool _isObstacle = true;
-        private bool _isPlayer;
         private bool _isInFighting;
         private float _totalNonFightingSeconds;
         private const float MaxNonFightSeconds = 7f;
         private Vector2 _destinationPositionInWorld = Vector2.Zero;
         private Vector2 _destinationTilePosition = Vector2.Zero;
         private LinkedList<Vector2> _path;
+        private bool _isDeath;
 
         #region Public properties
         public int Dir
@@ -75,12 +74,7 @@ namespace Engine
         public int Kind
         {
             get { return _kind; }
-            set
-            {
-                _kind = value;
-                if (value == 7) IsObstacle = false;
-                if (value == 2 || value == 3) _isPlayer = true;
-            }
+            set{ _kind = value; }
         }
 
         public int Relation
@@ -271,13 +265,12 @@ namespace Engine
 
         public bool IsObstacle
         {
-            get { return _isObstacle; }
-            set { _isObstacle = value; }
+            get { return (Kind != 7); }
         }
 
         public bool IsPlayer
         {
-            get { return _isPlayer; }
+            get { return (Kind == 2 || Kind == 3); }
         }
 
         public Vector2 DestinationPositionInWorld
@@ -311,7 +304,13 @@ namespace Engine
             }
         }
 
-        #endregion
+        public bool IsDeath
+        {
+            get { return _isDeath; }
+            protected set { _isDeath = value; }
+        }
+
+        #endregion Public properties
 
         public Character(string filePath)
         {
@@ -660,7 +659,7 @@ namespace Engine
             }
         }
 
-        public void UseMagic(Magic magic, Vector2 magicDestinationTilePosition)
+        public void UseMagic(Magic magic, Vector2 magicDestinationPosition)
         {
             if (PerformActionOk())
             {
@@ -668,7 +667,7 @@ namespace Engine
                 _isInFighting = true;
                 _totalNonFightingSeconds = 0;
 
-                _magicDestination = Map.ToPixelPosition(magicDestinationTilePosition);
+                _magicDestination = magicDestinationPosition;
                 _magicUse = magic;
                 SetState(NpcState.Magic);
                 SetDirection(_magicDestination - PositionInWorld);
@@ -688,12 +687,14 @@ namespace Engine
 
         public void Death()
         {
+            if(State == (int)NpcState.Death) return;
             StateInitialize();
-            if (NpcIni.ContainsKey((int)NpcState.Death))
+            if (NpcIni.ContainsKey((int) NpcState.Death))
             {
                 SetState(NpcState.Death);
                 PlayCurrentDirOnce();
             }
+            else IsDeath = true;
         }
 
         public void Attacking(Vector2 direction)
@@ -726,6 +727,8 @@ namespace Engine
 
         public override void Update(GameTime gameTime)
         {
+            if(IsDeath) return;
+
             var elapsedGameTime = gameTime.ElapsedGameTime;
 
             switch ((NpcState)State)
@@ -774,7 +777,13 @@ namespace Engine
                 case NpcState.Death:
                     if (IsPlayCurrentDirOnceEnd())
                     {
-
+                        IsDeath = true;
+                        if (BodyIni != null)
+                        {
+                            BodyIni.PositionInWorld = PositionInWorld;
+                            BodyIni.CurrentDirection = CurrentDirection;
+                            ObjManager.AddObj(BodyIni);
+                        }
                     }
                     else base.Update(gameTime);
                     break;
@@ -790,7 +799,6 @@ namespace Engine
                     ToNonFightingState();
                 }
             }
-
         }
 
         public void Draw(SpriteBatch spriteBatch)

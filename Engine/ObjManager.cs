@@ -14,12 +14,14 @@ namespace Engine
         private static LinkedList<Obj> _list = new LinkedList<Obj>();
         private static List<Obj> _objInView = new List<Obj>();
         private static Rectangle _lastViewRegion;
+        private static bool _objListChanged = true;
 
         public static List<Obj> ObjsInView
         {
             get
             {
-                if (!_lastViewRegion.Equals(Globals.TheCarmera.CarmerRegionInWorld))
+                if (!_lastViewRegion.Equals(Globals.TheCarmera.CarmerRegionInWorld) ||
+                    _objListChanged)
                 {
                     _objInView = GetObjsInView();
                     _lastViewRegion = Globals.TheCarmera.CarmerRegionInWorld;
@@ -61,7 +63,7 @@ namespace Engine
 
         public static bool Load(string[] lines)
         {
-            _list.Clear();
+            ClearAllObj();
 
             var count = lines.Count();
             for (var i = 0; i < count; )
@@ -91,12 +93,17 @@ namespace Engine
 
         public static void AddObj(Obj obj)
         {
-            _list.AddLast(obj);
+            if (obj != null)
+            {
+                _list.AddLast(obj);
+                _objListChanged = true;
+            }
         }
 
         public static void ClearAllObj()
         {
             _list.Clear();
+            _objListChanged = true;
         }
 
         public static bool IsObstacle(int tileX, int tileY)
