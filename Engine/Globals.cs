@@ -29,6 +29,7 @@ namespace Engine
         public static Random TheRandom = new Random();
 
         #region Sprite out edge
+        public static Npc OutEdgeNpc;
         public static Sprite OutEdgeSprite;
         public static Texture2D OutEdgeTexture;
         public static int OffX;
@@ -36,6 +37,7 @@ namespace Engine
 
         public static void ClearGlobalOutEdge()
         {
+            OutEdgeNpc = null;
             Globals.OutEdgeSprite = null;
             Globals.OutEdgeTexture = null;
             Globals.OffX = Globals.OffY = 0;
@@ -46,6 +48,14 @@ namespace Engine
         public static Carmera TheCarmera;
         public static Map TheMap = new Map();
         public static Dictionary<int, Asf> AsfFiles = new Dictionary<int, Asf>();
-        public static Dictionary<int, Magic> Magics = new Dictionary<int, Magic>(); 
+        public static Dictionary<int, Magic> Magics = new Dictionary<int, Magic>();
+
+        #region Font
+        public static SpriteFont FontMnjxy12;
+        #endregion
+
+        public static int WindowWidth = 1366;
+        public static int WindowHeight = 768;
+
     }
 }

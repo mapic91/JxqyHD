@@ -93,6 +93,7 @@ namespace Engine
                     one.RegionInWorld,
                     texture))
                 {
+                    Globals.OutEdgeNpc = one;
                     Globals.OutEdgeSprite = one;
                     var edgeColor = Globals.NpcEdgeColor;
                     if (one.IsEnemy) edgeColor = Globals.EnemyEdgeColor;
@@ -198,6 +199,8 @@ namespace Engine
                     Globals.OffX,
                     Globals.OffY);
             }
+            if(Globals.OutEdgeNpc != null)
+                InfoDrawer.DrawLife(spriteBatch, Globals.OutEdgeNpc);
         }
     }
 }

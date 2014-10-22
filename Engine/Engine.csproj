@@ -70,6 +70,7 @@
     <Compile Include="Dialog.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="IMoveControlInWorld.cs" />
+    <Compile Include="InfoDrawer.cs" />
     <Compile Include="IScreen.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Magic.cs" />

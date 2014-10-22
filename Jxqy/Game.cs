@@ -44,8 +44,8 @@ namespace Jxqy
 
             Log.LogMessageToFile("Game is running...\n\n\n");
 
-            _graphics.PreferredBackBufferWidth = 1366;
-            _graphics.PreferredBackBufferHeight = 768;
+            _graphics.PreferredBackBufferWidth = Globals.WindowWidth;
+            _graphics.PreferredBackBufferHeight = Globals.WindowHeight;
             _graphics.ApplyChanges();
 
             Globals.TheMap.ViewWidth = _graphics.PreferredBackBufferWidth;
@@ -61,6 +61,7 @@ namespace Jxqy
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+            Globals.FontMnjxy12 = Content.Load<SpriteFont>(@"font\GB2312_ASCII_ÃÔÄã¼òÏ¸Ô²_12");
 
             Globals.TheMap.LoadMap(@"map\map_015_²Ø½£É½×¯.map");
             Globals.TheMap.ViewBeginX = 0;
