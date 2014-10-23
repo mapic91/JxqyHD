@@ -167,6 +167,7 @@ namespace Engine
                     {
                         npc.Life -= BelongMagic.Effect;
                         if(npc.Life <= 0)npc.Death();
+                        else npc.Hurting();
                         Destroy();
                     }
                 }

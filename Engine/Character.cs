@@ -57,6 +57,9 @@ namespace Engine
         private Vector2 _destinationTilePosition = Vector2.Zero;
         private LinkedList<Vector2> _path;
         private bool _isDeath;
+        private bool _isExist = true;
+
+        protected const float UnitRadiusDistance = 64f + 0.5f;
 
         #region Public properties
         public int Dir
@@ -74,7 +77,7 @@ namespace Engine
         public int Kind
         {
             get { return _kind; }
-            set{ _kind = value; }
+            set { _kind = value; }
         }
 
         public int Relation
@@ -89,11 +92,13 @@ namespace Engine
             set { _state = value; }
         }
 
-        public int PathFinder
+        public virtual int PathFinder
         {
-            get { return _pathFinder; }
-            set { _pathFinder = value; }
+            get { return _pathFinder; } 
+            set { _pathFinder = value; } 
         }
+
+        public abstract Engine.PathFinder.PathType PathType { get; }
 
         public int VisionRadius
         {
@@ -265,7 +270,7 @@ namespace Engine
 
         public bool IsObstacle
         {
-            get { return (Kind != 7); }
+            get { return (Kind != 7) && IsExist; }
         }
 
         public bool IsPlayer
@@ -308,6 +313,12 @@ namespace Engine
         {
             get { return _isDeath; }
             protected set { _isDeath = value; }
+        }
+
+        public bool IsExist
+        {
+            get { return _isExist; }
+            set { _isExist = value; }
         }
 
         #endregion Public properties
@@ -361,9 +372,11 @@ namespace Engine
                         info.SetValue(this, Utils.GetMagic(@"ini\magic\" + nameValue[1]), null);
                         break;
                     default:
-                        var integerValue = int.Parse(nameValue[1]);
-                        info.SetValue(this, integerValue, null);
-                        break;
+                        {
+                            var integerValue = int.Parse(nameValue[1]);
+                            info.SetValue(this, integerValue, null);
+                            break;
+                        }
                 }
             }
             catch (Exception)
@@ -374,6 +387,8 @@ namespace Engine
 
         }
 
+        protected abstract bool HasObstacle(Vector2 tilePosition);
+
         private void MoveAlongPath(float elapsedSeconds, int speedFold)
         {
             if (Path == null || Path.Count < 2)
@@ -382,18 +397,18 @@ namespace Engine
                 return;
             }
             var tilePosition = Map.ToTilePosition(Path.First.Next.Value);
-            if (NpcManager.IsObstacle(tilePosition) ||
-                ObjManager.IsObstacle(tilePosition)) //Obstacle in the way
+            if (HasObstacle(tilePosition)) //Obstacle in the way
             {
-                if (tilePosition == DestinationTilePosition)//Just one step, standing
+                PositionInWorld = Path.First.Value;
+                Path = Engine.PathFinder.FindPath(TilePosition, DestinationTilePosition, PathType);
+                if (tilePosition == DestinationTilePosition || //Just one step, standing
+                    Path == null //Can't find path
+                    )
                 {
                     Path = null;
                     Standing();
                     return;
                 }
-                //More than one step,find new path
-                PositionInWorld = Path.First.Value;
-                Path = Engine.PathFinder.FindPath(TilePosition, DestinationTilePosition);
             }
             var from = Path.First.Value;
             var to = Path.First.Next.Value;
@@ -406,7 +421,7 @@ namespace Engine
                 {
                     var destination = DestinationPositionInWorld;
                     PositionInWorld = to;
-                    Path = Engine.PathFinder.FindPath(TilePosition, Map.ToTilePosition(destination));
+                    Path = Engine.PathFinder.FindPath(TilePosition, Map.ToTilePosition(destination), PathType);
                     if (Path == null) Standing();
                 }
                 else
@@ -515,6 +530,9 @@ namespace Engine
                             }
                             break;
                         case NpcState.Magic:
+                        case NpcState.Attack:
+                        case NpcState.Attack1:
+                        case NpcState.Attack2:
                             {
                                 //do nothing
                             }
@@ -563,6 +581,13 @@ namespace Engine
             Path = null;
         }
 
+        public bool IsStanding()
+        {
+            return (State == (int)NpcState.Stand ||
+                    State == (int)NpcState.Stand1 ||
+                    State == (int)NpcState.FightStand);
+        }
+
         public bool IsWalking()
         {
             return (State == (int)NpcState.Walk ||
@@ -577,7 +602,7 @@ namespace Engine
 
         public bool IsSitting()
         {
-            return State == (int) NpcState.Sit;
+            return State == (int)NpcState.Sit;
         }
 
         public void WalkTo(Vector2 destinationTilePosition)
@@ -590,7 +615,7 @@ namespace Engine
                 else
                 {
                     StateInitialize();
-                    Path = Engine.PathFinder.FindPath(TilePosition, destinationTilePosition);
+                    Path = Engine.PathFinder.FindPath(TilePosition, destinationTilePosition, PathType);
                     if (Path == null) Standing();
                     else
                     {
@@ -613,7 +638,7 @@ namespace Engine
                 else
                 {
                     StateInitialize();
-                    Path = Engine.PathFinder.FindPath(TilePosition, destinationTilePosition);
+                    Path = Engine.PathFinder.FindPath(TilePosition, destinationTilePosition, PathType);
                     if (Path == null) Standing();
                     else
                     {
@@ -675,7 +700,7 @@ namespace Engine
             }
         }
 
-        public void Hurted()
+        public void Hurting()
         {
             StateInitialize();
             if (NpcIni.ContainsKey((int)NpcState.Hurt))
@@ -687,9 +712,9 @@ namespace Engine
 
         public void Death()
         {
-            if(State == (int)NpcState.Death) return;
+            if (State == (int)NpcState.Death) return;
             StateInitialize();
-            if (NpcIni.ContainsKey((int) NpcState.Death))
+            if (NpcIni.ContainsKey((int)NpcState.Death))
             {
                 SetState(NpcState.Death);
                 PlayCurrentDirOnce();
@@ -721,13 +746,20 @@ namespace Engine
             _isInFighting = false;
             if (IsWalking()) SetState(NpcState.Walk);
             if (IsRuning()) SetState(NpcState.Run);
-            if(State == (int)NpcState.FightStand) SetState(NpcState.Stand);
+            if (State == (int)NpcState.FightStand) SetState(NpcState.Stand);
         }
         #endregion Perform action
 
+        public static float GetTrueDistance(Vector2 distance)
+        {
+            var unit = Utils.GetDirection8(Utils.GetDirectionIndex(distance, 8));
+            distance = (2f - Math.Abs(unit.X))*distance;
+            return distance.Length();
+        }
+
         public override void Update(GameTime gameTime)
         {
-            if(IsDeath) return;
+            if (IsDeath) return;
 
             var elapsedGameTime = gameTime.ElapsedGameTime;
 
@@ -752,19 +784,29 @@ namespace Engine
                     break;
                 case NpcState.Stand:
                 case NpcState.Stand1:
+                case NpcState.Hurt:
+                    if (IsPlayCurrentDirOnceEnd()) Standing();
+                    else base.Update(gameTime);
+                    break;
                 case NpcState.Attack:
                 case NpcState.Attack1:
                 case NpcState.Attack2:
-                case NpcState.Hurt:
-                    if (IsPlayCurrentDirOnceEnd()) Standing();
+                    if (IsPlayCurrentDirOnceEnd())
+                    {
+                        if (NpcIni.ContainsKey(State))
+                        {
+                            SoundManager.PlaySoundEffectOnce(NpcIni[State].Sound);
+                        }
+                        Standing();
+                    }
                     else base.Update(gameTime);
                     break;
                 case NpcState.Magic:
                     if (IsPlayCurrentDirOnceEnd())
                     {
-                        if (NpcIni.ContainsKey((int) NpcState.Magic))
+                        if (NpcIni.ContainsKey((int)NpcState.Magic))
                         {
-                            SoundManager.PlaySoundEffectOnce(NpcIni[(int) NpcState.Magic].Sound);
+                            SoundManager.PlaySoundEffectOnce(NpcIni[(int)NpcState.Magic].Sound);
                         }
                         MagicManager.UseMagic(this, _magicUse, PositionInWorld, _magicDestination);
                         Standing();
@@ -801,8 +843,9 @@ namespace Engine
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public virtual void Draw(SpriteBatch spriteBatch)
         {
+            if (IsDeath) return;
             base.Draw(spriteBatch);
         }
     }

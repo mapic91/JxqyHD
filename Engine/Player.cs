@@ -21,6 +21,15 @@ namespace Engine
         private const float MaxNonFightingTime = 7f;
 
         #region Public properties
+        public override PathFinder.PathType PathType
+        {
+            get
+            {
+                if (base.PathFinder == 1)
+                    return Engine.PathFinder.PathType.PerfectMaxTry2000;
+                return Engine.PathFinder.PathType.SimpleMaxTry2000;
+            }
+        }
 
         public Dictionary<int, Utils.LevelDetail> LevelIni
         {
@@ -76,6 +85,12 @@ namespace Engine
 
         private MouseState _lastMouseState;
         private KeyboardState _lastKeyboardState;
+        protected override bool HasObstacle(Vector2 tilePosition)
+        {
+            return (NpcManager.IsObstacle(tilePosition) ||
+                        ObjManager.IsObstacle(tilePosition));
+        }
+
         public override void Update(GameTime gameTime)
         {
             var mouseState = Mouse.GetState();

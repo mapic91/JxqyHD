@@ -10,6 +10,17 @@ namespace Engine
     public class Npc : Character
     {
         #region public properties
+        public override PathFinder.PathType PathType
+        {
+            get
+            {
+                if (base.PathFinder == 1)
+                    return Engine.PathFinder.PathType.PerfectMaxTry100;
+                else
+                    return Engine.PathFinder.PathType.SimpleMaxTry100;
+            }
+        }
+
         public bool IsEnemy
         {
             get { return Kind == 1 && Relation == 1; }
@@ -33,14 +44,34 @@ namespace Engine
 
         public Npc() { }
 
-        public Npc(string filePath) : base(filePath)
+        public Npc(string filePath) : base(filePath) { }
+
+        protected override bool HasObstacle(Vector2 tilePosition)
         {
-            
+            return (NpcManager.IsObstacle(tilePosition) ||
+                    ObjManager.IsObstacle(tilePosition) ||
+                    Globals.ThePlayer.TilePosition == tilePosition);
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public override void Update(GameTime gameTime)
         {
-            base.Draw(spriteBatch);
+            var isExist = IsExist;
+            IsExist = false;//Temporary make self disappear because of obstacle check
+
+            var direction = Globals.ThePlayer.PositionInWorld - PositionInWorld;
+            var tileDistance = Engine.PathFinder.GetTileDistance(TilePosition, 
+                Globals.ThePlayer.TilePosition);
+
+            if (IsEnemy)
+            {
+                if (tileDistance <= AttackRadius　&& !IsWalking())
+                    Attacking(direction);
+                else if(tileDistance <= VisionRadius)
+                    WalkTo(Globals.ThePlayer.TilePosition);
+            }
+            base.Update(gameTime);
+
+            IsExist = isExist;//restore
         }
     }
 }

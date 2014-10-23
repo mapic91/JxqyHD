@@ -21,7 +21,6 @@ namespace Jxqy
     {
         GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;
-        private Player _player1;
 
         public Game()
         {
@@ -73,13 +72,13 @@ namespace Jxqy
                 Globals.TheMap.MapPixelWidth, 
                 Globals.TheMap.MapPixelHeight);
 
-            _player1 = new Player(@"ini\save\player0.ini");
+            Globals.ThePlayer = new Player(@"ini\save\player0.ini");
             NpcManager.Load(@"ini\save\cangjian.npc");
             ObjManager.Load(@"ini\save\map015-xianglu.obj");
 
             //BackgroundMusic.Play(@"music/Mc003.mp3");
 
-            Globals.TheCarmera.Follow(_player1); 
+            Globals.TheCarmera.Follow(Globals.ThePlayer); 
         }
 
         /// <summary>
@@ -113,7 +112,7 @@ namespace Jxqy
             if (keyboardState.IsKeyDown(Keys.D3) && _lastKeyboardState.IsKeyUp(Keys.D3))
                 Globals.TheMap.SwitchLayerDraw(2);
 
-            _player1.Update(gameTime);
+            Globals.ThePlayer.Update(gameTime);
             MagicManager.Update(gameTime);
             NpcManager.Update(gameTime);
             ObjManager.Update(gameTime);
@@ -136,7 +135,7 @@ namespace Jxqy
 
             _spriteBatch.Begin(SpriteSortMode.Deferred,null);
             Globals.TheMap.Draw(_spriteBatch);
-            _player1.Draw(_spriteBatch);
+            Globals.ThePlayer.Draw(_spriteBatch);
             _spriteBatch.End();
             base.Draw(gameTime);
         }

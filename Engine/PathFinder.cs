@@ -6,18 +6,127 @@ using Microsoft.Xna.Framework;
 
 namespace Engine
 {
-    public enum PathType
-    {
-        WalkRun,
-        Jump
-    }
     public static class PathFinder
     {
-        //Returned path is in pixel position
-        public static LinkedList<Vector2> FindPath(Vector2 startTile, Vector2 endTile)
+        public enum PathType
+        {
+            SimpleMaxTry100,
+            SimpleMaxTry2000,
+            PerfectMaxTry100,
+            PerfectMaxTry2000
+        }
+
+        private static LinkedList<Vector2> GetPath(Dictionary<Vector2, Vector2> cameFrom, Vector2 startTile,
+            Vector2 endTile)
+        {
+            if (cameFrom.ContainsKey(endTile))
+            {
+                var path = new LinkedList<Vector2>();
+                var current = endTile;
+                path.AddFirst(Map.ToPixelPosition(current));
+                while (current != startTile)
+                {
+                    current = cameFrom[current];
+                    path.AddFirst(Map.ToPixelPosition(current));
+                }
+                return path;
+            }
+            return null;
+        }
+
+        public static LinkedList<Vector2> FindPath(Vector2 startTile, Vector2 endTile, PathType type)
+        {
+            switch (type)
+            {
+                case PathType.SimpleMaxTry100:
+                    return FindPathSimple(startTile, endTile, 100);
+                case PathType.SimpleMaxTry2000:
+                    return FindPathSimple(startTile, endTile, 2000);
+                case PathType.PerfectMaxTry100:
+                    return FindPathPerfect(startTile, endTile, 100);
+                case PathType.PerfectMaxTry2000:
+                    return FindPathPerfect(startTile, endTile, 2000);
+            }
+            return null;
+        }
+
+        public static LinkedList<Vector2> FindPathSimple(Vector2 startTile, Vector2 endTile, int maxTry)
+        {
+            if (startTile == endTile) return null;
+
+            var cameFrom = new Dictionary<Vector2, Vector2>();
+            var frontier = new C5.IntervalHeap<Node>();
+
+            frontier.Add(new Node(startTile, 0f));
+            var tryCount = 0;
+            while (!frontier.IsEmpty)
+            {
+                if (tryCount++ > maxTry) break;
+                var current = frontier.DeleteMin().Location;
+                if(current == endTile) break;
+                if (NpcManager.IsObstacle(current) ||
+                    ObjManager.IsObstacle(current)) continue;
+                foreach (var neighbor in FindNeighbors(current))
+                {
+                    if (!cameFrom.ContainsKey(neighbor))
+                    {
+                        var priority = GetCost(neighbor, endTile);
+                        frontier.Add(new Node(neighbor, priority));
+                        cameFrom[neighbor] = current;
+                    }
+                }
+            }
+            return GetPath(cameFrom, startTile, endTile);
+        }
+
+        public static int GetTileDistance(Vector2 startTile, Vector2 endTile)
+        {
+            if (startTile == endTile) return 0;
+
+            var frontier = new C5.IntervalHeap<Node>();
+            frontier.Add(new Node(startTile, 0f));
+            var count = -1;
+            while (!frontier.IsEmpty)
+            {
+                var current = frontier.DeleteMin().Location;
+                count++;
+                if (current == endTile) return count;
+                foreach (var neighbor in FindAllNeighbors(current))
+                {
+                    frontier.Add(new Node(neighbor, GetCost(neighbor, endTile)));
+                }
+            }
+            return count;
+        }
+
+        public static LinkedList<Vector2> FindLinePath(Vector2 startTile, Vector2 endTile)
         {
             if (startTile == endTile) return null;
             var path = new LinkedList<Vector2>();
+            path.AddLast(startTile);
+
+            var frontier = new C5.IntervalHeap<Node>();
+            frontier.Add(new Node(startTile, 0f));
+            while (!frontier.IsEmpty)
+            {
+                var current = frontier.DeleteMin().Location;
+                if (Globals.TheMap.IsObstacleForCharacter(current) ||
+                    NpcManager.IsObstacle(current) ||
+                    ObjManager.IsObstacle(current)) return null;
+                path.AddLast(current);
+                if (current == endTile) return path;
+                foreach (var neighbor in FindAllNeighbors(current))
+                {
+                    frontier.Add(new Node(neighbor, GetCost(neighbor, endTile)));
+                }
+            }
+            return null;
+        } 
+
+        //Returned path is in pixel position
+        public static LinkedList<Vector2> FindPathPerfect(Vector2 startTile, Vector2 endTile, int maxTryCount)
+        {
+            if (startTile == endTile) return null;
 
             if (Globals.TheMap.IsObstacleForCharacter((int)endTile.X, (int)endTile.Y))
                 return null;
@@ -32,7 +141,7 @@ namespace Engine
             var tryCount = 0; //For performance
             while (!frontier.IsEmpty)
             {
-                if (tryCount++ > 2000) break;
+                if (tryCount++ > maxTryCount) break;
                 var current = frontier.DeleteMin().Location;
                 if (current.Equals(endTile)) break;
                 if (NpcManager.IsObstacle(current) ||
@@ -52,19 +161,7 @@ namespace Engine
 
             }
 
-            if (cameFrom.ContainsKey(endTile))
-            {
-                var current = endTile; 
-                    path.AddFirst(Map.ToPixelPosition(current));
-                while (current != startTile)
-                {
-                    current = cameFrom[current];
-                    path.AddFirst(Map.ToPixelPosition(current));
-                }
-                return path;
-            }
-
-            return null;
+            return GetPath(cameFrom, startTile, endTile);
         }
 
         public static Vector2 FindNeighborInDirection(Vector2 tilePosition, Vector2 direction)
