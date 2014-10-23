@@ -10,18 +10,22 @@ namespace Engine
 {
     public static class MagicManager
     {
-        private static LinkedList<MagicSprite> _npcSprites = new LinkedList<MagicSprite>();
-        private static LinkedList<MagicSprite> _playerSprites = new LinkedList<MagicSprite>();
+        private static LinkedList<MagicSprite> _magicSprites = new LinkedList<MagicSprite>();
         private static LinkedList<WorkItem> _workList = new LinkedList<WorkItem>();
         private static List<MagicSprite> _magicSpritesInView = new List<MagicSprite>();
         private static Rectangle _lastViewRegion;
+        private static bool _listChanged = true;
 
         public static List<MagicSprite> MagicSpritesInView
         {
             get
             {
-                if (!_lastViewRegion.Equals(Globals.TheCarmera.CarmerRegionInWorld))
+                if (!_lastViewRegion.Equals(Globals.TheCarmera.CarmerRegionInWorld) ||
+                    _listChanged) //magic sprite in view changed,renew cache
+                {
+                    _lastViewRegion = Globals.TheCarmera.CarmerRegionInWorld;
                     _magicSpritesInView = GetMagicSpritesInView();
+                }
                 return _magicSpritesInView;
             }
         }
@@ -29,13 +33,8 @@ namespace Engine
         private static List<MagicSprite> GetMagicSpritesInView()
         {
             var viewRegion = Globals.TheCarmera.CarmerRegionInWorld;
-            var list = new List<MagicSprite>(_npcSprites.Count + _playerSprites.Count);
-            foreach (var sprite in _npcSprites)
-            {
-                if (viewRegion.Intersects(sprite.RegionInWorld))
-                    list.Add(sprite);
-            }
-            foreach (var sprite in _playerSprites)
+            var list = new List<MagicSprite>(_magicSprites.Count);
+            foreach (var sprite in _magicSprites)
             {
                 if (viewRegion.Intersects(sprite.RegionInWorld))
                     list.Add(sprite);
@@ -43,16 +42,10 @@ namespace Engine
             return list;
         }
 
-        public static void AddNpcMagicSprite(MagicSprite magicSprite)
+        private static void RemoveMagicSprite(LinkedListNode<MagicSprite> node)
         {
-            if (magicSprite == null) return;
-            _npcSprites.AddLast(magicSprite);
-        }
-
-        public static void AddPlayerMagicSprite(MagicSprite magicSprite)
-        {
-            if (magicSprite == null) return;
-            _playerSprites.AddLast(magicSprite);
+            _magicSprites.Remove(node);
+            _listChanged = true;
         }
 
         public static void UseMagic(Character user, Magic magic, Vector2 origin, Vector2 destination)
@@ -207,8 +200,11 @@ namespace Engine
 
         private static void AddMagicSprite(MagicSprite sprite)
         {
-            if (sprite.BelongCharacter.IsPlayer) AddPlayerMagicSprite(sprite);
-            else AddNpcMagicSprite(sprite);
+            if (sprite != null)
+            {
+                _magicSprites.AddLast(sprite);
+                _listChanged = true;
+            }
         }
 
         private static void AddLineMoveMagicSprite(Character user, Magic magic, Vector2 origin, Vector2 destination, bool destroyOnEnd)
@@ -606,36 +602,19 @@ namespace Engine
                 item.LeftMilliseconds -= elapsedMilliseconds;
                 if (item.LeftMilliseconds <= 0)
                 {
-                    if (item.TheSprite.BelongCharacter.IsPlayer)
-                        _playerSprites.AddLast(item.TheSprite);
-                    else _npcSprites.AddLast(item.TheSprite);
+                     AddMagicSprite(item.TheSprite);
                     _workList.Remove(node);
                 }
                 node = next;
             }
 
-            for (var node = _npcSprites.First; node != null; )
+            for (var node = _magicSprites.First; node != null; )
             {
                 var sprite = node.Value;
                 var next = node.Next;
                 if (sprite.IsDestroyed)
                 {
-                    _npcSprites.Remove(node);
-                }
-                else
-                {
-                    sprite.Update(gameTime);
-                }
-                node = next;
-            }
-
-            for (var node = _playerSprites.First; node != null; )
-            {
-                var sprite = node.Value;
-                var next = node.Next;
-                if (sprite.IsDestroyed)
-                {
-                    _playerSprites.Remove(node);
+                    RemoveMagicSprite(node);
                 }
                 else
                 {
@@ -647,11 +626,7 @@ namespace Engine
 
         public static void Draw(SpriteBatch spriteBatch)
         {
-            foreach (var sprite in _npcSprites)
-            {
-                sprite.Draw(spriteBatch);
-            }
-            foreach (var sprite in _playerSprites)
+            foreach (var sprite in _magicSprites)
             {
                 sprite.Draw(spriteBatch);
             }
