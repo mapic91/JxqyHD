@@ -53,8 +53,10 @@ namespace Engine
         private bool _isInFighting;
         private float _totalNonFightingSeconds;
         private const float MaxNonFightSeconds = 7f;
-        private Vector2 _destinationPositionInWorld = Vector2.Zero;
-        private Vector2 _destinationTilePosition = Vector2.Zero;
+        private Vector2 _destinationMovePositionInWorld = Vector2.Zero;
+        private Vector2 _destinationMoveTilePosition = Vector2.Zero;
+        private Vector2 _destinationAttackTilePosition = Vector2.Zero;
+        private Vector2 _destinationAttackPositionInWorld = Vector2.Zero;
         private LinkedList<Vector2> _path;
         private bool _isDeath;
         private bool _isExist = true;
@@ -278,24 +280,44 @@ namespace Engine
             get { return (Kind == 2 || Kind == 3); }
         }
 
-        public Vector2 DestinationPositionInWorld
+        public Vector2 DestinationMovePositionInWorld
         {
-            get { return _destinationPositionInWorld; }
+            get { return _destinationMovePositionInWorld; }
             set
             {
-                _destinationPositionInWorld = value;
-                _destinationTilePosition = Map.ToTilePosition(value);
+                _destinationMovePositionInWorld = value;
+                _destinationMoveTilePosition = Map.ToTilePosition(value);
             }
         }
 
-        public Vector2 DestinationTilePosition
+        public Vector2 DestinationMoveTilePosition
         {
             get
-            { return _destinationTilePosition; }
+            { return _destinationMoveTilePosition; }
             set
             {
-                _destinationTilePosition = value;
-                _destinationPositionInWorld = Map.ToPixelPosition(value);
+                _destinationMoveTilePosition = value;
+                _destinationMovePositionInWorld = Map.ToPixelPosition(value);
+            }
+        }
+
+        public Vector2 DestinationAttackTilePosition
+        {
+            get { return _destinationAttackTilePosition; }
+            set
+            {
+                _destinationAttackTilePosition = value;
+                DestinationAttackPositionInWorld = Map.ToPixelPosition(value);
+            }
+        }
+
+        public Vector2 DestinationAttackPositionInWorld
+        {
+            get { return _destinationAttackPositionInWorld; }
+            set
+            {
+                _destinationAttackPositionInWorld = value;
+                DestinationAttackTilePosition = Map.ToTilePosition(value);
             }
         }
 
@@ -400,8 +422,8 @@ namespace Engine
             if (HasObstacle(tilePosition)) //Obstacle in the way
             {
                 PositionInWorld = Path.First.Value;
-                Path = Engine.PathFinder.FindPath(TilePosition, DestinationTilePosition, PathType);
-                if (tilePosition == DestinationTilePosition || //Just one step, standing
+                Path = Engine.PathFinder.FindPath(TilePosition, DestinationMoveTilePosition, PathType);
+                if (tilePosition == DestinationMoveTilePosition || //Just one step, standing
                     Path == null //Can't find path
                     )
                 {
@@ -417,9 +439,9 @@ namespace Engine
             if (MovedDistance >= distance - Globals.DistanceOffset ||
                 Vector2.Distance(PositionInWorld, to) < Globals.DistanceOffset)
             {
-                if (DestinationPositionInWorld != Path.Last.Value) // new destination
+                if (DestinationMovePositionInWorld != Path.Last.Value) // new destination
                 {
-                    var destination = DestinationPositionInWorld;
+                    var destination = DestinationMovePositionInWorld;
                     PositionInWorld = to;
                     Path = Engine.PathFinder.FindPath(TilePosition, Map.ToTilePosition(destination), PathType);
                     if (Path == null) Standing();
@@ -577,7 +599,7 @@ namespace Engine
         public void StateInitialize()
         {
             EndPlayCurrentDirOnce();
-            DestinationPositionInWorld = Vector2.Zero;
+            DestinationMovePositionInWorld = Vector2.Zero;
             Path = null;
         }
 
@@ -611,7 +633,7 @@ namespace Engine
                 destinationTilePosition != TilePosition)
             {
                 if (IsWalking())
-                    DestinationTilePosition = destinationTilePosition;
+                    DestinationMoveTilePosition = destinationTilePosition;
                 else
                 {
                     StateInitialize();
@@ -619,7 +641,7 @@ namespace Engine
                     if (Path == null) Standing();
                     else
                     {
-                        DestinationTilePosition = destinationTilePosition;
+                        DestinationMoveTilePosition = destinationTilePosition;
                         if (_isInFighting && NpcIni.ContainsKey((int)NpcState.FightWalk)) SetState(NpcState.FightWalk);
                         else SetState(NpcState.Walk);
                     }
@@ -634,7 +656,7 @@ namespace Engine
                 destinationTilePosition != TilePosition)
             {
                 if (IsRuning())
-                    DestinationTilePosition = destinationTilePosition;
+                    DestinationMoveTilePosition = destinationTilePosition;
                 else
                 {
                     StateInitialize();
@@ -642,7 +664,7 @@ namespace Engine
                     if (Path == null) Standing();
                     else
                     {
-                        DestinationTilePosition = destinationTilePosition;
+                        DestinationMoveTilePosition = destinationTilePosition;
                         if (_isInFighting && NpcIni.ContainsKey((int)NpcState.FightRun)) SetState(NpcState.FightRun);
                         else SetState(NpcState.Run);
                     }
@@ -659,14 +681,14 @@ namespace Engine
                 !ObjManager.IsObstacleInView(destinationTilePosition))
             {
                 StateInitialize();
-                DestinationTilePosition = destinationTilePosition;
+                DestinationMoveTilePosition = destinationTilePosition;
                 Path = new LinkedList<Vector2>();
                 Path.AddLast(PositionInWorld);
-                Path.AddLast(DestinationPositionInWorld);
+                Path.AddLast(DestinationMovePositionInWorld);
 
                 if (_isInFighting && NpcIni.ContainsKey((int)NpcState.FightJump)) SetState(NpcState.FightJump);
                 else SetState(NpcState.Jump);
-                SetDirection(DestinationPositionInWorld - PositionInWorld);
+                SetDirection(DestinationMovePositionInWorld - PositionInWorld);
                 PlayCurrentDirOnce();
             }
         }
@@ -722,7 +744,7 @@ namespace Engine
             else IsDeath = true;
         }
 
-        public void Attacking(Vector2 direction)
+        public void Attacking(Vector2 destinationTilePosition)
         {
             if (PerformActionOk())
             {
@@ -730,13 +752,14 @@ namespace Engine
                 _isInFighting = true;
                 _totalNonFightingSeconds = 0;
 
+                DestinationAttackTilePosition = destinationTilePosition;
                 var value = Globals.TheRandom.Next(3);
                 if (value == 1 && NpcIni.ContainsKey((int)NpcState.Attack1))
                     SetState(NpcState.Attack1);
                 else if (value == 2 && NpcIni.ContainsKey((int)NpcState.Attack2))
                     SetState(NpcState.Attack2);
                 else SetState(NpcState.Attack);
-                SetDirection(direction);
+                SetDirection(DestinationAttackPositionInWorld);
                 PlayCurrentDirOnce();
             }
         }

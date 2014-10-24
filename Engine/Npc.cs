@@ -64,7 +64,7 @@ namespace Engine
 
             if (IsEnemy)
             {
-                if (tileDistance <= AttackRadius　&& !IsWalking())
+                if (tileDistance <= AttackRadius)
                     Attacking(direction);
                 else if(tileDistance <= VisionRadius)
                     WalkTo(Globals.ThePlayer.TilePosition);
