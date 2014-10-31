@@ -17,7 +17,7 @@ namespace Engine
                 if (base.PathFinder == 1)
                     return Engine.PathFinder.PathType.PerfectMaxTry100;
                 else
-                    return Engine.PathFinder.PathType.SimpleMaxTry100;
+                    return Engine.PathFinder.PathType.PathOneStep;
             }
         }
 
@@ -56,18 +56,16 @@ namespace Engine
         public override void Update(GameTime gameTime)
         {
             var isExist = IsExist;
-            IsExist = false;//Temporary make self disappear because of obstacle check
-
-            var direction = Globals.ThePlayer.PositionInWorld - PositionInWorld;
-            var tileDistance = Engine.PathFinder.GetTileDistance(TilePosition, 
-                Globals.ThePlayer.TilePosition);
+            IsExist = false;//Temporary make self disappear because of obstacle check 
 
             if (IsEnemy)
             {
-                if (tileDistance <= AttackRadius)
-                    Attacking(direction);
-                else if(tileDistance <= VisionRadius)
-                    WalkTo(Globals.ThePlayer.TilePosition);
+                var tileDistance = Engine.PathFinder.GetTileDistance(TilePosition,
+                Globals.ThePlayer.TilePosition);
+
+                if(tileDistance <= VisionRadius)
+                    Attacking(Globals.ThePlayer.TilePosition);
+                else Standing();
             }
             base.Update(gameTime);
 

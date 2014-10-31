@@ -19,6 +19,7 @@ namespace Engine
         private Asf _texture = new Asf();
         private bool _isPlayingCurrentDirOnce;
         private float _movedDistance;
+        private bool _isTilePositionNew;
 
         public Sprite() { }
 
@@ -82,14 +83,13 @@ namespace Engine
             set { _velocity = value; }
         }
 
-        private bool _isTilePostionNew;
         public Vector2 PositionInWorld
         {
             get { return _positionInWorld; }
             set
             {
                 _positionInWorld = value;
-                _isTilePostionNew = false;
+                _isTilePositionNew = false;
             }
         }
 
@@ -97,8 +97,8 @@ namespace Engine
         {
             get
             {
-                if (IsTilePostionNew) return _mapX;
-                IsTilePostionNew = true;
+                if (IsTilePositionNew) return _mapX;
+                IsTilePositionNew = true;
                 var position = Map.ToTilePosition(PositionInWorld);
                 _mapX = (int)position.X;
                 _mapY = (int)position.Y;
@@ -115,8 +115,8 @@ namespace Engine
         {
             get
             {
-                if (IsTilePostionNew) return _mapY;
-                IsTilePostionNew = true;
+                if (IsTilePositionNew) return _mapY;
+                IsTilePositionNew = true;
                 var position = Map.ToTilePosition(PositionInWorld);
                 _mapX = (int)position.X;
                 _mapY = (int)position.Y;
@@ -140,10 +140,10 @@ namespace Engine
             }
         }
 
-        private bool IsTilePostionNew
+        private bool IsTilePositionNew
         {
-            get { return _isTilePostionNew; }
-            set { _isTilePostionNew = value; }
+            get { return _isTilePositionNew; }
+            set { _isTilePositionNew = value; }
         }
 
         public int Width

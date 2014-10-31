@@ -27,7 +27,7 @@ namespace Engine
             {
                 if (base.PathFinder == 1)
                     return Engine.PathFinder.PathType.PerfectMaxTry2000;
-                return Engine.PathFinder.PathType.SimpleMaxTry2000;
+                return Engine.PathFinder.PathType.PathOneStep;
             }
         }
 

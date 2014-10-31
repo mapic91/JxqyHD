@@ -108,33 +108,33 @@ namespace Engine
         #region public static method
         public static Vector2 ToTilePosition(int pixelX, int pixelY)
         {
-            if (pixelX < 0 || pixelY < 0) return new Vector2(0);
+            if (pixelX < 0f || pixelY < 0f) return new Vector2(0);
 
             var nx = pixelX / 64;
             var ny = 1 + (pixelY / 32) * 2;
 
-            //now calculate real position, please see 获取地图坐标.jpg
-            var dx = pixelX - nx * 64;
-            var dy = pixelY - (ny / 2) * 32;
-            if (dx < 32)
+            //now calculate real position, please see maptile.jpg
+            var dx = pixelX - nx * 64f;
+            var dy = pixelY - ((int)(ny / 2)) * 32f;
+            if (dx < 32f)
             {
-                if (dy < (32 - dx) / 2) // 1
+                if (dy < (32f - dx) / 2f) // 1
                 {
                     ny--;
                 }
-                else if (dy > (dx / 2 + 16)) // 2
+                else if (dy > (dx / 2f + 16f)) // 2
                 {
                     ny++;
                 }
             }
-            if (dx > 32)
+            if (dx > 32f)
             {
-                if (dy < (dx - 32) / 2) //3
+                if (dy < (dx - 32f) / 2f) //3
                 {
                     nx++;
                     ny--;
                 }
-                else if (dy > ((64 - dx) / 2 + 16)) // 4
+                else if (dy > ((64f - dx) / 2f + 16f)) // 4
                 {
                     nx++;
                     ny++;

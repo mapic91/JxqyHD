@@ -10,8 +10,7 @@ namespace Engine
     {
         public enum PathType
         {
-            SimpleMaxTry100,
-            SimpleMaxTry2000,
+            PathOneStep,
             PerfectMaxTry100,
             PerfectMaxTry2000
         }
@@ -38,10 +37,8 @@ namespace Engine
         {
             switch (type)
             {
-                case PathType.SimpleMaxTry100:
-                    return FindPathSimple(startTile, endTile, 100);
-                case PathType.SimpleMaxTry2000:
-                    return FindPathSimple(startTile, endTile, 2000);
+                case PathType.PathOneStep:
+                    return FindPathStep(startTile, endTile, 10);
                 case PathType.PerfectMaxTry100:
                     return FindPathPerfect(startTile, endTile, 100);
                 case PathType.PerfectMaxTry2000:
@@ -50,9 +47,54 @@ namespace Engine
             return null;
         }
 
+        public static LinkedList<Vector2> FindPathStep(Vector2 startTile, Vector2 endTile, int stepCount)
+        {
+            if (startTile == endTile) return null;
+
+            if (Globals.TheMap.IsObstacleForCharacter(endTile))
+                return null;
+
+            var cameFrom = new Dictionary<Vector2, Vector2>();
+            var frontier = new C5.IntervalHeap<Node>();
+            var path = new LinkedList<Vector2>();
+
+            frontier.Add(new Node(startTile, 0f));
+            var step = 0;
+            Vector2 current = Vector2.Zero;
+            while (!frontier.IsEmpty)
+            {
+                current = frontier.DeleteMin().Location;
+                if (NpcManager.IsObstacle(current) ||
+                    ObjManager.IsObstacle(current)) continue;
+                if (step++ > stepCount) break;
+                if (current == endTile) break;
+                foreach (var neighbor in FindNeighbors(current))
+                {
+                    if (!cameFrom.ContainsKey(neighbor))
+                    {
+                        var priority = GetCost(neighbor, endTile);
+                        frontier.Add(new Node(neighbor, priority));
+                        cameFrom[neighbor] = current;
+                    }
+                }
+            }
+
+            while (current != startTile)
+            {
+                path.AddFirst(Map.ToPixelPosition(current));
+                current = cameFrom[current];
+            }
+            path.AddFirst(Map.ToPixelPosition(startTile));
+
+            return path;
+        }
+
         public static LinkedList<Vector2> FindPathSimple(Vector2 startTile, Vector2 endTile, int maxTry)
         {
             if (startTile == endTile) return null;
+
+            if (Globals.TheMap.IsObstacleForCharacter(endTile))
+                return null;
 
             var cameFrom = new Dictionary<Vector2, Vector2>();
             var frontier = new C5.IntervalHeap<Node>();
@@ -128,7 +170,7 @@ namespace Engine
         {
             if (startTile == endTile) return null;
 
-            if (Globals.TheMap.IsObstacleForCharacter((int)endTile.X, (int)endTile.Y))
+            if (Globals.TheMap.IsObstacleForCharacter(endTile))
                 return null;
 
             var cameFrom = new Dictionary<Vector2, Vector2>();
@@ -164,6 +206,7 @@ namespace Engine
             return GetPath(cameFrom, startTile, endTile);
         }
 
+        //Return in tile postiion
         public static Vector2 FindNeighborInDirection(Vector2 tilePosition, Vector2 direction)
         {
             var neighbor = Vector2.Zero;
