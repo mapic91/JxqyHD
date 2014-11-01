@@ -34,6 +34,7 @@ namespace Engine
             return null;
         }
 
+        //Returned path is in pixel position
         public static LinkedList<Vector2> FindPath(Vector2 startTile, Vector2 endTile, PathType type)
         {
             switch (type)
@@ -48,6 +49,7 @@ namespace Engine
             return null;
         }
 
+        //Returned path is in pixel position
         public static LinkedList<Vector2> FindPathStep(Vector2 startTile, Vector2 endTile, int stepCount)
         {
             if (startTile == endTile) return null;
@@ -89,6 +91,7 @@ namespace Engine
             return path;
         }
 
+        //Returned path is in pixel position
         public static LinkedList<Vector2> FindPathSimple(Vector2 startTile, Vector2 endTile, int maxTry)
         {
             if (startTile == endTile) return null;
