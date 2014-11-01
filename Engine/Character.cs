@@ -569,8 +569,9 @@ namespace Engine
                             {
                                 _sound = sound.CreateInstance();
                                 _sound.IsLooped = true;
-                                SoundManager.Apply3DAndPlay(_sound, 
-                                    PositionInWorld - Globals.ThePlayer.PositionInWorld);
+                                SoundManager.Apply3D(_sound, 
+                                    PositionInWorld - Globals.ListenerPosition);
+                                _sound.Play();
                             }
                             break;
                         case NpcState.Magic:
@@ -864,12 +865,16 @@ namespace Engine
                 case NpcState.FightWalk:
                     {
                         MoveAlongPath((float)elapsedGameTime.TotalSeconds, WalkSpeed);
+                        SoundManager.Apply3D(_sound,
+                                    PositionInWorld - Globals.ListenerPosition);
                         Update(gameTime, WalkSpeed);
                     }
                     break;
                 case NpcState.Run:
                 case NpcState.FightRun:
                     MoveAlongPath((float)elapsedGameTime.TotalSeconds, 8);
+                    SoundManager.Apply3D(_sound,
+                                    PositionInWorld - Globals.ListenerPosition);
                     base.Update(gameTime);
                     break;
                 case NpcState.Jump:

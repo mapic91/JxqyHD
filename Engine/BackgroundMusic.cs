@@ -20,7 +20,6 @@ namespace Engine
             {
                 var song = (Song)SongCtr.Invoke(new object[] { "BackgroundMusic", path, 0 });
                 MediaPlayer.IsRepeating = true;
-                MediaPlayer.Volume = Globals.MusicVolume;
                 MediaPlayer.Play(song);
             }
             catch (Exception exception)

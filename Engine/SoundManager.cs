@@ -25,37 +25,38 @@ namespace Engine
                 instance = soundEffect.CreateInstance();
                 _soundEffectInstances[hash] = instance;
             }
-            Apply3DAndPlay(instance, direction);
+            Apply3D(instance, direction);
+            instance.Play();
         }
 
-        public static void Apply3DAndPlay(SoundEffectInstance soundEffectInstance, Vector2 direction)
+        public static void Apply3D(SoundEffectInstance soundEffectInstance, Vector2 direction)
         {
-            if (soundEffectInstance.State == SoundState.Playing) return;
-            soundEffectInstance.Volume = Globals.SoundEffectVolume;
+            if (soundEffectInstance == null) return;
 
             var length = direction.Length();
-            if ((int)length == 0)
-            {
-                soundEffectInstance.Play();
-            }
-            else if (length < Globals.SoundMaxDistance)
+            var listener = new AudioListener();
+            var emitter = new AudioEmitter();
+            listener.Position = Vector3.Zero;
+            emitter.Position = Vector3.Zero;
+            if (length > 0 &&
+                length < Globals.SoundMaxDistance)
             {
                 direction.Normalize();
                 var percent = length / Globals.SoundMaxDistance;
                 direction *= (percent * Globals.Sound3DMaxDistance);
-                var listener = new AudioListener();
-                var emitter = new AudioEmitter();
-                listener.Position = Vector3.Zero;
                 emitter.Position = new Vector3(direction.X, 0, direction.Y);
-                soundEffectInstance.Apply3D(listener, emitter);
-                soundEffectInstance.Play();
             }
+            else
+            {
+                emitter.Position = new Vector3(999999f);
+            }
+            soundEffectInstance.Apply3D(listener, emitter);
         }
 
         public static void PlaySoundEffectOnce(SoundEffect soundEffect)
         {
             if(soundEffect != null)
-                soundEffect.Play(Globals.SoundEffectVolume, 0f, 0f);
+                soundEffect.Play();
         }
 
         public static void ClearCache()

@@ -120,8 +120,8 @@ namespace Engine
                 Texture = BelongMagic.VanishImage;
                 PlayCurrentDirOnce();
             }
-            SoundManager.Play3DSoundOnece(BelongMagic.VanishSound, 
-                PositionInWorld - Globals.ThePlayer.PositionInWorld);
+            SoundManager.Play3DSoundOnece(BelongMagic.VanishSound,
+                PositionInWorld - Globals.ListenerPosition);
         }
 
         public void SetPath(LinkedList<Vector2> paths)

@@ -26,6 +26,11 @@ namespace Engine
         public static float MusicVolume = 1f;
         public static float SoundEffectVolume = 1f;
 
+        public static Vector2 ListenerPosition
+        {
+            get { return ThePlayer.PositionInWorld; }
+        }
+
         public static Random TheRandom = new Random();
 
         #region Sprite out edge

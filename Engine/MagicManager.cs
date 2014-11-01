@@ -52,7 +52,7 @@ namespace Engine
         {
             if (user == null || magic == null) return;
             if (magic.FlyingSound != null)
-                magic.FlyingSound.Play(Globals.SoundEffectVolume, 0f, 0f);
+                magic.FlyingSound.Play();
             switch (magic.MoveKind)
             {
                 case 1:

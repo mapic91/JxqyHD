@@ -58,8 +58,8 @@ namespace Engine
 
         protected override void PlaySoundEffect(SoundEffect soundEffect)
         {
-            SoundManager.Play3DSoundOnece(soundEffect, 
-                PositionInWorld - Globals.ThePlayer.PositionInWorld);
+            SoundManager.Play3DSoundOnece(soundEffect,
+                PositionInWorld - Globals.ListenerPosition);
         }
 
         public override void Update(GameTime gameTime)

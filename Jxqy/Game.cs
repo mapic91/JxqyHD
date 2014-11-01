@@ -39,6 +39,8 @@ namespace Jxqy
         protected override void Initialize()
         {
             Globals.TheGame = this;
+            SoundEffect.MasterVolume = Globals.SoundEffectVolume;
+            MediaPlayer.Volume = Globals.MusicVolume;
             Log.DebugOn = true;
 
             Log.LogMessageToFile("Game is running...\n\n\n");
