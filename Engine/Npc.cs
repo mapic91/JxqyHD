@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Engine
@@ -53,6 +54,12 @@ namespace Engine
             return (NpcManager.IsObstacle(tilePosition) ||
                     ObjManager.IsObstacle(tilePosition) ||
                     Globals.ThePlayer.TilePosition == tilePosition);
+        }
+
+        protected override void PlaySoundEffect(SoundEffect soundEffect)
+        {
+            SoundManager.Play3DSoundOnece(soundEffect, 
+                PositionInWorld - Globals.ThePlayer.PositionInWorld);
         }
 
         public override void Update(GameTime gameTime)

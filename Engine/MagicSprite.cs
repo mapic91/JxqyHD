@@ -121,7 +121,7 @@ namespace Engine
                 PlayCurrentDirOnce();
             }
             SoundManager.Play3DSoundOnece(BelongMagic.VanishSound, 
-                PositionInWorld - BelongCharacter.PositionInWorld);
+                PositionInWorld - Globals.ThePlayer.PositionInWorld);
         }
 
         public void SetPath(LinkedList<Vector2> paths)

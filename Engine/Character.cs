@@ -569,8 +569,8 @@ namespace Engine
                             {
                                 _sound = sound.CreateInstance();
                                 _sound.IsLooped = true;
-                                _sound.Volume = Globals.SoundEffectVolume;
-                                _sound.Play();
+                                SoundManager.Apply3DAndPlay(_sound, 
+                                    PositionInWorld - Globals.ThePlayer.PositionInWorld);
                             }
                             break;
                         case NpcState.Magic:
@@ -582,7 +582,7 @@ namespace Engine
                             }
                             break;
                         default:
-                            SoundManager.PlaySoundEffectOnce(sound);
+                            PlaySoundEffect(sound);
                             break;
                     }
                 }
@@ -850,6 +850,8 @@ namespace Engine
             return distance.Length();
         }
 
+        protected abstract void PlaySoundEffect(SoundEffect soundEffect);
+
         public override void Update(GameTime gameTime)
         {
             if (IsDeath) return;
@@ -888,8 +890,15 @@ namespace Engine
                     {
                         if (NpcIni.ContainsKey(State))
                         {
-                            SoundManager.PlaySoundEffectOnce(NpcIni[State].Sound);
+                            PlaySoundEffect(NpcIni[State].Sound);
                         }
+                        var magic = FlyIni;
+                        if(FlyIni2 != null && Globals.TheRandom.Next(8) == 0)
+                            magic = FlyIni2;
+                        MagicManager.UseMagic(this, 
+                            magic, 
+                            PositionInWorld, 
+                            DestinationAttackPositionInWorld);
                         StandingImmediately();
                     }
                     else base.Update(gameTime);
@@ -899,7 +908,7 @@ namespace Engine
                     {
                         if (NpcIni.ContainsKey((int)NpcState.Magic))
                         {
-                            SoundManager.PlaySoundEffectOnce(NpcIni[(int)NpcState.Magic].Sound);
+                            PlaySoundEffect(NpcIni[(int)NpcState.Magic].Sound);
                         }
                         MagicManager.UseMagic(this, _magicUse, PositionInWorld, _magicDestination);
                         StandingImmediately();

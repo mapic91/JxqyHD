@@ -25,15 +25,20 @@ namespace Engine
                 instance = soundEffect.CreateInstance();
                 _soundEffectInstances[hash] = instance;
             }
-            if(instance.State == SoundState.Playing) return;
-            instance.Volume = Globals.SoundEffectVolume;
+            Apply3DAndPlay(instance, direction);
+        }
+
+        public static void Apply3DAndPlay(SoundEffectInstance soundEffectInstance, Vector2 direction)
+        {
+            if (soundEffectInstance.State == SoundState.Playing) return;
+            soundEffectInstance.Volume = Globals.SoundEffectVolume;
 
             var length = direction.Length();
-            if ((int) length == 0)
+            if ((int)length == 0)
             {
-                instance.Play();
+                soundEffectInstance.Play();
             }
-            else if(length < Globals.SoundMaxDistance)
+            else if (length < Globals.SoundMaxDistance)
             {
                 direction.Normalize();
                 var percent = length / Globals.SoundMaxDistance;
@@ -42,8 +47,8 @@ namespace Engine
                 var emitter = new AudioEmitter();
                 listener.Position = Vector3.Zero;
                 emitter.Position = new Vector3(direction.X, 0, direction.Y);
-                instance.Apply3D(listener, emitter);
-                instance.Play();
+                soundEffectInstance.Apply3D(listener, emitter);
+                soundEffectInstance.Play();
             }
         }
 
