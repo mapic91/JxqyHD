@@ -790,7 +790,7 @@ namespace Engine
                 if (tileDistance == AttackRadius)
                 {
                     if (attackCanReach) return true;
-                    else WalkTo(DestinationAttackTilePosition);
+                    else WalkToAndKeepingAttactTarget(DestinationAttackTilePosition);
                 }
                 if (tileDistance > AttackRadius)
                 {
@@ -800,8 +800,12 @@ namespace Engine
                 {
                     var neighbor = Engine.PathFinder.FindNeighborInDirection(TilePosition,
                         PositionInWorld - DestinationAttackPositionInWorld);
+
+                    if (HasObstacle(neighbor)) return true;
+
                     Path = Engine.PathFinder.FindPath(TilePosition, neighbor, PathType);
                     if (Path == null) return true;
+                    
                     WalkToAndKeepingAttactTarget(neighbor);
                 }
             }
@@ -811,7 +815,7 @@ namespace Engine
         protected void WalkToAndKeepingAttactTarget(Vector2 destinationTilePosition)
         {
             var keep = DestinationAttackTilePosition;//keep value
-            WalkTo(DestinationAttackTilePosition);
+            WalkTo(destinationTilePosition);
             DestinationAttackTilePosition = keep; // restore
         }
 
