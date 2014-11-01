@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
@@ -64,8 +65,7 @@ namespace Engine
             while (!frontier.IsEmpty)
             {
                 current = frontier.DeleteMin().Location;
-                if (NpcManager.IsObstacle(current) ||
-                    ObjManager.IsObstacle(current)) continue;
+                if (Map.HasNpcObjObstacleInMap(current)) continue;
                 if (step++ > stepCount) break;
                 if (current == endTile) break;
                 foreach (var neighbor in FindNeighbors(current))
@@ -105,9 +105,8 @@ namespace Engine
             {
                 if (tryCount++ > maxTry) break;
                 var current = frontier.DeleteMin().Location;
-                if(current == endTile) break;
-                if (NpcManager.IsObstacle(current) ||
-                    ObjManager.IsObstacle(current)) continue;
+                if (current == endTile) break;
+                if (Map.HasNpcObjObstacleInMap(current)) continue;
                 foreach (var neighbor in FindNeighbors(current))
                 {
                     if (!cameFrom.ContainsKey(neighbor))
@@ -141,29 +140,30 @@ namespace Engine
             return count;
         }
 
-        public static LinkedList<Vector2> FindLinePath(Vector2 startTile, Vector2 endTile)
+        //lineLength: the tile distance from startTile to endTile
+        public static bool CanMagicReach(Vector2 startTile, Vector2 endTile, ref int lineLength)
         {
-            if (startTile == endTile) return null;
-            var path = new LinkedList<Vector2>();
-            path.AddLast(startTile);
-
-            var frontier = new C5.IntervalHeap<Node>();
-            frontier.Add(new Node(startTile, 0f));
-            while (!frontier.IsEmpty)
+            var finded = true;
+            if (startTile != endTile)
             {
-                var current = frontier.DeleteMin().Location;
-                if (Globals.TheMap.IsObstacleForCharacter(current) ||
-                    NpcManager.IsObstacle(current) ||
-                    ObjManager.IsObstacle(current)) return null;
-                path.AddLast(current);
-                if (current == endTile) return path;
-                foreach (var neighbor in FindAllNeighbors(current))
+                var path = new LinkedList<Vector2>();
+                var frontier = new C5.IntervalHeap<Node>();
+                frontier.Add(new Node(startTile, 0f));
+                while (!frontier.IsEmpty)
                 {
-                    frontier.Add(new Node(neighbor, GetCost(neighbor, endTile)));
+                    var current = frontier.DeleteMin().Location;
+                    if (Globals.TheMap.IsObstacle(current)) finded = false;
+                    path.AddLast(current);
+                    if (current == endTile) break;
+                    foreach (var neighbor in FindAllNeighbors(current))
+                    {
+                        frontier.Add(new Node(neighbor, GetCost(neighbor, endTile)));
+                    }
                 }
+                lineLength = path.Count - 1;
             }
-            return null;
-        } 
+            return finded;
+        }
 
         //Returned path is in pixel position
         public static LinkedList<Vector2> FindPathPerfect(Vector2 startTile, Vector2 endTile, int maxTryCount)
@@ -186,8 +186,7 @@ namespace Engine
                 if (tryCount++ > maxTryCount) break;
                 var current = frontier.DeleteMin().Location;
                 if (current.Equals(endTile)) break;
-                if (NpcManager.IsObstacle(current) ||
-                    ObjManager.IsObstacle(current)) continue;
+                if (Map.HasNpcObjObstacleInMap(current)) continue;
                 foreach (var next in FindNeighbors(current))
                 {
                     var newCost = costSoFar[current] + GetCost(current, next);
@@ -212,7 +211,7 @@ namespace Engine
             var neighbor = Vector2.Zero;
             if (direction != Vector2.Zero)
             {
-                neighbor =  FindAllNeighbors(tilePosition)[Utils.GetDirectionIndex(direction, 8)];
+                neighbor = FindAllNeighbors(tilePosition)[Utils.GetDirectionIndex(direction, 8)];
             }
             return neighbor;
         }

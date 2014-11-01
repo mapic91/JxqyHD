@@ -431,16 +431,19 @@ namespace Engine
             {
                 if (HasObstacle(tileTo)) //Obstacle in the way
                 {
-                    PositionInWorld = from;
-                    Path = Engine.PathFinder.FindPath(TilePosition, DestinationMoveTilePosition, PathType);
+                    //PositionInWorld = from;
+                    var path = Engine.PathFinder.FindPath(TilePosition, DestinationMoveTilePosition, PathType);
                     if (tileTo == DestinationMoveTilePosition || //Just one step, standing
-                        Path == null //Can't find path
+                        path == null //Can't find path
                         )
                     {
                         Path = null;
                         StandingImmediately();
                         return;
                     }
+                    if(PositionInWorld != path.First.Value)
+                        path.AddFirst(PositionInWorld);//Move back
+                    Path = path;
                 }
             }
             MoveTo(direction, elapsedSeconds * speedFold);
@@ -450,12 +453,6 @@ namespace Engine
                 var correctDistance = distance / 2 + 1f; // half plus one
                 PositionInWorld = from + direction * correctDistance;
                 MovedDistance = correctDistance;
-                var pos = TilePosition;
-            }
-
-            if (TilePosition != tileFrom &&
-               TilePosition != tileTo) // neither in from nor in to, correcting path
-            {
                 var pos = TilePosition;
             }
 
@@ -506,9 +503,10 @@ namespace Engine
                 var to = Path.First.Next.Value;
                 var distance = Vector2.Distance(from, to);
                 bool isOver = false;
-                if (Globals.TheMap.IsObstacleForCharacterJump(
-                        Engine.PathFinder.FindNeighborInDirection(
-                        TilePosition, to - from)))
+                var nextTile = Engine.PathFinder.FindNeighborInDirection(
+                    TilePosition, to - from);
+                if (Globals.TheMap.IsObstacleForCharacterJump(nextTile) ||
+                    (nextTile == to && HasObstacle(nextTile)))
                 {
                     TilePosition = TilePosition;//Correcting position
                     isOver = true;
@@ -715,8 +713,7 @@ namespace Engine
             if (PerformActionOk() &&
                 destinationTilePosition != TilePosition &&
                 !Globals.TheMap.IsObstacleForCharacter(destinationTilePosition) &&
-                !NpcManager.IsObstacleInView(destinationTilePosition) &&
-                !ObjManager.IsObstacleInView(destinationTilePosition))
+                !HasObstacle(destinationTilePosition))
             {
                 StateInitialize();
                 DestinationMoveTilePosition = destinationTilePosition;
@@ -793,8 +790,14 @@ namespace Engine
         {
             if (DestinationAttackTilePosition != Vector2.Zero)
             {
-                var tileDistance = Engine.PathFinder.GetTileDistance(TilePosition, DestinationAttackTilePosition);
-                if (tileDistance == AttackRadius) return true;
+                var tileDistance = 0;
+                var attackCanReach = Engine.PathFinder.CanMagicReach(TilePosition, DestinationAttackTilePosition,
+                    ref tileDistance);
+                if (tileDistance == AttackRadius)
+                {
+                    if (attackCanReach) return true;
+                    else WalkTo(DestinationAttackTilePosition);
+                }
                 if (tileDistance > AttackRadius)
                 {
                     WalkToAndKeepingAttactTarget(DestinationAttackTilePosition);

@@ -304,8 +304,14 @@ namespace Engine
         {
             return (col < MapColumnCounts - 1 && 
                 row < MapRowCounts - 3 && 
-                col >= 0 && 
-                row >= 0);
+                col > 0 && 
+                row > 0);
+        }
+
+        public static bool HasNpcObjObstacleInMap(Vector2 tilePositon)
+        {
+            return (NpcManager.IsObstacle(tilePositon) ||
+                    ObjManager.IsObstacle(tilePositon));
         }
 
         public bool IsObstacle(int col, int row)

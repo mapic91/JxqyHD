@@ -62,7 +62,7 @@ namespace Jxqy
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             Globals.FontMnjxy12 = Content.Load<SpriteFont>(@"font\GB2312_ASCII_ÃÔÄã¼òÏ¸Ô²_12");
 
-            Globals.TheMap.LoadMap(@"map\map_015_²Ø½£É½×¯.map");
+            Globals.TheMap.LoadMap(@"map\map_005_Ï´½£³Ø.map");
             Globals.TheMap.ViewBeginX = 0;
             Globals.TheMap.ViewBeginY = 0;
             Globals.TheCarmera = new Carmera(Globals.TheMap.ViewBeginX, 
@@ -73,8 +73,8 @@ namespace Jxqy
                 Globals.TheMap.MapPixelHeight);
 
             Globals.ThePlayer = new Player(@"ini\save\player0.ini");
-            NpcManager.Load(@"ini\save\cangjian.npc");
-            ObjManager.Load(@"ini\save\map015-xianglu.obj");
+            NpcManager.Load(@"save\rpg2\xijianchi.npc");
+            ObjManager.Load(@"save\rpg2\map003_obj.obj");
 
             //BackgroundMusic.Play(@"music/Mc003.mp3");
 

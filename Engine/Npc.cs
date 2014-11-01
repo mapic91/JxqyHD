@@ -9,6 +9,8 @@ namespace Engine
 {
     public class Npc : Character
     {
+        private bool _attackTargetFinded;
+
         #region public properties
         public override PathFinder.PathType PathType
         {
@@ -36,7 +38,7 @@ namespace Engine
             get { return Kind == 3; }
         }
 
-        public bool  IsInteractive
+        public bool IsInteractive
         {
             get { return (!string.IsNullOrEmpty(ScriptFile) || IsEnemy || IsFriend); }
         }
@@ -60,12 +62,23 @@ namespace Engine
 
             if (IsEnemy)
             {
-                var tileDistance = Engine.PathFinder.GetTileDistance(TilePosition,
-                Globals.ThePlayer.TilePosition);
+                var playerTilePosition = Globals.ThePlayer.TilePosition;
+                int tileDistance = 0;
+                var attackCanReach = Engine.PathFinder.CanMagicReach(TilePosition, playerTilePosition, ref tileDistance);
+                if (IsStanding())
+                {
+                    if ((attackCanReach  && tileDistance <= VisionRadius) ||
+                        (_attackTargetFinded && tileDistance <= VisionRadius)
+                        )
+                        _attackTargetFinded = true;
+                    else _attackTargetFinded = false;
+                }
 
-                if(tileDistance <= VisionRadius)
-                    Attacking(Globals.ThePlayer.TilePosition);
-                else Standing();
+                if (_attackTargetFinded)
+                {
+                    if(attackCanReach) Attacking(playerTilePosition);
+                    else WalkTo(playerTilePosition);
+                }
             }
             base.Update(gameTime);
 
