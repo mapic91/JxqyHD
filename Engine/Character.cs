@@ -780,6 +780,11 @@ namespace Engine
                 Attacking();
         }
 
+        public void ClearAttackingTarget()
+        {
+            DestinationAttackTilePosition = Vector2.Zero;
+        }
+
         protected bool AttackingIsOk()
         {
             if (DestinationAttackTilePosition != Vector2.Zero)

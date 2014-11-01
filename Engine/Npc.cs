@@ -83,6 +83,11 @@ namespace Engine
                     if(attackCanReach) Attacking(playerTilePosition);
                     else WalkTo(playerTilePosition);
                 }
+                else
+                {
+                    //just walk to last find position,don't attack
+                    ClearAttackingTarget();
+                }
             }
             base.Update(gameTime);
         }
