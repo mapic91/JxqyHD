@@ -57,9 +57,6 @@ namespace Engine
 
         public override void Update(GameTime gameTime)
         {
-            var isExist = IsExist;
-            IsExist = false;//Temporary make self disappear because of obstacle check 
-
             if (IsEnemy)
             {
                 var playerTilePosition = Globals.ThePlayer.TilePosition;
@@ -81,8 +78,6 @@ namespace Engine
                 }
             }
             base.Update(gameTime);
-
-            IsExist = isExist;//restore
         }
     }
 }

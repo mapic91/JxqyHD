@@ -59,7 +59,6 @@ namespace Engine
         private Vector2 _destinationAttackPositionInWorld = Vector2.Zero;
         private LinkedList<Vector2> _path;
         private bool _isDeath;
-        private bool _isExist = true;
 
         protected const float UnitRadiusDistance = 64f + 0.5f;
 
@@ -272,7 +271,7 @@ namespace Engine
 
         public bool IsObstacle
         {
-            get { return (Kind != 7) && IsExist; }
+            get { return (Kind != 7); }
         }
 
         public bool IsPlayer
@@ -335,12 +334,6 @@ namespace Engine
         {
             get { return _isDeath; }
             protected set { _isDeath = value; }
-        }
-
-        public bool IsExist
-        {
-            get { return _isExist; }
-            set { _isExist = value; }
         }
 
         #endregion Public properties

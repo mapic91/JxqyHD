@@ -65,7 +65,7 @@ namespace Engine
             while (!frontier.IsEmpty)
             {
                 current = frontier.DeleteMin().Location;
-                if (Map.HasNpcObjObstacleInMap(current)) continue;
+                if (Map.HasNpcObjObstacleInMap(current) && current != startTile) continue;
                 if (step++ > stepCount) break;
                 if (current == endTile) break;
                 foreach (var neighbor in FindNeighbors(current))
@@ -106,7 +106,7 @@ namespace Engine
                 if (tryCount++ > maxTry) break;
                 var current = frontier.DeleteMin().Location;
                 if (current == endTile) break;
-                if (Map.HasNpcObjObstacleInMap(current)) continue;
+                if (Map.HasNpcObjObstacleInMap(current) && current != startTile) continue;
                 foreach (var neighbor in FindNeighbors(current))
                 {
                     if (!cameFrom.ContainsKey(neighbor))
@@ -186,7 +186,7 @@ namespace Engine
                 if (tryCount++ > maxTryCount) break;
                 var current = frontier.DeleteMin().Location;
                 if (current.Equals(endTile)) break;
-                if (Map.HasNpcObjObstacleInMap(current)) continue;
+                if (Map.HasNpcObjObstacleInMap(current) && current != startTile) continue;
                 foreach (var next in FindNeighbors(current))
                 {
                     var newCost = costSoFar[current] + GetCost(current, next);
