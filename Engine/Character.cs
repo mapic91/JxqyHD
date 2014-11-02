@@ -772,12 +772,16 @@ namespace Engine
 
         public void Hurting()
         {
-            StateInitialize();
-            TilePosition = TilePosition;//To tile center
-            if (NpcIni.ContainsKey((int)NpcState.Hurt))
+            if(State != (int)NpcState.Death &&
+                State != (int)NpcState.Hurt)
             {
-                SetState(NpcState.Hurt);
-                PlayCurrentDirOnce();
+                StateInitialize();
+                TilePosition = TilePosition;//To tile center
+                if (NpcIni.ContainsKey((int)NpcState.Hurt))
+                {
+                    SetState(NpcState.Hurt);
+                    PlayCurrentDirOnce();
+                }
             }
         }
 

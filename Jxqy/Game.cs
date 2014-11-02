@@ -76,7 +76,7 @@ namespace Jxqy
 
             Globals.ThePlayer = new Player(@"save\rpg2\player0.ini");
             NpcManager.Load(@"save\rpg2\xijianchi.npc");
-            ObjManager.Load(@"save\rpg2\map003_obj.obj");
+            ObjManager.Load(@"save\rpg2\map005_obj.obj");
 
             //BackgroundMusic.Play(@"music/Mc003.mp3");
 
