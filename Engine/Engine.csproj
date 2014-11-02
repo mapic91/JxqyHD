@@ -69,6 +69,10 @@
     <Compile Include="Collider.cs" />
     <Compile Include="Dialog.cs" />
     <Compile Include="Globals.cs" />
+    <Compile Include="Gui\GuiItem.cs" />
+    <Compile Include="Gui\GuiManager.cs" />
+    <Compile Include="Gui\MagicListView.cs" />
+    <Compile Include="Gui\Texture.cs" />
     <Compile Include="IMoveControlInWorld.cs" />
     <Compile Include="InfoDrawer.cs" />
     <Compile Include="IScreen.cs" />
