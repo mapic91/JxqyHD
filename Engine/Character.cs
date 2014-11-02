@@ -49,6 +49,7 @@ namespace Engine
         private int _fixedPos;
         private int _idle;
         private Vector2 _magicDestination;
+        private Vector2 _attackDestination;
         private Magic _magicUse;
         private bool _isInFighting;
         private float _totalNonFightingSeconds;
@@ -152,7 +153,18 @@ namespace Engine
         public int AttackLevel
         {
             get { return _attackLevel; }
-            set { _attackLevel = value; }
+            set
+            {
+                _attackLevel = value;
+                if (FlyIni != null)
+                {
+                    FlyIni = FlyIni.GetLevel(value);
+                }
+                if (FlyIni2 != null)
+                {
+                    FlyIni2 = FlyIni2.GetLevel(value);
+                }
+            }
         }
 
         public int Defend
@@ -176,7 +188,7 @@ namespace Engine
         public int Life
         {
             get { return _life; }
-            set { _life = value; }
+            set { _life = value < 0 ? 0 : value; }
         }
 
         public int Level
@@ -194,7 +206,7 @@ namespace Engine
         public int Thew
         {
             get { return _thew; }
-            set { _thew = value; }
+            set { _thew = value < 0 ? 0 : value; }
         }
 
         public int ThewMax
@@ -206,7 +218,7 @@ namespace Engine
         public int Mana
         {
             get { return _mana; }
-            set { _mana = value; }
+            set { _mana = value < 0 ? 0 : value; }
         }
 
         public int ManaMax
@@ -345,13 +357,21 @@ namespace Engine
 
         public Character() { }
 
-        private void InitlizeFigure()
+        private void Initlize()
         {
             if (NpcIni.ContainsKey((int)NpcState.Stand))
             {
                 Set(Map.ToPixelPosition(MapX, MapY),
                     Globals.BaseSpeed,
                     NpcIni[(int)NpcState.Stand].Image, Dir);
+            }
+            if (FlyIni != null)
+            {
+                FlyIni = FlyIni.GetLevel(AttackLevel);
+            }
+            if (FlyIni2 != null)
+            {
+                FlyIni2 = FlyIni2.GetLevel(AttackLevel);
             }
         }
 
@@ -434,7 +454,7 @@ namespace Engine
                         StandingImmediately();
                         return;
                     }
-                    if(PositionInWorld != path.First.Value)
+                    if (PositionInWorld != path.First.Value)
                         path.AddFirst(PositionInWorld);//Move back
                     Path = path;
                 }
@@ -479,7 +499,7 @@ namespace Engine
                         MovedDistance = 0;
                     }
                 }
-                if(AttackingIsOk()) Attacking();
+                if (AttackingIsOk()) PerformeAttack();
             }
         }
 
@@ -541,7 +561,7 @@ namespace Engine
                 if (!string.IsNullOrEmpty(nameValue[0]))
                     AssignToValue(nameValue);
             }
-            InitlizeFigure();
+            Initlize();
             return true;
         }
 
@@ -569,7 +589,7 @@ namespace Engine
                             {
                                 _sound = sound.CreateInstance();
                                 _sound.IsLooped = true;
-                                SoundManager.Apply3D(_sound, 
+                                SoundManager.Apply3D(_sound,
                                     PositionInWorld - Globals.ListenerPosition);
                                 _sound.Play();
                             }
@@ -627,7 +647,6 @@ namespace Engine
         public void StateInitialize()
         {
             EndPlayCurrentDirOnce();
-            //TilePosition = TilePosition;
             DestinationMoveTilePosition = Vector2.Zero;
             DestinationAttackTilePosition = Vector2.Zero;
             Path = null;
@@ -754,6 +773,7 @@ namespace Engine
         public void Hurting()
         {
             StateInitialize();
+            TilePosition = TilePosition;//To tile center
             if (NpcIni.ContainsKey((int)NpcState.Hurt))
             {
                 SetState(NpcState.Hurt);
@@ -776,8 +796,8 @@ namespace Engine
         public void Attacking(Vector2 destinationTilePosition)
         {
             DestinationAttackTilePosition = destinationTilePosition;
-            if(IsStanding() && AttackingIsOk())
-                Attacking();
+            if (IsStanding() && AttackingIsOk())
+                PerformeAttack();
         }
 
         public void ClearAttackingTarget()
@@ -810,7 +830,7 @@ namespace Engine
 
                     Path = Engine.PathFinder.FindPath(TilePosition, neighbor, PathType);
                     if (Path == null) return true;
-                    
+
                     WalkToAndKeepingAttactTarget(neighbor);
                 }
             }
@@ -824,14 +844,19 @@ namespace Engine
             DestinationAttackTilePosition = keep; // restore
         }
 
-        protected void Attacking()
+        protected void PerformeAttack()
+        {
+            PerformeAttack(DestinationAttackPositionInWorld);
+        }
+
+        public void PerformeAttack(Vector2 destination)
         {
             if (PerformActionOk())
             {
-                var destinationAttackPositionInWorld = DestinationAttackPositionInWorld;//Keep value
                 StateInitialize();
                 _isInFighting = true;
                 _totalNonFightingSeconds = 0;
+                _attackDestination = destination;
 
                 var value = Globals.TheRandom.Next(3);
                 if (value == 1 && NpcIni.ContainsKey((int)NpcState.Attack1))
@@ -839,7 +864,7 @@ namespace Engine
                 else if (value == 2 && NpcIni.ContainsKey((int)NpcState.Attack2))
                     SetState(NpcState.Attack2);
                 else SetState(NpcState.Attack);
-                SetDirection(destinationAttackPositionInWorld - PositionInWorld);
+                SetDirection(destination - PositionInWorld);
                 PlayCurrentDirOnce();
             }
         }
@@ -907,12 +932,12 @@ namespace Engine
                             PlaySoundEffect(NpcIni[State].Sound);
                         }
                         var magic = FlyIni;
-                        if(FlyIni2 != null && Globals.TheRandom.Next(8) == 0)
+                        if (FlyIni2 != null && Globals.TheRandom.Next(8) == 0)
                             magic = FlyIni2;
-                        MagicManager.UseMagic(this, 
-                            magic, 
-                            PositionInWorld, 
-                            DestinationAttackPositionInWorld);
+                        MagicManager.UseMagic(this,
+                            magic,
+                            PositionInWorld,
+                            _attackDestination);
                         StandingImmediately();
                     }
                     else base.Update(gameTime);

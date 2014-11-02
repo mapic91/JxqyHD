@@ -74,7 +74,7 @@ namespace Jxqy
                 Globals.TheMap.MapPixelWidth, 
                 Globals.TheMap.MapPixelHeight);
 
-            Globals.ThePlayer = new Player(@"ini\save\player0.ini");
+            Globals.ThePlayer = new Player(@"save\rpg2\player0.ini");
             NpcManager.Load(@"save\rpg2\xijianchi.npc");
             ObjManager.Load(@"save\rpg2\map003_obj.obj");
 
@@ -140,6 +140,15 @@ namespace Jxqy
             _spriteBatch.Begin(SpriteSortMode.Deferred,null);
             Globals.TheMap.Draw(_spriteBatch);
             Globals.ThePlayer.Draw(_spriteBatch);
+            _spriteBatch.DrawString(Globals.FontMnjxy12, 
+                "Ãü£º " + Globals.ThePlayer.Life.ToString(),
+                new Vector2(5, 5), Color.Red);
+            _spriteBatch.DrawString(Globals.FontMnjxy12,
+                "Ìå£º " + Globals.ThePlayer.Thew.ToString(),
+                new Vector2(5, 25), Color.Red);
+            _spriteBatch.DrawString(Globals.FontMnjxy12,
+                "ÄÚ£º " + Globals.ThePlayer.Mana.ToString(),
+                new Vector2(5, 45), Color.Red);
             _spriteBatch.End();
             base.Draw(gameTime);
         }

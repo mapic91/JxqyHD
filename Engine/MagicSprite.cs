@@ -52,9 +52,10 @@ namespace Engine
 
         #endregion Public properties
 
+        #region Ctr
         public MagicSprite() : base() { }
 
-        public MagicSprite(Magic belongMagic, Character belongCharacter, Vector2 positionInWorld, float velocity, 
+        public MagicSprite(Magic belongMagic, Character belongCharacter, Vector2 positionInWorld, float velocity,
             Vector2 moveDirection, bool destroyOnEnd)
         {
             if (belongMagic == null || belongCharacter == null)
@@ -78,30 +79,71 @@ namespace Engine
                 _isDestroyed = true;
                 return;
             }
-            base.Set(positionInWorld, 0, belongMagic.FlyingImage,  direction);
+            base.Set(positionInWorld, 0, belongMagic.FlyingImage, direction);
             BelongMagic = belongMagic;
             BelongCharacter = belongCharacter;
             _destroyOnEnd = destroyOnEnd;
             Begin();
         }
+        #endregion Ctr
+
+        private void CharacterHited(Character character)
+        {
+            if (character == null) return;
+
+            var targetEvade = character.Evade;
+            var belongCharacterEvade = BelongCharacter.Evade;
+            const float maxOffset = 100f;
+            const float baseHitRatio = 0.05f;
+            const float belowRatio = 0.3f;
+            const float upRatio = 0.65f;
+            var hitRatio = baseHitRatio;
+            if (targetEvade >= belongCharacterEvade)
+            {
+                hitRatio += ((float)belongCharacterEvade / (float)targetEvade) * belowRatio;
+            }
+            else
+            {
+                var upOffsetRatio = ((float)belongCharacterEvade - targetEvade) / maxOffset;
+                if (upOffsetRatio > 1f) upOffsetRatio = 1f;
+                hitRatio += belowRatio + upOffsetRatio * upRatio;
+            }
+
+            if (Globals.TheRandom.Next(101) <= (int)(hitRatio * 100f))
+            {
+                const int minimalEffect = 5;
+                var effect = minimalEffect;
+                var amount = BelongMagic.Effect == 0 ? BelongCharacter.Attack : BelongMagic.Effect;
+                var offset = amount - character.Defend;
+                if (offset > minimalEffect) effect = offset;
+                character.Life -= effect;
+                if (character.Life <= 0) character.Death();
+                else
+                {
+                    if (Globals.TheRandom.Next(4) == 0)
+                        character.Hurting();
+                }
+            }
+            Destroy();
+        }
 
         public void Begin()
         {
             if (BelongMagic.FlyingImage == null)
-                _lifeMilliseconds = 50f*BelongMagic.LifeFrame;
+                _lifeMilliseconds = 50f * BelongMagic.LifeFrame;
             else
             {
                 if (BelongMagic.LifeFrame == 0)
                     PlayCurrentDirOnce();
                 else
-                    _lifeMilliseconds = BelongMagic.LifeFrame*BelongMagic.FlyingImage.Interval;
+                    _lifeMilliseconds = BelongMagic.LifeFrame * BelongMagic.FlyingImage.Interval;
             }
             if (Velocity != 0)//Move 30
             {
-                var second = 30f/Velocity;
+                var second = 30f / Velocity;
                 MoveTo(MoveDirection, second);
             }
-            else 
+            else
             {
                 // can't put fixed position magic sprite in obstacle
                 if (Globals.TheMap.IsObstacleForMagic(MapX, MapY))
@@ -111,7 +153,7 @@ namespace Engine
 
         public void Destroy()
         {
-            if(IsInDestroy) return;
+            if (IsInDestroy) return;
             _isInDestroy = true;
             MoveDirection = Vector2.Zero;
             if (BelongMagic.VanishImage != null)
@@ -162,13 +204,13 @@ namespace Engine
             {
                 if (BelongCharacter.IsPlayer)
                 {
-                    var npc = NpcManager.GetEnemy(TilePosition);
-                    if (npc != null)
+                    CharacterHited(NpcManager.GetEnemy(TilePosition));
+                }
+                else
+                {
+                    if (TilePosition == Globals.ThePlayer.TilePosition)
                     {
-                        npc.Life -= BelongMagic.Effect;
-                        if(npc.Life <= 0)npc.Death();
-                        else npc.Hurting();
-                        Destroy();
+                        CharacterHited(Globals.ThePlayer);
                     }
                 }
                 if (Globals.TheMap.IsObstacleForMagic(MapX, MapY))
@@ -180,7 +222,7 @@ namespace Engine
                 (BelongMagic.LifeFrame != 0 && _lifeMilliseconds < _elaspedMilliseconds)
                 )
                 {
-                    if(_destroyOnEnd)Destroy();
+                    if (_destroyOnEnd) Destroy();
                     else _isDestroyed = true;
                 }
             }

@@ -140,7 +140,11 @@ namespace Engine
 
             if (mouseState.LeftButton == ButtonState.Pressed)
             {
-                if (keyboardState.IsKeyDown(Keys.LeftShift) ||
+                if (Globals.OutEdgeNpc != null)
+                {
+                    Attacking(Globals.OutEdgeNpc.TilePosition);
+                }
+                else if (keyboardState.IsKeyDown(Keys.LeftShift) ||
                     keyboardState.IsKeyDown(Keys.RightShift))
                     RunTo(mouseTilePosition);
                 else if (keyboardState.IsKeyDown(Keys.LeftAlt) ||
@@ -148,7 +152,7 @@ namespace Engine
                     JumpTo(mouseTilePosition);
                 else if (keyboardState.IsKeyDown(Keys.LeftControl) ||
                     keyboardState.IsKeyDown(Keys.RightControl))
-                    Attacking(mouseWorldPosition - PositionInWorld);
+                    PerformeAttack(mouseWorldPosition);
                 else WalkTo(mouseTilePosition);
             }
             if (mouseState.RightButton == ButtonState.Pressed &&

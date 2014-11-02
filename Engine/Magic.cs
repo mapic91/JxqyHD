@@ -288,17 +288,15 @@ namespace Engine
                     AssignToValue(nameValue, noAttackFile);
             }
 
-            _level = null;
+            _level = new Dictionary<int, Magic>();
             if (!noLevel)
             {
-                var levelList = new Dictionary<int, Magic>();
-                for (var li = 1; li < 11; li++)
+                for (var li = 0; li < 11; li++)
                 {
                     var levelMagic = (Magic)this.MemberwiseClone();
-                    levelMagic.CurrentLevel = li;
-                    levelList.Add(li, levelMagic);
+                    levelMagic.CurrentLevel = (li == 0 ? 1 : li);
+                    _level.Add(li, levelMagic);
                 }
-                _level = levelList;
 
                 if (hasLevel)
                 {
