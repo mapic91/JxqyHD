@@ -51,7 +51,7 @@ namespace Engine
         {
             try
             {
-                var lines = File.ReadAllLines(filePath, Encoding.GetEncoding(Globals.SimpleChinaeseCode));
+                var lines = File.ReadAllLines(filePath, Globals.SimpleChinaeseEncoding);
                 Load(lines);
             }
             catch (Exception)

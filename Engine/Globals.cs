@@ -10,7 +10,7 @@ namespace Engine
     //Must load GlobalData when game is initialize
     public static class Globals
     {
-        public const int SimpleChinaeseCode = 936;
+        public static readonly Encoding SimpleChinaeseEncoding = Encoding.GetEncoding(936);
         public const int BaseSpeed = 100;
         public const int MagicBasespeed = 60;
         public const float SoundMaxDistance = 1000f;

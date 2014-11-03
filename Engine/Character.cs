@@ -50,7 +50,6 @@ namespace Engine
         private int _idle;
         private Vector2 _magicDestination;
         private Vector2 _attackDestination;
-        private Magic _magicUse;
         private bool _isInFighting;
         private float _totalNonFightingSeconds;
         private const float MaxNonFightSeconds = 7f;
@@ -60,8 +59,7 @@ namespace Engine
         private Vector2 _destinationAttackPositionInWorld = Vector2.Zero;
         private LinkedList<Vector2> _path;
         private bool _isDeath;
-
-        protected const float UnitRadiusDistance = 64f + 0.5f;
+        public Magic MagicUse;
 
         #region Public properties
         public int Dir
@@ -404,7 +402,7 @@ namespace Engine
                         break;
                     case "FlyIni":
                     case "FlyIni2":
-                        info.SetValue(this, Utils.GetMagic(@"ini\magic\" + nameValue[1]), null);
+                        info.SetValue(this, Utils.GetMagic(nameValue[1]), null);
                         break;
                     default:
                         {
@@ -543,7 +541,7 @@ namespace Engine
         {
             try
             {
-                var lines = File.ReadAllLines(filePath, Encoding.GetEncoding(Globals.SimpleChinaeseCode));
+                var lines = File.ReadAllLines(filePath, Globals.SimpleChinaeseEncoding);
                 return Load(lines);
             }
             catch (Exception exception)
@@ -754,7 +752,7 @@ namespace Engine
             }
         }
 
-        public void UseMagic(Magic magic, Vector2 magicDestinationPosition)
+        public void UseMagic(Vector2 magicDestinationPosition)
         {
             if (PerformActionOk())
             {
@@ -763,7 +761,6 @@ namespace Engine
                 _totalNonFightingSeconds = 0;
 
                 _magicDestination = magicDestinationPosition;
-                _magicUse = magic;
                 SetState(NpcState.Magic);
                 SetDirection(_magicDestination - PositionInWorld);
                 PlayCurrentDirOnce();
@@ -953,7 +950,7 @@ namespace Engine
                         {
                             PlaySoundEffect(NpcIni[(int)NpcState.Magic].Sound);
                         }
-                        MagicManager.UseMagic(this, _magicUse, PositionInWorld, _magicDestination);
+                        MagicManager.UseMagic(this, MagicUse, PositionInWorld, _magicDestination);
                         StandingImmediately();
                     }
                     else base.Update(gameTime);

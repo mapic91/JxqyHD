@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Engine
 {
@@ -91,10 +92,11 @@ namespace Engine
             }
         }
 
-        static public Magic GetMagic(string filePath)
+        static public Magic GetMagic(string fileName)
         {
             try
             {
+                var filePath = @"ini\magic\" + fileName;
                 var hashCode = filePath.GetHashCode();
                 if (Globals.Magics.ContainsKey(hashCode))
                     return Globals.Magics[hashCode];
@@ -121,7 +123,7 @@ namespace Engine
 
             try
             {
-                var lines = File.ReadAllLines(filePath, Encoding.GetEncoding(Globals.SimpleChinaeseCode));
+                var lines = File.ReadAllLines(filePath, Globals.SimpleChinaeseEncoding);
                 var counts = lines.Length;
                 for (var i = 0; i < counts; )
                 {
@@ -241,6 +243,18 @@ namespace Engine
             if (region % 2 != 0) region++;
             region %= 2 * directionCount;
             return region / 2;
+        }
+
+        public static MouseState GetMouseState(int x, int y)
+        {
+            return new MouseState(x, 
+                y, 
+                0,
+                ButtonState.Released, 
+                ButtonState.Released, 
+                ButtonState.Released, 
+                ButtonState.Released, 
+                ButtonState.Released);
         }
 
         public struct LevelDetail

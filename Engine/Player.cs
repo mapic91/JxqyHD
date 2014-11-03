@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Engine.Gui;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -106,62 +107,66 @@ namespace Engine
             var mouseTilePosition = Map.ToTilePosition(mouseWorldPosition);
 
             Globals.ClearGlobalOutEdge();
-            foreach (var one in NpcManager.NpcsInView)
+            if (!GuiManager.IsMouseStateEated)
             {
-                if (!one.IsInteractive) continue;
-                var texture = one.GetCurrentTexture();
-                if (Collider.IsPixelCollideForNpcObj(mouseWorldPosition,
-                    one.RegionInWorld,
-                    texture))
-                {
-                    Globals.OutEdgeNpc = one;
-                    Globals.OutEdgeSprite = one;
-                    var edgeColor = Globals.NpcEdgeColor;
-                    if (one.IsEnemy) edgeColor = Globals.EnemyEdgeColor;
-                    else if (one.IsFriend) edgeColor = Globals.FriendEdgeColor;
-                    Globals.OutEdgeTexture = TextureGenerator.GetOuterEdge(texture, edgeColor);
-                    break;
-                }
-            }
-            if (Globals.OutEdgeSprite == null) //not finded, try obj
-            {
-                foreach (var one in ObjManager.ObjsInView)
+                foreach (var one in NpcManager.NpcsInView)
                 {
                     if (!one.IsInteractive) continue;
                     var texture = one.GetCurrentTexture();
-                    if (mouseTilePosition == one.TilePosition)
+                    if (Collider.IsPixelCollideForNpcObj(mouseWorldPosition,
+                        one.RegionInWorld,
+                        texture))
                     {
+                        Globals.OutEdgeNpc = one;
                         Globals.OutEdgeSprite = one;
-                        Globals.OutEdgeTexture = TextureGenerator.GetOuterEdge(texture, Globals.ObjEdgeColor);
+                        var edgeColor = Globals.NpcEdgeColor;
+                        if (one.IsEnemy) edgeColor = Globals.EnemyEdgeColor;
+                        else if (one.IsFriend) edgeColor = Globals.FriendEdgeColor;
+                        Globals.OutEdgeTexture = TextureGenerator.GetOuterEdge(texture, edgeColor);
                         break;
                     }
                 }
+                if (Globals.OutEdgeSprite == null) //not finded, try obj
+                {
+                    foreach (var one in ObjManager.ObjsInView)
+                    {
+                        if (!one.IsInteractive) continue;
+                        var texture = one.GetCurrentTexture();
+                        if (mouseTilePosition == one.TilePosition)
+                        {
+                            Globals.OutEdgeSprite = one;
+                            Globals.OutEdgeTexture = TextureGenerator.GetOuterEdge(texture, Globals.ObjEdgeColor);
+                            break;
+                        }
+                    }
+                }
+
+                if (mouseState.LeftButton == ButtonState.Pressed)
+                {
+                    if (Globals.OutEdgeNpc != null)
+                    {
+                        Attacking(Globals.OutEdgeNpc.TilePosition);
+                    }
+                    else if (keyboardState.IsKeyDown(Keys.LeftShift) ||
+                        keyboardState.IsKeyDown(Keys.RightShift))
+                        RunTo(mouseTilePosition);
+                    else if (keyboardState.IsKeyDown(Keys.LeftAlt) ||
+                        keyboardState.IsKeyDown(Keys.RightAlt))
+                        JumpTo(mouseTilePosition);
+                    else if (keyboardState.IsKeyDown(Keys.LeftControl) ||
+                        keyboardState.IsKeyDown(Keys.RightControl))
+                        PerformeAttack(mouseWorldPosition);
+                    else WalkTo(mouseTilePosition);
+                }
+                if (mouseState.RightButton == ButtonState.Pressed &&
+                    _lastMouseState.RightButton == ButtonState.Released)
+                {
+                    if (Globals.OutEdgeNpc != null && Globals.OutEdgeNpc.IsEnemy)
+                        UseMagic(Globals.OutEdgeNpc.PositionInWorld);
+                    else UseMagic(mouseWorldPosition);
+                }
             }
 
-            if (mouseState.LeftButton == ButtonState.Pressed)
-            {
-                if (Globals.OutEdgeNpc != null)
-                {
-                    Attacking(Globals.OutEdgeNpc.TilePosition);
-                }
-                else if (keyboardState.IsKeyDown(Keys.LeftShift) ||
-                    keyboardState.IsKeyDown(Keys.RightShift))
-                    RunTo(mouseTilePosition);
-                else if (keyboardState.IsKeyDown(Keys.LeftAlt) ||
-                    keyboardState.IsKeyDown(Keys.RightAlt))
-                    JumpTo(mouseTilePosition);
-                else if (keyboardState.IsKeyDown(Keys.LeftControl) ||
-                    keyboardState.IsKeyDown(Keys.RightControl))
-                    PerformeAttack(mouseWorldPosition);
-                else WalkTo(mouseTilePosition);
-            }
-            if (mouseState.RightButton == ButtonState.Pressed &&
-                _lastMouseState.RightButton == ButtonState.Released)
-            {
-                if (Globals.OutEdgeNpc != null && Globals.OutEdgeNpc.IsEnemy)
-                    UseMagic(FlyIni, Globals.OutEdgeNpc.PositionInWorld);
-                else UseMagic(FlyIni, mouseWorldPosition);
-            }
             if (keyboardState.IsKeyDown(Keys.V) &&
                 _lastKeyboardState.IsKeyUp(Keys.V))
             {
@@ -169,7 +174,9 @@ namespace Engine
                 else Sitdown();
             }
 
-            _lastMouseState = mouseState;
+            _lastMouseState = GuiManager.IsMouseStateEated
+                ? Utils.GetMouseState(mouseState.X, mouseState.Y)
+                : mouseState;
             _lastKeyboardState = keyboardState;
             base.Update(gameTime);
         }
@@ -226,7 +233,7 @@ namespace Engine
                     Globals.OffX,
                     Globals.OffY);
             }
-            if(Globals.OutEdgeNpc != null)
+            if (Globals.OutEdgeNpc != null)
                 InfoDrawer.DrawLife(spriteBatch, Globals.OutEdgeNpc);
         }
     }

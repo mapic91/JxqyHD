@@ -165,7 +165,7 @@ namespace Engine
                 }
                 lineLength = path.Count - 1;
             }
-            lineLength = 0;
+            else lineLength = 0;
             return finded;
         }
 

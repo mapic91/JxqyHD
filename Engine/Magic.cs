@@ -42,6 +42,7 @@ namespace Engine
 
 
         #region Public properties
+        public string FileName { private set; get; }
 
         public int CurrentLevel
         {
@@ -260,7 +261,8 @@ namespace Engine
         {
             try
             {
-                return Load(File.ReadAllLines(filePath, Encoding.GetEncoding(Globals.SimpleChinaeseCode)),
+                FileName = Path.GetFileName(filePath);
+                return Load(File.ReadAllLines(filePath, Globals.SimpleChinaeseEncoding),
                     noLevel, noAttackFile);
             }
             catch (Exception ecxeption)

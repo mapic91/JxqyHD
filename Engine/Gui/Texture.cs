@@ -51,11 +51,11 @@ namespace Engine.Gui
             _texture = asf;
         }
 
-        public Texture(Asf asf, int frameBegin, int frameEnd)
+        public Texture(Asf asf, int frameBegin, int count)
         {
             _texture = asf;
             _frameBegin = frameBegin;
-            _frameEnd = frameEnd;
+            _frameEnd = frameBegin + count;
         }
 
         public void Update(GameTime gameTime)

@@ -16,7 +16,7 @@ namespace Engine
 
         protected override bool LoadHead(byte[] buf, ref int offset)
         {
-            var headinfo = Encoding.GetEncoding(Globals.SimpleChinaeseCode).GetString(buf, 0, "MPC File Ver".Length);
+            var headinfo = Globals.SimpleChinaeseEncoding.GetString(buf, 0, "MPC File Ver".Length);
             if (!headinfo.Equals("MPC File Ver")) return false;
             offset = 64;
             Head.FramesDataLengthSum = Utils.GetLittleEndianIntegerFromByteArray(buf, ref offset);

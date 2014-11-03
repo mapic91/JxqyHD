@@ -204,7 +204,7 @@ namespace Engine
                 {
                     var mpc = new Mpc(
                         _mpcDirPath + "\\" +
-                        Encoding.GetEncoding(Globals.SimpleChinaeseCode).GetString(mpcFileName, 0, i));
+                        Globals.SimpleChinaeseEncoding.GetString(mpcFileName, 0, i));
                     _mpcList.Add(mpc);
                     if(buf[offset + 36] ==  1) _loopingList.Add(mpc);
                 }
@@ -215,13 +215,13 @@ namespace Engine
 
         private bool LoadHead(byte[] buf, ref int offset)
         {
-            var headInfo = Encoding.GetEncoding(Globals.SimpleChinaeseCode).GetString(buf, 0, "MAP File Ver".Length);
+            var headInfo = Globals.SimpleChinaeseEncoding.GetString(buf, 0, "MAP File Ver".Length);
             if (!headInfo.Equals("MAP File Ver")) return false;
             offset = 32;
             var len = 0;
             while (buf[offset + len] != 0) len++;
             if (len > 0) len--;
-            _mpcDirPath = Encoding.GetEncoding(Globals.SimpleChinaeseCode).GetString(buf, offset + 1, len);
+            _mpcDirPath = Globals.SimpleChinaeseEncoding.GetString(buf, offset + 1, len);
             offset = 68;
             _mapColumnCounts = Utils.GetLittleEndianIntegerFromByteArray(buf, ref offset);
             _mapRowCounts = Utils.GetLittleEndianIntegerFromByteArray(buf, ref offset);

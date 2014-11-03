@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -10,6 +11,7 @@ namespace Engine.Gui
         private MouseState _lastMouseState;
         private bool _isShow = true;
         private bool _isClicked;
+        private bool _isRightClicked;
         private Texture _baseTexture = new Texture();
         public event Action<object, MouseMoveEvent> MouseMove;
         public event Action<object, MouseLeftDownEvent> MouseLeftDown;
@@ -35,51 +37,93 @@ namespace Engine.Gui
             }
         }
 
-        public Texture BaseTexture
+        public bool IsRightClicked
         {
-            get { return _baseTexture; }
-            set { _baseTexture = value ?? new Texture(); }
+            get { return _isRightClicked; }
+            set
+            {
+                _isRightClicked = value;
+            }
         }
 
         public bool InRange { get; set; }
-        public Vector2 Position { get; set; }
-        public Texture MouseOverTexture { get; set; }
-        public Texture ClickedTexture { get; set; }
-        public bool IsMouveOver { get; set; }
 
-        public Rectangle Region
+        public Vector2 ScreenPosition
         {
             get
             {
-                return new Rectangle((int)Position.X, 
-                    (int)Position.Y,
-                    BaseTexture.Width,
-                    BaseTexture.Height);
+                if (Parent != null)
+                {
+                    return Parent.ScreenPosition + Position;
+                }
+                return Position;
+            }
+        }
+
+        public Vector2 Position { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
+        public Texture BaseTexture { get; set; }
+        public Texture MouseOverTexture { get; set; }
+        public Texture ClickedTexture { get; set; }
+        public SoundEffect EnteredSound { get; set; }
+        public SoundEffect ClickedSound { get; set; }
+        public bool IsMouveOver { get; set; }
+        public GuiItem Parent { get; set; }
+
+        public Rectangle RegionInScreen
+        {
+            get
+            {
+                return new Rectangle((int)ScreenPosition.X, 
+                    (int)ScreenPosition.Y,
+                    Width,
+                    Height);
             }
         }
 
         public GuiItem() { }
 
-        public GuiItem(Vector2 position,
+        public GuiItem(
+            GuiItem parent,
+            Vector2 position,
+            int width,
+            int height,
             Texture baseTexture,
             Texture mouseOverTexture = null,
-            Texture clickedTexture = null)
+            Texture clickedTexture = null,
+            SoundEffect enteredSound = null,
+            SoundEffect clickedSound = null)
         {
+            Parent = parent;
             Position = position;
+            Width = width;
+            Height = height;
             BaseTexture = baseTexture;
             MouseOverTexture = mouseOverTexture;
             ClickedTexture = clickedTexture;
+            EnteredSound = enteredSound;
+            ClickedSound = clickedSound;
         }
 
-        public void Update(GameTime gameTime)
+        public Vector2 ToLocalPosition(Vector2 screenPositon)
+        {
+            return screenPositon - ScreenPosition;
+        }
+
+        public virtual void Update(GameTime gameTime)
         {
             if(!IsShow) return;
             var mouseState = Mouse.GetState();
-            var position = new Vector2(mouseState.X, mouseState.Y) - Position;
-            var lastPosition = new Vector2(_lastMouseState.X, _lastMouseState.Y) - Position;
+            var screenPosition = new Vector2(mouseState.X, mouseState.Y);
+            var position = screenPosition - ScreenPosition;
+            var lastPosition = new Vector2(_lastMouseState.X, _lastMouseState.Y) - ScreenPosition;
 
-            if (Region.Contains(mouseState.X, mouseState.Y))
+            if (RegionInScreen.Contains(mouseState.X, mouseState.Y))
             {
+                if (InRange == false && EnteredSound != null)
+                    EnteredSound.Play();
+
                 InRange = true;
                 IsMouveOver = true;
 
@@ -87,29 +131,33 @@ namespace Engine.Gui
                 _lastMouseState.LeftButton == ButtonState.Released)
                 {
                     IsClicked = true;
+                    if (ClickedTexture != null) ClickedTexture.CurrentFrameIndex = 0;
+
                     if (MouseLeftDown != null)
                     {
-                        MouseLeftDown(this, new MouseLeftDownEvent(position));
+                        MouseLeftDown(this, new MouseLeftDownEvent(position ,screenPosition));
                     }
 
                     if (Click != null)
                     {
-                        Click(this, new MouseLeftClickEvent(position));
+                        Click(this, new MouseLeftClickEvent(position, screenPosition));
                     }
+
+                    if (ClickedSound != null) ClickedSound.Play();
                 }
-                else IsClicked = false;
 
                 if (mouseState.RightButton == ButtonState.Pressed &&
                     _lastMouseState.RightButton == ButtonState.Released)
                 {
+                    IsRightClicked = true;
                     if (MouseRightDown != null)
                     {
-                        MouseRightDown(this, new MouseRightDownEvent(position));
+                        MouseRightDown(this, new MouseRightDownEvent(position, screenPosition));
                     }
 
                     if (RightClick != null)
                     {
-                        RightClick(this, new MouseRightClickEvent(position));
+                        RightClick(this, new MouseRightClickEvent(position, screenPosition));
                     }
                 }
             }
@@ -124,8 +172,10 @@ namespace Engine.Gui
             {
                 if (MouseLeftUp != null)
                 {
-                    MouseLeftUp(this, new MouseLeftUpEvent(position));
+                    MouseLeftUp(this, new MouseLeftUpEvent(position, screenPosition));
                 }
+
+                IsClicked = false;
             }
 
             if (mouseState.RightButton == ButtonState.Released &&
@@ -133,8 +183,10 @@ namespace Engine.Gui
             {
                 if (MouseRightUp != null)
                 {
-                    MouseRightUp(this, new MouseRightUpEvent(position));
+                    MouseRightUp(this, new MouseRightUpEvent(position, screenPosition));
                 }
+
+                IsRightClicked = false;
             }
 
             if (lastPosition != position)
@@ -143,97 +195,120 @@ namespace Engine.Gui
                 {
                     MouseMove(this, 
                         new MouseMoveEvent(position, 
+                            screenPosition,
                             mouseState.LeftButton == ButtonState.Pressed,
                             mouseState.RightButton == ButtonState.Pressed));
                 }
             }
+
+            if (IsClicked || IsRightClicked)
+                GuiManager.IsMouseStateEated = true;
+            else 
+                GuiManager.IsMouseStateEated = false;
+
+            if(IsClicked && ClickedTexture != null) 
+                ClickedTexture.Update(gameTime);
+            else if(IsMouveOver && MouseOverTexture != null) 
+                MouseOverTexture.Update(gameTime);
+            else if(BaseTexture != null)
+                BaseTexture.Update(gameTime);
+
             _lastMouseState = mouseState;
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public virtual void Draw(SpriteBatch spriteBatch)
         {
             if(!IsShow) return;
 
             if (IsClicked && ClickedTexture != null)
             {
-                ClickedTexture.Draw(spriteBatch, Position);
+                ClickedTexture.Draw(spriteBatch, ScreenPosition);
             }
             else if (IsMouveOver && MouseOverTexture != null)
             {
-                MouseOverTexture.Draw(spriteBatch, Position);
+                MouseOverTexture.Draw(spriteBatch, ScreenPosition);
             }
             else if (BaseTexture != null)
             {
-                BaseTexture.Draw(spriteBatch, Position);
+                BaseTexture.Draw(spriteBatch, ScreenPosition);
             }
         }
 
         #region EventArgs class
-        public class MouseMoveEvent : EventArgs
+
+        public class MouseEvent : EventArgs
         {
             public Vector2 MousePosition { private set; get; }
+            public Vector2 MouseScreenPosition { private set; get; }
+
+            public MouseEvent(Vector2 mousePosition, Vector2 mouseScreenPosition)
+            {
+                MousePosition = mousePosition;
+                MouseScreenPosition = mouseScreenPosition;
+            }
+        }
+        public class MouseMoveEvent : MouseEvent
+        {
+           
             public bool LeftDown { private set; get; }
             public bool RightDown { private set; get; }
 
-            public MouseMoveEvent(Vector2 mousePosition, bool leftDown, bool rightDown)
+            public MouseMoveEvent(Vector2 mousePosition, 
+                Vector2 mouseScreenPosition,
+                bool leftDown, 
+                bool rightDown)
+                :base(mousePosition, mouseScreenPosition)
             {
-                MousePosition = mousePosition;
                 LeftDown = leftDown;
                 RightDown = rightDown;
             }
         }
 
-        public class MouseLeftDownEvent : EventArgs
+        public class MouseLeftDownEvent : MouseEvent
         {
-            public Vector2 MousePosition { private set; get; }
-            public MouseLeftDownEvent(Vector2 mousePosition)
+            public MouseLeftDownEvent(Vector2 mousePosition, Vector2 mouseScreenPosition)
+                : base(mousePosition, mouseScreenPosition)
             {
-                MousePosition = mousePosition;
             }
         }
 
-        public class MouseLeftUpEvent : EventArgs
+        public class MouseLeftUpEvent : MouseEvent
         {
-            public Vector2 MousePosition { private set; get; }
-            public MouseLeftUpEvent(Vector2 mousePosition)
+            public MouseLeftUpEvent(Vector2 mousePosition, Vector2 mouseScreenPosition)
+                : base(mousePosition, mouseScreenPosition)
             {
-                MousePosition = mousePosition;
             }
         }
 
-        public class MouseRightDownEvent : EventArgs
+        public class MouseRightDownEvent : MouseEvent
         {
-            public Vector2 MousePosition { private set; get; }
-            public MouseRightDownEvent(Vector2 mousePosition)
+            public MouseRightDownEvent(Vector2 mousePosition, Vector2 mouseScreenPosition)
+                : base(mousePosition, mouseScreenPosition)
             {
-                MousePosition = mousePosition;
             }
         }
 
-        public class MouseRightUpEvent : EventArgs
+        public class MouseRightUpEvent : MouseEvent
         {
-            public Vector2 MousePosition { private set; get; }
-            public MouseRightUpEvent(Vector2 mousePosition)
+            public MouseRightUpEvent(Vector2 mousePosition, Vector2 mouseScreenPosition)
+                : base(mousePosition, mouseScreenPosition)
             {
-                MousePosition = mousePosition;
             }
         }
 
-        public class MouseLeftClickEvent : EventArgs
+        public class MouseLeftClickEvent : MouseEvent
         {
-            public Vector2 MousePosition { private set; get; }
-            public MouseLeftClickEvent(Vector2 mousePosition)
+            public MouseLeftClickEvent(Vector2 mousePosition, Vector2 mouseScreenPosition)
+                : base(mousePosition, mouseScreenPosition)
             {
-                MousePosition = mousePosition;
             }
         }
 
-        public class MouseRightClickEvent : EventArgs
+        public class MouseRightClickEvent : MouseEvent
         {
-            public Vector2 MousePosition { private set; get; }
-            public MouseRightClickEvent(Vector2 mousePosition)
+            public MouseRightClickEvent(Vector2 mousePosition, Vector2 mouseScreenPosition)
+                : base(mousePosition, mouseScreenPosition)
             {
-                MousePosition = mousePosition;
             }
         }
         #endregion EventArgs class

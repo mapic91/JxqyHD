@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Engine;
+using Engine.Gui;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -77,6 +78,8 @@ namespace Jxqy
             Globals.ThePlayer = new Player(@"save\rpg2\player0.ini");
             NpcManager.Load(@"save\rpg2\xijianchi.npc");
             ObjManager.Load(@"save\rpg2\map005_obj.obj");
+            GuiManager.Starting();
+            GuiManager.Load(@"save\rpg2\Magic0.ini");
 
             //BackgroundMusic.Play(@"music/Mc003.mp3");
 
@@ -102,6 +105,8 @@ namespace Jxqy
         protected override void Update(GameTime gameTime)
         {
             if(!IsActive) return;
+
+            GuiManager.Update(gameTime);
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
@@ -149,6 +154,7 @@ namespace Jxqy
             _spriteBatch.DrawString(Globals.FontMnjxy12,
                 "ÄÚ£º " + Globals.ThePlayer.Mana.ToString(),
                 new Vector2(5, 45), Color.Red);
+            GuiManager.Draw(_spriteBatch);
             _spriteBatch.End();
             base.Draw(gameTime);
         }

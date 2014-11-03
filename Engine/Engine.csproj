@@ -46,6 +46,9 @@
     <Reference Include="C5">
       <HintPath>..\packages\C5.2.3.0.1\lib\net40\C5.dll</HintPath>
     </Reference>
+    <Reference Include="INIFileParser">
+      <HintPath>..\packages\ini-parser.2.1.1\lib\INIFileParser.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="Microsoft.Xna.Framework.Game, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
@@ -69,9 +72,13 @@
     <Compile Include="Collider.cs" />
     <Compile Include="Dialog.cs" />
     <Compile Include="Globals.cs" />
+    <Compile Include="Gui\BottomGui.cs" />
+    <Compile Include="Gui\DragDropItem.cs" />
     <Compile Include="Gui\GuiItem.cs" />
     <Compile Include="Gui\GuiManager.cs" />
-    <Compile Include="Gui\MagicListView.cs" />
+    <Compile Include="Gui\ListView.cs" />
+    <Compile Include="Gui\MagicGui.cs" />
+    <Compile Include="Gui\ScrollBar.cs" />
     <Compile Include="Gui\Texture.cs" />
     <Compile Include="IMoveControlInWorld.cs" />
     <Compile Include="InfoDrawer.cs" />
@@ -98,6 +105,7 @@
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="LICENSE" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
