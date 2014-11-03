@@ -31,7 +31,7 @@ namespace Engine.Gui
             set
             {
                 _isClicked = value;
-                IsMouveOver = false;
+                if(value)IsMouveOver = false;
             }
         }
 
@@ -41,6 +41,7 @@ namespace Engine.Gui
             set { _baseTexture = value ?? new Texture(); }
         }
 
+        public bool InRange { get; set; }
         public Vector2 Position { get; set; }
         public Texture MouseOverTexture { get; set; }
         public Texture ClickedTexture { get; set; }
@@ -74,18 +75,68 @@ namespace Engine.Gui
         {
             if(!IsShow) return;
             var mouseState = Mouse.GetState();
+            var position = new Vector2(mouseState.X, mouseState.Y) - Position;
+            var lastPosition = new Vector2(_lastMouseState.X, _lastMouseState.Y) - Position;
+
             if (Region.Contains(mouseState.X, mouseState.Y))
             {
+                InRange = true;
                 IsMouveOver = true;
+
+                if (mouseState.LeftButton == ButtonState.Pressed &&
+                _lastMouseState.LeftButton == ButtonState.Released)
+                {
+                    IsClicked = true;
+                    if (MouseLeftDown != null)
+                    {
+                        MouseLeftDown(this, new MouseLeftDownEvent(position));
+                    }
+
+                    if (Click != null)
+                    {
+                        Click(this, new MouseLeftClickEvent(position));
+                    }
+                }
+                else IsClicked = false;
+
+                if (mouseState.RightButton == ButtonState.Pressed &&
+                    _lastMouseState.RightButton == ButtonState.Released)
+                {
+                    if (MouseRightDown != null)
+                    {
+                        MouseRightDown(this, new MouseRightDownEvent(position));
+                    }
+
+                    if (RightClick != null)
+                    {
+                        RightClick(this, new MouseRightClickEvent(position));
+                    }
+                }
             }
             else
             {
+                InRange = false;
                 IsMouveOver = false;
-                return;
             }
 
-            var position = new Vector2(mouseState.X, mouseState.Y);
-            var lastPosition = new Vector2(_lastMouseState.X, _lastMouseState.Y);
+            if (mouseState.LeftButton == ButtonState.Released &&
+                    _lastMouseState.LeftButton == ButtonState.Pressed)
+            {
+                if (MouseLeftUp != null)
+                {
+                    MouseLeftUp(this, new MouseLeftUpEvent(position));
+                }
+            }
+
+            if (mouseState.RightButton == ButtonState.Released &&
+                    _lastMouseState.RightButton == ButtonState.Pressed)
+            {
+                if (MouseRightUp != null)
+                {
+                    MouseRightUp(this, new MouseRightUpEvent(position));
+                }
+            }
+
             if (lastPosition != position)
             {
                 if (MouseMove != null)
@@ -96,55 +147,6 @@ namespace Engine.Gui
                             mouseState.RightButton == ButtonState.Pressed));
                 }
             }
-
-            if (mouseState.LeftButton == ButtonState.Pressed &&
-                _lastMouseState.LeftButton == ButtonState.Released)
-            {
-                IsClicked = true;
-                if (MouseLeftDown != null)
-                {
-                    MouseLeftDown(this, new MouseLeftDownEvent(position));
-                }
-            }
-            else IsClicked = false;
-
-            if (mouseState.LeftButton == ButtonState.Released &&
-                _lastMouseState.LeftButton == ButtonState.Pressed)
-            {
-                if (MouseLeftUp != null)
-                {
-                    MouseLeftUp(this, new MouseLeftUpEvent(position));
-                }
-
-                if (Click != null)
-                {
-                    Click(this, new MouseLeftClickEvent(position));
-                }
-            }
-
-            if (mouseState.RightButton == ButtonState.Pressed &&
-                _lastMouseState.RightButton == ButtonState.Released)
-            {
-                if (MouseRightDown != null)
-                {
-                    MouseRightDown(this, new MouseRightDownEvent(position));
-                }
-            }
-
-            if (mouseState.RightButton == ButtonState.Released &&
-                _lastMouseState.RightButton == ButtonState.Pressed)
-            {
-                if (MouseRightUp != null)
-                {
-                    MouseRightUp(this, new MouseRightUpEvent(position));
-                }
-
-                if (RightClick != null)
-                {
-                    RightClick(this, new MouseRightClickEvent(position));
-                }
-            }
-
             _lastMouseState = mouseState;
         }
 
