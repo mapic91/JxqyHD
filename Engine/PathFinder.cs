@@ -144,7 +144,7 @@ namespace Engine
         }
 
         //lineLength: the tile distance from startTile to endTile
-        public static bool CanMagicReach(Vector2 startTile, Vector2 endTile, ref int lineLength)
+        public static bool CanMagicReach(Vector2 startTile, Vector2 endTile, out int lineLength)
         {
             var finded = true;
             if (startTile != endTile)
@@ -165,6 +165,7 @@ namespace Engine
                 }
                 lineLength = path.Count - 1;
             }
+            lineLength = 0;
             return finded;
         }
 

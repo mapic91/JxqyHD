@@ -67,8 +67,8 @@ namespace Engine
             if (IsEnemy)
             {
                 var playerTilePosition = Globals.ThePlayer.TilePosition;
-                int tileDistance = 0;
-                var attackCanReach = Engine.PathFinder.CanMagicReach(TilePosition, playerTilePosition, ref tileDistance);
+                int tileDistance;
+                var attackCanReach = Engine.PathFinder.CanMagicReach(TilePosition, playerTilePosition, out tileDistance);
                 if (IsStanding())
                 {
                     if ((attackCanReach  && tileDistance <= VisionRadius) ||

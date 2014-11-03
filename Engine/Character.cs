@@ -813,9 +813,9 @@ namespace Engine
         {
             if (DestinationAttackTilePosition != Vector2.Zero)
             {
-                var tileDistance = 0;
+                int tileDistance;
                 var attackCanReach = Engine.PathFinder.CanMagicReach(TilePosition, DestinationAttackTilePosition,
-                    ref tileDistance);
+                    out tileDistance);
                 if (tileDistance == AttackRadius)
                 {
                     if (attackCanReach) return true;
