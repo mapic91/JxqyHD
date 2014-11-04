@@ -72,8 +72,10 @@
     <Compile Include="Collider.cs" />
     <Compile Include="Dialog.cs" />
     <Compile Include="Globals.cs" />
+    <Compile Include="Good.cs" />
     <Compile Include="Gui\BottomGui.cs" />
     <Compile Include="Gui\DragDropItem.cs" />
+    <Compile Include="Gui\GoodsListManager.cs" />
     <Compile Include="Gui\GuiItem.cs" />
     <Compile Include="Gui\GuiManager.cs" />
     <Compile Include="Gui\ListView.cs" />

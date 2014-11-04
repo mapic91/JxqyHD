@@ -7,8 +7,8 @@ namespace Engine.Gui
     public static class MagicListManager
     {
         private const int MaxMagic = 49;
-        private static readonly Dictionary<int, MagicManager.MagicItemInfo> MagicList =
-            new Dictionary<int, MagicManager.MagicItemInfo>();
+        private static readonly Dictionary<int, MagicItemInfo> MagicList =
+            new Dictionary<int, MagicItemInfo>();
         public static void LoadMagicList(string filePath)
         {
             RenewMagicList();
@@ -22,7 +22,7 @@ namespace Engine.Gui
                     if (int.TryParse(sectionData.SectionName, out head))
                     {
                         var section = data[sectionData.SectionName];
-                        MagicList[head] = new MagicManager.MagicItemInfo(
+                        MagicList[head] = new MagicItemInfo(
                             section["IniFile"],
                             int.Parse(section["Level"]),
                             int.Parse(section["Exp"])
@@ -70,9 +70,23 @@ namespace Engine.Gui
                 null;
         }
 
-        public static MagicManager.MagicItemInfo GetMagicItemInfo(int index)
+        public static MagicItemInfo GetMagicItemInfo(int index)
         {
             return MagicIndexInRange(index) ? MagicList[index] : null;
+        }
+
+        public class MagicItemInfo
+        {
+            public Magic TheMagic { private set; get; }
+            public int Level { private set; get; }
+            public int Exp { private set; get; }
+
+            public MagicItemInfo(string iniFile, int level, int exp)
+            {
+                TheMagic = Utils.GetMagic(iniFile).GetLevel(level);
+                Level = level;
+                Exp = exp;
+            }
         }
     }
 }

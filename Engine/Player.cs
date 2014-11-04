@@ -21,7 +21,7 @@ namespace Engine
         private Dictionary<int, Utils.LevelDetail> _levelIni;
         private float _totalNonFightingTime;
         private const float MaxNonFightingTime = 7f;
-        public MagicManager.MagicItemInfo CurrentMagicInUse;
+        public MagicListManager.MagicItemInfo CurrentMagicInUse;
 
         #region Public properties
         public override PathFinder.PathType PathType
