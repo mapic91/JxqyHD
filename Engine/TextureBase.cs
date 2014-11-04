@@ -33,7 +33,7 @@ namespace Engine
         }
         public int Interval
         {
-            get { return Head.Interval; }
+            get { return Head.Interval > 15 ? Head.Interval : 16; }
         }
         public int Bottom
         {
