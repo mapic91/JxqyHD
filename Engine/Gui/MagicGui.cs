@@ -18,7 +18,7 @@ namespace Engine.Gui
         {
             var magicListBaseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\panel2.asf"));
             var magicListPosition = new Vector2(
-                Globals.WindowWidth - magicListBaseTexture.Width - 5f,
+                Globals.WindowWidth/2f,
                 0f);
             _magicList = new ListView(null,
                 magicListPosition,

@@ -14,14 +14,16 @@ namespace Engine.Gui
         
         private static MagicGui MagicInterface;
         private static BottomGui BottomInterface;
+        private static TopGui TopInterface;
         public static bool IsMouseStateEated;
         public static DragDropItem DragDropSourceItem;
         public static bool IsDropped;
 
         public static void Starting()
         {
-            MagicInterface = new MagicGui();
+            TopInterface = new TopGui();
             BottomInterface = new BottomGui();
+            MagicInterface = new MagicGui();
             RenewMagicList();
         }
 
@@ -99,8 +101,9 @@ namespace Engine.Gui
         public static void Update(GameTime gameTime)
         {
             IsMouseStateEated = false;
-            MagicInterface.Update(gameTime);
+            TopInterface.Update(gameTime);
             BottomInterface.Update(gameTime);
+            MagicInterface.Update(gameTime);
 
             if (IsDropped)
             {
@@ -112,8 +115,9 @@ namespace Engine.Gui
 
         public static void Draw(SpriteBatch spriteBatch)
         {
-            MagicInterface.Draw(spriteBatch);
+            TopInterface.Draw(spriteBatch);
             BottomInterface.Draw(spriteBatch);
+            MagicInterface.Draw(spriteBatch);
         }
 
         public static void UpdateMagicView()
