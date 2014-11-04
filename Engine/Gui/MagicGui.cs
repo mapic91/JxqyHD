@@ -52,16 +52,11 @@ namespace Engine.Gui
             //});
         }
 
-        public int ToMagicListIndex(int itemIndex)
-        {
-            return _magicList.CurrentScrollValue * 3 + itemIndex + 1;
-        }
-
         public void UpdateItems()
         {
             for (var i = 0; i < 9; i++)
             {
-                var index = ToMagicListIndex(i);
+                var index = _magicList.ToListIndex(i);
                 var magic = GuiManager.GetMagic(index);
                 var image = magic == null ? null : magic.Image;
                 _magicList.SetListItem(i, new Texture(image), new MagicItemData(index));

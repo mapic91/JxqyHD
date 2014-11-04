@@ -94,6 +94,16 @@ namespace Engine.Gui
             }
         }
 
+        /// <summary>
+        /// List index begin at 1
+        /// </summary>
+        /// <param name="itemIndex">range: 0 - 8</param>
+        /// <returns></returns>
+        public int ToListIndex(int itemIndex)
+        {
+            return CurrentScrollValue * 3 + itemIndex + 1;
+        }
+
         public void SetListItem(int index, Texture texture, object data)
         {
             if (index >= 0 && index < 9)
