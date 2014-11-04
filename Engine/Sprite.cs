@@ -20,6 +20,7 @@ namespace Engine
         private bool _isPlayingCurrentDirOnce;
         private float _movedDistance;
         private bool _isTilePositionNew;
+        public int FrameAdvanceCount { protected set; get; }
 
         public Sprite() { }
 
@@ -234,10 +235,12 @@ namespace Engine
         private void Update(int elapsedMilliSecond)
         {
             _elapsedMilliSecond += elapsedMilliSecond;
+            FrameAdvanceCount = 0;
             if (_elapsedMilliSecond > Texture.Interval)
             {
                 _elapsedMilliSecond -= Texture.Interval;
                 CurrentFrameIndex++;
+                FrameAdvanceCount = 1;
                 if (_isPlayingCurrentDirOnce &&
                     CurrentFrameIndex == _frameEnd)
                 {

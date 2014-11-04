@@ -15,8 +15,7 @@ namespace Engine
         private Magic _belongMagic;
         private Vector2 _moveDirection;
         private LinkedList<Vector2> _paths;
-        private float _elaspedMilliseconds;
-        private float _lifeMilliseconds;
+        private int _elapsedFrame;
         private bool _isDestroyed;
         private bool _isInDestroy;
         private bool _destroyOnEnd;
@@ -129,15 +128,10 @@ namespace Engine
 
         public void Begin()
         {
-            if (BelongMagic.FlyingImage == null)
-                _lifeMilliseconds = 50f * BelongMagic.LifeFrame;
-            else
-            {
-                if (BelongMagic.LifeFrame == 0)
-                    PlayCurrentDirOnce();
-                else
-                    _lifeMilliseconds = BelongMagic.LifeFrame * BelongMagic.FlyingImage.Interval;
-            }
+
+            if (BelongMagic.LifeFrame == 0)
+                PlayCurrentDirOnce();
+
             if (Velocity != 0)//Move 30
             {
                 var second = 30f / Velocity;
@@ -195,7 +189,7 @@ namespace Engine
             {
                 MoveTo(MoveDirection, (float)gameTime.ElapsedGameTime.TotalSeconds);
             }
-            _elaspedMilliseconds += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            _elapsedFrame += FrameAdvanceCount;
             if (IsInDestroy)
             {
                 if (IsPlayCurrentDirOnceEnd()) _isDestroyed = true;
@@ -219,7 +213,7 @@ namespace Engine
                 }
                 else if (
                 (BelongMagic.LifeFrame == 0 && IsPlayCurrentDirOnceEnd()) ||
-                (BelongMagic.LifeFrame != 0 && _lifeMilliseconds < _elaspedMilliseconds)
+                (BelongMagic.LifeFrame != 0 && _elapsedFrame >= BelongMagic.LifeFrame)
                 )
                 {
                     if (_destroyOnEnd) Destroy();
