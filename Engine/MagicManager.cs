@@ -643,5 +643,19 @@ namespace Engine
                 TheSprite = theSprite;
             }
         }
+
+        public class MagicItemInfo
+        {
+            public Magic TheMagic { private set; get; }
+            public int Level { private set; get; }
+            public int Exp { private set; get; }
+
+            public MagicItemInfo(string iniFile, int level, int exp)
+            {
+                TheMagic = Utils.GetMagic(iniFile).GetLevel(level);
+                Level = level;
+                Exp = exp;
+            }
+        }
     }
 }

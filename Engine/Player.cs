@@ -21,6 +21,7 @@ namespace Engine
         private Dictionary<int, Utils.LevelDetail> _levelIni;
         private float _totalNonFightingTime;
         private const float MaxNonFightingTime = 7f;
+        public MagicManager.MagicItemInfo CurrentMagicInUse;
 
         #region Public properties
         public override PathFinder.PathType PathType
@@ -159,11 +160,12 @@ namespace Engine
                     else WalkTo(mouseTilePosition);
                 }
                 if (mouseState.RightButton == ButtonState.Pressed &&
-                    _lastMouseState.RightButton == ButtonState.Released)
+                    _lastMouseState.RightButton == ButtonState.Released &&
+                    CurrentMagicInUse != null)
                 {
                     if (Globals.OutEdgeNpc != null && Globals.OutEdgeNpc.IsEnemy)
-                        UseMagic(Globals.OutEdgeNpc.PositionInWorld);
-                    else UseMagic(mouseWorldPosition);
+                        UseMagic(CurrentMagicInUse.TheMagic, Globals.OutEdgeNpc.PositionInWorld);
+                    else UseMagic(CurrentMagicInUse.TheMagic, mouseWorldPosition);
                 }
             }
 

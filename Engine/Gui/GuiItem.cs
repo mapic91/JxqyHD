@@ -203,8 +203,6 @@ namespace Engine.Gui
 
             if (IsClicked || IsRightClicked)
                 GuiManager.IsMouseStateEated = true;
-            else 
-                GuiManager.IsMouseStateEated = false;
 
             if(IsClicked && ClickedTexture != null) 
                 ClickedTexture.Update(gameTime);

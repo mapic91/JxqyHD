@@ -752,7 +752,7 @@ namespace Engine
             }
         }
 
-        public void UseMagic(Vector2 magicDestinationPosition)
+        public void UseMagic(Magic magicUse, Vector2 magicDestinationPosition)
         {
             if (PerformActionOk())
             {
@@ -760,6 +760,7 @@ namespace Engine
                 _isInFighting = true;
                 _totalNonFightingSeconds = 0;
 
+                MagicUse = magicUse;
                 _magicDestination = magicDestinationPosition;
                 SetState(NpcState.Magic);
                 SetDirection(_magicDestination - PositionInWorld);

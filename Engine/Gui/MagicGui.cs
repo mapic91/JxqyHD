@@ -48,7 +48,7 @@ namespace Engine.Gui
                 var info = GuiManager.GetMagicItemInfo(data.Index);
                 if (info != null)
                 {
-                    Globals.ThePlayer.MagicUse = info.TheMagic;
+                    Globals.ThePlayer.CurrentMagicInUse = info;
                 } 
             });
         }

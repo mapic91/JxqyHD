@@ -10,7 +10,8 @@ namespace Engine.Gui
     public static class GuiManager
     {
         private const int MaxMagic = 49;
-        private static readonly Dictionary<int, MagicItemInfo> MagicList = new Dictionary<int, MagicItemInfo>();
+        private static readonly Dictionary<int, MagicManager.MagicItemInfo> MagicList = new Dictionary<int, MagicManager.MagicItemInfo>();
+        
         private static MagicGui MagicInterface;
         private static BottomGui BottomInterface;
         public static bool IsMouseStateEated;
@@ -42,7 +43,7 @@ namespace Engine.Gui
                     if (int.TryParse(sectionData.SectionName, out head))
                     {
                         var section = data[sectionData.SectionName];
-                        MagicList[head] = new MagicItemInfo(
+                        MagicList[head] = new MagicManager.MagicItemInfo(
                             section["IniFile"],
                             int.Parse(section["Level"]),
                             int.Parse(section["Exp"])
@@ -59,12 +60,12 @@ namespace Engine.Gui
 
         private static bool MagicIndexInRange(int index)
         {
-            return (index > 0 && index < MaxMagic);
+            return (index > 0 && index <= MaxMagic);
         }
 
         private static void RenewMagicList()
         {
-            for (var i = 1; i < MaxMagic; i++)
+            for (var i = 1; i <= MaxMagic; i++)
             {
                 MagicList[i] = null;
             }
@@ -89,13 +90,14 @@ namespace Engine.Gui
                 null;
         }
 
-        public static MagicItemInfo GetMagicItemInfo(int index)
+        public static MagicManager.MagicItemInfo GetMagicItemInfo(int index)
         {
             return MagicIndexInRange(index) ? MagicList[index] : null;
         }
 
         public static void Update(GameTime gameTime)
         {
+            IsMouseStateEated = false;
             MagicInterface.Update(gameTime);
             BottomInterface.Update(gameTime);
 
@@ -111,20 +113,6 @@ namespace Engine.Gui
         {
             MagicInterface.Draw(spriteBatch);
             BottomInterface.Draw(spriteBatch);
-        }
-    }
-
-    public class MagicItemInfo
-    {
-        public Magic TheMagic { private set; get; }
-        public int Level { private set; get; }
-        public int Exp { private set; get; }
-
-        public MagicItemInfo(string iniFile, int level, int exp)
-        {
-            TheMagic = Utils.GetMagic(iniFile).GetLevel(level);
-            Level = level;
-            Exp = exp;
         }
     }
 }
