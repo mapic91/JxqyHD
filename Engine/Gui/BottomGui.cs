@@ -29,12 +29,64 @@ namespace Engine.Gui
             _items[5] = new DragDropItem(this, new Vector2(277, 20), 30, 40, null);
             _items[6] = new DragDropItem(this, new Vector2(316, 20), 30, 40, null);
             _items[7] = new DragDropItem(this, new Vector2(354, 20), 30, 40, null);
+
+            for (var i = 3; i < 8; i++)
+            {
+                _items[i].Drag += (arg1, arg2) =>
+                {
+                    var item = (DragDropItem) arg1;
+                    item.BaseTexture = null;
+                };
+                _items[i].Drop += (object arg1, DragDropItem.DropEvent arg2) =>
+                {
+                    var data = (MagicGui.MagicItemData) (((DragDropItem) arg1).Data);
+                    var sourceData = arg2.Source.Data;
+                    if (sourceData is MagicGui.MagicItemData)
+                    {
+                        var magicItemData = (MagicGui.MagicItemData) sourceData;
+                        GuiManager.ExchangeMagicListItem(data.Index, magicItemData.Index);
+                    }
+                };
+                _items[i].RightClick += (arg1, arg2) =>
+                {
+                    var data = (MagicGui.MagicItemData) (((DragDropItem) arg1).Data);
+                    var info = GuiManager.GetMagicItemInfo(data.Index);
+                    if (info != null)
+                    {
+                        Globals.ThePlayer.CurrentMagicInUse = info;
+                    }
+                };
+            }
         }
 
-        private void SetItem(int index, Texture texture)
+        public int ToMagicListIndex(int itemIndex)
+        {
+            return itemIndex + 37;
+        }
+
+        public int ToGoodsListIndex(int itemIndex)
+        {
+            return itemIndex + 221;
+        }
+
+        public void SetItem(int index, Texture texture, object data)
         {
             if (index >= 0 && index < 8)
+            {
                 _items[index].BaseTexture = texture;
+                _items[index].Data = data;
+            }
+        }
+
+        public void UpdateMagicItems()
+        {
+            for (var i = 3; i < 8; i++)
+            {
+                var index = ToMagicListIndex(i);
+                var magic = GuiManager.GetMagic(index);
+                var image = magic == null ? null : magic.Icon;
+                SetItem(i, new Texture(image), new MagicGui.MagicItemData(index));
+            }
         }
 
         public override void Update(GameTime gameTime)

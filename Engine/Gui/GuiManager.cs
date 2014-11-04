@@ -55,7 +55,7 @@ namespace Engine.Gui
             {
                 Log.LogMessageToFile("Magic list file[" + filePath + "] read error: [" + exception);
             }
-            MagicInterface.UpdateItems();
+            UpdateMagicView();
         }
 
         private static bool MagicIndexInRange(int index)
@@ -80,6 +80,7 @@ namespace Engine.Gui
                 var temp = MagicList[index1];
                 MagicList[index1] = MagicList[index2];
                 MagicList[index2] = temp;
+                UpdateMagicView();
             }
         }
 
@@ -105,7 +106,7 @@ namespace Engine.Gui
             {
                 IsDropped = false;
                 DragDropSourceItem = null;
-                MagicInterface.UpdateItems();
+                UpdateMagicView();
             }
         }
 
@@ -113,6 +114,12 @@ namespace Engine.Gui
         {
             MagicInterface.Draw(spriteBatch);
             BottomInterface.Draw(spriteBatch);
+        }
+
+        public static void UpdateMagicView()
+        {
+            MagicInterface.UpdateItems();
+            BottomInterface.UpdateMagicItems();
         }
     }
 }

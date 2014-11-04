@@ -9,7 +9,17 @@ namespace Engine.Gui
     {
         private ScrollBar _scrollBar;
         private DragDropItem[] _items = new DragDropItem[9];
-        public event Action<object, ListScrollEvent> Scrolled; 
+        public event Action<object, ListScrollEvent> Scrolled;
+
+        public int CurrentScrollValue
+        {
+            get
+            {
+                if (_scrollBar == null)
+                    return 0;
+                return _scrollBar.Value;
+            }
+        }
 
         public ListView(GuiItem parent, 
             Vector2 position, 
@@ -91,11 +101,6 @@ namespace Engine.Gui
                 _items[index].BaseTexture = texture;
                 _items[index].Data = data;
             }
-        }
-
-        public int ToMagicListIndex(int itemIndex)
-        {
-            return _scrollBar.Value*3 + itemIndex + 1;
         }
 
         public override void Update(GameTime gameTime)

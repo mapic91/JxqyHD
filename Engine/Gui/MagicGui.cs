@@ -40,25 +40,28 @@ namespace Engine.Gui
                 var data = (MagicItemData)(((DragDropItem)arg1).Data);
                 var sourceData = (MagicItemData) arg2.Source.Data;
                 GuiManager.ExchangeMagicListItem(data.Index, sourceData.Index);
-                UpdateItems();
             });
-            _magicList.RegisterItemMouseRightClickeHandler((arg1, arg2) =>
-            {
-                var data = (MagicItemData)(((DragDropItem)arg1).Data);
-                var info = GuiManager.GetMagicItemInfo(data.Index);
-                if (info != null)
-                {
-                    Globals.ThePlayer.CurrentMagicInUse = info;
-                } 
-            });
+            //_magicList.RegisterItemMouseRightClickeHandler((arg1, arg2) =>
+            //{
+            //    var data = (MagicItemData)(((DragDropItem)arg1).Data);
+            //    var info = GuiManager.GetMagicItemInfo(data.Index);
+            //    if (info != null)
+            //    {
+            //        Globals.ThePlayer.CurrentMagicInUse = info;
+            //    } 
+            //});
+        }
+
+        public int ToMagicListIndex(int itemIndex)
+        {
+            return _magicList.CurrentScrollValue * 3 + itemIndex + 1;
         }
 
         public void UpdateItems()
         {
-            Texture[] textures = new Texture[9];
             for (var i = 0; i < 9; i++)
             {
-                var index = _magicList.ToMagicListIndex(i);
+                var index = ToMagicListIndex(i);
                 var magic = GuiManager.GetMagic(index);
                 var image = magic == null ? null : magic.Image;
                 _magicList.SetListItem(i, new Texture(image), new MagicItemData(index));

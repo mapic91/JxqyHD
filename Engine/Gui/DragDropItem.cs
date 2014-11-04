@@ -32,7 +32,9 @@ namespace Engine.Gui
 
             MouseLeftUp += delegate(object arg1, MouseLeftUpEvent arg2)
             {
-                if (Drop != null && InRange)
+                if (Drop != null && 
+                    InRange && 
+                    GuiManager.DragDropSourceItem != null)
                 {
                     Drop(this, new DropEvent(arg2.MouseScreenPosition, GuiManager.DragDropSourceItem));
                 }
