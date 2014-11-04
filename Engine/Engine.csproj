@@ -78,6 +78,7 @@
     <Compile Include="Gui\GuiManager.cs" />
     <Compile Include="Gui\ListView.cs" />
     <Compile Include="Gui\MagicGui.cs" />
+    <Compile Include="Gui\MagicListManager.cs" />
     <Compile Include="Gui\ScrollBar.cs" />
     <Compile Include="Gui\Texture.cs" />
     <Compile Include="Gui\TopGui.cs" />

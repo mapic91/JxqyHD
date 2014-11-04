@@ -44,13 +44,13 @@ namespace Engine.Gui
                     if (sourceData is MagicGui.MagicItemData)
                     {
                         var magicItemData = (MagicGui.MagicItemData) sourceData;
-                        GuiManager.ExchangeMagicListItem(data.Index, magicItemData.Index);
+                        MagicListManager.ExchangeMagicListItem(data.Index, magicItemData.Index);
                     }
                 };
                 _items[i].RightClick += (arg1, arg2) =>
                 {
                     var data = (MagicGui.MagicItemData) (((DragDropItem) arg1).Data);
-                    var info = GuiManager.GetMagicItemInfo(data.Index);
+                    var info = MagicListManager.GetMagicItemInfo(data.Index);
                     if (info != null)
                     {
                         Globals.ThePlayer.CurrentMagicInUse = info;
@@ -83,7 +83,7 @@ namespace Engine.Gui
             for (var i = 3; i < 8; i++)
             {
                 var index = ToMagicListIndex(i);
-                var magic = GuiManager.GetMagic(index);
+                var magic = MagicListManager.GetMagic(index);
                 var image = magic == null ? null : magic.Icon;
                 SetItem(i, new Texture(image), new MagicGui.MagicItemData(index));
             }

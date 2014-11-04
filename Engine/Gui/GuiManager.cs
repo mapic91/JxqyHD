@@ -9,9 +9,6 @@ namespace Engine.Gui
 {
     public static class GuiManager
     {
-        private const int MaxMagic = 49;
-        private static readonly Dictionary<int, MagicManager.MagicItemInfo> MagicList = new Dictionary<int, MagicManager.MagicItemInfo>();
-        
         private static MagicGui MagicInterface;
         private static BottomGui BottomInterface;
         private static TopGui TopInterface;
@@ -24,80 +21,13 @@ namespace Engine.Gui
             TopInterface = new TopGui();
             BottomInterface = new BottomGui();
             MagicInterface = new MagicGui();
-            RenewMagicList();
+            MagicListManager.RenewMagicList();
         }
 
         public static void Load(string magicListPath)
         {
-            LoadMagicList(magicListPath);
+            MagicListManager.LoadMagicList(magicListPath);
         }
-
-        private static void LoadMagicList(string filePath)
-        {
-            RenewMagicList();
-            try
-            {
-                var parser = new FileIniDataParser();
-                var data = parser.ReadFile(filePath, Globals.SimpleChinaeseEncoding);
-                foreach (var sectionData in data.Sections)
-                {
-                    int head;
-                    if (int.TryParse(sectionData.SectionName, out head))
-                    {
-                        var section = data[sectionData.SectionName];
-                        MagicList[head] = new MagicManager.MagicItemInfo(
-                            section["IniFile"],
-                            int.Parse(section["Level"]),
-                            int.Parse(section["Exp"])
-                            );
-                    }
-                }
-            }
-            catch (Exception exception)
-            {
-                Log.LogMessageToFile("Magic list file[" + filePath + "] read error: [" + exception);
-            }
-            UpdateMagicView();
-        }
-
-        private static bool MagicIndexInRange(int index)
-        {
-            return (index > 0 && index <= MaxMagic);
-        }
-
-        private static void RenewMagicList()
-        {
-            for (var i = 1; i <= MaxMagic; i++)
-            {
-                MagicList[i] = null;
-            }
-        }
-
-        public static void ExchangeMagicListItem(int index1, int index2)
-        {
-            if (index1 != index2 && 
-                MagicIndexInRange(index1) && 
-                MagicIndexInRange(index2))
-            {
-                var temp = MagicList[index1];
-                MagicList[index1] = MagicList[index2];
-                MagicList[index2] = temp;
-                UpdateMagicView();
-            }
-        }
-
-        public static Magic GetMagic(int index)
-        {
-            return (MagicIndexInRange(index) && MagicList[index] != null) ?
-                MagicList[index].TheMagic : 
-                null;
-        }
-
-        public static MagicManager.MagicItemInfo GetMagicItemInfo(int index)
-        {
-            return MagicIndexInRange(index) ? MagicList[index] : null;
-        }
-
         public static void Update(GameTime gameTime)
         {
             IsMouseStateEated = false;

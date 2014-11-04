@@ -39,7 +39,7 @@ namespace Engine.Gui
             {
                 var data = (MagicItemData)(((DragDropItem)arg1).Data);
                 var sourceData = (MagicItemData) arg2.Source.Data;
-                GuiManager.ExchangeMagicListItem(data.Index, sourceData.Index);
+                MagicListManager.ExchangeMagicListItem(data.Index, sourceData.Index);
             });
             //_magicList.RegisterItemMouseRightClickeHandler((arg1, arg2) =>
             //{
@@ -57,7 +57,7 @@ namespace Engine.Gui
             for (var i = 0; i < 9; i++)
             {
                 var index = _magicList.ToListIndex(i);
-                var magic = GuiManager.GetMagic(index);
+                var magic = MagicListManager.GetMagic(index);
                 var image = magic == null ? null : magic.Image;
                 _magicList.SetListItem(i, new Texture(image), new MagicItemData(index));
             }
