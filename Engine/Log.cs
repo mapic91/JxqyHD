@@ -17,7 +17,7 @@ namespace Engine
 
         public static void LogFileLoadError(string msg, string filePath, Exception exception)
         {
-            LogMessageToFile(msg + "[" + filePath + "] load error: " + exception);
+            LogMessageToFile(msg + " [" + filePath + "] load error: " + exception);
         }
     }
 }

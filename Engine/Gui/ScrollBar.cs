@@ -8,6 +8,8 @@ namespace Engine.Gui
     {
         private GuiItem _slider;
         private int _value;
+        private int _minValue;
+        private int _maxValue;
         private bool _inDragging;
 
         public event Action<object, ScrolledEvent> Scrolled; 
@@ -74,8 +76,26 @@ namespace Engine.Gui
         }
 
         public float Length { set; get; }
-        public int MinValue { set; get; }
-        public int MaxValue { set; get; }
+
+        public int MinValue
+        {
+            get { return _minValue; }
+            set
+            {
+                _minValue = value;
+                Value = Value; // renew slider positon
+            }
+        }
+
+        public int MaxValue
+        {
+            get { return _maxValue; }
+            set
+            {
+                _maxValue = value;
+                Value = Value; // renew slider positon
+            }
+        }
 
         public ScrollBarType Type { set; get; }
 

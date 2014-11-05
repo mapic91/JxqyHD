@@ -81,7 +81,9 @@ namespace Jxqy
             NpcManager.Load(@"save\rpg2\xijianchi.npc");
             ObjManager.Load(@"save\rpg2\map005_obj.obj");
             GuiManager.Starting();
-            GuiManager.Load(@"save\rpg2\Magic0.ini", @"save\rpg2\Goods0.ini");
+            GuiManager.Load(@"save\rpg2\Magic0.ini", 
+                    @"save\rpg2\Goods0.ini",
+                    @"save\rpg2\memo.ini");
 
             //BackgroundMusic.Play(@"music/Mc003.mp3");
 

@@ -113,6 +113,7 @@ namespace Engine.Gui
                                 break;
                             case "enter":
                                 y += Font.LineSpacing;
+                                x = 0;
                                 if (IsReachBottom(y))
                                 {
                                     _endIndex++;
@@ -120,6 +121,16 @@ namespace Engine.Gui
                                 }
                                 break;
                        }
+                    }
+                    else if (drawText == "\n")
+                    {
+                        y += Font.LineSpacing;
+                        x = 0;
+                        if (IsReachBottom(y))
+                        {
+                            _endIndex++;
+                            return true;
+                        }
                     }
                     else
                     {

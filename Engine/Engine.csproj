@@ -82,6 +82,8 @@
     <Compile Include="Gui\ListView.cs" />
     <Compile Include="Gui\MagicGui.cs" />
     <Compile Include="Gui\MagicListManager.cs" />
+    <Compile Include="Gui\MemoGui.cs" />
+    <Compile Include="Gui\MemoListManager.cs" />
     <Compile Include="Gui\ScrollBar.cs" />
     <Compile Include="Gui\TextGui.cs" />
     <Compile Include="Gui\Texture.cs" />

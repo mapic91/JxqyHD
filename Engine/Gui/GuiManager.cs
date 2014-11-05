@@ -11,6 +11,7 @@ namespace Engine.Gui
     {
         private static MagicGui MagicInterface;
         private static GoodsGui GoodsInterface;
+        private static MemoGui MemoInterface;
         private static BottomGui BottomInterface;
         private static TopGui TopInterface;
         public static bool IsMouseStateEated;
@@ -23,13 +24,16 @@ namespace Engine.Gui
             BottomInterface = new BottomGui();
             MagicInterface = new MagicGui();
             GoodsInterface = new GoodsGui();
+            MemoInterface = new MemoGui();
             MagicListManager.RenewList();
+            GoodsListManager.RenewList();
         }
 
-        public static void Load(string magicListPath, string goodsListPaht)
+        public static void Load(string magicListPath, string goodsListPath, string memoListPath)
         {
             MagicListManager.LoadList(magicListPath);
-            GoodsListManager.LoadList(goodsListPaht);
+            GoodsListManager.LoadList(goodsListPath);
+            MemoListManager.LoadList(memoListPath);
         }
 
         public static void ToggleMagicGuiShow()
@@ -40,8 +44,8 @@ namespace Engine.Gui
             {
                 MagicInterface.IsShow = true;
                 GoodsInterface.IsShow = false;
+                MemoInterface.IsShow = false;
             }
-
         }
 
         public static void ToggleGoodsGuiShow()
@@ -51,6 +55,19 @@ namespace Engine.Gui
             else
             {
                 GoodsInterface.IsShow = true;
+                MagicInterface.IsShow = false;
+                MemoInterface.IsShow = false;
+            }
+        }
+
+        public static void ToggleMemoGuiShow()
+        {
+            if (MemoInterface.IsShow)
+                MemoInterface.IsShow = false;
+            else
+            {
+                MemoInterface.IsShow = true;
+                GoodsInterface.IsShow = false;
                 MagicInterface.IsShow = false;
             }
         }
@@ -67,6 +84,11 @@ namespace Engine.Gui
             BottomInterface.UpdateGoodsItems();
         }
 
+        public static void UpdateMemoView()
+        {
+            MemoInterface.UpdateTextShow();
+        }
+
         public static void Update(GameTime gameTime)
         {
             IsMouseStateEated = false;
@@ -74,6 +96,7 @@ namespace Engine.Gui
             BottomInterface.Update(gameTime);
             MagicInterface.Update(gameTime);
             GoodsInterface.Update(gameTime);
+            MemoInterface.Update(gameTime);
 
             if (IsDropped)
             {
@@ -90,6 +113,7 @@ namespace Engine.Gui
             BottomInterface.Draw(spriteBatch);
             MagicInterface.Draw(spriteBatch);
             GoodsInterface.Draw(spriteBatch);
+            MemoInterface.Draw(spriteBatch);
         }
     }
 }
