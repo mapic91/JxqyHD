@@ -94,6 +94,7 @@ namespace Engine
                 return type;
             }
         }
+
         public int Cost
         {
             set { _cost = value; }
@@ -115,30 +116,9 @@ namespace Engine
             }
         }
 
-
         public Good(string filePath)
         {
             Load(filePath);
-        }
-
-        public bool Load(string filePath)
-        {
-            try
-            {
-                FileName = Path.GetFileName(filePath);
-                var parser = new FileIniDataParser();
-                var data = parser.ReadFile(filePath, Globals.SimpleChinaeseEncoding);
-                foreach (var keyValue in data["Init"])
-                {
-                    AssignToValue(keyValue.KeyName, keyValue.Value);
-                }
-            }
-            catch (Exception ecxeption)
-            {
-                Log.LogMessageToFile("Good load failed [" + filePath + "]." + ecxeption);
-                return false;
-            }
-            return true;
         }
 
         private void AssignToValue(string keyName, string value)
@@ -161,34 +141,34 @@ namespace Engine
                         info.SetValue(this, Utils.GetAsf(@"asf\goods\" + value), null);
                         break;
                     case "Part":
-                    {
-                        var position = EquipPosition.None;
-                        switch (value)
                         {
-                            case "Body":
-                                position = EquipPosition.Body;
-                                break;
-                            case "Foot":
-                                position = EquipPosition.Foot;
-                                break;
-                            case "Head":
-                                position = EquipPosition.Head;
-                                break;
-                            case "Neck":
-                                position = EquipPosition.Neck;
-                                break;
-                            case "Back":
-                                position = EquipPosition.Back;
-                                break;
-                            case "Wrist":
-                                position = EquipPosition.Wrist;
-                                break;
-                            case "Hand":
-                                position = EquipPosition.Hand;
-                                break;
+                            var position = EquipPosition.None;
+                            switch (value)
+                            {
+                                case "Body":
+                                    position = EquipPosition.Body;
+                                    break;
+                                case "Foot":
+                                    position = EquipPosition.Foot;
+                                    break;
+                                case "Head":
+                                    position = EquipPosition.Head;
+                                    break;
+                                case "Neck":
+                                    position = EquipPosition.Neck;
+                                    break;
+                                case "Back":
+                                    position = EquipPosition.Back;
+                                    break;
+                                case "Wrist":
+                                    position = EquipPosition.Wrist;
+                                    break;
+                                case "Hand":
+                                    position = EquipPosition.Hand;
+                                    break;
+                            }
+                            info.SetValue(this, position, null);
                         }
-                        info.SetValue(this, position, null);
-                    }
                         break;
                     default:
                         info.SetValue(this, int.Parse(value), null);
@@ -200,6 +180,26 @@ namespace Engine
                 //Do nothing
                 return;
             }
+        }
+
+        public bool Load(string filePath)
+        {
+            try
+            {
+                FileName = Path.GetFileName(filePath);
+                var parser = new FileIniDataParser();
+                var data = parser.ReadFile(filePath, Globals.SimpleChinaeseEncoding);
+                foreach (var keyValue in data["Init"])
+                {
+                    AssignToValue(keyValue.KeyName, keyValue.Value);
+                }
+            }
+            catch (Exception ecxeption)
+            {
+                Log.LogMessageToFile("Good load failed [" + filePath + "]." + ecxeption);
+                return false;
+            }
+            return true;
         }
 
         #region Enum
