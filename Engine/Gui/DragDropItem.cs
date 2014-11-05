@@ -7,9 +7,40 @@ namespace Engine.Gui
 {
     public class DragDropItem : GuiItem
     {
+        private TextGui TopLeftTextGui { set; get; }
+
         public event Action<object, DragEvent> Drag;
         public event Action<object, DropEvent> Drop;
         public object Data { set; get; }
+
+        public string TopLeftText
+        {
+            set
+            {
+                if(TopLeftTextGui == null)
+                {
+                    TopLeftTextGui = new TextGui(this,
+                    Vector2.Zero,
+                    Width,
+                    Height,
+                    Globals.FontSize7,
+                    value,
+                    new Color(167, 157, 255)*0.8f);
+                }
+                else
+                {
+                    TopLeftTextGui.Text = value;
+                }
+            }
+            get
+            {
+                if (TopLeftTextGui == null)
+                    return "";
+                return TopLeftTextGui.Text;
+            }
+        }
+
+        private DragDropItem() { }
 
         public DragDropItem(GuiItem parent,
             Vector2 position,
@@ -44,6 +75,22 @@ namespace Engine.Gui
                 }
 
             };
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            if (!IsShow) return;
+            base.Update(gameTime);
+            if (TopLeftTextGui != null)
+                TopLeftTextGui.Update(gameTime);
+        }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            if (!IsShow) return;
+            base.Draw(spriteBatch);
+            if (TopLeftTextGui != null)
+                TopLeftTextGui.Draw(spriteBatch);
         }
 
         public abstract class DragDropEvent : EventArgs

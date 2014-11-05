@@ -63,7 +63,9 @@ namespace Jxqy
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            Globals.FontMnjxy12 = Content.Load<SpriteFont>(@"font\GB2312_ASCII_ÃÔÄã¼òÏ¸Ô²_12");
+            Globals.FontSize7 = Content.Load<SpriteFont>(@"font\ASCII_Verdana_7_Bold");
+            Globals.FontSize10 = Content.Load<SpriteFont>(@"font\GB2312_ASCII_ÃÔÄã¼òÏ¸Ô²_10");
+            Globals.FontSize12 = Content.Load<SpriteFont>(@"font\GB2312_ASCII_ÃÔÄã¼òÏ¸Ô²_12");
 
             Globals.TheMap.LoadMap(@"map\map_005_Ï´½£³Ø.map");
             Globals.TheMap.ViewBeginX = 0;
@@ -145,13 +147,13 @@ namespace Jxqy
             _spriteBatch.Begin(SpriteSortMode.Deferred,null);
             Globals.TheMap.Draw(_spriteBatch);
             Globals.ThePlayer.Draw(_spriteBatch);
-            _spriteBatch.DrawString(Globals.FontMnjxy12, 
+            _spriteBatch.DrawString(Globals.FontSize12, 
                 "Ãü£º " + Globals.ThePlayer.Life.ToString(),
                 new Vector2(5, 5), Color.Red);
-            _spriteBatch.DrawString(Globals.FontMnjxy12,
+            _spriteBatch.DrawString(Globals.FontSize12,
                 "Ìå£º " + Globals.ThePlayer.Thew.ToString(),
                 new Vector2(5, 25), Color.Red);
-            _spriteBatch.DrawString(Globals.FontMnjxy12,
+            _spriteBatch.DrawString(Globals.FontSize12,
                 "ÄÚ£º " + Globals.ThePlayer.Mana.ToString(),
                 new Vector2(5, 45), Color.Red);
             GuiManager.Draw(_spriteBatch);

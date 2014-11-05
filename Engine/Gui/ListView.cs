@@ -113,6 +113,14 @@ namespace Engine.Gui
             }
         }
 
+        public void SetItemTopLeftText(int index, string text)
+        {
+            if (index >= 0 && index < 9)
+            {
+                _items[index].TopLeftText = text;
+            }
+        }
+
         public override void Update(GameTime gameTime)
         {
             if (!IsShow) return;

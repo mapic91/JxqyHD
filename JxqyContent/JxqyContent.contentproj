@@ -948,6 +948,14 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <None Include="font\ASCII_Verdana_7_Bold.xnb">
+      <Name>ASCII_Verdana_7_Bold</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="font\GB2312_ASCII_迷你简细圆_10.xnb">
+      <Name>GB2312_ASCII_迷你简细圆_10</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="font\GB2312_ASCII_迷你简细圆_12.xnb">
       <Name>GB2312_ASCII_迷你简细圆_12</Name>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

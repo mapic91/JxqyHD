@@ -55,7 +55,9 @@ namespace Engine
         public static Player ThePlayer;
 
         #region Font
-        public static SpriteFont FontMnjxy12;
+        public static SpriteFont FontSize7;
+        public static SpriteFont FontSize10;
+        public static SpriteFont FontSize12;
         #endregion
 
         public static int WindowWidth = 1366;

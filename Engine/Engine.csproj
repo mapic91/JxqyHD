@@ -83,6 +83,7 @@
     <Compile Include="Gui\MagicGui.cs" />
     <Compile Include="Gui\MagicListManager.cs" />
     <Compile Include="Gui\ScrollBar.cs" />
+    <Compile Include="Gui\TextGui.cs" />
     <Compile Include="Gui\Texture.cs" />
     <Compile Include="Gui\TopGui.cs" />
     <Compile Include="IMoveControlInWorld.cs" />

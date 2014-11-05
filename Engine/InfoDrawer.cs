@@ -41,10 +41,10 @@ namespace Engine
             DrawRectangle(spriteBatch, lifeLoseRegion, LifeLoseColor);
             if (!string.IsNullOrEmpty(npc.Name))
             {
-                var measure = Globals.FontMnjxy12.MeasureString(npc.Name);
+                var measure = Globals.FontSize12.MeasureString(npc.Name);
                 var namePosition = new Vector2((float)Globals.WindowWidth / 2 - measure.X / 2,
                     topLeftY + (height - measure.Y) / 2 + 1);
-                spriteBatch.DrawString(Globals.FontMnjxy12, npc.Name, namePosition, NameColor);
+                spriteBatch.DrawString(Globals.FontSize12, npc.Name, namePosition, NameColor);
             }
         }
     }
