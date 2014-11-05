@@ -27,6 +27,7 @@ namespace Engine
         public int Evade { set; get; }
         public int EffectType { set; get; }
         public string Script { set; get; }
+        public bool IsOk { private set; get; }
 
         public GoodEffectType TheEffectType
         {
@@ -199,6 +200,7 @@ namespace Engine
                 Log.LogMessageToFile("Good load failed [" + filePath + "]." + ecxeption);
                 return false;
             }
+            IsOk = true;
             return true;
         }
 

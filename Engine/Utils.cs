@@ -12,6 +12,10 @@ namespace Engine
 {
     static public class Utils
     {
+        public static Dictionary<int, Asf> AsfFiles = new Dictionary<int, Asf>();
+        public static Dictionary<int, Magic> Magics = new Dictionary<int, Magic>();
+        public static Dictionary<int, Good> Goods = new Dictionary<int, Good>(); 
+
         //static public int GetBigEndianIntegerFromByteArray(byte[] data, ref int startIndex)
         //{
         //    var ret = (data[startIndex] << 24)
@@ -52,14 +56,14 @@ namespace Engine
             try
             {
                 var hashCode = path.GetHashCode();
-                if (Globals.AsfFiles.ContainsKey(hashCode))
-                    return Globals.AsfFiles[hashCode];
+                if (AsfFiles.ContainsKey(hashCode))
+                    return AsfFiles[hashCode];
                 else
                 {
                     var asf = new Asf(path);
                     if (asf.IsOk)
                     {
-                        Globals.AsfFiles[hashCode] = asf;
+                        AsfFiles[hashCode] = asf;
                         return asf;
                     }
                     else
@@ -98,15 +102,40 @@ namespace Engine
             {
                 var filePath = @"ini\magic\" + fileName;
                 var hashCode = filePath.GetHashCode();
-                if (Globals.Magics.ContainsKey(hashCode))
-                    return Globals.Magics[hashCode];
+                if (Magics.ContainsKey(hashCode))
+                    return Magics[hashCode];
                 else
                 {
                     var magic = new Magic(filePath);
                     if (magic.IsOk)
                     {
-                        Globals.Magics[hashCode] = magic;
+                        Magics[hashCode] = magic;
                         return magic;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            return null;
+        }
+
+        public static Good GetGood(string fileName)
+        {
+            try
+            {
+                var filePath = @"ini\goods\" + fileName;
+                var hashCode = filePath.GetHashCode();
+                if (Goods.ContainsKey(hashCode))
+                    return Goods[hashCode];
+                else
+                {
+                    var good = new Good(filePath);
+                    if (good.IsOk)
+                    {
+                        Goods[hashCode] = good;
+                        return good;
                     }
                 }
             }

@@ -53,8 +53,6 @@ namespace Engine
         public static Carmera TheCarmera;
         public static Map TheMap = new Map();
         public static Player ThePlayer;
-        public static Dictionary<int, Asf> AsfFiles = new Dictionary<int, Asf>();
-        public static Dictionary<int, Magic> Magics = new Dictionary<int, Magic>();
 
         #region Font
         public static SpriteFont FontMnjxy12;

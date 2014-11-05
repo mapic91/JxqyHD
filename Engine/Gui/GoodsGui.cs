@@ -4,29 +4,29 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Engine.Gui
 {
-    public class MagicGui
+    public class GoodsGui
     {
         private ListView _listView;
 
-        public static Action<object, DragDropItem.DropEvent> DropHandler = (object arg1, DragDropItem.DropEvent arg2) =>
+        public static Action<object, DragDropItem.DropEvent> DropHandler = (arg1, arg2) =>
         {
-            var item = (DragDropItem) arg1;
+            var item = (DragDropItem)arg1;
             var sourceItem = arg2.Source;
-            var data = item.Data as MagicItemData;
-            var sourceData = sourceItem.Data as MagicItemData;
+            var data = item.Data as GoodItemData;
+            var sourceData = sourceItem.Data as GoodItemData;
             if (data != null && sourceData != null)
             {
-                MagicListManager.ExchangeListItem(data.Index, sourceData.Index);
-                item.BaseTexture = MagicListManager.GetTexture(data.Index);
-                sourceItem.BaseTexture = MagicListManager.GetTexture(sourceData.Index);
+                GoodsListManager.ExchangeListItem(data.Index, sourceData.Index);
+                item.BaseTexture = GoodsListManager.GetTexture(data.Index);
+                sourceItem.BaseTexture = GoodsListManager.GetTexture(sourceData.Index);
             }
         };
 
         public bool IsShow { set; get; }
 
-        public MagicGui()
+        public GoodsGui()
         {
-            var baseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\panel2.asf"));
+            var baseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\panel3.asf"));
             var position = new Vector2(
                 Globals.WindowWidth / 2f,
                 0f);
@@ -35,14 +35,14 @@ namespace Engine.Gui
                 baseTexture.Width,
                 baseTexture.Height,
                 baseTexture,
-                12);
+                66);
             _listView.Scrolled += delegate
             {
                 UpdateItems();
             };
             _listView.RegisterItemDragHandler((arg1, arg2) =>
             {
-
+                
             });
             _listView.RegisterItemDropHandler(DropHandler);
         }
@@ -52,9 +52,9 @@ namespace Engine.Gui
             for (var i = 0; i < 9; i++)
             {
                 var index = _listView.ToListIndex(i);
-                var magic = MagicListManager.Get(index);
-                var image = (magic == null ? null : magic.Image);
-                _listView.SetListItem(i, new Texture(image), new MagicItemData(index));
+                var good = GoodsListManager.Get(index);
+                var image = ( good == null ? null : good.Image );
+                _listView.SetListItem(i, new Texture(image), new GoodItemData(index));
             }
         }
 
@@ -72,11 +72,10 @@ namespace Engine.Gui
             _listView.Draw(spriteBatch);
         }
 
-        public class MagicItemData
+        public class GoodItemData
         {
             public int Index { private set; get; }
-
-            public MagicItemData(int index)
+            public GoodItemData(int index)
             {
                 Index = index;
             }

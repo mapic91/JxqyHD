@@ -10,6 +10,7 @@ namespace Engine.Gui
     public static class GuiManager
     {
         private static MagicGui MagicInterface;
+        private static GoodsGui GoodsInterface;
         private static BottomGui BottomInterface;
         private static TopGui TopInterface;
         public static bool IsMouseStateEated;
@@ -21,25 +22,65 @@ namespace Engine.Gui
             TopInterface = new TopGui();
             BottomInterface = new BottomGui();
             MagicInterface = new MagicGui();
-            MagicListManager.RenewMagicList();
+            GoodsInterface = new GoodsGui();
+            MagicListManager.RenewList();
         }
 
-        public static void Load(string magicListPath)
+        public static void Load(string magicListPath, string goodsListPaht)
         {
-            MagicListManager.LoadMagicList(magicListPath);
+            MagicListManager.LoadList(magicListPath);
+            GoodsListManager.LoadList(goodsListPaht);
         }
+
+        public static void ToggleMagicGuiShow()
+        {
+            if (MagicInterface.IsShow)
+                MagicInterface.IsShow = false;
+            else
+            {
+                MagicInterface.IsShow = true;
+                GoodsInterface.IsShow = false;
+            }
+
+        }
+
+        public static void ToggleGoodsGuiShow()
+        {
+            if (GoodsInterface.IsShow)
+                GoodsInterface.IsShow = false;
+            else
+            {
+                GoodsInterface.IsShow = true;
+                MagicInterface.IsShow = false;
+            }
+        }
+
+        public static void UpdateMagicView()
+        {
+            MagicInterface.UpdateItems();
+            BottomInterface.UpdateMagicItems();
+        }
+
+        public static void UpdateGoodsView()
+        {
+            GoodsInterface.UpdateItems();
+            BottomInterface.UpdateGoodsItems();
+        }
+
         public static void Update(GameTime gameTime)
         {
             IsMouseStateEated = false;
             TopInterface.Update(gameTime);
             BottomInterface.Update(gameTime);
             MagicInterface.Update(gameTime);
+            GoodsInterface.Update(gameTime);
 
             if (IsDropped)
             {
                 IsDropped = false;
+                if(DragDropSourceItem != null)
+                    DragDropSourceItem.IsShow = true;
                 DragDropSourceItem = null;
-                UpdateMagicView();
             }
         }
 
@@ -48,12 +89,7 @@ namespace Engine.Gui
             TopInterface.Draw(spriteBatch);
             BottomInterface.Draw(spriteBatch);
             MagicInterface.Draw(spriteBatch);
-        }
-
-        public static void UpdateMagicView()
-        {
-            MagicInterface.UpdateItems();
-            BottomInterface.UpdateMagicItems();
+            GoodsInterface.Draw(spriteBatch);
         }
     }
 }

@@ -9,9 +9,10 @@ namespace Engine.Gui
         private const int MaxMagic = 49;
         private static readonly Dictionary<int, MagicItemInfo> MagicList =
             new Dictionary<int, MagicItemInfo>();
-        public static void LoadMagicList(string filePath)
+        public static void LoadList(string filePath)
         {
-            RenewMagicList();
+            RenewList();
+            GuiManager.UpdateMagicView();// clear
             try
             {
                 var parser = new FileIniDataParser();
@@ -32,17 +33,18 @@ namespace Engine.Gui
             }
             catch (Exception exception)
             {
-                Log.LogMessageToFile("Magic list file[" + filePath + "] read error: [" + exception);
+                RenewList();
+                Log.LogFileLoadError("Magic list", filePath, exception);
             }
             GuiManager.UpdateMagicView();
         }
 
-        public static bool MagicIndexInRange(int index)
+        public static bool IndexInRange(int index)
         {
             return (index > 0 && index <= MaxMagic);
         }
 
-        public static void RenewMagicList()
+        public static void RenewList()
         {
             for (var i = 1; i <= MaxMagic; i++)
             {
@@ -50,29 +52,58 @@ namespace Engine.Gui
             }
         }
 
-        public static void ExchangeMagicListItem(int index1, int index2)
+        public static void ExchangeListItem(int index1, int index2)
         {
             if (index1 != index2 &&
-                MagicIndexInRange(index1) &&
-                MagicIndexInRange(index2))
+                IndexInRange(index1) &&
+                IndexInRange(index2))
             {
                 var temp = MagicList[index1];
                 MagicList[index1] = MagicList[index2];
                 MagicList[index2] = temp;
-                GuiManager.UpdateMagicView();
             }
         }
 
-        public static Magic GetMagic(int index)
+        public static Magic Get(int index)
         {
-            return (MagicIndexInRange(index) && MagicList[index] != null) ?
-                MagicList[index].TheMagic :
+            var itemInfo = GetItemInfo(index);
+            return (itemInfo != null) ?
+                itemInfo.TheMagic :
                 null;
         }
 
-        public static MagicItemInfo GetMagicItemInfo(int index)
+        public static Texture GetTexture(int index)
         {
-            return MagicIndexInRange(index) ? MagicList[index] : null;
+            var magic = Get(index);
+            if (magic != null)
+            {
+                if(index >= 40 && index <= 44)
+                    return new Texture(magic.Icon);
+                else
+                    return new Texture(magic.Image);
+            }
+            return null;
+        }
+
+        public static Asf GetImage(int index)
+        {
+            var magic = Get(index);
+            if (magic != null)
+                return magic.Image;
+            return null;
+        }
+
+        public static Asf GetIcon(int index)
+        {
+            var magic = Get(index);
+            if (magic != null)
+                return magic.Icon;
+            return null;
+        }
+
+        public static MagicItemInfo GetItemInfo(int index)
+        {
+            return IndexInRange(index) ? MagicList[index] : null;
         }
 
         public class MagicItemInfo
@@ -83,7 +114,8 @@ namespace Engine.Gui
 
             public MagicItemInfo(string iniFile, int level, int exp)
             {
-                TheMagic = Utils.GetMagic(iniFile).GetLevel(level);
+                var magic = Utils.GetMagic(iniFile);
+                if(magic != null)TheMagic = magic.GetLevel(level);
                 Level = level;
                 Exp = exp;
             }

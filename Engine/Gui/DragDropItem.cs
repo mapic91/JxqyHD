@@ -22,10 +22,11 @@ namespace Engine.Gui
             Data = data;
             MouseLeftDown += delegate(object arg1, MouseLeftDownEvent arg2)
             {
+                GuiManager.DragDropSourceItem = this;
+                GuiManager.IsDropped = false;
+                IsShow = false;
                 if (Drag != null)
                 {
-                    GuiManager.DragDropSourceItem = this;
-                    GuiManager.IsDropped = false;
                     Drag(this, new DragEvent(arg2.MouseScreenPosition));
                 }
             };
@@ -41,18 +42,6 @@ namespace Engine.Gui
                 GuiManager.IsDropped = true;
             };
         }
-
-        //public override void Update(GameTime gameTime)
-        //{
-        //    if (!IsShow) return;
-        //    base.Update(gameTime);     
-        //}
-
-        //public override void Draw(SpriteBatch spriteBatch)
-        //{
-        //    if (!IsShow) return;
-        //    base.Draw(spriteBatch);
-        //}
 
         public abstract class DragDropEvent : EventArgs
         {

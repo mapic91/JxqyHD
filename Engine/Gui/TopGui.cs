@@ -15,17 +15,43 @@ namespace Engine.Gui
             InitializeItems();
         }
 
+        private void RegisterClickHandler()
+        {
+            _buttons[0].Click += (arg1, arg2) =>
+            {
+
+            };
+            _buttons[1].Click += (arg1, arg2) =>
+            {
+
+            };
+            _buttons[2].Click += (arg1, arg2) =>
+            {
+
+            };
+            _buttons[3].Click += (arg1, arg2) => GuiManager.ToggleGoodsGuiShow();
+            _buttons[4].Click += (arg1, arg2) => GuiManager.ToggleMagicGuiShow();
+            _buttons[5].Click += (arg1, arg2) =>
+            {
+
+            };
+            _buttons[6].Click += (arg1, arg2) =>
+            {
+
+            };
+        }
+
         private void InitializeItems()
         {
             string[] paths =
             {
-                @"asf\ui\top\BtnState.asf",
-                @"asf\ui\top\BtnEquip.asf",
-                @"asf\ui\top\BtnXiuLian.asf",
-                @"asf\ui\top\BtnGoods.asf",
-                @"asf\ui\top\BtnMagic.asf",
-                @"asf\ui\top\BtnNotes.asf",
-                @"asf\ui\top\BtnOption.asf"
+                @"asf\ui\top\BtnState.asf", //0
+                @"asf\ui\top\BtnEquip.asf", //1
+                @"asf\ui\top\BtnXiuLian.asf", //2
+                @"asf\ui\top\BtnGoods.asf", //3
+                @"asf\ui\top\BtnMagic.asf", //4
+                @"asf\ui\top\BtnNotes.asf", //5
+                @"asf\ui\top\BtnOption.asf" //6
             };
             Vector2[] position =
             {
@@ -53,6 +79,7 @@ namespace Engine.Gui
                 null,
                 clickedSound);
             }
+            RegisterClickHandler();
         }
 
         public override void Update(GameTime gameTime)

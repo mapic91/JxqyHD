@@ -30,33 +30,37 @@ namespace Engine.Gui
             _items[6] = new DragDropItem(this, new Vector2(316, 20), 30, 40, null);
             _items[7] = new DragDropItem(this, new Vector2(354, 20), 30, 40, null);
 
+            for (var i = 0; i < 3; i++)
+            {
+                _items[i].Drag += (arg1, arg2) =>
+                {
+
+                };
+                _items[i].Drop += GoodsGui.DropHandler;
+                _items[i].RightClick += (arg1, arg2) =>
+                {
+
+                };
+            }
+
             for (var i = 3; i < 8; i++)
             {
                 _items[i].Drag += (arg1, arg2) =>
                 {
-                    var item = (DragDropItem) arg1;
-                    item.BaseTexture = null;
+
                 };
-                _items[i].Drop += (object arg1, DragDropItem.DropEvent arg2) =>
-                {
-                    var data = (MagicGui.MagicItemData) (((DragDropItem) arg1).Data);
-                    var sourceData = arg2.Source.Data;
-                    if (sourceData is MagicGui.MagicItemData)
-                    {
-                        var magicItemData = (MagicGui.MagicItemData) sourceData;
-                        MagicListManager.ExchangeMagicListItem(data.Index, magicItemData.Index);
-                    }
-                };
+                _items[i].Drop += MagicGui.DropHandler;
                 _items[i].RightClick += (arg1, arg2) =>
                 {
-                    var data = (MagicGui.MagicItemData) (((DragDropItem) arg1).Data);
-                    var info = MagicListManager.GetMagicItemInfo(data.Index);
+                    var data = (MagicGui.MagicItemData)(((DragDropItem)arg1).Data);
+                    var info = MagicListManager.GetItemInfo(data.Index);
                     if (info != null)
                     {
                         Globals.ThePlayer.CurrentMagicInUse = info;
                     }
                 };
             }
+
         }
 
         public int ToMagicListIndex(int itemIndex)
@@ -83,9 +87,20 @@ namespace Engine.Gui
             for (var i = 3; i < 8; i++)
             {
                 var index = ToMagicListIndex(i);
-                var magic = MagicListManager.GetMagic(index);
-                var image = magic == null ? null : magic.Icon;
-                SetItem(i, new Texture(image), new MagicGui.MagicItemData(index));
+                var magic = MagicListManager.Get(index);
+                var icon = magic == null ? null : magic.Icon;
+                SetItem(i, new Texture(icon), new MagicGui.MagicItemData(index));
+            }
+        }
+
+        public void UpdateGoodsItems()
+        {
+            for (var i = 0; i < 3; i++)
+            {
+                var index = ToGoodsListIndex(i);
+                var good = GoodsListManager.Get(index);
+                var icon = good == null ? null : good.Icon;
+                SetItem(i, new Texture(icon), new GoodsGui.GoodItemData(index));
             }
         }
 
