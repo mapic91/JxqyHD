@@ -207,8 +207,6 @@ namespace Engine
 
         #endregion
 
-        public Magic() { }
-
         //noAttackFile - resolve recursive problem of AttackFile
         public Magic(string filePath, bool noLevel = false, bool noAttackFile = false)
         {

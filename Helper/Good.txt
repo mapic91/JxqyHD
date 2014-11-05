@@ -1,0 +1,52 @@
+Name 名称
+
+Kind 类型
+0-药品
+1-装备
+2-事件物品
+
+Cost 价格
+值为0：Kind为0，1-自动计算，Kind为3-当前值
+大于0，当前价格
+
+Intro 介绍
+
+Effect 可忽略
+
+Image 图像
+
+Icon 图标
+
+Life 增加生命
+
+Thew 增加体力
+
+Mana 增加内力
+
+Part 装备位置
+Body-身体
+Foot-脚
+Head-头
+Neck-脖子
+Back-背
+Wrist-护腕
+Hand-手
+
+LifeMax 增加生命上限
+
+ThewMax 增加体力上限
+
+ManaMax 增加内力上限
+
+Attack 增加攻击力
+
+Defend 增加防御力
+
+Evade 增加身法
+
+EffectType
+1-不降体力(Foot),不断回复内力(Neck),冰冻敌人(Hand),解冻(Kind=0)
+2-使敌人中毒(Hand),解毒(Kind=0)
+3-使敌人石化(Hand),解石化(Kind=0)
+
+Script 使用物品时运行的脚本,在script\goods文件夹
