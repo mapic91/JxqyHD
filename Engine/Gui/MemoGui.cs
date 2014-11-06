@@ -27,7 +27,7 @@ namespace Engine.Gui
                 1,
                 1,
                 "",
-                new Color(40, 25, 15));
+                new Color(40, 25, 15)*0.8f);
 
             var slideTexture = Utils.GetAsf(@"asf\ui\option\slidebtn.asf");
             var slideBaseTexture = new Texture(slideTexture);
