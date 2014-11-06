@@ -75,7 +75,6 @@ namespace Engine.Gui
                     }
                     GuiManager.IsDropped = true;
                 }
-
             };
         }
 

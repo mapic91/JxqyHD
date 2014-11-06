@@ -85,9 +85,11 @@
     <Compile Include="Gui\MemoGui.cs" />
     <Compile Include="Gui\MemoListManager.cs" />
     <Compile Include="Gui\ScrollBar.cs" />
+    <Compile Include="Gui\StateGui.cs" />
     <Compile Include="Gui\TextGui.cs" />
     <Compile Include="Gui\Texture.cs" />
     <Compile Include="Gui\TopGui.cs" />
+    <Compile Include="Gui\XiuLianGui.cs" />
     <Compile Include="IMoveControlInWorld.cs" />
     <Compile Include="InfoDrawer.cs" />
     <Compile Include="IScreen.cs" />

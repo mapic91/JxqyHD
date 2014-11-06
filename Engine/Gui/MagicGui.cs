@@ -8,7 +8,7 @@ namespace Engine.Gui
     {
         private ListView _listView;
 
-        public static Action<object, DragDropItem.DropEvent> DropHandler = (object arg1, DragDropItem.DropEvent arg2) =>
+        public static void DropHandler(object arg1, DragDropItem.DropEvent arg2)
         {
             var item = (DragDropItem) arg1;
             var sourceItem = arg2.Source;
@@ -20,7 +20,7 @@ namespace Engine.Gui
                 item.BaseTexture = MagicListManager.GetTexture(data.Index);
                 sourceItem.BaseTexture = MagicListManager.GetTexture(sourceData.Index);
             }
-        };
+        }
 
         public bool IsShow { set; get; }
 

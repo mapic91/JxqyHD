@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using IniParser;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Engine.Gui
@@ -10,21 +11,31 @@ namespace Engine.Gui
     public static class GuiManager
     {
         private static MagicGui MagicInterface;
+        private static XiuLianGui XiuLianInterface;
         private static GoodsGui GoodsInterface;
         private static MemoGui MemoInterface;
+        private static StateGui StateInterface;
         private static BottomGui BottomInterface;
         private static TopGui TopInterface;
+        private static SoundEffect _dropSound;
+        private static SoundEffect _interfaceShow;
+        private static SoundEffect _interfaceMiss;
         public static bool IsMouseStateEated;
         public static DragDropItem DragDropSourceItem;
         public static bool IsDropped;
 
         public static void Starting()
         {
+            _dropSound = Utils.GetSoundEffect("界-拖放.wav");
+            _interfaceShow = Utils.GetSoundEffect("界-弹出菜单.wav");
+            _interfaceMiss = Utils.GetSoundEffect("界-缩回菜单.wav");
             TopInterface = new TopGui();
             BottomInterface = new BottomGui();
             MagicInterface = new MagicGui();
+            XiuLianInterface = new XiuLianGui();
             GoodsInterface = new GoodsGui();
             MemoInterface = new MemoGui();
+            StateInterface = new StateGui();
             MagicListManager.RenewList();
             GoodsListManager.RenewList();
         }
@@ -36,8 +47,15 @@ namespace Engine.Gui
             MemoListManager.LoadList(memoListPath);
         }
 
+        public static void PlayInterfaceShowMissSound(bool isShow)
+        {
+            if (isShow) _interfaceMiss.Play();
+            else _interfaceShow.Play();
+        }
+
         public static void ToggleMagicGuiShow()
         {
+            PlayInterfaceShowMissSound(MagicInterface.IsShow);
             if (MagicInterface.IsShow)
                 MagicInterface.IsShow = false;
             else
@@ -50,6 +68,7 @@ namespace Engine.Gui
 
         public static void ToggleGoodsGuiShow()
         {
+            PlayInterfaceShowMissSound(GoodsInterface.IsShow);
             if (GoodsInterface.IsShow)
                 GoodsInterface.IsShow = false;
             else
@@ -62,6 +81,7 @@ namespace Engine.Gui
 
         public static void ToggleMemoGuiShow()
         {
+            PlayInterfaceShowMissSound(MemoInterface.IsShow);
             if (MemoInterface.IsShow)
                 MemoInterface.IsShow = false;
             else
@@ -72,10 +92,35 @@ namespace Engine.Gui
             }
         }
 
+        public static void ToggleXiuLianGuiShow()
+        {
+            PlayInterfaceShowMissSound(XiuLianInterface.IsShow);
+            if (XiuLianInterface.IsShow)
+                XiuLianInterface.IsShow = false;
+            else
+            {
+                XiuLianInterface.IsShow = true;
+                StateInterface.IsShow = false;
+            }
+        }
+
+        public static void ToggleStateGuiShow()
+        {
+            PlayInterfaceShowMissSound(StateInterface.IsShow);
+            if (StateInterface.IsShow)
+                StateInterface.IsShow = false;
+            else
+            {
+                StateInterface.IsShow = true;
+                XiuLianInterface.IsShow = false;
+            }
+        }
+
         public static void UpdateMagicView()
         {
             MagicInterface.UpdateItems();
             BottomInterface.UpdateMagicItems();
+            XiuLianInterface.UpdateItem();
         }
 
         public static void UpdateGoodsView()
@@ -95,11 +140,14 @@ namespace Engine.Gui
             TopInterface.Update(gameTime);
             BottomInterface.Update(gameTime);
             MagicInterface.Update(gameTime);
+            XiuLianInterface.Update(gameTime);
             GoodsInterface.Update(gameTime);
             MemoInterface.Update(gameTime);
+            StateInterface.Update(gameTime);
 
             if (IsDropped)
             {
+                _dropSound.Play();
                 IsDropped = false;
                 if(DragDropSourceItem != null)
                     DragDropSourceItem.IsShow = true;
@@ -112,8 +160,10 @@ namespace Engine.Gui
             TopInterface.Draw(spriteBatch);
             BottomInterface.Draw(spriteBatch);
             MagicInterface.Draw(spriteBatch);
+            XiuLianInterface.Draw(spriteBatch);
             GoodsInterface.Draw(spriteBatch);
             MemoInterface.Draw(spriteBatch);
+            StateInterface.Draw(spriteBatch);
         }
     }
 }

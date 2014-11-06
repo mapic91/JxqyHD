@@ -43,8 +43,8 @@ namespace Engine.Gui
             int width,
             int height,
             SpriteFont font,
-            int extureCharecterSpace,
-            int extureLineSpace,
+            int extraCharecterSpace,
+            int extraLineSpace,
             string text,
             Color defaultColor)
         {
@@ -53,8 +53,8 @@ namespace Engine.Gui
                 width, 
                 height, 
                 font, 
-                extureCharecterSpace, 
-                extureLineSpace, 
+                extraCharecterSpace, 
+                extraLineSpace, 
                 text, 
                 defaultColor);
         }
