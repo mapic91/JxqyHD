@@ -20,10 +20,12 @@ namespace Engine.Gui
                 0f);
 
             _text = new TextGui(this, 
-                new Vector2(95, 155),
+                new Vector2(90, 155),
                 150,
                 180,
-                Globals.FontSize12,
+                Globals.FontSize10,
+                1,
+                1,
                 "",
                 new Color(40, 25, 15));
 

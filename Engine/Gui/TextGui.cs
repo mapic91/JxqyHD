@@ -12,6 +12,8 @@ namespace Engine.Gui
         private int _endIndex;
         private readonly LinkedList<Info> _drawInfo = new LinkedList<Info>(); 
         public SpriteFont Font { set; get; }
+        public int ExtureCharacterSpace { set; get; }
+        public int ExtureLineSpace { set; get; }
 
         public string Text
         {
@@ -33,7 +35,7 @@ namespace Engine.Gui
             SpriteFont font, 
             string text)
         {
-            Init(parent, position, width, height, font, text, Color.Black);
+            Init(parent, position, width, height, font, 0, 0, text, Color.Black);
         }
 
         public TextGui(GuiItem parent,
@@ -41,10 +43,20 @@ namespace Engine.Gui
             int width,
             int height,
             SpriteFont font,
+            int extureCharecterSpace,
+            int extureLineSpace,
             string text,
             Color defaultColor)
         {
-            Init(parent, position, width, height, font, text, defaultColor);
+            Init(parent, 
+                position, 
+                width, 
+                height, 
+                font, 
+                extureCharecterSpace, 
+                extureLineSpace, 
+                text, 
+                defaultColor);
         }
 
         public void Init(GuiItem parent,
@@ -52,6 +64,8 @@ namespace Engine.Gui
             int width,
             int height,
             SpriteFont font,
+            int extureCharecterSpace,
+            int extureLineSpace,
             string text,
             Color defaultColor)
         {
@@ -60,18 +74,30 @@ namespace Engine.Gui
             Width = width;
             Height = height;
             Font = font;
+            ExtureCharacterSpace = extureCharecterSpace;
+            ExtureLineSpace = extureLineSpace;
             DefaultColor = defaultColor;
             Text = text;// must be the last, because it invoke Caculate()
         }
 
-        private bool IsReachRight(float x)
+        private bool IsReachRight(float x, float characterWidth)
         {
-            return x  >= Width;
+            return x + characterWidth + ExtureCharacterSpace > Width;
         }
 
         private bool IsReachBottom(float y)
         {
-            return y + Font.LineSpacing >= Height;
+            return y + Font.LineSpacing + ExtureLineSpace > Height;
+        }
+
+        private void AddWdith(ref float x, float charecterWidth)
+        {
+            x += (charecterWidth + ExtureCharacterSpace);
+        }
+
+        private void AddLinespace(ref float y)
+        {
+            y += (Font.LineSpacing + ExtureLineSpace);
         }
 
         public bool NextPage()
@@ -112,7 +138,7 @@ namespace Engine.Gui
                                 DefaultColor = Color.Black;
                                 break;
                             case "enter":
-                                y += Font.LineSpacing;
+                                AddLinespace(ref y);
                                 x = 0;
                                 if (IsReachBottom(y))
                                 {
@@ -124,7 +150,7 @@ namespace Engine.Gui
                     }
                     else if (drawText == "\n")
                     {
-                        y += Font.LineSpacing;
+                        AddLinespace(ref y);
                         x = 0;
                         if (IsReachBottom(y))
                         {
@@ -135,9 +161,9 @@ namespace Engine.Gui
                     else
                     {
                         var stringWidth = Font.MeasureString(drawText).X;
-                        if (IsReachRight(x + stringWidth))
+                        if (IsReachRight(x, stringWidth))
                         {
-                            y += Font.LineSpacing;
+                            AddLinespace(ref y);
                             if (IsReachBottom(y))
                                 return true;
                             x = 0f;
@@ -146,7 +172,7 @@ namespace Engine.Gui
                             drawText,
                             ScreenPosition + new Vector2(x, y),
                             DefaultColor));
-                        x += stringWidth;
+                        AddWdith(ref x, stringWidth);
                     }
                     _endIndex++;
                 }

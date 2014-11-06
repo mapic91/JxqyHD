@@ -24,6 +24,8 @@ namespace Engine.Gui
                     Width,
                     Height,
                     Globals.FontSize7,
+                    0,
+                    0,
                     value,
                     new Color(167, 157, 255)*0.8f);
                 }
