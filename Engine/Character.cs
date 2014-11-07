@@ -186,7 +186,11 @@ namespace Engine
         public int Life
         {
             get { return _life; }
-            set { _life = value < 0 ? 0 : value; }
+            set
+            {
+                _life = value < 0 ? 0 : value;
+                if (_life > _lifeMax) _life = _lifeMax;
+            }
         }
 
         public int Level
@@ -204,7 +208,11 @@ namespace Engine
         public int Thew
         {
             get { return _thew; }
-            set { _thew = value < 0 ? 0 : value; }
+            set
+            {
+                _thew = value < 0 ? 0 : value;
+                if (_thew > _thewMax) _thew = _thewMax;
+            }
         }
 
         public int ThewMax
@@ -216,7 +224,11 @@ namespace Engine
         public int Mana
         {
             get { return _mana; }
-            set { _mana = value < 0 ? 0 : value; }
+            set
+            {
+                _mana = value < 0 ? 0 : value;
+                if (_mana > _manaMax) _mana = _manaMax;
+            }
         }
 
         public int ManaMax
@@ -403,6 +415,15 @@ namespace Engine
                     case "FlyIni":
                     case "FlyIni2":
                         info.SetValue(this, Utils.GetMagic(nameValue[1]), null);
+                        break;
+                    case "Life":
+                        _life = int.Parse(nameValue[1]);
+                        break;
+                    case "Thew":
+                        _thew = int.Parse(nameValue[1]);
+                        break;
+                    case "Mana":
+                        _mana = int.Parse(nameValue[1]);
                         break;
                     default:
                         {
@@ -680,7 +701,10 @@ namespace Engine
                 destinationTilePosition != TilePosition)
             {
                 if (IsWalking())
+                {
                     DestinationMoveTilePosition = destinationTilePosition;
+                    ClearAttackingTarget();
+                }
                 else
                 {
                     StateInitialize();

@@ -10,6 +10,25 @@ namespace Engine.Gui
 
         public static void DropHandler(object arg1, DragDropItem.DropEvent arg2)
         {
+            var item = (DragDropItem)arg1;
+            var sourceItem = arg2.Source;
+            var data = item.Data as GoodItemData;
+            var sourceData = sourceItem.Data as GoodItemData;
+            if (data != null && sourceData != null)
+            {
+                if (GoodsListManager.EquipIndexInRange(sourceData.Index))
+                {
+                    var info = GoodsListManager.GetItemInfo(data.Index);
+                    var sourceGood = GoodsListManager.Get(sourceData.Index);
+                    if (sourceGood == null ||
+                        (info != null && info.TheGood == null) ||
+                        (info != null && info.TheGood.Part != sourceGood.Part))
+                    {
+                        return;
+                    }
+                }
+            }
+
             int index, sourceIndex;
             ExchangeItem(arg1, arg2, out index, out sourceIndex);
         }

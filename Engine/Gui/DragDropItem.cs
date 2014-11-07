@@ -56,6 +56,7 @@ namespace Engine.Gui
             MouseLeftDown += delegate(object arg1, MouseLeftDownEvent arg2)
             {
                 GuiManager.DragDropSourceItem = this;
+                GuiManager.DragDropSourceTexture = this.BaseTexture;
                 GuiManager.IsDropped = false;
                 IsShow = false;
                 if (Drag != null)

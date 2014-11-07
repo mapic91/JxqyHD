@@ -11,6 +11,12 @@ namespace Engine.Gui
         private int _frameEnd;
         private Asf _texture;
 
+        public Asf Data
+        {
+            get { return _texture; }
+            set { _texture = value; }
+        }
+
         public int CurrentFrameIndex
         {
             get { return _currentFrameIndex; }

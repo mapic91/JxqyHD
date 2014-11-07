@@ -25,6 +25,7 @@ namespace Engine.Gui
 
         public static bool IsMouseStateEated;
         public static DragDropItem DragDropSourceItem;
+        public static Texture DragDropSourceTexture;
         public static bool IsDropped;
 
         public static void Starting()
@@ -168,11 +169,18 @@ namespace Engine.Gui
 
             if (IsDropped)
             {
-                _dropSound.Play();
                 IsDropped = false;
-                if(DragDropSourceItem != null)
-                    DragDropSourceItem.IsShow = true;
+                if (DragDropSourceItem != null)
+                {
+                    DragDropSourceItem.IsShow = true;             
+                }
+                if (DragDropSourceTexture != null &&
+                    DragDropSourceTexture.Data != null)
+                {
+                    _dropSound.Play();
+                }
                 DragDropSourceItem = null;
+                DragDropSourceTexture = null;
             }
         }
 
