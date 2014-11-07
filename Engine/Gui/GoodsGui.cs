@@ -33,6 +33,29 @@ namespace Engine.Gui
             ExchangeItem(arg1, arg2, out index, out sourceIndex);
         }
 
+        public static void RightClickHandler(object arg1, GuiItem.MouseRightClickEvent arg2)
+        {
+            var theItem = (DragDropItem)arg1;
+            var data = theItem.Data as GoodItemData;
+            if (data != null)
+            {
+                var good = GoodsListManager.Get(data.Index);
+                if (good != null)
+                {
+                    switch (good.Kind)
+                    {
+                        case Good.GoodKind.Drug:
+                        case Good.GoodKind.Event:
+                            GoodsListManager.UsingGood(data.Index);
+                            break;
+                        case Good.GoodKind.Equipment:
+                            GuiManager.EquipInterface.EquipStoreGood(data.Index);
+                            break;
+                    }
+                }
+            }
+        }
+
         public static bool ExchangeItem(object arg1, DragDropItem.DropEvent arg2, 
             out int index, out int sourceIndex)
         {
@@ -81,28 +104,7 @@ namespace Engine.Gui
                 
             });
             _listView.RegisterItemDropHandler(DropHandler);
-            _listView.RegisterItemMouseRightClickeHandler((arg1, arg2) =>
-            {
-                var theItem = (DragDropItem)arg1;
-                var data = theItem.Data as GoodItemData;
-                if (data != null)
-                {
-                    var good = GoodsListManager.Get(data.Index);
-                    if (good != null)
-                    {
-                        switch (good.Kind)
-                        {
-                            case Good.GoodKind.Drug:
-                            case Good.GoodKind.Event:
-                                GoodsListManager.UsingGood(data.Index);
-                                break;
-                            case Good.GoodKind.Equipment:
-                                GuiManager.EquipInterface.EquipStoreGood(data.Index);
-                                break;
-                        }
-                    }
-                }
-            });
+            _listView.RegisterItemMouseRightClickeHandler(RightClickHandler);
         }
 
         public bool IsItemShow(int listIndex, out int index)

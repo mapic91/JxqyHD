@@ -6,15 +6,17 @@ namespace Engine.Gui
 {
     public static class GoodsListManager
     {
-        private const int MaxGoods = 223;
-        private const int ListIndexBegin = 1;
-        private const int ListIndexEnd = 223;
-        private const int StoreIndexBegin = 1;
-        private const int StoreIndexEnd = 198;
-        private const int EquipIndexBegin = 201;
-        private const int EquipIndexEnd = 207;
-        private const int BottomIndexBegin = 221;
-        private const int BottomIndexEnd = 223;
+        public const int MaxGoods = 223;
+        public const int ListIndexBegin = 1;
+        public const int ListIndexEnd = 223;
+        public const int StoreIndexBegin = 1;
+        public const int StoreIndexEnd = 198;
+        public const int BottomGoodsIndexBegin = 221;
+        public const int BottomGoodsIndexEnd = 223;
+        public const int EquipIndexBegin = 201;
+        public const int EquipIndexEnd = 207;
+        public const int BottomIndexBegin = 221;
+        public const int BottomIndexEnd = 223;
         private static readonly GoodsItemInfo[] GoodsList = new GoodsItemInfo[MaxGoods + 1];
 
         public static void RenewList()
@@ -35,9 +37,14 @@ namespace Engine.Gui
             return (index >= EquipIndexBegin && index <= EquipIndexEnd);
         }
 
-        public static bool StoreIndexInRange(int index)
+        public static bool IndexInStoreRange(int index)
         {
             return (index >= StoreIndexBegin && index <= StoreIndexEnd);
+        }
+
+        public static bool IndexInBottomGoodsRange(int index)
+        {
+            return (index >= BottomGoodsIndexBegin && index <= BottomGoodsIndexEnd);
         }
 
         public static void LoadList(string filePath)
@@ -186,14 +193,14 @@ namespace Engine.Gui
             {
                 if (good.Kind == Good.GoodKind.Drug)
                 {
-                    if (Globals.ThePlayer.UseDrag(good))
+                    if (Globals.ThePlayer.UseDrug(good))
                     {
                         
                         if (info.Count == 1)
                             GoodsList[goodIndex] = null;
                         else
                             info.Count -= 1;
-                        GuiManager.GoodsInterface.UpdateListItem(goodIndex);
+                        GuiManager.UpdateGoodItemView(goodIndex);
                         return true;
                     }
                 }

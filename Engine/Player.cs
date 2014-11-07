@@ -126,7 +126,7 @@ namespace Engine
             }
         }
 
-        public bool UseDrag(Good drug)
+        public bool UseDrug(Good drug)
         {
             if (drug != null)
             {

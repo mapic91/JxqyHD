@@ -19,6 +19,8 @@ namespace Engine.Gui
         public static BottomGui BottomInterface;
         public static TopGui TopInterface;
 
+        public static MouseGui MouseInterface;
+
         private static SoundEffect _dropSound;
         private static SoundEffect _interfaceShow;
         private static SoundEffect _interfaceMiss;
@@ -41,6 +43,9 @@ namespace Engine.Gui
             MemoInterface = new MemoGui();
             StateInterface = new StateGui();
             EquipInterface = new EquipGui();
+
+            MouseInterface = new MouseGui();
+
             MagicListManager.RenewList();
             GoodsListManager.RenewList();
         }
@@ -150,6 +155,18 @@ namespace Engine.Gui
             EquipInterface.UpdateItems();
         }
 
+        public static void UpdateGoodItemView(int listIndex)
+        {
+            if (GoodsListManager.IndexInStoreRange(listIndex))
+            {
+                GoodsInterface.UpdateListItem(listIndex);
+            }
+            else if (GoodsListManager.IndexInBottomGoodsRange(listIndex))
+            {
+                BottomInterface.UpdateGoodItem(listIndex);
+            }
+        }
+
         public static void UpdateMemoView()
         {
             MemoInterface.UpdateTextShow();
@@ -166,6 +183,8 @@ namespace Engine.Gui
             MemoInterface.Update(gameTime);
             StateInterface.Update(gameTime);
             EquipInterface.Update(gameTime);
+
+            MouseInterface.Update(gameTime);
 
             if (IsDropped)
             {
@@ -194,6 +213,8 @@ namespace Engine.Gui
             MemoInterface.Draw(spriteBatch);
             StateInterface.Draw(spriteBatch);
             EquipInterface.Draw(spriteBatch);
+
+            MouseInterface.Draw(spriteBatch);
         }
     }
 }

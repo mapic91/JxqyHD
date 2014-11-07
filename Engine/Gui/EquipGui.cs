@@ -172,7 +172,7 @@ namespace Engine.Gui
                         {
                             theItem.BaseTexture = null;
                             theItem.TopLeftText = "";
-                            GuiManager.GoodsInterface.UpdateListItem(newIndex);
+                            GuiManager.UpdateGoodItemView(newIndex);
                         }
                     }
                 };
@@ -197,7 +197,8 @@ namespace Engine.Gui
 
         public bool EquipStoreGood(int goodListIndex)
         {
-            if (GoodsListManager.StoreIndexInRange(goodListIndex))
+            if (GoodsListManager.IndexInStoreRange(goodListIndex) ||
+                GoodsListManager.IndexInBottomGoodsRange(goodListIndex))
             {
                 var info = GoodsListManager.GetItemInfo(goodListIndex);
                 if (info == null) return false;
@@ -243,7 +244,7 @@ namespace Engine.Gui
                     GoodsListManager.ExchangeListItemAndEquiping(goodListIndex, index);
                     item.BaseTexture = new Texture(good.Image);
                     item.TopLeftText = info.Count.ToString();
-                    GuiManager.GoodsInterface.UpdateListItem(goodListIndex);
+                    GuiManager.UpdateGoodItemView(goodListIndex);
                     return true;
                 }
             }

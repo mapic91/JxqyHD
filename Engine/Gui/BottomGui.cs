@@ -21,14 +21,14 @@ namespace Engine.Gui
 
         private void InitializeItems()
         {
-            _items[0] = new DragDropItem(this, new Vector2(7, 20), 30, 40, null);
-            _items[1] = new DragDropItem(this, new Vector2(44, 20), 30, 40, null);
-            _items[2] = new DragDropItem(this, new Vector2(82, 20), 30, 40, null);
-            _items[3] = new DragDropItem(this, new Vector2(199, 20), 30, 40, null);
-            _items[4] = new DragDropItem(this, new Vector2(238, 20), 30, 40, null);
-            _items[5] = new DragDropItem(this, new Vector2(277, 20), 30, 40, null);
-            _items[6] = new DragDropItem(this, new Vector2(316, 20), 30, 40, null);
-            _items[7] = new DragDropItem(this, new Vector2(354, 20), 30, 40, null);
+            _items[0] = new DragDropItem(this, new Vector2(7, 20), 30, 40, null, new GoodsGui.GoodItemData(221));
+            _items[1] = new DragDropItem(this, new Vector2(44, 20), 30, 40, null, new GoodsGui.GoodItemData(222));
+            _items[2] = new DragDropItem(this, new Vector2(82, 20), 30, 40, null, new GoodsGui.GoodItemData(223));
+            _items[3] = new DragDropItem(this, new Vector2(199, 20), 30, 40, null, new MagicGui.MagicItemData(40));
+            _items[4] = new DragDropItem(this, new Vector2(238, 20), 30, 40, null, new MagicGui.MagicItemData(41));
+            _items[5] = new DragDropItem(this, new Vector2(277, 20), 30, 40, null, new MagicGui.MagicItemData(42));
+            _items[6] = new DragDropItem(this, new Vector2(316, 20), 30, 40, null, new MagicGui.MagicItemData(43));
+            _items[7] = new DragDropItem(this, new Vector2(354, 20), 30, 40, null, new MagicGui.MagicItemData(44));
 
             for (var i = 0; i < 3; i++)
             {
@@ -37,10 +37,7 @@ namespace Engine.Gui
 
                 };
                 _items[i].Drop += GoodsGui.DropHandler;
-                _items[i].RightClick += (arg1, arg2) =>
-                {
-
-                };
+                _items[i].RightClick += GoodsGui.RightClickHandler;
             }
 
             for (var i = 3; i < 8; i++)
@@ -60,7 +57,6 @@ namespace Engine.Gui
                     }
                 };
             }
-
         }
 
         public int ToMagicListIndex(int itemIndex)
@@ -73,12 +69,12 @@ namespace Engine.Gui
             return itemIndex + 221;
         }
 
-        public void SetItem(int index, Texture texture, object data)
+        public void SetItem(int index, Texture texture, string topLeftText = "")
         {
             if (index >= 0 && index < 8)
             {
                 _items[index].BaseTexture = texture;
-                _items[index].Data = data;
+                _items[index].TopLeftText = topLeftText;
             }
         }
 
@@ -86,10 +82,7 @@ namespace Engine.Gui
         {
             for (var i = 3; i < 8; i++)
             {
-                var index = ToMagicListIndex(i);
-                var magic = MagicListManager.Get(index);
-                var icon = magic == null ? null : magic.Icon;
-                SetItem(i, new Texture(icon), new MagicGui.MagicItemData(index));
+                UpdateItem(i);
             }
         }
 
@@ -97,10 +90,38 @@ namespace Engine.Gui
         {
             for (var i = 0; i < 3; i++)
             {
-                var index = ToGoodsListIndex(i);
-                var good = GoodsListManager.Get(index);
+                UpdateItem(i);
+            }
+        }
+
+        public void UpdateGoodItem(int listIndex)
+        {
+            UpdateItem(listIndex - GoodsListManager.BottomGoodsIndexBegin);
+        }
+
+        public void UpdateItem(int itemIndex)
+        {
+            if (itemIndex >= 0 && itemIndex < 3)//Goods
+            {
+                var index = ToGoodsListIndex(itemIndex);
+                var info = GoodsListManager.GetItemInfo(index);
+                Good good = null;
+                var text = "";
+                if (info != null)
+                {
+                    good = info.TheGood;
+                    text = info.Count.ToString();
+                }
                 var icon = good == null ? null : good.Icon;
-                SetItem(i, new Texture(icon), new GoodsGui.GoodItemData(index));
+                SetItem(itemIndex, new Texture(icon), text);
+            }
+
+            if (itemIndex >= 3 && itemIndex < 8)//Magic
+            {
+                var index = ToMagicListIndex(itemIndex);
+                var magic = MagicListManager.Get(index);
+                var icon = magic == null ? null : magic.Icon;
+                SetItem(itemIndex, new Texture(icon));
             }
         }
 

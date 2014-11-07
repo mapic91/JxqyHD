@@ -27,7 +27,7 @@ namespace Jxqy
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            this.IsMouseVisible = true;
+            IsMouseVisible = false;
             _graphics.IsFullScreen = false;
         }
 
