@@ -8,7 +8,14 @@ namespace Engine.Gui
     {
         private ListView _listView;
 
-        public static Action<object, DragDropItem.DropEvent> DropHandler = (arg1, arg2) =>
+        public static void DropHandler(object arg1, DragDropItem.DropEvent arg2)
+        {
+            int index, sourceIndex;
+            ExchangeItem(arg1, arg2, out index, out sourceIndex);
+        }
+
+        public static bool ExchangeItem(object arg1, DragDropItem.DropEvent arg2, 
+            out int index, out int sourceIndex)
         {
             var item = (DragDropItem)arg1;
             var sourceItem = arg2.Source;
@@ -19,12 +26,18 @@ namespace Engine.Gui
                 GoodsListManager.ExchangeListItem(data.Index, sourceData.Index);
                 item.BaseTexture = GoodsListManager.GetTexture(data.Index);
                 sourceItem.BaseTexture = GoodsListManager.GetTexture(sourceData.Index);
-                var info = GoodsListManager.GetItemInfo(data.Index);
-                var sourceInfo = GoodsListManager.GetItemInfo(sourceData.Index);
+                index = data.Index;
+                sourceIndex = sourceData.Index;
+                var info = GoodsListManager.GetItemInfo(index);
+                var sourceInfo = GoodsListManager.GetItemInfo(sourceIndex);
                 item.TopLeftText = info != null ? info.Count.ToString() : "";
                 sourceItem.TopLeftText = sourceInfo != null ? sourceInfo.Count.ToString() : "";
+                return true;
             }
-        };
+            index = 0;
+            sourceIndex = 0;
+            return false;
+        }
 
         public bool IsShow { set; get; }
 

@@ -75,6 +75,7 @@
     <Compile Include="Good.cs" />
     <Compile Include="Gui\BottomGui.cs" />
     <Compile Include="Gui\DragDropItem.cs" />
+    <Compile Include="Gui\EquipGui.cs" />
     <Compile Include="Gui\GoodsGui.cs" />
     <Compile Include="Gui\GoodsListManager.cs" />
     <Compile Include="Gui\GuiItem.cs" />

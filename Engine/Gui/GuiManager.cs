@@ -15,6 +15,7 @@ namespace Engine.Gui
         private static GoodsGui GoodsInterface;
         private static MemoGui MemoInterface;
         private static StateGui StateInterface;
+        private static EquipGui EquipInterface;
         private static BottomGui BottomInterface;
         private static TopGui TopInterface;
         private static SoundEffect _dropSound;
@@ -36,6 +37,7 @@ namespace Engine.Gui
             GoodsInterface = new GoodsGui();
             MemoInterface = new MemoGui();
             StateInterface = new StateGui();
+            EquipInterface = new EquipGui();
             MagicListManager.RenewList();
             GoodsListManager.RenewList();
         }
@@ -101,6 +103,7 @@ namespace Engine.Gui
             {
                 XiuLianInterface.IsShow = true;
                 StateInterface.IsShow = false;
+                EquipInterface.IsShow = false;
             }
         }
 
@@ -113,6 +116,20 @@ namespace Engine.Gui
             {
                 StateInterface.IsShow = true;
                 XiuLianInterface.IsShow = false;
+                EquipInterface.IsShow = false;
+            }
+        }
+
+        public static void ToggleEquipGuiShow()
+        {
+            PlayInterfaceShowMissSound(StateInterface.IsShow);
+            if (EquipInterface.IsShow)
+                EquipInterface.IsShow = false;
+            else
+            {
+                EquipInterface.IsShow = true;
+                XiuLianInterface.IsShow = false;
+                StateInterface.IsShow = false;
             }
         }
 
@@ -127,6 +144,7 @@ namespace Engine.Gui
         {
             GoodsInterface.UpdateItems();
             BottomInterface.UpdateGoodsItems();
+            EquipInterface.UpdateItems();
         }
 
         public static void UpdateMemoView()
@@ -144,6 +162,7 @@ namespace Engine.Gui
             GoodsInterface.Update(gameTime);
             MemoInterface.Update(gameTime);
             StateInterface.Update(gameTime);
+            EquipInterface.Update(gameTime);
 
             if (IsDropped)
             {
@@ -164,6 +183,7 @@ namespace Engine.Gui
             GoodsInterface.Draw(spriteBatch);
             MemoInterface.Draw(spriteBatch);
             StateInterface.Draw(spriteBatch);
+            EquipInterface.Draw(spriteBatch);
         }
     }
 }

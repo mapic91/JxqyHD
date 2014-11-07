@@ -18,10 +18,7 @@ namespace Engine.Gui
         private void RegisterClickHandler()
         {
             _buttons[0].Click += (arg1, arg2) => GuiManager.ToggleStateGuiShow();
-            _buttons[1].Click += (arg1, arg2) =>
-            {
-
-            };
+            _buttons[1].Click += (arg1, arg2) => GuiManager.ToggleEquipGuiShow();
             _buttons[2].Click += (arg1, arg2) => GuiManager.ToggleXiuLianGuiShow();
             _buttons[3].Click += (arg1, arg2) => GuiManager.ToggleGoodsGuiShow();
             _buttons[4].Click += (arg1, arg2) => GuiManager.ToggleMagicGuiShow();

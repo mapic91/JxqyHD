@@ -7,11 +7,19 @@ namespace Engine.Gui
     public static class GoodsListManager
     {
         private const int MaxGoods = 223;
-        private static readonly Dictionary<int, GoodsItemInfo> GoodsList = new Dictionary<int, GoodsItemInfo>();
+        private const int ListIndexBegin = 1;
+        private const int ListIndexEnd = 223;
+        private const int StoreIndexBegin = 1;
+        private const int StoreIndexEnd = 198;
+        private const int EquipIndexBegin = 201;
+        private const int EquipIndexEnd = 207;
+        private const int BottomIndexBegin = 221;
+        private const int BottomIndexEnd = 223;
+        private static readonly GoodsItemInfo[] GoodsList = new GoodsItemInfo[MaxGoods + 1];
 
         public static void RenewList()
         {
-            for (var i = 1; i <= MaxGoods; i++)
+            for (var i = ListIndexBegin; i <= ListIndexEnd; i++)
             {
                 GoodsList[i] = null;
             }
@@ -20,6 +28,11 @@ namespace Engine.Gui
         public static bool IndexInRange(int index)
         {
             return (index > 0 && index <= MaxGoods);
+        }
+
+        public static bool EquipIndexInRange(int index)
+        {
+            return (index >= EquipIndexBegin && index <= EquipIndexEnd);
         }
 
         public static void LoadList(string filePath)
@@ -62,6 +75,66 @@ namespace Engine.Gui
             }
         }
 
+        /// <summary>
+        /// If return true, newIndex is the new index
+        /// </summary>
+        /// <param name="equipItemIndex"></param>
+        /// <param name="newIndex"></param>
+        /// <returns></returns>
+        public static bool MoveEquipItemToList(int equipItemIndex, out int newIndex)
+        {
+            if (EquipIndexInRange(equipItemIndex))
+            {
+                var info = GoodsList[equipItemIndex];
+                if (info != null)
+                {
+                    GoodsList[equipItemIndex] = null;
+                    for (var i = StoreIndexBegin; i <= StoreIndexEnd; i++)
+                    {
+                        if (GoodsList[i] == null)
+                        {
+                            GoodsList[i] = info;
+                            newIndex = i;
+                            return true;
+                        }
+                    }
+                }
+            }
+            newIndex = 0;
+            return false;
+        }
+
+        public static bool AddGoodToList(string fileName, out int index)
+        {
+            for(var i = ListIndexBegin; i <= ListIndexEnd; i++)
+            {
+                var info = GoodsList[i];
+                if (info != null && info.TheGood != null)
+                {
+                    if (info.TheGood.FileName == fileName)
+                    {
+                        info.Count += 1;
+                        index = i;
+                        return true;
+                    }
+                }
+            }
+
+            for (var i = StoreIndexBegin; i <= StoreIndexEnd; i++)
+            {
+                var info = GoodsList[i];
+                if (info == null)
+                {
+                    GoodsList[i] = new GoodsItemInfo(fileName, 1);
+                    index = i;
+                    return true;
+                }
+            }
+
+            index = 0;
+            return false;
+        }
+
         public static Good Get(int index)
         {
             var itemInfo = GetItemInfo(index);
@@ -75,7 +148,7 @@ namespace Engine.Gui
             var good = Get(index);
             if (good != null)
             {
-                if (index >= 221 && index <= 223)
+                if (index >= BottomIndexBegin && index <= BottomIndexEnd)
                     return new Texture(good.Icon);
                 else
                     return new Texture(good.Image);
@@ -109,9 +182,9 @@ namespace Engine.Gui
             public Good TheGood;
             public int Count;
 
-            public GoodsItemInfo(string goodFilePath, int count)
+            public GoodsItemInfo(string fileName, int count)
             {
-                var good = Utils.GetGood(goodFilePath);
+                var good = Utils.GetGood(fileName);
                 if(good != null)TheGood = good;
                 Count = count;
             }
