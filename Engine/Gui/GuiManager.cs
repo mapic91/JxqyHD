@@ -17,6 +17,7 @@ namespace Engine.Gui
         public static StateGui StateInterface;
         public static EquipGui EquipInterface;
         public static BottomGui BottomInterface;
+        public static ColumnGui ColumnInterface;
         public static TopGui TopInterface;
         public static ToolTipGui ToolTipInterface;
 
@@ -38,6 +39,7 @@ namespace Engine.Gui
             _interfaceMiss = Utils.GetSoundEffect("界-缩回菜单.wav");
             TopInterface = new TopGui();
             BottomInterface = new BottomGui();
+            ColumnInterface = new ColumnGui();
             MagicInterface = new MagicGui();
             XiuLianInterface = new XiuLianGui();
             GoodsInterface = new GoodsGui();
@@ -179,6 +181,7 @@ namespace Engine.Gui
             IsMouseStateEated = false;
             TopInterface.Update(gameTime);
             BottomInterface.Update(gameTime);
+            ColumnInterface.Update(gameTime);
             MagicInterface.Update(gameTime);
             XiuLianInterface.Update(gameTime);
             GoodsInterface.Update(gameTime);
@@ -210,6 +213,7 @@ namespace Engine.Gui
         {
             TopInterface.Draw(spriteBatch);
             BottomInterface.Draw(spriteBatch);
+            ColumnInterface.Draw(spriteBatch);
             MagicInterface.Draw(spriteBatch);
             XiuLianInterface.Draw(spriteBatch);
             GoodsInterface.Draw(spriteBatch);

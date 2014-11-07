@@ -40,6 +40,16 @@ namespace Engine.Gui
             }
         }
 
+        public Texture2D CurrentTexture
+        {
+            get
+            {
+                if (_texture != null)
+                    return _texture.GetFrame(CurrentFrameIndex);
+                else return null;
+            }
+        }
+
         public int Width
         {
             get { return (_texture == null) ? 0 : _texture.Width; }

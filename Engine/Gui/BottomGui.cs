@@ -13,7 +13,7 @@ namespace Engine.Gui
             Width = BaseTexture.Width;
             Height = BaseTexture.Height;
             Position = new Vector2(
-                Globals.WindowWidth - BaseTexture.Width,
+                (Globals.WindowWidth - BaseTexture.Width)/2f + 102,
                 Globals.WindowHeight - BaseTexture.Height);
 
             InitializeItems();

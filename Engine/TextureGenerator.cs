@@ -8,18 +8,36 @@ namespace Engine
 {
     public static class TextureGenerator
     {
-        //texture2D is unchanged
-        public static Texture2D MakeTransparent(Texture2D texture2D, float transparent)
+        //sourceTexture is unchanged
+        public static Texture2D MakeTransparent(Texture2D sourceTexture, float transparent)
         {
-            if (texture2D == null) return null;
-            var trans = (byte)(transparent * 255);
-            int width = texture2D.Width, height = texture2D.Height;
+            if (sourceTexture == null) return null;
+            int width = sourceTexture.Width, height = sourceTexture.Height;
             var data = new Color[width * height];
-            texture2D.GetData(data);
-            var tex = new Texture2D(texture2D.GraphicsDevice, width, height);
+            sourceTexture.GetData(data);
+            var tex = new Texture2D(sourceTexture.GraphicsDevice, width, height);
             for (var idx = 0; idx < width * height; idx++)
             {
-                data[idx].A = trans;
+                data[idx] *= transparent;
+            }
+            tex.SetData(data);
+            return tex;
+        }
+
+        public static Texture2D MakeTransparentFromTop(Texture2D sourceTexture, float opaquePercentFromBottom)
+        {
+            if (sourceTexture == null) return null;
+            int width = sourceTexture.Width, height = sourceTexture.Height;
+            var data = new Color[width * height];
+            sourceTexture.GetData(data);
+            var tex = new Texture2D(sourceTexture.GraphicsDevice, width, height);
+            var transHeight = sourceTexture.Height*(1 - opaquePercentFromBottom);
+            for (var w = 0; w < width; w++)
+            {
+                for (var h = 0; h < transHeight; h++)
+                {
+                    data[h*width + w] *= 0;
+                }
             }
             tex.SetData(data);
             return tex;
