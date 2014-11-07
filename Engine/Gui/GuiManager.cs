@@ -10,17 +10,19 @@ namespace Engine.Gui
 {
     public static class GuiManager
     {
-        private static MagicGui MagicInterface;
-        private static XiuLianGui XiuLianInterface;
-        private static GoodsGui GoodsInterface;
-        private static MemoGui MemoInterface;
-        private static StateGui StateInterface;
-        private static EquipGui EquipInterface;
-        private static BottomGui BottomInterface;
-        private static TopGui TopInterface;
+        public static MagicGui MagicInterface;
+        public static XiuLianGui XiuLianInterface;
+        public static GoodsGui GoodsInterface;
+        public static MemoGui MemoInterface;
+        public static StateGui StateInterface;
+        public static EquipGui EquipInterface;
+        public static BottomGui BottomInterface;
+        public static TopGui TopInterface;
+
         private static SoundEffect _dropSound;
         private static SoundEffect _interfaceShow;
         private static SoundEffect _interfaceMiss;
+
         public static bool IsMouseStateEated;
         public static DragDropItem DragDropSourceItem;
         public static bool IsDropped;

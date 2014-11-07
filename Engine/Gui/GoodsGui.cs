@@ -23,7 +23,7 @@ namespace Engine.Gui
             var sourceData = sourceItem.Data as GoodItemData;
             if (data != null && sourceData != null)
             {
-                GoodsListManager.ExchangeListItem(data.Index, sourceData.Index);
+                GoodsListManager.ExchangeListItemAndEquiping(data.Index, sourceData.Index);
                 item.BaseTexture = GoodsListManager.GetTexture(data.Index);
                 sourceItem.BaseTexture = GoodsListManager.GetTexture(sourceData.Index);
                 index = data.Index;
@@ -62,6 +62,33 @@ namespace Engine.Gui
                 
             });
             _listView.RegisterItemDropHandler(DropHandler);
+            _listView.RegisterItemMouseRightClickeHandler((arg1, arg2) =>
+            {
+                var theItem = (DragDropItem)arg1;
+                var data = theItem.Data as GoodItemData;
+                if (data != null)
+                {
+                    var good = GoodsListManager.Get(data.Index);
+                    if (good != null)
+                    {
+                        switch (good.Kind)
+                        {
+                            case Good.GoodKind.Drug:
+                            case Good.GoodKind.Event:
+                                GoodsListManager.UsingGood(data.Index);
+                                break;
+                            case Good.GoodKind.Equipment:
+                                GuiManager.EquipInterface.EquipStoreGood(data.Index);
+                                break;
+                        }
+                    }
+                }
+            });
+        }
+
+        public bool IsItemShow(int listIndex, out int index)
+        {
+            return _listView.IsItemShow(listIndex, out index);
         }
 
         public void UpdateItems()
@@ -75,6 +102,18 @@ namespace Engine.Gui
                 var image = (good == null ? null : good.Image);
                 _listView.SetListItem(i, new Texture(image), new GoodItemData(index));
                 _listView.SetItemTopLeftText(i, info != null ? info.Count.ToString() : "");
+            }
+        }
+
+        public void UpdateListItem(int listIndex)
+        {
+            int itemIndex;
+            if (IsItemShow(listIndex, out itemIndex))
+            {
+                _listView.SetListItemTexture(itemIndex,
+                    GoodsListManager.GetTexture(listIndex));
+                var info = GoodsListManager.GetItemInfo(listIndex);
+                _listView.SetItemTopLeftText(itemIndex, info != null ? info.Count.ToString() : "");
             }
         }
 

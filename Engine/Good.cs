@@ -204,6 +204,11 @@ namespace Engine
             return true;
         }
 
+        public static bool CanEquip(Good good, Good.EquipPosition position)
+        {
+            return good != null && good.Part == position;
+        }
+
         #region Enum
          public enum GoodKind
          {

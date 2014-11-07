@@ -99,6 +99,45 @@ namespace Engine
             SoundManager.PlaySoundEffectOnce(soundEffect);
         }
 
+        public void Equiping(Good equip, Good currentEquip)
+        {
+            UnEquiping(currentEquip);
+            if (equip != null)
+            {
+                Attack += equip.Attack;
+                Defend += equip.Defend;
+                Evade += equip.Evade;
+                LifeMax += equip.LifeMax;
+                ThewMax += equip.ThewMax;
+                ManaMax += equip.ManaMax;
+            }
+        }
+
+        public void UnEquiping(Good equip)
+        {
+            if (equip != null)
+            {
+                Attack -= equip.Attack;
+                Defend -= equip.Defend;
+                Evade -= equip.Evade;
+                LifeMax -= equip.LifeMax;
+                ThewMax -= equip.ThewMax;
+                ManaMax -= equip.ManaMax;
+            }
+        }
+
+        public bool UseDrag(Good drug)
+        {
+            if (drug != null)
+            {
+                Life += drug.Life;
+                Thew += drug.Thew;
+                Mana += drug.Mana;
+                return true;
+            }
+            return false;
+        }
+
         public override void Update(GameTime gameTime)
         {
             var mouseState = Mouse.GetState();

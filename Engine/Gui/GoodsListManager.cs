@@ -35,6 +35,11 @@ namespace Engine.Gui
             return (index >= EquipIndexBegin && index <= EquipIndexEnd);
         }
 
+        public static bool StoreIndexInRange(int index)
+        {
+            return (index >= StoreIndexBegin && index <= StoreIndexEnd);
+        }
+
         public static void LoadList(string filePath)
         {
             RenewList();
@@ -51,7 +56,7 @@ namespace Engine.Gui
                         var section = data[sectionData.SectionName];
                         GoodsList[head] = new GoodsItemInfo(
                             section["IniFile"],
-                            int.Parse(section["Number"])); 
+                            int.Parse(section["Number"]));
                     }
                 }
             }
@@ -63,7 +68,7 @@ namespace Engine.Gui
             GuiManager.UpdateGoodsView();
         }
 
-        public static void ExchangeListItem(int index1, int index2)
+        public static void ExchangeListItemAndEquiping(int index1, int index2)
         {
             if (index1 != index2 &&
                 IndexInRange(index1) &&
@@ -72,6 +77,7 @@ namespace Engine.Gui
                 var temp = GoodsList[index1];
                 GoodsList[index1] = GoodsList[index2];
                 GoodsList[index2] = temp;
+                Equiping(index1, index2);
             }
         }
 
@@ -106,7 +112,7 @@ namespace Engine.Gui
 
         public static bool AddGoodToList(string fileName, out int index)
         {
-            for(var i = ListIndexBegin; i <= ListIndexEnd; i++)
+            for (var i = ListIndexBegin; i <= ListIndexEnd; i++)
             {
                 var info = GoodsList[i];
                 if (info != null && info.TheGood != null)
@@ -132,6 +138,70 @@ namespace Engine.Gui
             }
 
             index = 0;
+            return false;
+        }
+
+        public static bool CanEquip(int goodIndex, Good.EquipPosition position)
+        {
+            return Good.CanEquip(GoodsListManager.Get(goodIndex), position);
+        }
+
+        public static void Equiping(int index, int currentEquipIndex)
+        {
+            Good equip = null;
+            Good currentEquip = null;
+            if (EquipIndexInRange(index))
+            {
+                equip = Get(index);
+                currentEquip = Get(currentEquipIndex);
+            }
+            else if(EquipIndexInRange(currentEquipIndex))
+            {
+                equip = Get(currentEquipIndex);
+                currentEquip = Get(index);
+            }
+            Globals.ThePlayer.Equiping(equip, currentEquip);
+        }
+
+        public static bool UnEquiping(int equipIndex, out int newIndex)
+        {
+            if (EquipIndexInRange(equipIndex))
+            {
+                if (MoveEquipItemToList(equipIndex, out newIndex))
+                {
+                    Globals.ThePlayer.UnEquiping(Get(newIndex));
+                    return true;
+                }
+            }
+            newIndex = 0;
+            return false;
+        }
+
+        public static bool UsingGood(int goodIndex)
+        {
+            var info = GetItemInfo(goodIndex);
+            if (info == null) return false;
+            var good = info.TheGood;
+            if (good != null)
+            {
+                if (good.Kind == Good.GoodKind.Drug)
+                {
+                    if (Globals.ThePlayer.UseDrag(good))
+                    {
+                        
+                        if (info.Count == 1)
+                            GoodsList[goodIndex] = null;
+                        else
+                            info.Count -= 1;
+                        GuiManager.GoodsInterface.UpdateListItem(goodIndex);
+                        return true;
+                    }
+                }
+                else if (good.Kind == Good.GoodKind.Event)
+                {
+                    return false;
+                }
+            }
             return false;
         }
 
@@ -185,7 +255,7 @@ namespace Engine.Gui
             public GoodsItemInfo(string fileName, int count)
             {
                 var good = Utils.GetGood(fileName);
-                if(good != null)TheGood = good;
+                if (good != null) TheGood = good;
                 Count = count;
             }
         }

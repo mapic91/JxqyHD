@@ -21,11 +21,11 @@ namespace Engine.Gui
             }
         }
 
-        public ListView(GuiItem parent, 
-            Vector2 position, 
+        public ListView(GuiItem parent,
+            Vector2 position,
             int width,
             int height,
-            Texture baseTexture, 
+            Texture baseTexture,
             int rowCouunts)
             : base(parent, position, width, height, baseTexture)
         {
@@ -33,7 +33,7 @@ namespace Engine.Gui
             var slideTexture = Utils.GetAsf(@"asf\ui\option\slidebtn.asf");
             var slideBaseTexture = new Texture(slideTexture);
             var slideClikedTexture = new Texture(slideTexture, 0, 1);
-            var slideButton = new GuiItem(this, 
+            var slideButton = new GuiItem(this,
                 Vector2.Zero,
                 slideBaseTexture.Width,
                 slideBaseTexture.Height,
@@ -42,8 +42,8 @@ namespace Engine.Gui
                 slideClikedTexture,
                 null,
                 Utils.GetSoundEffect("界-大按钮.wav"));
-            _scrollBar = new ScrollBar(this, 
-                ScrollBar.ScrollBarType.Vertical, 
+            _scrollBar = new ScrollBar(this,
+                ScrollBar.ScrollBarType.Vertical,
                 slideButton,
                 new Vector2(308, 110),
                 190f,
@@ -104,12 +104,39 @@ namespace Engine.Gui
             return CurrentScrollValue * 3 + itemIndex + 1;
         }
 
+        /// <summary>
+        /// List index begin at 1
+        /// </summary>
+        /// <param name="listIndex"></param>
+        /// <param name="index">range: 0 - 8</param>
+        /// <returns></returns>
+        public bool IsItemShow(int listIndex, out int index)
+        {
+            var start = ToListIndex(0);
+            var end = ToListIndex(8);
+            if (listIndex >= start && listIndex <= end)
+            {
+                index = listIndex - start;
+                return true;
+            }
+            index = 0;
+            return false;
+        }
+
         public void SetListItem(int index, Texture texture, object data)
         {
             if (index >= 0 && index < 9)
             {
                 _items[index].BaseTexture = texture;
                 _items[index].Data = data;
+            }
+        }
+
+        public void SetListItemTexture(int index, Texture texture)
+        {
+            if (index >= 0 && index < 9)
+            {
+                _items[index].BaseTexture = texture;
             }
         }
 
@@ -146,7 +173,7 @@ namespace Engine.Gui
         }
 
         #region Event
-        public abstract class ListEvent: EventArgs
+        public abstract class ListEvent : EventArgs
         {
             public int ScrollValue { private set; get; }
 
@@ -156,7 +183,7 @@ namespace Engine.Gui
             }
         }
 
-        public class ListScrollEvent: ListEvent
+        public class ListScrollEvent : ListEvent
         {
             public ListScrollEvent(int scrollValue)
                 : base(scrollValue)
