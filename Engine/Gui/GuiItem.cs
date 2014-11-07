@@ -12,7 +12,10 @@ namespace Engine.Gui
         private bool _isShow = true;
         private bool _isClicked;
         private bool _isRightClicked;
-        private Texture _baseTexture = new Texture();
+        private bool _isStayOver;
+        private float _stayOverMilliSecond;
+        public event Action<object, MouseEvent> MouseLeave;
+        public event Action<object, MouseEvent> MouseStayOver;
         public event Action<object, MouseMoveEvent> MouseMove;
         public event Action<object, MouseLeftDownEvent> MouseLeftDown;
         public event Action<object, MouseLeftUpEvent> MouseLeftUp;
@@ -33,7 +36,7 @@ namespace Engine.Gui
             set
             {
                 _isClicked = value;
-                if(value)IsMouveOver = false;
+                if (value) IsMouveOver = false;
             }
         }
 
@@ -75,7 +78,7 @@ namespace Engine.Gui
         {
             get
             {
-                return new Rectangle((int)ScreenPosition.X, 
+                return new Rectangle((int)ScreenPosition.X,
                     (int)ScreenPosition.Y,
                     Width,
                     Height);
@@ -113,7 +116,7 @@ namespace Engine.Gui
 
         public virtual void Update(GameTime gameTime)
         {
-            if(!IsShow) return;
+            if (!IsShow) return;
             var mouseState = Mouse.GetState();
             var screenPosition = new Vector2(mouseState.X, mouseState.Y);
             var position = screenPosition - ScreenPosition;
@@ -123,6 +126,19 @@ namespace Engine.Gui
             {
                 if (InRange == false && EnteredSound != null)
                     EnteredSound.Play();
+
+                if (lastPosition == position && !_isStayOver)
+                {
+                    _stayOverMilliSecond += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                    if (_stayOverMilliSecond > 500)
+                    {
+                        _isStayOver = true;
+                        if (MouseStayOver != null)
+                        {
+                            MouseStayOver(this, new MouseEvent(position, screenPosition));
+                        }
+                    }
+                }
 
                 InRange = true;
                 IsMouveOver = true;
@@ -135,7 +151,7 @@ namespace Engine.Gui
 
                     if (MouseLeftDown != null)
                     {
-                        MouseLeftDown(this, new MouseLeftDownEvent(position ,screenPosition));
+                        MouseLeftDown(this, new MouseLeftDownEvent(position, screenPosition));
                     }
 
                     if (Click != null)
@@ -163,8 +179,17 @@ namespace Engine.Gui
             }
             else
             {
+                if (InRange)
+                {
+                    if (MouseLeave != null)
+                    {
+                        MouseLeave(this, new MouseEvent(position, ScreenPosition));
+                    }
+                }
                 InRange = false;
                 IsMouveOver = false;
+                _isStayOver = false;
+                _stayOverMilliSecond = 0;
             }
 
             if (mouseState.LeftButton == ButtonState.Released &&
@@ -193,8 +218,8 @@ namespace Engine.Gui
             {
                 if (MouseMove != null)
                 {
-                    MouseMove(this, 
-                        new MouseMoveEvent(position, 
+                    MouseMove(this,
+                        new MouseMoveEvent(position,
                             screenPosition,
                             mouseState.LeftButton == ButtonState.Pressed,
                             mouseState.RightButton == ButtonState.Pressed));
@@ -204,11 +229,11 @@ namespace Engine.Gui
             if (IsClicked || IsRightClicked)
                 GuiManager.IsMouseStateEated = true;
 
-            if(IsClicked && ClickedTexture != null) 
+            if (IsClicked && ClickedTexture != null)
                 ClickedTexture.Update(gameTime);
-            else if(IsMouveOver && MouseOverTexture != null) 
+            else if (IsMouveOver && MouseOverTexture != null)
                 MouseOverTexture.Update(gameTime);
-            else if(BaseTexture != null)
+            else if (BaseTexture != null)
                 BaseTexture.Update(gameTime);
 
             _lastMouseState = mouseState;
@@ -216,7 +241,7 @@ namespace Engine.Gui
 
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            if(!IsShow) return;
+            if (!IsShow) return;
 
             if (IsClicked && ClickedTexture != null)
             {
@@ -247,15 +272,15 @@ namespace Engine.Gui
         }
         public class MouseMoveEvent : MouseEvent
         {
-           
+
             public bool LeftDown { private set; get; }
             public bool RightDown { private set; get; }
 
-            public MouseMoveEvent(Vector2 mousePosition, 
+            public MouseMoveEvent(Vector2 mousePosition,
                 Vector2 mouseScreenPosition,
-                bool leftDown, 
+                bool leftDown,
                 bool rightDown)
-                :base(mousePosition, mouseScreenPosition)
+                : base(mousePosition, mouseScreenPosition)
             {
                 LeftDown = leftDown;
                 RightDown = rightDown;

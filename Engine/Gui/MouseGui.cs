@@ -32,6 +32,7 @@ namespace Engine.Gui
                 _drapImage.BaseTexture = dragTexture;
                 _drapImage.Position = new Vector2(-dragTexture.Width/2f, -dragTexture.Height/2f);
             }
+            _drapImage.Update(gameTime);
         }
 
         public override void Draw(SpriteBatch spriteBatch)

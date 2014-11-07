@@ -16,7 +16,7 @@ namespace Engine.Gui
         private DragDropItem _hand;
         private DragDropItem _wrist;
         private DragDropItem _foot;
-        public new bool IsShow { set; get; }
+
         public bool IsFemale
         {
             get { return _isFemale; }
@@ -32,6 +32,7 @@ namespace Engine.Gui
 
         public EquipGui()
         {
+            IsShow = false;
             BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\panel7.asf"));
             Width = BaseTexture.Width;
             Height = BaseTexture.Height;
@@ -176,6 +177,8 @@ namespace Engine.Gui
                         }
                     }
                 };
+                item.MouseStayOver += GoodsGui.MouseStayOverHandler;
+                item.MouseLeave += GoodsGui.MouseLeaveHandler;
             }
         }
 

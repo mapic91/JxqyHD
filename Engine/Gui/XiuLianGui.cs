@@ -37,11 +37,9 @@ namespace Engine.Gui
                 75,
                 null,
                 new MagicGui.MagicItemData(ItemIndex));
-            _infoItem.Drop += (object arg1, DragDropItem.DropEvent arg2) =>
-            {
-                MagicGui.DropHandler(arg1, arg2);
-                UpdateItem();
-            };
+            _infoItem.Drop += MagicGui.DropHandler;
+            _infoItem.MouseStayOver += MagicGui.MouseStayOverHandler;
+            _infoItem.MouseLeave += MagicGui.MouseLeaveHandler;
             _levelText = new TextGui(this,
                 new Vector2(126, 224),
                 80, 
@@ -72,7 +70,7 @@ namespace Engine.Gui
             _introText = new TextGui(this,
                 new Vector2(75, 275),
                 145,
-                100,
+                120,
                 Globals.FontSize10,
                 2,
                 0,

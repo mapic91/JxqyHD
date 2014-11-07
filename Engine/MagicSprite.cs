@@ -165,7 +165,7 @@ namespace Engine
             _paths = paths;
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             if (IsDestroyed) return;
 

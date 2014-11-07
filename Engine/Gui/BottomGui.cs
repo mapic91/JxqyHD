@@ -38,6 +38,8 @@ namespace Engine.Gui
                 };
                 _items[i].Drop += GoodsGui.DropHandler;
                 _items[i].RightClick += GoodsGui.RightClickHandler;
+                _items[i].MouseStayOver += GoodsGui.MouseStayOverHandler;
+                _items[i].MouseLeave += GoodsGui.MouseLeaveHandler;
             }
 
             for (var i = 3; i < 8; i++)
@@ -56,6 +58,8 @@ namespace Engine.Gui
                         Globals.ThePlayer.CurrentMagicInUse = info;
                     }
                 };
+                _items[i].MouseStayOver += MagicGui.MouseStayOverHandler;
+                _items[i].MouseLeave += MagicGui.MouseLeaveHandler;
             }
         }
 

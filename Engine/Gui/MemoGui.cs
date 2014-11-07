@@ -9,9 +9,9 @@ namespace Engine.Gui
         private ScrollBar _scrollBar;
         private TextGui _text;
 
-        public new bool IsShow { set; get; }
         public MemoGui()
         {
+            IsShow = false;
             BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\panel4.asf"));
             Width = BaseTexture.Width;
             Height = BaseTexture.Height;

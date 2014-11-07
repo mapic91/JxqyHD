@@ -18,6 +18,7 @@ namespace Engine.Gui
         public static EquipGui EquipInterface;
         public static BottomGui BottomInterface;
         public static TopGui TopInterface;
+        public static ToolTipGui ToolTipInterface;
 
         public static MouseGui MouseInterface;
 
@@ -43,6 +44,7 @@ namespace Engine.Gui
             MemoInterface = new MemoGui();
             StateInterface = new StateGui();
             EquipInterface = new EquipGui();
+            ToolTipInterface = new ToolTipGui();
 
             MouseInterface = new MouseGui();
 
@@ -183,6 +185,7 @@ namespace Engine.Gui
             MemoInterface.Update(gameTime);
             StateInterface.Update(gameTime);
             EquipInterface.Update(gameTime);
+            ToolTipInterface.Update(gameTime);
 
             MouseInterface.Update(gameTime);
 
@@ -213,6 +216,7 @@ namespace Engine.Gui
             MemoInterface.Draw(spriteBatch);
             StateInterface.Draw(spriteBatch);
             EquipInterface.Draw(spriteBatch);
+            ToolTipInterface.Draw(spriteBatch);
 
             MouseInterface.Draw(spriteBatch);
         }

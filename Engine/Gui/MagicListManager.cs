@@ -9,6 +9,8 @@ namespace Engine.Gui
         private const int MaxMagic = 49;
         private static readonly Dictionary<int, MagicItemInfo> MagicList =
             new Dictionary<int, MagicItemInfo>();
+
+        public const int XiuLianIndex = 49;
         public static void LoadList(string filePath)
         {
             RenewList();

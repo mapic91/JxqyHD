@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Engine.Gui
 {
-    public class GoodsGui
+    public class GoodsGui : GuiItem
     {
         private ListView _listView;
 
@@ -31,6 +31,23 @@ namespace Engine.Gui
 
             int index, sourceIndex;
             ExchangeItem(arg1, arg2, out index, out sourceIndex);
+        }
+
+        public static void MouseStayOverHandler(object arg1, GuiItem.MouseEvent arg2)
+        {
+            var item = (DragDropItem)arg1;
+            var data = item.Data as GoodItemData;
+            if (data != null)
+            {
+                var info = GoodsListManager.GetItemInfo(data.Index);
+                if (info != null)
+                    GuiManager.ToolTipInterface.ShowGood(info.TheGood);
+            }
+        }
+
+        public static void MouseLeaveHandler(object arg1, GuiItem.MouseEvent arg2)
+        {
+            GuiManager.ToolTipInterface.IsShow = false;
         }
 
         public static void RightClickHandler(object arg1, GuiItem.MouseRightClickEvent arg2)
@@ -81,10 +98,9 @@ namespace Engine.Gui
             return false;
         }
 
-        public bool IsShow { set; get; }
-
         public GoodsGui()
         {
+            IsShow = false;
             var baseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\panel3.asf"));
             var position = new Vector2(
                 Globals.WindowWidth / 2f,
@@ -105,6 +121,8 @@ namespace Engine.Gui
             });
             _listView.RegisterItemDropHandler(DropHandler);
             _listView.RegisterItemMouseRightClickeHandler(RightClickHandler);
+            _listView.RegisterItemMouseStayOverHandler(MouseStayOverHandler);
+            _listView.RegisterItemMouseLeaveHandler(MouseLeaveHandler);
         }
 
         public bool IsItemShow(int listIndex, out int index)
@@ -138,14 +156,14 @@ namespace Engine.Gui
             }
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             if (!IsShow) return;
 
             _listView.Update(gameTime);
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
             if (!IsShow) return;
 

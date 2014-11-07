@@ -19,7 +19,6 @@ namespace Engine
         private int _fight;
         private int _money;
         private Dictionary<int, Utils.LevelDetail> _levelIni;
-        private float _totalNonFightingTime;
         private const float MaxNonFightingTime = 7f;
         public MagicListManager.MagicItemInfo CurrentMagicInUse;
 

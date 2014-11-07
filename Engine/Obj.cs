@@ -58,7 +58,7 @@ namespace Engine
             set { _frame = value; }
         }
 
-        public int Height
+        public new int Height
         {
             get { return _height; }
             set { _height = value; }
@@ -199,7 +199,7 @@ namespace Engine
             }
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             if(Texture.FrameCounts > 1 && IsAutoPlay)
                 base.Update(gameTime);

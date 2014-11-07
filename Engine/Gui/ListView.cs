@@ -94,6 +94,22 @@ namespace Engine.Gui
             }
         }
 
+        public void RegisterItemMouseStayOverHandler(Action<object, MouseEvent> handler)
+        {
+            foreach (var dragDropItem in _items)
+            {
+                dragDropItem.MouseStayOver += handler;
+            }
+        }
+
+        public void RegisterItemMouseLeaveHandler(Action<object, MouseEvent> handler)
+        {
+            foreach (var dragDropItem in _items)
+            {
+                dragDropItem.MouseLeave += handler;
+            }
+        }
+
         /// <summary>
         /// List index begin at 1
         /// </summary>

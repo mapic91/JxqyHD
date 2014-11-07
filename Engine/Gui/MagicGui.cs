@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Engine.Gui
 {
-    public class MagicGui
+    public class MagicGui : GuiItem
     {
         private ListView _listView;
 
@@ -19,13 +19,32 @@ namespace Engine.Gui
                 MagicListManager.ExchangeListItem(data.Index, sourceData.Index);
                 item.BaseTexture = MagicListManager.GetTexture(data.Index);
                 sourceItem.BaseTexture = MagicListManager.GetTexture(sourceData.Index);
+                if(data.Index == MagicListManager.XiuLianIndex || 
+                    sourceData.Index == MagicListManager.XiuLianIndex)
+                    GuiManager.XiuLianInterface.UpdateItem();
             }
         }
 
-        public bool IsShow { set; get; }
+        public static void MouseStayOverHandler(object arg1, GuiItem.MouseEvent arg2)
+        {
+            var item = (DragDropItem)arg1;
+            var data = item.Data as MagicItemData;
+            if (data != null)
+            {
+                var info = MagicListManager.GetItemInfo(data.Index);
+                if(info != null)
+                    GuiManager.ToolTipInterface.ShowMagic(info.TheMagic);
+            }
+        }
+
+        public static void MouseLeaveHandler(object arg1, GuiItem.MouseEvent arg2)
+        {
+            GuiManager.ToolTipInterface.IsShow = false;
+        }
 
         public MagicGui()
         {
+            IsShow = false;
             var baseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\panel2.asf"));
             var position = new Vector2(
                 Globals.WindowWidth / 2f,
@@ -45,6 +64,8 @@ namespace Engine.Gui
 
             });
             _listView.RegisterItemDropHandler(DropHandler);
+            _listView.RegisterItemMouseStayOverHandler(MouseStayOverHandler);
+            _listView.RegisterItemMouseLeaveHandler(MouseLeaveHandler);
         }
 
         public void UpdateItems()
@@ -58,14 +79,14 @@ namespace Engine.Gui
             }
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             if (!IsShow) return;
 
             _listView.Update(gameTime);
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
             if (!IsShow) return;
 

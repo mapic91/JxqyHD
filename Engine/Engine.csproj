@@ -74,6 +74,7 @@
     <Compile Include="Globals.cs" />
     <Compile Include="Good.cs" />
     <Compile Include="Gui\BottomGui.cs" />
+    <Compile Include="Gui\ColumnGui.cs" />
     <Compile Include="Gui\DragDropItem.cs" />
     <Compile Include="Gui\EquipGui.cs" />
     <Compile Include="Gui\GoodsGui.cs" />
@@ -90,6 +91,7 @@
     <Compile Include="Gui\StateGui.cs" />
     <Compile Include="Gui\TextGui.cs" />
     <Compile Include="Gui\Texture.cs" />
+    <Compile Include="Gui\ToolTipGui.cs" />
     <Compile Include="Gui\TopGui.cs" />
     <Compile Include="Gui\XiuLianGui.cs" />
     <Compile Include="IMoveControlInWorld.cs" />
