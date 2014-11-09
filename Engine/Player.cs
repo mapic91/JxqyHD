@@ -21,6 +21,7 @@ namespace Engine
         private Dictionary<int, Utils.LevelDetail> _levelIni;
         private const float MaxNonFightingTime = 7f;
         private const int ThewUseAmountWhenAttack = 5;
+        private const int ThewUseAmountWhenJump = 10;
         private const float ListRestorePercent = 0.01f;
         private const float ThewRestorePercent = 0.03f;
         private float _standingMilliseconds;
@@ -35,7 +36,7 @@ namespace Engine
             get { return _currentMagicInUse; }
             set
             {
-                if(value != null && value.TheMagic != null)
+                if (value != null && value.TheMagic != null)
                     _currentMagicInUse = value;
             }
         }
@@ -182,11 +183,28 @@ namespace Engine
             }
         }
 
-        protected override bool CanRunning(bool consumeThew = true)
+        protected override bool CanRunning()
         {
-            if (Thew <= 0) return false;
-            if(consumeThew)Thew -= 1;
-            return true;
+            if (Thew > 0)
+            {
+                Thew -= 1;
+                return true;
+            }
+            return false;
+        }
+
+        protected override bool CanJump()
+        {
+            if (Thew < ThewUseAmountWhenJump)
+            {
+                GuiManager.ShowMessage("体力不足!");
+                return false;
+            }
+            else
+            {
+                Thew -= ThewUseAmountWhenJump;
+                return true;
+            }
         }
 
         public override void Update(GameTime gameTime)

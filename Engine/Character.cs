@@ -745,7 +745,7 @@ namespace Engine
             if (PerformActionOk() &&
                 destinationTilePosition != TilePosition)
             {
-                if (CanRunning(false))
+                if (Thew > 0)
                 {
                     if (IsRuning())
                         DestinationMoveTilePosition = destinationTilePosition;
@@ -769,7 +769,12 @@ namespace Engine
             }
         }
 
-        protected virtual bool CanRunning(bool consumeThew = true)
+        protected virtual bool CanRunning()
+        {
+            return true;
+        }
+
+        protected virtual bool CanJump()
         {
             return true;
         }
@@ -781,6 +786,7 @@ namespace Engine
                 !Globals.TheMap.IsObstacleForCharacter(destinationTilePosition) &&
                 !HasObstacle(destinationTilePosition))
             {
+                if(!CanJump()) return;
                 StateInitialize();
                 DestinationMoveTilePosition = destinationTilePosition;
                 Path = new LinkedList<Vector2>();
