@@ -20,9 +20,25 @@ namespace Engine
         private int _money;
         private Dictionary<int, Utils.LevelDetail> _levelIni;
         private const float MaxNonFightingTime = 7f;
-        public MagicListManager.MagicItemInfo CurrentMagicInUse;
+        private const int ThewUseAmountWhenAttack = 5;
+        private const float ListRestorePercent = 0.01f;
+        private const float ThewRestorePercent = 0.03f;
+        private float _standingMilliseconds;
+
+        private MagicListManager.MagicItemInfo _currentMagicInUse;
 
         #region Public properties
+
+        public MagicListManager.MagicItemInfo CurrentMagicInUse
+        {
+            get { return _currentMagicInUse; }
+            set
+            {
+                if(value != null && value.TheMagic != null)
+                    _currentMagicInUse = value;
+            }
+        }
+
         public override PathFinder.PathType PathType
         {
             get
@@ -137,6 +153,34 @@ namespace Engine
             return false;
         }
 
+        protected override bool PerformeAttackHook()
+        {
+            if (Thew < ThewUseAmountWhenAttack)
+            {
+                GuiManager.ShowMessage("体力不足!");
+                return false;
+            }
+            else
+            {
+                Thew -= ThewUseAmountWhenAttack;
+                return true;
+            }
+        }
+
+        protected override bool UseMagicHook()
+        {
+            if (Mana < MagicUse.ManaCost)
+            {
+                GuiManager.ShowMessage("没有足够的内力使用这种武功");
+                return false;
+            }
+            else
+            {
+                Mana -= MagicUse.ManaCost;
+                return true;
+            }
+        }
+
         public override void Update(GameTime gameTime)
         {
             var mouseState = Mouse.GetState();
@@ -220,6 +264,18 @@ namespace Engine
                 if (IsSitting()) Standing();
                 else Sitdown();
             }
+
+            if (IsStanding())
+            {
+                _standingMilliseconds += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                if (_standingMilliseconds >= 1000)
+                {
+                    Life += (int)(ListRestorePercent * LifeMax);
+                    Thew += (int)(ThewRestorePercent * ThewMax);
+                    _standingMilliseconds = 0f;
+                }
+            }
+            else _standingMilliseconds = 0f;
 
             _lastMouseState = GuiManager.IsMouseStateEated
                 ? Utils.GetMouseState(mouseState.X, mouseState.Y)

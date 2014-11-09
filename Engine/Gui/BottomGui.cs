@@ -53,10 +53,7 @@ namespace Engine.Gui
                 {
                     var data = (MagicGui.MagicItemData)(((DragDropItem)arg1).Data);
                     var info = MagicListManager.GetItemInfo(data.Index);
-                    if (info != null)
-                    {
-                        Globals.ThePlayer.CurrentMagicInUse = info;
-                    }
+                    Globals.ThePlayer.CurrentMagicInUse = info;
                 };
                 _items[i].MouseStayOver += MagicGui.MouseStayOverHandler;
                 _items[i].MouseLeave += MagicGui.MouseLeaveHandler;

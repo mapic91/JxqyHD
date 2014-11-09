@@ -59,7 +59,7 @@ namespace Engine
         private Vector2 _destinationAttackPositionInWorld = Vector2.Zero;
         private LinkedList<Vector2> _path;
         private bool _isDeath;
-        public Magic MagicUse;
+        protected Magic MagicUse;
 
         #region Public properties
         public int Dir
@@ -202,7 +202,11 @@ namespace Engine
         public int LifeMax
         {
             get { return _lifeMax; }
-            set { _lifeMax = value; }
+            set
+            {
+                _lifeMax = value;
+                if (_life > value) _life = value;
+            }
         }
 
         public int Thew
@@ -218,7 +222,11 @@ namespace Engine
         public int ThewMax
         {
             get { return _thewMax; }
-            set { _thewMax = value; }
+            set
+            {
+                _thewMax = value;
+                if (_thew > value) _thew = value;
+            }
         }
 
         public int Mana
@@ -234,7 +242,11 @@ namespace Engine
         public int ManaMax
         {
             get { return _manaMax; }
-            set { _manaMax = value; }
+            set
+            {
+                _manaMax = value;
+                if (_mana > value) _mana = value;
+            }
         }
 
         public StateMapList NpcIni
@@ -794,7 +806,7 @@ namespace Engine
 
         public void Hurting()
         {
-            if(State != (int)NpcState.Death &&
+            if (State != (int)NpcState.Death &&
                 State != (int)NpcState.Hurt)
             {
                 StateInitialize();
@@ -875,10 +887,16 @@ namespace Engine
             PerformeAttack(DestinationAttackPositionInWorld);
         }
 
+        protected virtual bool PerformeAttackHook()
+        {
+            return true;
+        }
+
         public void PerformeAttack(Vector2 destination)
         {
             if (PerformActionOk())
             {
+                if (!PerformeAttackHook()) return;
                 StateInitialize();
                 _isInFighting = true;
                 _totalNonFightingSeconds = 0;
@@ -912,6 +930,11 @@ namespace Engine
         }
 
         protected abstract void PlaySoundEffect(SoundEffect soundEffect);
+
+        protected virtual bool UseMagicHook()
+        {
+            return true;
+        }
 
         public override void Update(GameTime gameTime)
         {
@@ -975,7 +998,8 @@ namespace Engine
                         {
                             PlaySoundEffect(NpcIni[(int)NpcState.Magic].Sound);
                         }
-                        MagicManager.UseMagic(this, MagicUse, PositionInWorld, _magicDestination);
+                        if (UseMagicHook())
+                            MagicManager.UseMagic(this, MagicUse, PositionInWorld, _magicDestination);
                         StandingImmediately();
                     }
                     else base.Update(gameTime);
