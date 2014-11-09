@@ -230,12 +230,12 @@ namespace Engine
                         break;
                     case "Image":
                     case "Icon":
-                        info.SetValue(this, Utils.GetAsf(@"asf\magic\" + nameValue[1]), null);
+                        info.SetValue(this, Utils.GetAsf(@"asf\magic\", nameValue[1]), null);
                         break;
                     case "FlyingImage":
                     case "VanishImage":
                     case "SuperModeImage":
-                        info.SetValue(this, Utils.GetAsf(@"asf\effect\" + nameValue[1]), null);
+                        info.SetValue(this, Utils.GetAsf(@"asf\effect\", nameValue[1]), null);
                         break;
                     case "AttackFile":
                         if (File.Exists(@"ini\magic\" + nameValue[1]) && !noAttackFile)
@@ -268,7 +268,7 @@ namespace Engine
             }
             catch (Exception ecxeption)
             {
-                Log.LogMessageToFile("Magic load failed [" + filePath + "]." + ecxeption);
+                Log.LogFileLoadError("Magic", filePath, ecxeption);
                 return false;
             }
         }

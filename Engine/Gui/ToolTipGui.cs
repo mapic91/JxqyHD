@@ -13,7 +13,7 @@ namespace Engine.Gui
         public ToolTipGui()
         {
             IsShow = false;
-            BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\tipbox.asf"));
+            BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\", "tipbox.asf"));
             Width = BaseTexture.Width;
             Height = BaseTexture.Height;
             Position = new Vector2((Globals.WindowWidth - Width)/2f,

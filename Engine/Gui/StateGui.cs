@@ -26,16 +26,16 @@ namespace Engine.Gui
             set
             {
                 _isFemale = value;
-                var path = @"asf\ui\common\panel5.asf";
+                var fileName = "panel5.asf";
                 if (value)
-                    path = @"asf\ui\common\panel5b.asf";
-                BaseTexture = new Texture(Utils.GetAsf(path));
+                    fileName = "panel5b.asf";
+                BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\", fileName));
             }
         }
 
         public StateGui()
         {
-            BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\panel5.asf"));
+            BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\", "panel5.asf"));
             Width = BaseTexture.Width;
             Height = BaseTexture.Height;
             Position = new Vector2(

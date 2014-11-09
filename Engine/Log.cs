@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 
 namespace Engine
 {
@@ -7,6 +8,13 @@ namespace Engine
     {
         private const string LogFilename = "Log.txt";
         public static bool DebugOn;
+
+        private static string GetLastLine(string text)
+        {
+            if (string.IsNullOrEmpty(text)) return "";
+            string[] lines = text.Replace("\r", "").Split('\n');
+            return lines.Length > 0 ? lines.Last() : "";
+        }
 
         public static void Initialize()
         {
@@ -22,7 +30,22 @@ namespace Engine
 
         public static void LogFileLoadError(string msg, string filePath, Exception exception)
         {
-            LogMessageToFile(msg + " [" + filePath + "] load error: " + exception);
+            string fullPath;
+            try
+            {
+                fullPath = Path.GetFullPath(filePath);
+            }
+            catch (Exception)
+            {
+                fullPath = filePath;
+            }
+            LogMessageToFile(msg + 
+                " [" +
+                fullPath + 
+                "] load error: \n" + 
+                exception.Message + 
+                "\n" +
+                GetLastLine(exception.StackTrace));
         }
     }
 }

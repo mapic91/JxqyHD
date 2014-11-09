@@ -101,7 +101,7 @@ namespace Engine.Gui
         public GoodsGui()
         {
             IsShow = false;
-            var baseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\panel3.asf"));
+            var baseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\", "panel3.asf"));
             var position = new Vector2(
                 Globals.WindowWidth / 2f,
                 0f);

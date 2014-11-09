@@ -45,7 +45,7 @@ namespace Engine.Gui
         public MagicGui()
         {
             IsShow = false;
-            var baseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\panel2.asf"));
+            var baseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\", "panel2.asf"));
             var position = new Vector2(
                 Globals.WindowWidth / 2f,
                 0f);

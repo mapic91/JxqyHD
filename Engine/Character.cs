@@ -567,7 +567,7 @@ namespace Engine
             }
             catch (Exception exception)
             {
-                Log.LogMessageToFile("Character load failed [" + filePath + "]." + exception);
+                Log.LogFileLoadError("Character", filePath, exception);
                 return false;
             }
         }

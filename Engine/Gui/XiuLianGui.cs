@@ -25,7 +25,7 @@ namespace Engine.Gui
 
         public XiuLianGui()
         {
-            BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\panel6.asf"));
+            BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\", "panel6.asf"));
             Width = BaseTexture.Width;
             Height = BaseTexture.Height;
             Position = new Vector2(

@@ -142,7 +142,7 @@ namespace Engine
             }
             catch (Exception exception)
             {
-                Log.LogMessageToFile("Obj load failed [" + filePath + "]." + exception);
+                Log.LogFileLoadError("Obj", filePath, exception);
                 return false;
             }
         }

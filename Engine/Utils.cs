@@ -51,10 +51,12 @@ namespace Engine
             return result;
         }
 
-        static public Asf GetAsf(string path)
+        static public Asf GetAsf(string basePath, string fileName)
         {
+            if (string.IsNullOrEmpty(fileName)) return null;
             try
             {
+                var path = basePath + fileName;
                 var hashCode = path.GetHashCode();
                 if (AsfFiles.ContainsKey(hashCode))
                     return AsfFiles[hashCode];
@@ -80,6 +82,7 @@ namespace Engine
 
         static public SoundEffect GetSoundEffect(string wavFileName)
         {
+            if (string.IsNullOrEmpty(wavFileName)) return null;
             try
             {
                 var groups = Regex.Match(wavFileName, @"(.+)\.wav").Groups;
@@ -104,6 +107,7 @@ namespace Engine
         /// <returns>Magic class</returns>
         static public Magic GetMagic(string fileName, bool fromCache = true)
         {
+            if (string.IsNullOrEmpty(fileName)) return null;
             try
             {
                 var filePath = @"ini\magic\" + fileName;
@@ -129,6 +133,7 @@ namespace Engine
 
         public static Good GetGood(string fileName)
         {
+            if (string.IsNullOrEmpty(fileName)) return null;
             try
             {
                 var filePath = @"ini\goods\" + fileName;

@@ -34,7 +34,7 @@ namespace Engine
             }
             catch (Exception exception)
             {
-                Log.LogMessageToFile("NpcRes file [" + path + "] read failed" + exception);
+                Log.LogFileLoadError("NpcRes", path, exception);
             }
 
             return info;
@@ -47,8 +47,8 @@ namespace Engine
             if (groups[0].Success)
             {
                 var asfFileName = groups[1].Value;
-                var asfPath = GetAsfFilePath(asfFileName, type);
-                info.Image = Utils.GetAsf(asfPath);
+                var filePathBase = GetAsfFilePathBase(asfFileName, type);
+                info.Image = Utils.GetAsf(filePathBase, asfFileName);
             }
             groups = Regex.Match(sound, "Sound=(.+)").Groups;
             if (groups[0].Success)
@@ -58,25 +58,23 @@ namespace Engine
             return info;
         }
 
-        private static string GetAsfFilePath(string asfFileName, ResType type)
+        private static string GetAsfFilePathBase(string asfFileName, ResType type)
         {
-            string asfPath = string.Empty;
+            string asfPathBase = string.Empty;
             switch (type)
             {
                 case ResType.Npc:
-                    asfPath = @"asf\character\" + asfFileName;
-                    if (!File.Exists(asfPath))
+                    asfPathBase = @"asf\character\";
+                    if (!File.Exists(asfPathBase + asfFileName))
                     {
-                        asfPath = @"asf\interlude\" + asfFileName;
-                        if (!File.Exists(asfPath)) asfPath = String.Empty;
+                        asfPathBase = @"asf\interlude\";
                     }
                     break;
                 case ResType.Obj:
-                    asfPath = @"asf\object\" + asfFileName;
-                    if (!File.Exists(asfPath)) asfPath = String.Empty;
+                    asfPathBase = @"asf\object\";
                     break;
             }
-            return asfPath;
+            return asfPathBase;
         }
 
         private static int GetState(string head, ResType type)

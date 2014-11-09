@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -24,7 +25,7 @@ namespace Engine
             }
             catch (Exception exception)
             {
-                Log.LogMessageToFile("Play music [" + path + "] failed." + exception);
+                Log.LogFileLoadError("Music file", path, exception);
             }
         }
 

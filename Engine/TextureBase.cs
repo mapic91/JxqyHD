@@ -81,7 +81,7 @@ namespace Engine
             }
             catch (Exception e)
             {
-                Log.LogMessageToFile(string.Format("{0}load failed:{1}", path, e));
+                Log.LogFileLoadError("Asf", path, e);
             }
         }
         private void LoadPalette(byte[] buf, ref int offset)

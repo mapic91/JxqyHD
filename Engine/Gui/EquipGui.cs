@@ -23,17 +23,17 @@ namespace Engine.Gui
             set
             {
                 _isFemale = value;
-                var path = @"asf\ui\common\panel7.asf";
+                var fileName = "panel7.asf";
                 if (value)
-                    path = @"asf\ui\common\panel7b.asf";
-                BaseTexture = new Texture(Utils.GetAsf(path));
+                    fileName = "panel7b.asf";
+                BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\", fileName));
             }
         }
 
         public EquipGui()
         {
             IsShow = false;
-            BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\panel7.asf"));
+            BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\", "panel7.asf"));
             Width = BaseTexture.Width;
             Height = BaseTexture.Height;
             Position = new Vector2(

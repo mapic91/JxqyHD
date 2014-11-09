@@ -11,7 +11,7 @@ namespace Engine.Gui
         private ColumnView[] _items = new ColumnView[3];
         public ColumnGui()
         {
-            BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\column\panel9.asf"));
+            BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\column\", "panel9.asf"));
             Width = BaseTexture.Width;
             Height = BaseTexture.Height;
             Position = new Vector2(Globals.WindowWidth/2f - 320, 
@@ -25,17 +25,17 @@ namespace Engine.Gui
                 new Vector2(11, 22),
                 48, 
                 46,
-                new Texture(Utils.GetAsf(@"asf\ui\column\ColLife.asf")));
+                new Texture(Utils.GetAsf(@"asf\ui\column\", "ColLife.asf")));
             _thew = new ColumnView(this,
                 new Vector2(59, 22),
                 48,
                 46,
-                new Texture(Utils.GetAsf(@"asf\ui\column\ColThew.asf")));
+                new Texture(Utils.GetAsf(@"asf\ui\column\", "ColThew.asf")));
             _mana = new ColumnView(this,
                 new Vector2(113, 22),
                 48,
                 46,
-                new Texture(Utils.GetAsf(@"asf\ui\column\ColMana.asf")));
+                new Texture(Utils.GetAsf(@"asf\ui\column\", "ColMana.asf")));
             _items[0] = _life;
             _items[1] = _thew;
             _items[2] = _mana;

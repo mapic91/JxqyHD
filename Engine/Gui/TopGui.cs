@@ -8,7 +8,7 @@ namespace Engine.Gui
         private GuiItem[] _buttons = new GuiItem[7];
         public TopGui()
         {
-            BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\top\window.asf"));
+            BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\top\", "window.asf"));
             Width = BaseTexture.Width;
             Height = BaseTexture.Height;
             Position = new Vector2((Globals.WindowWidth - BaseTexture.Width) / 2f, 0f);
@@ -31,15 +31,15 @@ namespace Engine.Gui
 
         private void InitializeItems()
         {
-            string[] paths =
+            string[] fileNames =
             {
-                @"asf\ui\top\BtnState.asf", //0
-                @"asf\ui\top\BtnEquip.asf", //1
-                @"asf\ui\top\BtnXiuLian.asf", //2
-                @"asf\ui\top\BtnGoods.asf", //3
-                @"asf\ui\top\BtnMagic.asf", //4
-                @"asf\ui\top\BtnNotes.asf", //5
-                @"asf\ui\top\BtnOption.asf" //6
+                "BtnState.asf", //0
+                "BtnEquip.asf", //1
+                "BtnXiuLian.asf", //2
+                "BtnGoods.asf", //3
+                "BtnMagic.asf", //4
+                "BtnNotes.asf", //5
+                "BtnOption.asf" //6
             };
             Vector2[] position =
             {
@@ -54,7 +54,7 @@ namespace Engine.Gui
             var clickedSound = Utils.GetSoundEffect("界-大按钮.wav");
             for (var i = 0; i < 7; i++)
             {
-                var asf = Utils.GetAsf(paths[i]);
+                var asf = Utils.GetAsf(@"asf\ui\top\", fileNames[i]);
                 var baseTexture = new Texture(asf, 0, 1);
                 var clickedTexture = new Texture(asf, 1, 1);
                 _buttons[i] = new GuiItem(this, 

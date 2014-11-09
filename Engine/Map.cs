@@ -420,7 +420,7 @@ namespace Engine
             }
             catch (Exception e)
             {
-                Log.LogMessageToFile("Map load failed" + path + ":" + e);
+                Log.LogFileLoadError("Map", path, e);
             }
         }
 
@@ -435,7 +435,7 @@ namespace Engine
             }
             catch (Exception e)
             {
-                Log.LogMessageToFile("Map file is corrupted" + ":" + e);
+                Log.LogMessageToFile("Map file is corrupted" + ": " + e);
             }
         }
 

@@ -139,7 +139,7 @@ namespace Engine
                         break;
                     case "Image":
                     case "Icon":
-                        info.SetValue(this, Utils.GetAsf(@"asf\goods\" + value), null);
+                        info.SetValue(this, Utils.GetAsf(@"asf\goods\", value), null);
                         break;
                     case "Part":
                         {
@@ -197,7 +197,7 @@ namespace Engine
             }
             catch (Exception ecxeption)
             {
-                Log.LogMessageToFile("Good load failed [" + filePath + "]." + ecxeption);
+                Log.LogFileLoadError("Good", filePath, ecxeption);
                 return false;
             }
             IsOk = true;

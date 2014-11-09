@@ -12,7 +12,7 @@ namespace Engine.Gui
         public MemoGui()
         {
             IsShow = false;
-            BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\panel4.asf"));
+            BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\", "panel4.asf"));
             Width = BaseTexture.Width;
             Height = BaseTexture.Height;
             Position = new Vector2(
@@ -29,7 +29,7 @@ namespace Engine.Gui
                 "",
                 new Color(40, 25, 15)*0.8f);
 
-            var slideTexture = Utils.GetAsf(@"asf\ui\option\slidebtn.asf");
+            var slideTexture = Utils.GetAsf(@"asf\ui\option\", "slidebtn.asf");
             var slideBaseTexture = new Texture(slideTexture);
             var slideClikedTexture = new Texture(slideTexture, 0, 1);
             var slideButton = new GuiItem(this,

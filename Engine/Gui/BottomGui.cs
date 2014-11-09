@@ -9,7 +9,7 @@ namespace Engine.Gui
 
         public BottomGui()
         {
-            BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\bottom\window.asf"));
+            BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\bottom\", "window.asf"));
             Width = BaseTexture.Width;
             Height = BaseTexture.Height;
             Position = new Vector2(

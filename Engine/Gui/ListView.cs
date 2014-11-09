@@ -30,7 +30,7 @@ namespace Engine.Gui
             : base(parent, position, width, height, baseTexture)
         {
             InitializeItems();
-            var slideTexture = Utils.GetAsf(@"asf\ui\option\slidebtn.asf");
+            var slideTexture = Utils.GetAsf(@"asf\ui\option\", "slidebtn.asf");
             var slideBaseTexture = new Texture(slideTexture);
             var slideClikedTexture = new Texture(slideTexture, 0, 1);
             var slideButton = new GuiItem(this,

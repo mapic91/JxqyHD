@@ -21,7 +21,7 @@ namespace Engine.Gui
         public MessageGui()
         {
             IsShow = false;
-            BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\message\msgbox.asf"));
+            BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\message\", "msgbox.asf"));
             Width = BaseTexture.Width;
             Height = BaseTexture.Height;
             Position = new Vector2((Globals.WindowWidth - Width) / 2 - 10,
