@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Engine;
@@ -42,9 +43,10 @@ namespace Jxqy
             Globals.TheGame = this;
             SoundEffect.MasterVolume = Globals.SoundEffectVolume;
             MediaPlayer.Volume = Globals.MusicVolume;
+            Log.Initialize();
             Log.DebugOn = true;
 
-            Log.LogMessageToFile("Game is running...\n\n\n");
+            Log.LogMessageToFile("Game is running...");
 
             _graphics.PreferredBackBufferWidth = Globals.WindowWidth;
             _graphics.PreferredBackBufferHeight = Globals.WindowHeight;

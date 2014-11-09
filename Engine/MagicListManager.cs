@@ -7,8 +7,7 @@ namespace Engine.Gui
     public static class MagicListManager
     {
         private const int MaxMagic = 49;
-        private static readonly Dictionary<int, MagicItemInfo> MagicList =
-            new Dictionary<int, MagicItemInfo>();
+        private static readonly MagicItemInfo[] MagicList = new MagicItemInfo[MaxMagic + 1];
 
         public const int XiuLianIndex = 49;
         public static void LoadList(string filePath)
@@ -116,8 +115,12 @@ namespace Engine.Gui
 
             public MagicItemInfo(string iniFile, int level, int exp)
             {
-                var magic = Utils.GetMagic(iniFile);
-                if(magic != null)TheMagic = magic.GetLevel(level);
+                var magic = Utils.GetMagic(iniFile, false);
+                if (magic != null)
+                {
+                    TheMagic = magic.GetLevel(level);
+                    TheMagic.ItemInfo = this;
+                }
                 Level = level;
                 Exp = exp;
             }

@@ -10,6 +10,11 @@ namespace Engine.Gui
 {
     public static class GuiManager
     {
+        private static SoundEffect _dropSound;
+        private static SoundEffect _interfaceShow;
+        private static SoundEffect _interfaceMiss;
+        private static LinkedList<GuiItem> _allGuiItems = new LinkedList<GuiItem>(); 
+
         public static MagicGui MagicInterface;
         public static XiuLianGui XiuLianInterface;
         public static GoodsGui GoodsInterface;
@@ -19,13 +24,10 @@ namespace Engine.Gui
         public static BottomGui BottomInterface;
         public static ColumnGui ColumnInterface;
         public static TopGui TopInterface;
+
         public static ToolTipGui ToolTipInterface;
-
+        public static MessageGui MessageInterface;
         public static MouseGui MouseInterface;
-
-        private static SoundEffect _dropSound;
-        private static SoundEffect _interfaceShow;
-        private static SoundEffect _interfaceMiss;
 
         public static bool IsMouseStateEated;
         public static DragDropItem DragDropSourceItem;
@@ -37,18 +39,30 @@ namespace Engine.Gui
             _dropSound = Utils.GetSoundEffect("界-拖放.wav");
             _interfaceShow = Utils.GetSoundEffect("界-弹出菜单.wav");
             _interfaceMiss = Utils.GetSoundEffect("界-缩回菜单.wav");
-            TopInterface = new TopGui();
-            BottomInterface = new BottomGui();
-            ColumnInterface = new ColumnGui();
-            MagicInterface = new MagicGui();
-            XiuLianInterface = new XiuLianGui();
-            GoodsInterface = new GoodsGui();
-            MemoInterface = new MemoGui();
-            StateInterface = new StateGui();
-            EquipInterface = new EquipGui();
-            ToolTipInterface = new ToolTipGui();
 
+            TopInterface = new TopGui();
+            _allGuiItems.AddLast(TopInterface);
+            BottomInterface = new BottomGui();
+            _allGuiItems.AddLast(BottomInterface);
+            ColumnInterface = new ColumnGui();
+            _allGuiItems.AddLast(ColumnInterface);
+            MagicInterface = new MagicGui();
+            _allGuiItems.AddLast(MagicInterface);
+            XiuLianInterface = new XiuLianGui();
+            _allGuiItems.AddLast(XiuLianInterface);
+            GoodsInterface = new GoodsGui();
+            _allGuiItems.AddLast(GoodsInterface);
+            MemoInterface = new MemoGui();
+            _allGuiItems.AddLast(MemoInterface);
+            StateInterface = new StateGui();
+            _allGuiItems.AddLast(StateInterface);
+            EquipInterface = new EquipGui();
+            _allGuiItems.AddLast(EquipInterface);
+            ToolTipInterface = new ToolTipGui();
+            _allGuiItems.AddLast(ToolTipInterface);
             MouseInterface = new MouseGui();
+            MessageInterface = new MessageGui();
+            _allGuiItems.AddLast(MessageInterface);
 
             MagicListManager.RenewList();
             GoodsListManager.RenewList();
@@ -176,6 +190,19 @@ namespace Engine.Gui
             MemoInterface.UpdateTextShow();
         }
 
+        public static void Show(bool isShow = true)
+        {
+            foreach (var item in _allGuiItems)
+            {
+                item.IsShow = isShow;
+            }
+        }
+
+        public static void ShowMessage(string message)
+        {
+            MessageInterface.ShowMessage(message);
+        }
+
         public static void Update(GameTime gameTime)
         {
             IsMouseStateEated = false;
@@ -191,6 +218,8 @@ namespace Engine.Gui
             ToolTipInterface.Update(gameTime);
 
             MouseInterface.Update(gameTime);
+
+            MessageInterface.Update(gameTime);
 
             if (IsDropped)
             {
@@ -223,6 +252,8 @@ namespace Engine.Gui
             ToolTipInterface.Draw(spriteBatch);
 
             MouseInterface.Draw(spriteBatch);
+
+            MessageInterface.Draw(spriteBatch);
         }
     }
 }

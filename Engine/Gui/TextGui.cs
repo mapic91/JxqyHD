@@ -193,7 +193,10 @@ namespace Engine.Gui
             base.Draw(spriteBatch);
             foreach (var info in _drawInfo)
             {
-                spriteBatch.DrawString(Font, info.Text, info.Position, info.DrawColor);
+                spriteBatch.DrawString(Font, 
+                    info.Text, 
+                    new Vector2((int)info.Position.X, (int)info.Position.Y), 
+                    info.DrawColor);
             }
         }
 

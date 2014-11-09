@@ -198,12 +198,19 @@ namespace Engine
                     else WalkTo(mouseTilePosition);
                 }
                 if (mouseState.RightButton == ButtonState.Pressed &&
-                    _lastMouseState.RightButton == ButtonState.Released &&
-                    CurrentMagicInUse != null)
+                    _lastMouseState.RightButton == ButtonState.Released)
                 {
-                    if (Globals.OutEdgeNpc != null && Globals.OutEdgeNpc.IsEnemy)
-                        UseMagic(CurrentMagicInUse.TheMagic, Globals.OutEdgeNpc.PositionInWorld);
-                    else UseMagic(CurrentMagicInUse.TheMagic, mouseWorldPosition);
+                    if (CurrentMagicInUse == null)
+                    {
+                        GuiManager.ShowMessage("请先在底部武功栏使用鼠标右键选择武功");
+                    }
+                    else
+                    {
+                        if (Globals.OutEdgeNpc != null && Globals.OutEdgeNpc.IsEnemy)
+                            UseMagic(CurrentMagicInUse.TheMagic, Globals.OutEdgeNpc.PositionInWorld);
+                        else UseMagic(CurrentMagicInUse.TheMagic, mouseWorldPosition);
+                    }
+
                 }
             }
 

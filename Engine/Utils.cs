@@ -96,20 +96,26 @@ namespace Engine
             }
         }
 
-        static public Magic GetMagic(string fileName)
+        /// <summary>
+        /// Get Magic from file name
+        /// </summary>
+        /// <param name="fileName">Magic file name</param>
+        /// <param name="fromCache">Use shared cached Magic class if true.Otherwise use new Magic class</param>
+        /// <returns>Magic class</returns>
+        static public Magic GetMagic(string fileName, bool fromCache = true)
         {
             try
             {
                 var filePath = @"ini\magic\" + fileName;
                 var hashCode = filePath.GetHashCode();
-                if (Magics.ContainsKey(hashCode))
+                if (fromCache && Magics.ContainsKey(hashCode))
                     return Magics[hashCode];
                 else
                 {
                     var magic = new Magic(filePath);
                     if (magic.IsOk)
                     {
-                        Magics[hashCode] = magic;
+                        if (fromCache) Magics[hashCode] = magic;
                         return magic;
                     }
                 }

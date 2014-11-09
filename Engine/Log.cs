@@ -8,6 +8,11 @@ namespace Engine
         private const string LogFilename = "Log.txt";
         public static bool DebugOn;
 
+        public static void Initialize()
+        {
+            File.Create(LogFilename).Dispose();
+        }
+
         public static void LogMessageToFile(string msg)
         {
             if(!DebugOn) return;

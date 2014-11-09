@@ -24,7 +24,7 @@ namespace Engine.Gui
         public event Action<object, MouseLeftClickEvent> Click;
         public event Action<object, MouseRightClickEvent> RightClick;
 
-        public bool IsShow
+        public virtual bool IsShow
         {
             get { return _isShow; }
             set { _isShow = value; }
