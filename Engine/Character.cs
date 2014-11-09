@@ -531,6 +531,13 @@ namespace Engine
                     }
                 }
                 if (AttackingIsOk()) PerformeAttack();
+                if (IsRuning())
+                {
+                    if (!CanRunning())
+                    {
+                        WalkTo(DestinationMoveTilePosition);
+                    }
+                }
             }
         }
 
@@ -738,21 +745,33 @@ namespace Engine
             if (PerformActionOk() &&
                 destinationTilePosition != TilePosition)
             {
-                if (IsRuning())
-                    DestinationMoveTilePosition = destinationTilePosition;
-                else
+                if (CanRunning(false))
                 {
-                    StateInitialize();
-                    Path = Engine.PathFinder.FindPath(TilePosition, destinationTilePosition, PathType);
-                    if (Path == null) StandingImmediately();
+                    if (IsRuning())
+                        DestinationMoveTilePosition = destinationTilePosition;
                     else
                     {
-                        DestinationMoveTilePosition = destinationTilePosition;
-                        if (_isInFighting && NpcIni.ContainsKey((int)NpcState.FightRun)) SetState(NpcState.FightRun);
-                        else SetState(NpcState.Run);
+                        StateInitialize();
+                        Path = Engine.PathFinder.FindPath(TilePosition, destinationTilePosition, PathType);
+                        if (Path == null) StandingImmediately();
+                        else
+                        {
+                            DestinationMoveTilePosition = destinationTilePosition;
+                            if (_isInFighting && NpcIni.ContainsKey((int)NpcState.FightRun)) SetState(NpcState.FightRun);
+                            else SetState(NpcState.Run);
+                        }
                     }
                 }
+                else
+                {
+                    WalkTo(destinationTilePosition);
+                }
             }
+        }
+
+        protected virtual bool CanRunning(bool consumeThew = true)
+        {
+            return true;
         }
 
         public void JumpTo(Vector2 destinationTilePosition)
@@ -887,7 +906,7 @@ namespace Engine
             PerformeAttack(DestinationAttackPositionInWorld);
         }
 
-        protected virtual bool PerformeAttackHook()
+        protected virtual bool CanPerformeAttack()
         {
             return true;
         }
@@ -896,7 +915,7 @@ namespace Engine
         {
             if (PerformActionOk())
             {
-                if (!PerformeAttackHook()) return;
+                if (!CanPerformeAttack()) return;
                 StateInitialize();
                 _isInFighting = true;
                 _totalNonFightingSeconds = 0;
@@ -931,7 +950,7 @@ namespace Engine
 
         protected abstract void PlaySoundEffect(SoundEffect soundEffect);
 
-        protected virtual bool UseMagicHook()
+        protected virtual bool CanUseMagic()
         {
             return true;
         }
@@ -946,12 +965,12 @@ namespace Engine
             {
                 case NpcState.Walk:
                 case NpcState.FightWalk:
-                    {
-                        MoveAlongPath((float)elapsedGameTime.TotalSeconds, WalkSpeed);
-                        SoundManager.Apply3D(_sound,
-                                    PositionInWorld - Globals.ListenerPosition);
-                        Update(gameTime, WalkSpeed);
-                    }
+                {
+                    MoveAlongPath((float)elapsedGameTime.TotalSeconds, WalkSpeed);
+                    SoundManager.Apply3D(_sound,
+                                PositionInWorld - Globals.ListenerPosition);
+                    Update(gameTime, WalkSpeed);
+                }
                     break;
                 case NpcState.Run:
                 case NpcState.FightRun:
@@ -998,7 +1017,7 @@ namespace Engine
                         {
                             PlaySoundEffect(NpcIni[(int)NpcState.Magic].Sound);
                         }
-                        if (UseMagicHook())
+                        if (CanUseMagic())
                             MagicManager.UseMagic(this, MagicUse, PositionInWorld, _magicDestination);
                         StandingImmediately();
                     }

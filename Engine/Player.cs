@@ -24,6 +24,7 @@ namespace Engine
         private const float ListRestorePercent = 0.01f;
         private const float ThewRestorePercent = 0.03f;
         private float _standingMilliseconds;
+        private float _runningMilliseconds;
 
         private MagicListManager.MagicItemInfo _currentMagicInUse;
 
@@ -153,7 +154,7 @@ namespace Engine
             return false;
         }
 
-        protected override bool PerformeAttackHook()
+        protected override bool CanPerformeAttack()
         {
             if (Thew < ThewUseAmountWhenAttack)
             {
@@ -167,7 +168,7 @@ namespace Engine
             }
         }
 
-        protected override bool UseMagicHook()
+        protected override bool CanUseMagic()
         {
             if (Mana < MagicUse.ManaCost)
             {
@@ -179,6 +180,13 @@ namespace Engine
                 Mana -= MagicUse.ManaCost;
                 return true;
             }
+        }
+
+        protected override bool CanRunning(bool consumeThew = true)
+        {
+            if (Thew <= 0) return false;
+            if(consumeThew)Thew -= 1;
+            return true;
         }
 
         public override void Update(GameTime gameTime)
@@ -265,7 +273,7 @@ namespace Engine
                 else Sitdown();
             }
 
-            if (IsStanding())
+            if (IsStanding() || IsWalking())
             {
                 _standingMilliseconds += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
                 if (_standingMilliseconds >= 1000)
