@@ -72,24 +72,24 @@ namespace Jxqy
             Globals.TheMap.LoadMap(@"map\map_005_Ï´½£³Ø.map");
             Globals.TheMap.ViewBeginX = 0;
             Globals.TheMap.ViewBeginY = 0;
-            Globals.TheCarmera = new Carmera(Globals.TheMap.ViewBeginX, 
+            Globals.TheCarmera = new Carmera(Globals.TheMap.ViewBeginX,
                 Globals.TheMap.ViewBeginY,
-                Globals.TheMap.ViewWidth, 
+                Globals.TheMap.ViewWidth,
                 Globals.TheMap.ViewHeight,
-                Globals.TheMap.MapPixelWidth, 
+                Globals.TheMap.MapPixelWidth,
                 Globals.TheMap.MapPixelHeight);
 
             Globals.ThePlayer = new Player(@"save\rpg2\player0.ini");
             NpcManager.Load(@"save\rpg2\xijianchi.npc");
             ObjManager.Load(@"save\rpg2\map005_obj.obj");
             GuiManager.Starting();
-            GuiManager.Load(@"save\rpg2\Magic0.ini", 
+            GuiManager.Load(@"save\rpg2\Magic0.ini",
                     @"save\rpg2\Goods0.ini",
                     @"save\rpg2\memo.ini");
 
             //BackgroundMusic.Play(@"music/Mc003.mp3");
 
-            Globals.TheCarmera.Follow(Globals.ThePlayer); 
+            Globals.TheCarmera.Follow(Globals.ThePlayer);
         }
 
         /// <summary>
@@ -110,32 +110,44 @@ namespace Jxqy
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if(!IsActive) return;
+            if (!IsActive) return;
 
             GuiManager.Update(gameTime);
 
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-                this.Exit();
+            if (Globals.InSuperMagicMode)
+            {
+                Globals.SuperModeMagicSprite.Update(gameTime);
+                if (Globals.SuperModeMagicSprite.IsDestroyed)
+                {
+                    Globals.InSuperMagicMode = false;
+                    Globals.SuperModeMagicSprite = null;
+                }
+            }
+            else
+            {
+                if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
+                    this.Exit();
 
-            var mouseState = Mouse.GetState();
+                var mouseState = Mouse.GetState();
 
-            var keyboardState = Keyboard.GetState();
-            if(keyboardState.IsKeyDown(Keys.D1) && _lastKeyboardState.IsKeyUp(Keys.D1))
-                Globals.TheMap.SwitchLayerDraw(0);
-            if (keyboardState.IsKeyDown(Keys.D2) && _lastKeyboardState.IsKeyUp(Keys.D2))
-                Globals.TheMap.SwitchLayerDraw(1);
-            if (keyboardState.IsKeyDown(Keys.D3) && _lastKeyboardState.IsKeyUp(Keys.D3))
-                Globals.TheMap.SwitchLayerDraw(2);
+                var keyboardState = Keyboard.GetState();
+                if (keyboardState.IsKeyDown(Keys.D1) && _lastKeyboardState.IsKeyUp(Keys.D1))
+                    Globals.TheMap.SwitchLayerDraw(0);
+                if (keyboardState.IsKeyDown(Keys.D2) && _lastKeyboardState.IsKeyUp(Keys.D2))
+                    Globals.TheMap.SwitchLayerDraw(1);
+                if (keyboardState.IsKeyDown(Keys.D3) && _lastKeyboardState.IsKeyUp(Keys.D3))
+                    Globals.TheMap.SwitchLayerDraw(2);
 
-            Globals.ThePlayer.Update(gameTime);
-            MagicManager.Update(gameTime);
-            NpcManager.Update(gameTime);
-            ObjManager.Update(gameTime);
+                Globals.ThePlayer.Update(gameTime);
+                MagicManager.Update(gameTime);
+                NpcManager.Update(gameTime);
+                ObjManager.Update(gameTime);
 
-            Globals.TheMap.Update(gameTime);
+                Globals.TheMap.Update(gameTime);
 
-            _lastKeyboardState = keyboardState;
-            _lastMouseState = mouseState;
+                _lastKeyboardState = keyboardState;
+                _lastMouseState = mouseState;
+            }
 
             base.Update(gameTime);
         }
@@ -148,10 +160,10 @@ namespace Jxqy
         {
             GraphicsDevice.Clear(Color.Black);
 
-            _spriteBatch.Begin(SpriteSortMode.Deferred,null);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, null);
             Globals.TheMap.Draw(_spriteBatch);
             Globals.ThePlayer.Draw(_spriteBatch);
-            _spriteBatch.DrawString(Globals.FontSize12, 
+            _spriteBatch.DrawString(Globals.FontSize12,
                 "Ãü£º " + Globals.ThePlayer.Life.ToString(),
                 new Vector2(5, 5), Color.Red);
             _spriteBatch.DrawString(Globals.FontSize12,
@@ -160,6 +172,7 @@ namespace Jxqy
             _spriteBatch.DrawString(Globals.FontSize12,
                 "ÄÚ£º " + Globals.ThePlayer.Mana.ToString(),
                 new Vector2(5, 45), Color.Red);
+            if (Globals.InSuperMagicMode) Globals.SuperModeMagicSprite.Draw(_spriteBatch);
             GuiManager.Draw(_spriteBatch);
             _spriteBatch.End();
             base.Draw(gameTime);

@@ -19,6 +19,7 @@ namespace Engine
         private bool _isDestroyed;
         private bool _isInDestroy;
         private bool _destroyOnEnd;
+        private LinkedList<Sprite> _superModeDestroySprites;
 
         #region Public properties
         public Magic BelongMagic
@@ -67,7 +68,10 @@ namespace Engine
                 _isDestroyed = true;
                 return;
             }
-            base.Set(positionInWorld, velocity, belongMagic.FlyingImage, 0);
+            var texture = belongMagic.FlyingImage;
+            if (belongMagic.MoveKind == 15)
+                texture = belongMagic.SuperModeImage;
+            Set(positionInWorld, velocity, texture, 0);
             BelongMagic = belongMagic;
             BelongCharacter = belongCharacter;
             MoveDirection = moveDirection;
@@ -83,7 +87,10 @@ namespace Engine
                 _isDestroyed = true;
                 return;
             }
-            base.Set(positionInWorld, 0, belongMagic.FlyingImage, direction);
+            var texture = belongMagic.FlyingImage;
+            if (belongMagic.MoveKind == 15)
+                texture = belongMagic.SuperModeImage;
+            Set(positionInWorld, 0, texture, direction);
             BelongMagic = belongMagic;
             BelongCharacter = belongCharacter;
             _destroyOnEnd = destroyOnEnd;
@@ -156,7 +163,8 @@ namespace Engine
         public void Begin()
         {
 
-            if (BelongMagic.LifeFrame == 0)
+            if (BelongMagic.LifeFrame == 0 ||
+                BelongMagic.MoveKind == 15)
                 PlayCurrentDirOnce();
 
             if (Velocity != 0)//Move 30
@@ -177,14 +185,40 @@ namespace Engine
             if (IsInDestroy) return;
             _isInDestroy = true;
             MoveDirection = Vector2.Zero;
-            if (BelongMagic.VanishImage != null)
+
+            if (BelongMagic.MoveKind == 15)
             {
-                EndPlayCurrentDirOnce();
-                Texture = BelongMagic.VanishImage;
-                PlayCurrentDirOnce();
+                Texture = null;
+                _superModeDestroySprites = new LinkedList<Sprite>();
+                foreach (var npc in NpcManager.NpcsInView)
+                {
+                    if (npc.IsEnemy)
+                    {
+                        var sprite = new Sprite(npc.PositionInWorld,
+                            0f,
+                            BelongMagic.VanishImage,
+                            0);
+                        sprite.PlayCurrentDirOnce();
+                        _superModeDestroySprites.AddLast(sprite);
+                        CharacterHited(npc);
+                        SoundManager.Play3DSoundOnece(BelongMagic.VanishSound,
+                            npc.PositionInWorld - Globals.ListenerPosition);
+                    }
+                }
+                if (_superModeDestroySprites.Count == 0) _isDestroyed = true;
             }
-            SoundManager.Play3DSoundOnece(BelongMagic.VanishSound,
+            else
+            {
+                if (BelongMagic.VanishImage != null)
+                {
+                    EndPlayCurrentDirOnce();
+                    Texture = BelongMagic.VanishImage;
+                    PlayCurrentDirOnce();
+                }
+                SoundManager.Play3DSoundOnece(BelongMagic.VanishSound,
                 PositionInWorld - Globals.ListenerPosition);
+            }
+
         }
 
         public void SetPath(LinkedList<Vector2> paths)
@@ -229,7 +263,29 @@ namespace Engine
             else _elapsedFrame += FrameAdvanceCount;
             if (IsInDestroy)
             {
-                if (IsPlayCurrentDirOnceEnd()) _isDestroyed = true;
+                if (BelongMagic.MoveKind == 15)
+                {
+                    var end = false;
+                    foreach (var sprite in _superModeDestroySprites)
+                    {
+                        sprite.Update(gameTime);
+                        if (sprite.IsPlayCurrentDirOnceEnd())
+                        {
+                            end = true;
+                            break;
+                        }
+                    }
+                    if (end) _isDestroyed = true;
+                }
+                else
+                {
+                    if (IsPlayCurrentDirOnceEnd()) _isDestroyed = true;
+                }
+            }
+            else if (BelongMagic.MoveKind == 15)
+            {
+                if (IsPlayCurrentDirOnceEnd())
+                    Destroy();
             }
             else
             {
@@ -267,6 +323,13 @@ namespace Engine
         public void Draw(SpriteBatch spriteBatch)
         {
             if (IsDestroyed) return;
+            if (BelongMagic.MoveKind == 15 && IsInDestroy)
+            {
+                foreach (var sprite in _superModeDestroySprites)
+                {
+                    sprite.Draw(spriteBatch);
+                }
+            }
             base.Draw(spriteBatch);
         }
     }

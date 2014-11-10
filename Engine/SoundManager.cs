@@ -46,7 +46,7 @@ namespace Engine
                 direction *= (percent * Globals.Sound3DMaxDistance);
                 emitter.Position = new Vector3(direction.X, 0, direction.Y);
             }
-            else
+            else if(length != 0)
             {
                 emitter.Position = new Vector3(999999f);
             }

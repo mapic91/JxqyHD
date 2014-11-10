@@ -107,6 +107,9 @@ namespace Engine
                 case 13:
                     AddFollowCharacterMagicSprite(user, magic, origin, true);
                     break;
+                case 15:
+                    AddSuperModeMagic(user, magic, origin, true);
+                    break;
             }
         }
 
@@ -626,6 +629,12 @@ namespace Engine
                 }
                     break;
             }
+        }
+
+        private static void AddSuperModeMagic(Character user, Magic magic, Vector2 origin, bool destroyOnEnd)
+        {
+            Globals.InSuperMagicMode = true;
+            Globals.SuperModeMagicSprite = GetFixedPositionMagicSprite(user, magic, origin, destroyOnEnd);
         }
 
         public static void Update(GameTime gameTime)
