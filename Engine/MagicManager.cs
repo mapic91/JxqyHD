@@ -104,6 +104,9 @@ namespace Engine
                         }
                         break;
                     }
+                case 13:
+                    AddFollowCharacterMagicSprite(user, magic, origin, true);
+                    break;
             }
         }
 
@@ -297,7 +300,7 @@ namespace Engine
         {
             var direction = destination - origin;
             var directionIndex = Utils.GetDirectionIndex(direction, 8);
-            directionIndex = 4 * directionIndex;
+            directionIndex = 4 * directionIndex;//8 to 32
             var list = Utils.GetDirection32List();
             var count = 1;
             if (magic.CurrentLevel > 0)
@@ -309,10 +312,10 @@ namespace Engine
             AddMagicSprite(GetMoveMagicSpriteOnDirection(user, magic, origin, direction, false, speedRatio));
             for (var i = 1; i <= count; i++)
             {
-                direction = list[(directionIndex + i) % 32];
+                direction = list[(directionIndex + i*2) % 32];
                 speedRatio = GetSpeedRatio(direction.Y);
                 AddMagicSprite(GetMoveMagicSpriteOnDirection(user, magic, origin, direction, false, speedRatio));
-                direction = list[(directionIndex + 32 - i) % 32];
+                direction = list[(directionIndex + 32 - i*2) % 32];
                 speedRatio = GetSpeedRatio(direction.Y);
                 AddMagicSprite(GetMoveMagicSpriteOnDirection(user, magic, origin, direction, false, speedRatio));
             }
@@ -326,7 +329,7 @@ namespace Engine
 
             var direction = destination - origin;
             var directionIndex = Utils.GetDirectionIndex(direction, 8);
-            directionIndex = 4 * directionIndex;
+            directionIndex = 4 * directionIndex;//8 to 32
             var list = Utils.GetDirection32List();
             var count = 1;
             if (magic.CurrentLevel > 0)
@@ -339,11 +342,11 @@ namespace Engine
             AddWorkItem(new WorkItem(raandom.Next(2)*magicDelayMilliseconds, sprite));
             for (var i = 1; i <= count; i++)
             {
-                direction = list[(directionIndex + i) % 32];
+                direction = list[(directionIndex + i*2) % 32];
                 speedRatio = GetSpeedRatio(direction.Y);
                 sprite = GetMoveMagicSpriteOnDirection(user, magic, origin, direction, false, speedRatio);
                 AddWorkItem(new WorkItem(raandom.Next(2) * magicDelayMilliseconds, sprite));
-                direction = list[(directionIndex + 32 - i) % 32];
+                direction = list[(directionIndex + 32 - i*2) % 32];
                 speedRatio = GetSpeedRatio(direction.Y);
                 sprite = GetMoveMagicSpriteOnDirection(user, magic, origin, direction, false, speedRatio);
                 AddWorkItem(new WorkItem(raandom.Next(2) * magicDelayMilliseconds, sprite));
@@ -588,6 +591,40 @@ namespace Engine
             {
                 beginPosition += rowOffset;
                 AddFixedWallMagicSprite(user, magic, beginPosition, columnOffset, 1 + i*2, destroyOnEnd, i*magicDelayMilliseconds);
+            }
+        }
+
+        private static void AddFollowCharacterMagicSprite(Character user, Magic magic, Vector2 origin, bool destroyOnEnd)
+        {
+            var sprite = GetFixedPositionMagicSprite(user, magic, origin, destroyOnEnd);
+            switch (magic.SpecialKind)
+            {
+                case 1:
+                    user.Life += (magic.Effect == 0 ? user.Attack : magic.Effect);
+                    AddMagicSprite(sprite);
+                    break;
+                case 2:
+                    user.Thew += (magic.Effect == 0 ? user.Attack : magic.Effect);
+                    AddMagicSprite(sprite);
+                    break;
+                case 3:
+                {
+                    MagicSprite spriteInEffect = null;
+                    foreach (var item in user.MagicSpritesInEffect)
+                    {
+                        if (item.BelongMagic.Name == magic.Name)
+                            spriteInEffect = item;
+                    }
+                    if (spriteInEffect != null && spriteInEffect.IsLive)
+                    {
+                        spriteInEffect.ResetElaspedFrame();
+                    }
+                    else
+                    {
+                        user.MagicSpritesInEffect.AddLast(sprite);
+                    }
+                }
+                    break;
             }
         }
 

@@ -62,6 +62,9 @@ namespace Engine
         protected Magic MagicUse;
 
         #region Public properties
+
+        public LinkedList<MagicSprite> MagicSpritesInEffect = new LinkedList<MagicSprite>();
+
         public int Dir
         {
             get { return _dir; }
@@ -1057,11 +1060,30 @@ namespace Engine
                     ToNonFightingState();
                 }
             }
+
+            for (var node = MagicSpritesInEffect.First; node != null; )
+            {
+                var next = node.Next;
+                var magicSprite = node.Value;
+                magicSprite.Update(gameTime);
+                if (magicSprite.IsDestroyed)
+                    MagicSpritesInEffect.Remove(node);
+                node = next;
+            }
+        }
+
+        public void DrawMagicSpriteInEffect(SpriteBatch spriteBatch)
+        {
+            foreach (var magicSprite in MagicSpritesInEffect)
+            {
+                magicSprite.Draw(spriteBatch);
+            }
         }
 
         public virtual void Draw(SpriteBatch spriteBatch)
         {
             if (IsDeath) return;
+            DrawMagicSpriteInEffect(spriteBatch);
             base.Draw(spriteBatch);
         }
     }

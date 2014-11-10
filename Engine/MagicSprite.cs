@@ -39,6 +39,11 @@ namespace Engine
             set { _moveDirection = value; }
         }
 
+        public bool IsLive
+        {
+            get { return (!IsDestroyed && !IsInDestroy); }
+        }
+
         public bool IsDestroyed
         {
             get { return _isDestroyed; }
@@ -115,6 +120,27 @@ namespace Engine
                 var amount = BelongMagic.Effect == 0 ? BelongCharacter.Attack : BelongMagic.Effect;
                 var offset = amount - character.Defend;
                 if (offset > minimalEffect) effect = offset;
+                foreach (var magicSprite in character.MagicSpritesInEffect)
+                {
+                    var magic = magicSprite.BelongMagic;
+                    switch (magic.MoveKind)
+                    {
+                        case 13:
+                            if (magic.SpecialKind == 3)
+                            {
+                                var manaReduce = magic.Effect;
+                                if (effect < manaReduce) manaReduce = effect;
+                                manaReduce /= 2;
+                                if (character.Mana >= manaReduce)
+                                {
+                                    character.Mana -= manaReduce;
+                                    effect -= magic.Effect;
+                                    if (effect < 0) effect = 0;
+                                }
+                            }
+                            break;
+                    }
+                }
                 character.Life -= effect;
                 if (character.Life <= 0) character.Death();
                 else
@@ -122,6 +148,7 @@ namespace Engine
                     if (Globals.TheRandom.Next(4) == 0)
                         character.Hurting();
                 }
+
             }
             Destroy();
         }
@@ -165,6 +192,11 @@ namespace Engine
             _paths = paths;
         }
 
+        public void ResetElaspedFrame()
+        {
+            _elapsedFrame = 0;
+        }
+
         public override void Update(GameTime gameTime)
         {
             if (IsDestroyed) return;
@@ -189,24 +221,33 @@ namespace Engine
             {
                 MoveTo(MoveDirection, (float)gameTime.ElapsedGameTime.TotalSeconds);
             }
-            _elapsedFrame += FrameAdvanceCount;
+            if (BelongMagic.MoveKind == 13)
+            {
+                _elapsedFrame++;
+                PositionInWorld = BelongCharacter.PositionInWorld;
+            }
+            else _elapsedFrame += FrameAdvanceCount;
             if (IsInDestroy)
             {
                 if (IsPlayCurrentDirOnceEnd()) _isDestroyed = true;
             }
             else
             {
-                if (BelongCharacter.IsPlayer)
+                if (BelongMagic.MoveKind != 13)
                 {
-                    CharacterHited(NpcManager.GetEnemy(TilePosition));
-                }
-                else
-                {
-                    if (TilePosition == Globals.ThePlayer.TilePosition)
+                    if (BelongCharacter.IsPlayer)
                     {
-                        CharacterHited(Globals.ThePlayer);
+                        CharacterHited(NpcManager.GetEnemy(TilePosition));
+                    }
+                    else
+                    {
+                        if (TilePosition == Globals.ThePlayer.TilePosition)
+                        {
+                            CharacterHited(Globals.ThePlayer);
+                        }
                     }
                 }
+
                 if (Globals.TheMap.IsObstacleForMagic(MapX, MapY))
                 {
                     Destroy();

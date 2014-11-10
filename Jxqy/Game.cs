@@ -44,7 +44,7 @@ namespace Jxqy
             SoundEffect.MasterVolume = Globals.SoundEffectVolume;
             MediaPlayer.Volume = Globals.MusicVolume;
             Log.Initialize();
-            Log.DebugOn = true;
+            Log.DebugOn = false;
 
             Log.LogMessageToFile("Game is running...");
 

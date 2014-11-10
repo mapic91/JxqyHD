@@ -354,6 +354,7 @@ namespace Engine
                 }
             }
             Draw(spriteBatch, texture);
+            DrawMagicSpriteInEffect(spriteBatch);
 
             if (Globals.OutEdgeSprite != null)
             {
