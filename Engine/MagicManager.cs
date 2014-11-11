@@ -48,74 +48,6 @@ namespace Engine
             _listChanged = true;
         }
 
-        public static void UseMagic(Character user, Magic magic, Vector2 origin, Vector2 destination)
-        {
-            if (user == null || magic == null) return;
-            if (magic.FlyingSound != null)
-                magic.FlyingSound.Play();
-            switch (magic.MoveKind)
-            {
-                case 1:
-                    AddFixedPositionMagicSprite(user, magic, destination, true);
-                    break;
-                case 2:
-                    AddMagicSprite(GetMoveMagicSprite(user, magic, origin, destination, false, GetSpeedRatio(destination - origin)));
-                    break;
-                case 3:
-                    AddLineMoveMagicSprite(user, magic, origin, destination, false);
-                    break;
-                case 4:
-                    AddCircleMoveMagicSprite(user, magic, origin, false);
-                    break;
-                case 5:
-                    AddHeartMoveMagicSprite(user, magic, origin, false);
-                    break;
-                case 6:
-                    AddSpiralMoveMagicSprite(user, magic, origin, destination, false);
-                    break;
-                case 7:
-                    AddSectorMoveMagicSprite(user, magic, origin, destination, false);
-                    break;
-                case 8:
-                    AddRandomSectorMoveMagicSprite(user, magic, origin, destination, false);
-                    break;
-                case 9:
-                    AddFixedWallMagicSprite(user, magic, origin, destination, true);
-                    break;
-                case 10:
-                    AddWallMoveMagicSprite(user, magic, origin, destination, false);
-                    break;
-                case 11:
-                    {
-                        switch (magic.Region)
-                        {
-                            case 1:
-                                AddSquareFixedPositionMagicSprite(user, magic, destination, true);
-                                break;
-                            case 2:
-                                AddCrossFixedPositionMagicSprite(user, magic, origin, true);
-                                break;
-                            case 3:
-                                AddRegtangleFixedPositionMagicSprite(user, magic, origin, destination, true);
-                                break;
-                            case 4:
-                                AddIsoscelesTriangleMagicSprite(user, magic, origin, destination, true);
-                                break;
-                        }
-                        break;
-                    }
-                case 13:
-                    AddFollowCharacterMagicSprite(user, magic, origin, true);
-                    break;
-                case 15:
-                    AddSuperModeMagic(user, magic, origin, true);
-                    break;
-                case 16:
-                    AddFollowEnemyMagicSprite(user, magic, origin, destination, false);
-                    break;
-            }
-        }
-
         private static void AddWorkItem(WorkItem item)
         {
             if (item.LeftMilliseconds < 1)
@@ -302,10 +234,10 @@ namespace Engine
             AddMagicSprite(GetMoveMagicSpriteOnDirection(user, magic, origin, direction, false, speedRatio));
             for (var i = 1; i <= count; i++)
             {
-                direction = list[(directionIndex + i*2) % 32];
+                direction = list[(directionIndex + i * 2) % 32];
                 speedRatio = GetSpeedRatio(direction.Y);
                 AddMagicSprite(GetMoveMagicSpriteOnDirection(user, magic, origin, direction, false, speedRatio));
-                direction = list[(directionIndex + 32 - i*2) % 32];
+                direction = list[(directionIndex + 32 - i * 2) % 32];
                 speedRatio = GetSpeedRatio(direction.Y);
                 AddMagicSprite(GetMoveMagicSpriteOnDirection(user, magic, origin, direction, false, speedRatio));
             }
@@ -329,14 +261,14 @@ namespace Engine
             direction = list[directionIndex];
             var speedRatio = GetSpeedRatio(direction.Y);
             var sprite = GetMoveMagicSpriteOnDirection(user, magic, origin, direction, false, speedRatio);
-            AddWorkItem(new WorkItem(raandom.Next(2)*magicDelayMilliseconds, sprite));
+            AddWorkItem(new WorkItem(raandom.Next(2) * magicDelayMilliseconds, sprite));
             for (var i = 1; i <= count; i++)
             {
-                direction = list[(directionIndex + i*2) % 32];
+                direction = list[(directionIndex + i * 2) % 32];
                 speedRatio = GetSpeedRatio(direction.Y);
                 sprite = GetMoveMagicSpriteOnDirection(user, magic, origin, direction, false, speedRatio);
                 AddWorkItem(new WorkItem(raandom.Next(2) * magicDelayMilliseconds, sprite));
-                direction = list[(directionIndex + 32 - i*2) % 32];
+                direction = list[(directionIndex + 32 - i * 2) % 32];
                 speedRatio = GetSpeedRatio(direction.Y);
                 sprite = GetMoveMagicSpriteOnDirection(user, magic, origin, direction, false, speedRatio);
                 AddWorkItem(new WorkItem(raandom.Next(2) * magicDelayMilliseconds, sprite));
@@ -407,7 +339,7 @@ namespace Engine
             if (magic.CurrentLevel > 3) count += ((magic.CurrentLevel - 1) / 3) * 2;
             var offsetRow = new Vector2(32, 16);
             var offsetColumn = new Vector2(32, -16);
-            var halfCount = count/2;
+            var halfCount = count / 2;
             destination -= halfCount * offsetRow;
             for (var i = 0; i < count; i++)
             {
@@ -442,14 +374,14 @@ namespace Engine
         private static void AddHorizontalFixedWallMagicSprite(Character user, Magic magic, Vector2 wallMiddle,
             int count, bool destroyOnEnd, float delay)
         {
-            count = count/2;
+            count = count / 2;
             var position = wallMiddle;
             AddWorkItem(new WorkItem(delay, GetFixedPositionMagicSprite(user, magic, position, destroyOnEnd)));
             var newPositionLeft = position;
             var newPositionRight = position;
             for (var i = 0; i < count; i++)
             {
-                if (i%2 == 0)
+                if (i % 2 == 0)
                 {
                     newPositionLeft += new Vector2(-32, -16);
                     newPositionRight += new Vector2(32, -16);
@@ -479,75 +411,75 @@ namespace Engine
                 case 3:
                 case 5:
                 case 7:
-                {
-                    Vector2 beginPosition = origin, 
-                        offsetColumn = new Vector2(), 
-                        offsetRow = new Vector2();
-                    switch (directionIndex)
                     {
-                        case 1:
-                            offsetColumn = new Vector2(32, 16);
-                            offsetRow = new Vector2(-32, 16);
-                            break;
-                        case 3:
-                            offsetColumn = new Vector2(32, -16);
-                            offsetRow = new Vector2(-32, -16);
-                            break;
-                        case 5:
-                            offsetColumn = new Vector2(32, 16);
-                            offsetRow = new Vector2(32, -16);
-                            break;
-                        case 7:
-                            offsetColumn = new Vector2(32, -16);
-                            offsetRow = new Vector2(32, 16);
-                            break;
+                        Vector2 beginPosition = origin,
+                            offsetColumn = new Vector2(),
+                            offsetRow = new Vector2();
+                        switch (directionIndex)
+                        {
+                            case 1:
+                                offsetColumn = new Vector2(32, 16);
+                                offsetRow = new Vector2(-32, 16);
+                                break;
+                            case 3:
+                                offsetColumn = new Vector2(32, -16);
+                                offsetRow = new Vector2(-32, -16);
+                                break;
+                            case 5:
+                                offsetColumn = new Vector2(32, 16);
+                                offsetRow = new Vector2(32, -16);
+                                break;
+                            case 7:
+                                offsetColumn = new Vector2(32, -16);
+                                offsetRow = new Vector2(32, 16);
+                                break;
+                        }
+                        for (var i = 0; i < count; i++)
+                        {
+                            beginPosition += offsetRow;
+                            AddFixedWallMagicSprite(user, magic, beginPosition, offsetColumn, columnCount, destroyOnEnd, i * magicDelayMilliseconds);
+                        }
                     }
-                    for (var i = 0; i < count; i++)
-                    {
-                        beginPosition += offsetRow;
-                        AddFixedWallMagicSprite(user, magic, beginPosition, offsetColumn, columnCount, destroyOnEnd, i * magicDelayMilliseconds);
-                    }
-                }
                     break;
                 case 0:
                 case 4:
-                {
-                    var offsetRow = new Vector2(0, -32);
-                    if (directionIndex == 0)
                     {
-                        offsetRow = new Vector2(0, 32);
+                        var offsetRow = new Vector2(0, -32);
+                        if (directionIndex == 0)
+                        {
+                            offsetRow = new Vector2(0, 32);
+                        }
+                        var beginPosition = origin;
+                        for (var i = 0; i < count; i++)
+                        {
+                            beginPosition += offsetRow;
+                            AddHorizontalFixedWallMagicSprite(user, magic, beginPosition, columnCount, destroyOnEnd, i * magicDelayMilliseconds);
+                        }
                     }
-                    var beginPosition = origin;
-                    for (var i = 0; i < count; i++)
-                    {
-                        beginPosition += offsetRow;
-                        AddHorizontalFixedWallMagicSprite(user, magic, beginPosition, columnCount, destroyOnEnd, i * magicDelayMilliseconds);
-                    }
-                }
                     break;
                 case 2:
-                {
-                    var beginPostion = origin;
-                    var offsetColumn = new Vector2(0, 32);
-                    for (var i = 0; i < count; i++)
                     {
-                        if (i%2 == 0) beginPostion += new Vector2(-32, -16);
-                        else beginPostion += new Vector2(-32, 16);
-                        AddFixedWallMagicSprite(user, magic, beginPostion, offsetColumn, columnCount, destroyOnEnd, i * magicDelayMilliseconds);
+                        var beginPostion = origin;
+                        var offsetColumn = new Vector2(0, 32);
+                        for (var i = 0; i < count; i++)
+                        {
+                            if (i % 2 == 0) beginPostion += new Vector2(-32, -16);
+                            else beginPostion += new Vector2(-32, 16);
+                            AddFixedWallMagicSprite(user, magic, beginPostion, offsetColumn, columnCount, destroyOnEnd, i * magicDelayMilliseconds);
+                        }
                     }
-                }
                     break;
                 case 6:
-                {
-                    var beginPostion = origin;
-                    var offsetColumn = new Vector2(0, 32);
-                    for (var i = 0; i < count; i++)
                     {
-                        if (i % 2 == 0) beginPostion += new Vector2(32, 16);
-                        else beginPostion += new Vector2(32, -16);
-                        AddFixedWallMagicSprite(user, magic, beginPostion, offsetColumn, columnCount, destroyOnEnd, i * magicDelayMilliseconds);
+                        var beginPostion = origin;
+                        var offsetColumn = new Vector2(0, 32);
+                        for (var i = 0; i < count; i++)
+                        {
+                            if (i % 2 == 0) beginPostion += new Vector2(32, 16);
+                            else beginPostion += new Vector2(32, -16);
+                            AddFixedWallMagicSprite(user, magic, beginPostion, offsetColumn, columnCount, destroyOnEnd, i * magicDelayMilliseconds);
+                        }
                     }
-                }
                     break;
             }
         }
@@ -565,7 +497,7 @@ namespace Engine
             new Vector2(0, 32), new Vector2(-32, 16),
             new Vector2(64, 0), new Vector2(32, 16),
             new Vector2(0, 32), new Vector2(32, -16)
-        }; 
+        };
         private static void AddIsoscelesTriangleMagicSprite(Character user, Magic magic, Vector2 origin,
             Vector2 destination, bool destroyOnEnd)
         {
@@ -580,7 +512,7 @@ namespace Engine
             for (var i = 0; i < count; i++)
             {
                 beginPosition += rowOffset;
-                AddFixedWallMagicSprite(user, magic, beginPosition, columnOffset, 1 + i*2, destroyOnEnd, i*magicDelayMilliseconds);
+                AddFixedWallMagicSprite(user, magic, beginPosition, columnOffset, 1 + i * 2, destroyOnEnd, i * magicDelayMilliseconds);
             }
         }
 
@@ -598,22 +530,22 @@ namespace Engine
                     AddMagicSprite(sprite);
                     break;
                 case 3:
-                {
-                    MagicSprite spriteInEffect = null;
-                    foreach (var item in user.MagicSpritesInEffect)
                     {
-                        if (item.BelongMagic.Name == magic.Name)
-                            spriteInEffect = item;
+                        MagicSprite spriteInEffect = null;
+                        foreach (var item in user.MagicSpritesInEffect)
+                        {
+                            if (item.BelongMagic.Name == magic.Name)
+                                spriteInEffect = item;
+                        }
+                        if (spriteInEffect != null && spriteInEffect.IsLive)
+                        {
+                            spriteInEffect.ResetElaspedFrame();
+                        }
+                        else
+                        {
+                            user.MagicSpritesInEffect.AddLast(sprite);
+                        }
                     }
-                    if (spriteInEffect != null && spriteInEffect.IsLive)
-                    {
-                        spriteInEffect.ResetElaspedFrame();
-                    }
-                    else
-                    {
-                        user.MagicSpritesInEffect.AddLast(sprite);
-                    }
-                }
                     break;
             }
         }
@@ -627,6 +559,65 @@ namespace Engine
         private static void AddFollowEnemyMagicSprite(Character user, Magic magic, Vector2 origin, Vector2 destination, bool destroyOnEnd)
         {
             AddMagicSprite(GetMoveMagicSprite(user, magic, origin, destination, destroyOnEnd));
+        }
+
+        private static void AddThrowMagicSprite(Character user, Magic magic, Vector2 origin, Vector2 destination, bool destroyOnEnd)
+        {
+            var count = 1;
+            if (magic.CurrentLevel > 1)
+            {
+                count += (magic.CurrentLevel - 1) / 3;
+            }
+            var columnOffset = new Vector2(-32, 16);
+            var rowOffset = new Vector2(32, 16);
+            var halfCount = count / 2;
+            destination -= rowOffset * halfCount;
+            for (var r = 0; r < count; r++)
+            {
+                var rowDestination = destination - columnOffset * halfCount;
+                for (var c = 0; c < count; c++)
+                {
+                    AddMagicSprite(GetThrowMagicSprite(user, magic, origin, rowDestination, destroyOnEnd));
+                    rowDestination += columnOffset;
+                }
+                destination += rowOffset;
+            }
+        }
+
+        private static MagicSprite GetThrowMagicSprite(Character user, Magic magic, Vector2 origin, Vector2 destination, bool destroyOnEnd)
+        {
+            var sprite = new MagicSprite(magic, 
+                user,
+                origin,
+                magic.Speed*Globals.MagicBasespeed,
+                Vector2.Zero,
+                destroyOnEnd);
+            var path = new LinkedList<Vector2>();
+            path.AddLast(origin);
+            const int count = 64;
+            const int halfCount = count/2;
+            var distance = Vector2.Distance(origin, destination);
+            var pathUnit = (destination - origin)/count;
+            var offset = new Vector2[count - 1];
+            var offsetUnit = distance/count;
+            for (var i = 0; i < count - 1; i++)
+            {
+                if (i <= halfCount)
+                {
+                    offset[i] = new Vector2(0, -(i+1)*offsetUnit);
+                }
+                else
+                {
+                    offset[i] = new Vector2(0, -(count - i + 1)*offsetUnit);
+                }
+            }
+            for (var i = 0; i < count - 1; i++)
+            {
+                path.AddLast(origin + (i + 1)*pathUnit + offset[i]);
+            }
+            path.AddLast(destination);
+            sprite.SetPath(path);
+            return sprite;
         }
 
         public static float GetSpeedRatio(Vector2 direction)
@@ -645,6 +636,77 @@ namespace Engine
             return 1f - 0.5f * Math.Abs(normalizedDirectionY);
         }
 
+        public static void UseMagic(Character user, Magic magic, Vector2 origin, Vector2 destination)
+        {
+            if (user == null || magic == null) return;
+            if (magic.FlyingSound != null)
+                magic.FlyingSound.Play();
+            switch (magic.MoveKind)
+            {
+                case 1:
+                    AddFixedPositionMagicSprite(user, magic, destination, true);
+                    break;
+                case 2:
+                    AddMagicSprite(GetMoveMagicSprite(user, magic, origin, destination, false, GetSpeedRatio(destination - origin)));
+                    break;
+                case 3:
+                    AddLineMoveMagicSprite(user, magic, origin, destination, false);
+                    break;
+                case 4:
+                    AddCircleMoveMagicSprite(user, magic, origin, false);
+                    break;
+                case 5:
+                    AddHeartMoveMagicSprite(user, magic, origin, false);
+                    break;
+                case 6:
+                    AddSpiralMoveMagicSprite(user, magic, origin, destination, false);
+                    break;
+                case 7:
+                    AddSectorMoveMagicSprite(user, magic, origin, destination, false);
+                    break;
+                case 8:
+                    AddRandomSectorMoveMagicSprite(user, magic, origin, destination, false);
+                    break;
+                case 9:
+                    AddFixedWallMagicSprite(user, magic, origin, destination, true);
+                    break;
+                case 10:
+                    AddWallMoveMagicSprite(user, magic, origin, destination, false);
+                    break;
+                case 11:
+                    {
+                        switch (magic.Region)
+                        {
+                            case 1:
+                                AddSquareFixedPositionMagicSprite(user, magic, destination, true);
+                                break;
+                            case 2:
+                                AddCrossFixedPositionMagicSprite(user, magic, origin, true);
+                                break;
+                            case 3:
+                                AddRegtangleFixedPositionMagicSprite(user, magic, origin, destination, true);
+                                break;
+                            case 4:
+                                AddIsoscelesTriangleMagicSprite(user, magic, origin, destination, true);
+                                break;
+                        }
+                        break;
+                    }
+                case 13:
+                    AddFollowCharacterMagicSprite(user, magic, origin, true);
+                    break;
+                case 15:
+                    AddSuperModeMagic(user, magic, origin, true);
+                    break;
+                case 16:
+                    AddFollowEnemyMagicSprite(user, magic, origin, destination, false);
+                    break;
+                case 17:
+                    AddThrowMagicSprite(user, magic, origin, destination, true);
+                    break;
+            }
+        }
+
         public static void Update(GameTime gameTime)
         {
             var elapsedMilliseconds = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
@@ -656,7 +718,7 @@ namespace Engine
                 item.LeftMilliseconds -= elapsedMilliseconds;
                 if (item.LeftMilliseconds <= 0)
                 {
-                     AddMagicSprite(item.TheSprite);
+                    AddMagicSprite(item.TheSprite);
                     _workList.Remove(node);
                 }
                 node = next;

@@ -816,7 +816,7 @@ namespace Engine
             }
         }
 
-        public void UseMagic(Magic magicUse, Vector2 magicDestinationPosition)
+        public void UseMagic(Magic magicUse, Vector2 magicDestinationTilePosition)
         {
             if (PerformActionOk())
             {
@@ -825,7 +825,7 @@ namespace Engine
                 _totalNonFightingSeconds = 0;
 
                 MagicUse = magicUse;
-                _magicDestination = magicDestinationPosition;
+                _magicDestination = Map.ToPixelPosition(magicDestinationTilePosition);
                 SetState(NpcState.Magic);
                 SetDirection(_magicDestination - PositionInWorld);
                 PlayCurrentDirOnce();

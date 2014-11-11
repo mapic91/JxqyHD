@@ -161,6 +161,21 @@ namespace Engine
             Destroy();
         }
 
+        private void CheckCharacterHited()
+        {
+            if (BelongCharacter.IsPlayer)
+            {
+                CharacterHited(NpcManager.GetEnemy(TilePosition));
+            }
+            else
+            {
+                if (TilePosition == Globals.ThePlayer.TilePosition)
+                {
+                    CharacterHited(Globals.ThePlayer);
+                }
+            }
+        }
+
         public void Begin()
         {
 
@@ -244,11 +259,16 @@ namespace Engine
                     var endPosition = _paths.First.Next.Value;
                     var distance = Vector2.Distance(beginPosition, endPosition);
                     MoveTo(endPosition - beginPosition, (float)gameTime.ElapsedGameTime.TotalSeconds);
-                    if (MovedDistance + Globals.DistanceOffset > distance)
+                    if (MovedDistance >= distance)
                     {
-                        MovedDistance = 0f;
-                        PositionInWorld = endPosition;
                         _paths.RemoveFirst();
+                        MovedDistance = 0;
+                        PositionInWorld = endPosition;
+                        if (_paths.Count < 2)
+                        {
+                            if (_destroyOnEnd) Destroy();
+                            CheckCharacterHited();
+                        }
                     }
                 }
             }
@@ -274,18 +294,20 @@ namespace Engine
                             MoveDirection != Vector2.Zero)//When MoveDirecton equal zero, magic sprite is in destroying, destroyed or can't move
                             MoveDirection = _closedCharecter.PositionInWorld - PositionInWorld;
                     }
-                    MoveTo(MoveDirection, 
-                        (float)gameTime.ElapsedGameTime.TotalSeconds, 
+                    MoveTo(MoveDirection,
+                        (float)gameTime.ElapsedGameTime.TotalSeconds,
                         MagicManager.GetSpeedRatio(MoveDirection));
                 }
                 else MoveTo(MoveDirection, (float)gameTime.ElapsedGameTime.TotalSeconds);
             }
+
             if (BelongMagic.MoveKind == 13)
             {
                 _elapsedFrame++;
                 PositionInWorld = BelongCharacter.PositionInWorld;
             }
             else _elapsedFrame += FrameAdvanceCount;
+
             if (IsInDestroy)
             {
                 if (BelongMagic.MoveKind == 15)
@@ -312,22 +334,14 @@ namespace Engine
                 if (IsPlayCurrentDirOnceEnd())
                     Destroy();
             }
+            else if (BelongMagic.MoveKind == 17)
+            {
+                //do nothing
+            }
             else
             {
                 if (BelongMagic.MoveKind != 13)
-                {
-                    if (BelongCharacter.IsPlayer)
-                    {
-                        CharacterHited(NpcManager.GetEnemy(TilePosition));
-                    }
-                    else
-                    {
-                        if (TilePosition == Globals.ThePlayer.TilePosition)
-                        {
-                            CharacterHited(Globals.ThePlayer);
-                        }
-                    }
-                }
+                    CheckCharacterHited();
 
                 if (Globals.TheMap.IsObstacleForMagic(MapX, MapY))
                 {
