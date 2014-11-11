@@ -18,6 +18,8 @@ namespace Engine
         private int _currentDirection;
         private Asf _texture = new Asf();
         private bool _isPlayingCurrentDirOnce;
+        private int _playingCurrentDirOnceTotalFrames;
+        private int _playedFrames;
         private float _movedDistance;
         private bool _isTilePositionNew;
         public int FrameAdvanceCount { protected set; get; }
@@ -57,7 +59,6 @@ namespace Engine
             get { return _currentDirection; }
             set
             {
-                if (_isPlayingCurrentDirOnce) return; //Can't set when playing
                 _currentDirection = value % (_texture.DirectionCounts == 0 ? 1 : _texture.DirectionCounts);
                 _frameBegin = _currentDirection * _texture.FrameCountsPerDirection;
                 _frameEnd = _frameBegin + _texture.FrameCountsPerDirection - 1;
@@ -182,11 +183,16 @@ namespace Engine
 
         public void MoveTo(Vector2 direction, float elapsedSeconds)
         {
+            MoveTo(direction, elapsedSeconds, 1f);
+        }
+
+        public void MoveTo(Vector2 direction, float elapsedSeconds, float speedRatio)
+        {
             if (direction != Vector2.Zero)
             {
                 SetDirection(direction);
                 direction.Normalize();
-                var move = direction * _velocity * elapsedSeconds;
+                var move = direction * _velocity * elapsedSeconds * speedRatio;
                 PositionInWorld += move;
                 MovedDistance += move.Length();
             }
@@ -197,6 +203,7 @@ namespace Engine
             if (_isPlayingCurrentDirOnce) return;
             _isPlayingCurrentDirOnce = true;
             CurrentFrameIndex = _frameBegin;//Reset frame
+            _playingCurrentDirOnceTotalFrames = _frameEnd - _frameBegin;
         }
 
         public void EndPlayCurrentDirOnce()
@@ -241,10 +248,16 @@ namespace Engine
                 _elapsedMilliSecond -= Texture.Interval;
                 CurrentFrameIndex++;
                 FrameAdvanceCount = 1;
-                if (_isPlayingCurrentDirOnce &&
-                    CurrentFrameIndex == _frameEnd)
+                if (_isPlayingCurrentDirOnce)
                 {
-                    _isPlayingCurrentDirOnce = false;
+                    _playedFrames++;
+                    if (_playedFrames >= _playingCurrentDirOnceTotalFrames)
+                    {
+                        _isPlayingCurrentDirOnce = false;
+                        _playedFrames = 0;
+                        _playingCurrentDirOnceTotalFrames = 0;
+                    }
+                    
                 }
             }
         }

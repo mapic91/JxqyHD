@@ -54,6 +54,25 @@ namespace Engine
             _npcListChanged = true;
         }
 
+        public static Npc GetClosedEnemy(Vector2 position)
+        {
+            Npc closedNpc = null;
+            var closedDistance = 99999999f;
+            foreach (var npc in NpcManager.NpcList)
+            {
+                if (npc.IsEnemy)
+                {
+                    var distance = Vector2.Distance(position, npc.PositionInWorld);
+                    if (distance < closedDistance)
+                    {
+                        closedNpc = npc;
+                        closedDistance = distance;
+                    }
+                }
+            }
+            return closedNpc;
+        }
+
         public static bool Load(string filePath)
         {
             try
@@ -122,7 +141,7 @@ namespace Engine
 
         public static bool IsEnemy(Vector2 tilePosition)
         {
-            return IsEnemy((int) tilePosition.X, (int) tilePosition.Y);
+            return IsEnemy((int)tilePosition.X, (int)tilePosition.Y);
         }
 
         public static Npc GetEnemy(int tileX, int tileY)
@@ -137,7 +156,7 @@ namespace Engine
 
         public static Npc GetEnemy(Vector2 tilePosition)
         {
-            return GetEnemy((int) tilePosition.X, (int) tilePosition.Y);
+            return GetEnemy((int)tilePosition.X, (int)tilePosition.Y);
         }
 
         public static bool IsObstacle(int tileX, int tileY)
@@ -152,7 +171,7 @@ namespace Engine
 
         public static bool IsObstacle(Vector2 tilePosition)
         {
-            return IsObstacle((int) tilePosition.X, (int) tilePosition.Y);
+            return IsObstacle((int)tilePosition.X, (int)tilePosition.Y);
         }
 
         //just check npcs in view
@@ -189,7 +208,7 @@ namespace Engine
 
         public static void Update(GameTime gameTime)
         {
-            for (var node = _list.First; node != null;)
+            for (var node = _list.First; node != null; )
             {
                 var npc = node.Value;
                 var next = node.Next;

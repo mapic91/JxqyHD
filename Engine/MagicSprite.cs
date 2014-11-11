@@ -20,6 +20,7 @@ namespace Engine
         private bool _isInDestroy;
         private bool _destroyOnEnd;
         private LinkedList<Sprite> _superModeDestroySprites;
+        private Character _closedCharecter;
 
         #region Public properties
         public Magic BelongMagic
@@ -253,7 +254,31 @@ namespace Engine
             }
             else
             {
-                MoveTo(MoveDirection, (float)gameTime.ElapsedGameTime.TotalSeconds);
+                if (BelongMagic.MoveKind == 16)
+                {
+                    if (MovedDistance > 200f)
+                    {
+                        if (BelongCharacter.IsPlayer)
+                        {
+                            if (_closedCharecter == null || _closedCharecter.IsDeath)
+                            {
+                                _closedCharecter = NpcManager.GetClosedEnemy(PositionInWorld);
+                            }
+                        }
+                        else
+                        {
+                            _closedCharecter = Globals.ThePlayer;
+                        }
+
+                        if (_closedCharecter != null &&
+                            MoveDirection != Vector2.Zero)//When MoveDirecton equal zero, magic sprite is in destroying, destroyed or can't move
+                            MoveDirection = _closedCharecter.PositionInWorld - PositionInWorld;
+                    }
+                    MoveTo(MoveDirection, 
+                        (float)gameTime.ElapsedGameTime.TotalSeconds, 
+                        MagicManager.GetSpeedRatio(MoveDirection));
+                }
+                else MoveTo(MoveDirection, (float)gameTime.ElapsedGameTime.TotalSeconds);
             }
             if (BelongMagic.MoveKind == 13)
             {

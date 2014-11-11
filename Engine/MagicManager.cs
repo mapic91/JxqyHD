@@ -110,6 +110,9 @@ namespace Engine
                 case 15:
                     AddSuperModeMagic(user, magic, origin, true);
                     break;
+                case 16:
+                    AddFollowEnemyMagicSprite(user, magic, origin, destination, false);
+                    break;
             }
         }
 
@@ -143,22 +146,6 @@ namespace Engine
                     break;
             }
             return direction;
-        }
-
-        private static float GetSpeedRatio(Vector2 direction)
-        {
-            var speedRatio = 1f;
-            if (direction != Vector2.Zero)
-            {
-                direction.Normalize();
-                speedRatio = GetSpeedRatio(direction.Y);
-            }
-            return speedRatio;
-        }
-
-        private static float GetSpeedRatio(float normalizedDirectionY)
-        {
-            return 1f - 0.5f * Math.Abs(normalizedDirectionY);
         }
 
         private static MagicSprite GetMoveMagicSprite(Character user, Magic magic, Vector2 origin, Vector2 destination, bool destroyOnEnd, float speedRatio = 1f)
@@ -635,6 +622,27 @@ namespace Engine
         {
             Globals.InSuperMagicMode = true;
             Globals.SuperModeMagicSprite = GetFixedPositionMagicSprite(user, magic, origin, destroyOnEnd);
+        }
+
+        private static void AddFollowEnemyMagicSprite(Character user, Magic magic, Vector2 origin, Vector2 destination, bool destroyOnEnd)
+        {
+            AddMagicSprite(GetMoveMagicSprite(user, magic, origin, destination, destroyOnEnd));
+        }
+
+        public static float GetSpeedRatio(Vector2 direction)
+        {
+            var speedRatio = 1f;
+            if (direction != Vector2.Zero)
+            {
+                direction.Normalize();
+                speedRatio = GetSpeedRatio(direction.Y);
+            }
+            return speedRatio;
+        }
+
+        public static float GetSpeedRatio(float normalizedDirectionY)
+        {
+            return 1f - 0.5f * Math.Abs(normalizedDirectionY);
         }
 
         public static void Update(GameTime gameTime)
