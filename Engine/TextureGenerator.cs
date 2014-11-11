@@ -43,11 +43,27 @@ namespace Engine
             return tex;
         }
 
+        public static Texture2D ToGrayScale(Texture2D texture2D)
+        {
+            if (texture2D == null) return null;
+            int width = texture2D.Width, height = texture2D.Height;
+            var total = (width) * (height);
+            var data = new Color[total];
+            texture2D.GetData(data);
+            for (var i = 0; i < total; i++)
+            {
+                var arg = (byte) ((data[i].R + data[i].G + data[i].B)/3);
+                data[i].R = data[i].G = data[i].B = arg;
+            }
+            var tex = new Texture2D(texture2D.GraphicsDevice, width, height);
+            tex.SetData(data);
+            return tex;
+        }
+
         public static Texture2D GetOuterEdge(Texture2D texture2D, Color color)
         {
             if (texture2D == null) return null;
             int width = texture2D.Width, height = texture2D.Height;
-            var bound = texture2D.Bounds;
             var total = (width) * (height);
             var data = new Color[total];
             texture2D.GetData(data);

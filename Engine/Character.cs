@@ -59,11 +59,30 @@ namespace Engine
         private Vector2 _destinationAttackPositionInWorld = Vector2.Zero;
         private LinkedList<Vector2> _path;
         private bool _isDeath;
+        private float _poisonedMilliSeconds;
         protected Magic MagicUse;
 
         #region Public properties
 
         public LinkedList<MagicSprite> MagicSpritesInEffect = new LinkedList<MagicSprite>();
+
+        public float FrozenSeconds { get; set; }
+
+        public float PoisonSeconds { get; set; }
+
+        public float PetrifiedSeconds { get; set; }
+
+        public bool IsPetrified { get { return PetrifiedSeconds > 0; } }
+
+        public bool BodyFunctionWell
+        {
+            get
+            {
+                return (FrozenSeconds <= 0 &&
+                        PoisonSeconds <= 0 &&
+                        PetrifiedSeconds <= 0);
+            }
+        }
 
         public int Dir
         {
@@ -681,7 +700,8 @@ namespace Engine
                 State == (int)NpcState.Magic ||
                 State == (int)NpcState.Hurt ||
                 State == (int)NpcState.Death ||
-                State == (int)NpcState.FightJump) return false;
+                State == (int)NpcState.FightJump ||
+                IsPetrified) return false;
             return true;
         }
 
@@ -835,7 +855,8 @@ namespace Engine
         public void Hurting()
         {
             if (State != (int)NpcState.Death &&
-                State != (int)NpcState.Hurt)
+                State != (int)NpcState.Hurt &&
+                !IsPetrified)
             {
                 StateInitialize();
                 TilePosition = TilePosition;//To tile center
@@ -970,6 +991,30 @@ namespace Engine
 
             var elapsedGameTime = gameTime.ElapsedGameTime;
 
+            if (PoisonSeconds > 0)
+            {
+                PoisonSeconds -= (float)elapsedGameTime.TotalSeconds;
+                _poisonedMilliSeconds += (float)elapsedGameTime.TotalMilliseconds;
+                if (_poisonedMilliSeconds > 250)
+                {
+                    _poisonedMilliSeconds = 0;
+                    Life -= 10;
+                    if(Life <= 0) Death();
+                }
+            }
+
+            if (PetrifiedSeconds > 0)
+            {
+                PetrifiedSeconds -= (float)elapsedGameTime.TotalSeconds;
+                return;
+            }
+
+            if (FrozenSeconds > 0)
+            {
+                FrozenSeconds -= (float) elapsedGameTime.TotalSeconds;
+                elapsedGameTime = new TimeSpan(elapsedGameTime.Ticks/2);
+            }
+
             switch ((NpcState)State)
             {
                 case NpcState.Walk:
@@ -1082,9 +1127,21 @@ namespace Engine
 
         public virtual void Draw(SpriteBatch spriteBatch)
         {
+            Draw(spriteBatch, GetCurrentTexture());
+        }
+
+        public virtual void Draw(SpriteBatch spriteBatch, Texture2D texture)
+        {
             if (IsDeath) return;
+            var color = Color.White;
+            if (FrozenSeconds > 0)
+                color = new Color(80, 80, 255);
+            if(PoisonSeconds > 0)
+                color = new Color(50, 255, 50);
+            if (PetrifiedSeconds > 0)
+                texture = TextureGenerator.ToGrayScale(texture);
             DrawMagicSpriteInEffect(spriteBatch);
-            base.Draw(spriteBatch);
+            base.Draw(spriteBatch, texture, color);
         }
     }
 }

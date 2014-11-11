@@ -250,48 +250,52 @@ namespace Engine
                     }
                 }
 
-                if (mouseState.LeftButton == ButtonState.Pressed)
+                if (!IsPetrified)
                 {
-                    if (Globals.OutEdgeNpc != null)
+                    if (mouseState.LeftButton == ButtonState.Pressed)
                     {
-                        Attacking(Globals.OutEdgeNpc.TilePosition);
+                        if (Globals.OutEdgeNpc != null)
+                        {
+                            Attacking(Globals.OutEdgeNpc.TilePosition);
+                        }
+                        else if (keyboardState.IsKeyDown(Keys.LeftShift) ||
+                            keyboardState.IsKeyDown(Keys.RightShift))
+                            RunTo(mouseTilePosition);
+                        else if (keyboardState.IsKeyDown(Keys.LeftAlt) ||
+                            keyboardState.IsKeyDown(Keys.RightAlt))
+                            JumpTo(mouseTilePosition);
+                        else if (keyboardState.IsKeyDown(Keys.LeftControl) ||
+                            keyboardState.IsKeyDown(Keys.RightControl))
+                            PerformeAttack(mouseWorldPosition);
+                        else WalkTo(mouseTilePosition);
                     }
-                    else if (keyboardState.IsKeyDown(Keys.LeftShift) ||
-                        keyboardState.IsKeyDown(Keys.RightShift))
-                        RunTo(mouseTilePosition);
-                    else if (keyboardState.IsKeyDown(Keys.LeftAlt) ||
-                        keyboardState.IsKeyDown(Keys.RightAlt))
-                        JumpTo(mouseTilePosition);
-                    else if (keyboardState.IsKeyDown(Keys.LeftControl) ||
-                        keyboardState.IsKeyDown(Keys.RightControl))
-                        PerformeAttack(mouseWorldPosition);
-                    else WalkTo(mouseTilePosition);
-                }
-                if (mouseState.RightButton == ButtonState.Pressed &&
-                    _lastMouseState.RightButton == ButtonState.Released)
-                {
-                    if (CurrentMagicInUse == null)
+                    if (mouseState.RightButton == ButtonState.Pressed &&
+                        _lastMouseState.RightButton == ButtonState.Released)
                     {
-                        GuiManager.ShowMessage("请先在底部武功栏使用鼠标右键选择武功");
-                    }
-                    else
-                    {
-                        if (Globals.OutEdgeNpc != null && Globals.OutEdgeNpc.IsEnemy)
-                            UseMagic(CurrentMagicInUse.TheMagic, Globals.OutEdgeNpc.TilePosition);
-                        else UseMagic(CurrentMagicInUse.TheMagic, mouseTilePosition);
-                    }
+                        if (CurrentMagicInUse == null)
+                        {
+                            GuiManager.ShowMessage("请先在底部武功栏使用鼠标右键选择武功");
+                        }
+                        else
+                        {
+                            if (Globals.OutEdgeNpc != null && Globals.OutEdgeNpc.IsEnemy)
+                                UseMagic(CurrentMagicInUse.TheMagic, Globals.OutEdgeNpc.TilePosition);
+                            else UseMagic(CurrentMagicInUse.TheMagic, mouseTilePosition);
+                        }
 
+                    }
                 }
             }
 
             if (keyboardState.IsKeyDown(Keys.V) &&
-                _lastKeyboardState.IsKeyUp(Keys.V))
+                _lastKeyboardState.IsKeyUp(Keys.V) &&
+                !IsPetrified)
             {
                 if (IsSitting()) Standing();
                 else Sitdown();
             }
 
-            if (IsStanding() || IsWalking())
+            if ((IsStanding() || IsWalking()) && BodyFunctionWell)
             {
                 _standingMilliseconds += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
                 if (_standingMilliseconds >= 1000)
@@ -353,8 +357,7 @@ namespace Engine
                     Collider.MakePixelCollidedTransparent(region, texture, textureRegion, tileTexture);
                 }
             }
-            Draw(spriteBatch, texture);
-            DrawMagicSpriteInEffect(spriteBatch);
+            base.Draw(spriteBatch, texture);
 
             if (Globals.OutEdgeSprite != null)
             {

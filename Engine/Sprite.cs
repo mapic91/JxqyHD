@@ -284,6 +284,11 @@ namespace Engine
 
         public void Draw(SpriteBatch spriteBatch, Texture2D texture, int offX = 0, int offY = 0)
         {
+            Draw(spriteBatch, texture, Color.White, offX, offY);
+        }
+
+        public void Draw(SpriteBatch spriteBatch, Texture2D texture, Color color, int offX = 0, int offY = 0)
+        {
             if (texture == null) return;
             Rectangle des =
                  Globals.TheCarmera.ToViewRegion(new Rectangle((int)PositionInWorld.X - Texture.Left + offX,
@@ -293,7 +298,7 @@ namespace Engine
             spriteBatch.Draw(texture,
                 des,
                 null,
-                Color.White,
+                color,
                 0,
                 new Vector2(0),
                 SpriteEffects.None,

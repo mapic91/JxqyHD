@@ -153,11 +153,28 @@ namespace Engine
                 if (character.Life <= 0) character.Death();
                 else
                 {
-                    if (Globals.TheRandom.Next(4) == 0)
+                    if (Globals.TheRandom.Next(4) == 0
+                        && BelongMagic.SpecialKind != 3)//Can't hurted when going to be petrified 
                         character.Hurting();
                 }
-
             }
+
+            switch (BelongMagic.SpecialKind)
+            {
+                case 1:
+                    if (character.FrozenSeconds <= 0)
+                        character.FrozenSeconds = BelongMagic.CurrentLevel + 1;
+                    break;
+                case 2:
+                    if(character.PoisonSeconds <= 0)
+                        character.PoisonSeconds = BelongMagic.CurrentLevel + 1;
+                    break;
+                case 3:
+                    if (character.PetrifiedSeconds <= 0)
+                        character.PetrifiedSeconds = BelongMagic.CurrentLevel + 1;
+                    break;
+            }
+
             Destroy();
         }
 
