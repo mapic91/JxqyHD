@@ -594,15 +594,16 @@ namespace Engine
                 destroyOnEnd);
             var path = new LinkedList<Vector2>();
             path.AddLast(origin);
-            const int count = 64;
-            const int halfCount = count/2;
             var distance = Vector2.Distance(origin, destination);
+            var count = (int)distance/64;
+            if (count < 4) count = 4;
+            var halfCount = count / 2;
             var pathUnit = (destination - origin)/count;
             var offset = new Vector2[count - 1];
             var offsetUnit = distance/count;
             for (var i = 0; i < count - 1; i++)
             {
-                if (i <= halfCount)
+                if (i < halfCount - 1)
                 {
                     offset[i] = new Vector2(0, -(i+1)*offsetUnit);
                 }
