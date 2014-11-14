@@ -86,6 +86,7 @@ namespace Jxqy
             GuiManager.Load(@"save\rpg2\Magic0.ini",
                     @"save\rpg2\Goods0.ini",
                     @"save\rpg2\memo.ini");
+            GoodsListManager.EquipFromList(Globals.ThePlayer);
 
             //BackgroundMusic.Play(@"music/Mc003.mp3");
 

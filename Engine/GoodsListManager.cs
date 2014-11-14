@@ -75,6 +75,15 @@ namespace Engine.Gui
             GuiManager.UpdateGoodsView();
         }
 
+        public static void EquipFromList(Player player)
+        {
+            if(player == null) return;
+            for (var i = EquipIndexBegin; i <= EquipIndexEnd; i++)
+            {
+                player.Equiping(Get(i), null);
+            }
+        }
+
         public static void ExchangeListItemAndEquiping(int index1, int index2)
         {
             if (index1 != index2 &&

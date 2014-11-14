@@ -162,16 +162,32 @@ namespace Engine
             switch (BelongMagic.SpecialKind)
             {
                 case 1:
-                    if (character.FrozenSeconds <= 0)
+                    if(!character.IsFrozened)
                         character.FrozenSeconds = BelongMagic.CurrentLevel + 1;
                     break;
                 case 2:
-                    if(character.PoisonSeconds <= 0)
+                    if(!character.IsPoisoned)
                         character.PoisonSeconds = BelongMagic.CurrentLevel + 1;
                     break;
                 case 3:
-                    if (character.PetrifiedSeconds <= 0)
+                    if(!character.IsPetrified)
                         character.PetrifiedSeconds = BelongMagic.CurrentLevel + 1;
+                    break;
+            }
+
+            switch (BelongMagic.AdditionalEffect)
+            {
+                case Magic.AddonEffect.Frozen:
+                    if(!character.IsFrozened)
+                        character.FrozenSeconds = BelongCharacter.Level/10 + 1;
+                    break;
+                case Magic.AddonEffect.Poision:
+                    if(!character.IsPoisoned)
+                        character.PoisonSeconds = BelongCharacter.Level / 10 + 1;
+                    break;
+                case Magic.AddonEffect.Petrified:
+                    if(!character.IsPetrified)
+                        character.PetrifiedSeconds = BelongCharacter.Level / 10 + 1;
                     break;
             }
 

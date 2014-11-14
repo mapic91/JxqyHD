@@ -60,18 +60,57 @@ namespace Engine
         private LinkedList<Vector2> _path;
         private bool _isDeath;
         private float _poisonedMilliSeconds;
+        private float _frozenSeconds;
+        private float _poisonSeconds;
+        private float _petrifiedSeconds;
+        private bool _notAddBody;
         protected Magic MagicUse;
 
         #region Public properties
 
         public LinkedList<MagicSprite> MagicSpritesInEffect = new LinkedList<MagicSprite>();
 
-        public float FrozenSeconds { get; set; }
+        public float FrozenSeconds
+        {
+            get { return _frozenSeconds; }
+            set
+            {
+                if (IsInDeathing) return;
+                if (value < 0) value = 0;
+                _frozenSeconds = value;
+                _poisonSeconds = 0;
+                _petrifiedSeconds = 0;
+            }
+        }
 
-        public float PoisonSeconds { get; set; }
+        public float PoisonSeconds
+        {
+            get { return _poisonSeconds; }
+            set
+            {
+                if (IsInDeathing) return;
+                if (value < 0) value = 0;
+                _frozenSeconds = 0;
+                _poisonSeconds = value;
+                _petrifiedSeconds = 0;
+            }
+        }
 
-        public float PetrifiedSeconds { get; set; }
+        public float PetrifiedSeconds
+        {
+            get { return _petrifiedSeconds; }
+            set 
+            {
+                if (IsInDeathing) return;
+                if (value < 0) value = 0;
+                _frozenSeconds = 0;
+                _poisonSeconds = 0;
+                _petrifiedSeconds = value; 
+            }
+        }
 
+        public bool IsFrozened { get { return FrozenSeconds > 0; } }
+        public bool IsPoisoned { get { return PoisonSeconds > 0; } }
         public bool IsPetrified { get { return PetrifiedSeconds > 0; } }
 
         public bool BodyFunctionWell
@@ -392,6 +431,8 @@ namespace Engine
             protected set { _isDeath = value; }
         }
 
+        public bool IsInDeathing { get { return State == (int) CharacterState.Death; } }
+
         #endregion Public properties
 
         public Character(string filePath)
@@ -403,11 +444,11 @@ namespace Engine
 
         private void Initlize()
         {
-            if (NpcIni.ContainsKey((int)NpcState.Stand))
+            if (NpcIni.ContainsKey((int)CharacterState.Stand))
             {
                 Set(Map.ToPixelPosition(MapX, MapY),
                     Globals.BaseSpeed,
-                    NpcIni[(int)NpcState.Stand].Image, Dir);
+                    NpcIni[(int)CharacterState.Stand].Image, Dir);
             }
             if (FlyIni != null)
             {
@@ -418,6 +459,8 @@ namespace Engine
                 FlyIni2 = FlyIni2.GetLevel(AttackLevel);
             }
         }
+
+        protected virtual bool MagicFromCache { get { return true; } }
 
         private void AssignToValue(string[] nameValue)
         {
@@ -448,7 +491,7 @@ namespace Engine
                         break;
                     case "FlyIni":
                     case "FlyIni2":
-                        info.SetValue(this, Utils.GetMagic(nameValue[1]), null);
+                        info.SetValue(this, Utils.GetMagic(nameValue[1], MagicFromCache), null);
                         break;
                     case "Life":
                         _life = int.Parse(nameValue[1]);
@@ -625,7 +668,7 @@ namespace Engine
             return true;
         }
 
-        public void SetState(NpcState state)
+        public void SetState(CharacterState state)
         {
             if (State != (int)state && NpcIni.ContainsKey((int)state))
             {
@@ -642,10 +685,10 @@ namespace Engine
                 {
                     switch (state)
                     {
-                        case NpcState.Walk:
-                        case NpcState.FightWalk:
-                        case NpcState.Run:
-                        case NpcState.FightRun:
+                        case CharacterState.Walk:
+                        case CharacterState.FightWalk:
+                        case CharacterState.Run:
+                        case CharacterState.FightRun:
                             {
                                 _sound = sound.CreateInstance();
                                 _sound.IsLooped = true;
@@ -654,10 +697,10 @@ namespace Engine
                                 _sound.Play();
                             }
                             break;
-                        case NpcState.Magic:
-                        case NpcState.Attack:
-                        case NpcState.Attack1:
-                        case NpcState.Attack2:
+                        case CharacterState.Magic:
+                        case CharacterState.Attack:
+                        case CharacterState.Attack1:
+                        case CharacterState.Attack2:
                             {
                                 //do nothing
                             }
@@ -671,17 +714,42 @@ namespace Engine
             }
         }
 
+        /// <summary>
+        /// Clear frozen, poison, petrifaction
+        /// </summary>
+        public void ToNormalState()
+        {
+            ClearFrozen();
+            ClearPoison();
+            ClearPetrifaction();
+        }
+
+        public void ClearFrozen()
+        {
+            _frozenSeconds = 0;
+        }
+
+        public void ClearPoison()
+        {
+            _poisonSeconds = 0;
+        }
+
+        public void ClearPetrifaction()
+        {
+            _petrifiedSeconds = 0;
+        }
+
         #region Perform action
         private void StandingImmediately()
         {
             StateInitialize();
-            if (_isInFighting && NpcIni.ContainsKey((int)NpcState.FightStand)) SetState(NpcState.FightStand);
+            if (_isInFighting && NpcIni.ContainsKey((int)CharacterState.FightStand)) SetState(CharacterState.FightStand);
             else
             {
-                if (NpcIni.ContainsKey((int)NpcState.Stand1) &&
+                if (NpcIni.ContainsKey((int)CharacterState.Stand1) &&
                     Globals.TheRandom.Next(4) == 1 &&
-                    State != (int)NpcState.Stand1) SetState(NpcState.Stand1);
-                else SetState(NpcState.Stand);
+                    State != (int)CharacterState.Stand1) SetState(CharacterState.Stand1);
+                else SetState(CharacterState.Stand);
                 PlayCurrentDirOnce();
             }
         }
@@ -693,14 +761,14 @@ namespace Engine
 
         public bool PerformActionOk()
         {
-            if (State == (int)NpcState.Jump ||
-                State == (int)NpcState.Attack ||
-                State == (int)NpcState.Attack1 ||
-                State == (int)NpcState.Attack2 ||
-                State == (int)NpcState.Magic ||
-                State == (int)NpcState.Hurt ||
-                State == (int)NpcState.Death ||
-                State == (int)NpcState.FightJump ||
+            if (State == (int)CharacterState.Jump ||
+                State == (int)CharacterState.Attack ||
+                State == (int)CharacterState.Attack1 ||
+                State == (int)CharacterState.Attack2 ||
+                State == (int)CharacterState.Magic ||
+                State == (int)CharacterState.Hurt ||
+                State == (int)CharacterState.Death ||
+                State == (int)CharacterState.FightJump ||
                 IsPetrified) return false;
             return true;
         }
@@ -715,26 +783,26 @@ namespace Engine
 
         public bool IsStanding()
         {
-            return (State == (int)NpcState.Stand ||
-                    State == (int)NpcState.Stand1 ||
-                    State == (int)NpcState.FightStand);
+            return (State == (int)CharacterState.Stand ||
+                    State == (int)CharacterState.Stand1 ||
+                    State == (int)CharacterState.FightStand);
         }
 
         public bool IsWalking()
         {
-            return (State == (int)NpcState.Walk ||
-                    State == (int)NpcState.FightWalk);
+            return (State == (int)CharacterState.Walk ||
+                    State == (int)CharacterState.FightWalk);
         }
 
         public bool IsRuning()
         {
-            return (State == (int)NpcState.Run ||
-                    State == (int)NpcState.FightRun);
+            return (State == (int)CharacterState.Run ||
+                    State == (int)CharacterState.FightRun);
         }
 
         public bool IsSitting()
         {
-            return State == (int)NpcState.Sit;
+            return State == (int)CharacterState.Sit;
         }
 
         public void WalkTo(Vector2 destinationTilePosition)
@@ -755,8 +823,8 @@ namespace Engine
                     else
                     {
                         DestinationMoveTilePosition = destinationTilePosition;
-                        if (_isInFighting && NpcIni.ContainsKey((int)NpcState.FightWalk)) SetState(NpcState.FightWalk);
-                        else SetState(NpcState.Walk);
+                        if (_isInFighting && NpcIni.ContainsKey((int)CharacterState.FightWalk)) SetState(CharacterState.FightWalk);
+                        else SetState(CharacterState.Walk);
                     }
                 }
             }
@@ -780,8 +848,8 @@ namespace Engine
                         else
                         {
                             DestinationMoveTilePosition = destinationTilePosition;
-                            if (_isInFighting && NpcIni.ContainsKey((int)NpcState.FightRun)) SetState(NpcState.FightRun);
-                            else SetState(NpcState.Run);
+                            if (_isInFighting && NpcIni.ContainsKey((int)CharacterState.FightRun)) SetState(CharacterState.FightRun);
+                            else SetState(CharacterState.Run);
                         }
                     }
                 }
@@ -816,8 +884,8 @@ namespace Engine
                 Path.AddLast(PositionInWorld);
                 Path.AddLast(DestinationMovePositionInWorld);
 
-                if (_isInFighting && NpcIni.ContainsKey((int)NpcState.FightJump)) SetState(NpcState.FightJump);
-                else SetState(NpcState.Jump);
+                if (_isInFighting && NpcIni.ContainsKey((int)CharacterState.FightJump)) SetState(CharacterState.FightJump);
+                else SetState(CharacterState.Jump);
                 SetDirection(DestinationMovePositionInWorld - PositionInWorld);
                 PlayCurrentDirOnce();
             }
@@ -828,9 +896,9 @@ namespace Engine
             if (PerformActionOk())
             {
                 StateInitialize();
-                if (NpcIni.ContainsKey((int)NpcState.Sit))
+                if (NpcIni.ContainsKey((int)CharacterState.Sit))
                 {
-                    SetState(NpcState.Sit);
+                    SetState(CharacterState.Sit);
                     PlayCurrentDirOnce();
                 }
             }
@@ -846,7 +914,7 @@ namespace Engine
 
                 MagicUse = magicUse;
                 _magicDestination = Map.ToPixelPosition(magicDestinationTilePosition);
-                SetState(NpcState.Magic);
+                SetState(CharacterState.Magic);
                 SetDirection(_magicDestination - PositionInWorld);
                 PlayCurrentDirOnce();
             }
@@ -854,27 +922,52 @@ namespace Engine
 
         public void Hurting()
         {
-            if (State != (int)NpcState.Death &&
-                State != (int)NpcState.Hurt &&
+            if (State != (int)CharacterState.Death &&
+                State != (int)CharacterState.Hurt &&
                 !IsPetrified)
             {
                 StateInitialize();
                 TilePosition = TilePosition;//To tile center
-                if (NpcIni.ContainsKey((int)NpcState.Hurt))
+                if (NpcIni.ContainsKey((int)CharacterState.Hurt))
                 {
-                    SetState(NpcState.Hurt);
+                    SetState(CharacterState.Hurt);
                     PlayCurrentDirOnce();
                 }
             }
         }
 
+        private static Asf FrozenDie;
+        private static Asf PoisonDie;
+        private static Asf PetrifiedDie;
         public void Death()
         {
-            if (State == (int)NpcState.Death) return;
+            if (State == (int)CharacterState.Death) return;
             StateInitialize();
-            if (NpcIni.ContainsKey((int)NpcState.Death))
+            if (NpcIni.ContainsKey((int)CharacterState.Death))
             {
-                SetState(NpcState.Death);
+                SetState(CharacterState.Death);
+                if (IsFrozened)
+                {
+                    if (FrozenDie == null) FrozenDie = Utils.GetAsf(@"asf\interlude\", "die-冰.asf");
+                    Texture = FrozenDie;
+                    CurrentDirection = 0;
+                    _notAddBody = true;
+                }
+                else if (IsPoisoned)
+                {
+                    if (PoisonDie == null) PoisonDie = Utils.GetAsf(@"asf\interlude\", "die-毒.asf");
+                    Texture = PoisonDie;
+                    CurrentDirection = 0;
+                    _notAddBody = true;
+                }
+                else if (IsPetrified)
+                {
+                    if (PetrifiedDie == null) PetrifiedDie = Utils.GetAsf(@"asf\interlude\", "die-石.asf");
+                    Texture = PetrifiedDie;
+                    CurrentDirection = 0;
+                    _notAddBody = true;
+                }
+                ToNormalState();
                 PlayCurrentDirOnce();
             }
             else IsDeath = true;
@@ -952,11 +1045,11 @@ namespace Engine
                 _attackDestination = destination;
 
                 var value = Globals.TheRandom.Next(3);
-                if (value == 1 && NpcIni.ContainsKey((int)NpcState.Attack1))
-                    SetState(NpcState.Attack1);
-                else if (value == 2 && NpcIni.ContainsKey((int)NpcState.Attack2))
-                    SetState(NpcState.Attack2);
-                else SetState(NpcState.Attack);
+                if (value == 1 && NpcIni.ContainsKey((int)CharacterState.Attack1))
+                    SetState(CharacterState.Attack1);
+                else if (value == 2 && NpcIni.ContainsKey((int)CharacterState.Attack2))
+                    SetState(CharacterState.Attack2);
+                else SetState(CharacterState.Attack);
                 SetDirection(destination - PositionInWorld);
                 PlayCurrentDirOnce();
             }
@@ -965,9 +1058,9 @@ namespace Engine
         public void ToNonFightingState()
         {
             _isInFighting = false;
-            if (IsWalking()) SetState(NpcState.Walk);
-            if (IsRuning()) SetState(NpcState.Run);
-            if (State == (int)NpcState.FightStand) SetState(NpcState.Stand);
+            if (IsWalking()) SetState(CharacterState.Walk);
+            if (IsRuning()) SetState(CharacterState.Run);
+            if (State == (int)CharacterState.FightStand) SetState(CharacterState.Stand);
         }
         #endregion Perform action
 
@@ -1015,10 +1108,10 @@ namespace Engine
                 elapsedGameTime = new TimeSpan(elapsedGameTime.Ticks/2);
             }
 
-            switch ((NpcState)State)
+            switch ((CharacterState)State)
             {
-                case NpcState.Walk:
-                case NpcState.FightWalk:
+                case CharacterState.Walk:
+                case CharacterState.FightWalk:
                 {
                     MoveAlongPath((float)elapsedGameTime.TotalSeconds, WalkSpeed);
                     SoundManager.Apply3D(_sound,
@@ -1026,27 +1119,27 @@ namespace Engine
                     Update(gameTime, WalkSpeed);
                 }
                     break;
-                case NpcState.Run:
-                case NpcState.FightRun:
+                case CharacterState.Run:
+                case CharacterState.FightRun:
                     MoveAlongPath((float)elapsedGameTime.TotalSeconds, 8);
                     SoundManager.Apply3D(_sound,
                                     PositionInWorld - Globals.ListenerPosition);
                     base.Update(gameTime);
                     break;
-                case NpcState.Jump:
-                case NpcState.FightJump:
+                case CharacterState.Jump:
+                case CharacterState.FightJump:
                     JumpAlongPath((float)elapsedGameTime.TotalSeconds);
                     base.Update(gameTime);
                     break;
-                case NpcState.Stand:
-                case NpcState.Stand1:
-                case NpcState.Hurt:
+                case CharacterState.Stand:
+                case CharacterState.Stand1:
+                case CharacterState.Hurt:
                     if (IsPlayCurrentDirOnceEnd()) StandingImmediately();
                     else base.Update(gameTime);
                     break;
-                case NpcState.Attack:
-                case NpcState.Attack1:
-                case NpcState.Attack2:
+                case CharacterState.Attack:
+                case CharacterState.Attack1:
+                case CharacterState.Attack2:
                     if (IsPlayCurrentDirOnceEnd())
                     {
                         if (NpcIni.ContainsKey(State))
@@ -1064,12 +1157,12 @@ namespace Engine
                     }
                     else base.Update(gameTime);
                     break;
-                case NpcState.Magic:
+                case CharacterState.Magic:
                     if (IsPlayCurrentDirOnceEnd())
                     {
-                        if (NpcIni.ContainsKey((int)NpcState.Magic))
+                        if (NpcIni.ContainsKey((int)CharacterState.Magic))
                         {
-                            PlaySoundEffect(NpcIni[(int)NpcState.Magic].Sound);
+                            PlaySoundEffect(NpcIni[(int)CharacterState.Magic].Sound);
                         }
                         if (CanUseMagic())
                             MagicManager.UseMagic(this, MagicUse, PositionInWorld, _magicDestination);
@@ -1077,14 +1170,14 @@ namespace Engine
                     }
                     else base.Update(gameTime);
                     break;
-                case NpcState.Sit:
+                case CharacterState.Sit:
                     if (!IsPlayCurrentDirOnceEnd()) base.Update(gameTime);
                     break;
-                case NpcState.Death:
+                case CharacterState.Death:
                     if (IsPlayCurrentDirOnceEnd())
                     {
                         IsDeath = true;
-                        if (BodyIni != null)
+                        if (BodyIni != null && !_notAddBody)
                         {
                             BodyIni.PositionInWorld = PositionInWorld;
                             BodyIni.CurrentDirection = CurrentDirection;

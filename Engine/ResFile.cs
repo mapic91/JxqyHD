@@ -86,52 +86,52 @@ namespace Engine
                     switch (head)
                     {
                         case "[Stand]":
-                            state = (int)NpcState.Stand;
+                            state = (int)CharacterState.Stand;
                             break;
                         case "[Stand1]":
-                            state = (int)NpcState.Stand1;
+                            state = (int)CharacterState.Stand1;
                             break;
                         case "[Walk]":
-                            state = (int)NpcState.Walk;
+                            state = (int)CharacterState.Walk;
                             break;
                         case "[Run]":
-                            state = (int)NpcState.Run;
+                            state = (int)CharacterState.Run;
                             break;
                         case "[Jump]":
-                            state = (int)NpcState.Jump;
+                            state = (int)CharacterState.Jump;
                             break;
                         case "[Attack]":
-                            state = (int)NpcState.Attack;
+                            state = (int)CharacterState.Attack;
                             break;
                         case "[Attack1]":
-                            state = (int)NpcState.Attack1;
+                            state = (int)CharacterState.Attack1;
                             break;
                         case "[Attack2]":
-                            state = (int)NpcState.Attack2;
+                            state = (int)CharacterState.Attack2;
                             break;
                         case "[Magic]":
-                            state = (int)NpcState.Magic;
+                            state = (int)CharacterState.Magic;
                             break;
                         case "[Sit]":
-                            state = (int)NpcState.Sit;
+                            state = (int)CharacterState.Sit;
                             break;
                         case "[Hurt]":
-                            state = (int)NpcState.Hurt;
+                            state = (int)CharacterState.Hurt;
                             break;
                         case "[Death]":
-                            state = (int)NpcState.Death;
+                            state = (int)CharacterState.Death;
                             break;
                         case "[FightStand]":
-                            state = (int)NpcState.FightStand;
+                            state = (int)CharacterState.FightStand;
                             break;
                         case "[FightWalk]":
-                            state = (int)NpcState.FightWalk;
+                            state = (int)CharacterState.FightWalk;
                             break;
                         case "[FightRun]":
-                            state = (int)NpcState.FightRun;
+                            state = (int)CharacterState.FightRun;
                             break;
                         case "[FightJump]":
-                            state = (int)NpcState.FightJump;
+                            state = (int)CharacterState.FightJump;
                             break;
                     }
                     break;
@@ -154,7 +154,7 @@ namespace Engine
         Obj
     }
 
-    public enum NpcState
+    public enum CharacterState
     {
         Stand,
         Stand1,

@@ -27,6 +27,8 @@ namespace Engine
         public static Texture2D MakeTransparentFromTop(Texture2D sourceTexture, float opaquePercentFromBottom)
         {
             if (sourceTexture == null) return null;
+            if (opaquePercentFromBottom < 0f) opaquePercentFromBottom = 0f;
+            else if (opaquePercentFromBottom > 1f) opaquePercentFromBottom = 1f;
             int width = sourceTexture.Width, height = sourceTexture.Height;
             var data = new Color[width * height];
             sourceTexture.GetData(data);

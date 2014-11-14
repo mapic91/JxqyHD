@@ -24,12 +24,16 @@ namespace Engine
         private const int ThewUseAmountWhenJump = 10;
         private const float ListRestorePercent = 0.01f;
         private const float ThewRestorePercent = 0.03f;
+        private const float ManaRestorePercent = 0.02f;
         private float _standingMilliseconds;
         private float _runningMilliseconds;
 
         private MagicListManager.MagicItemInfo _currentMagicInUse;
 
         #region Public properties
+
+        public bool IsNotUseThewWhenRun { set; get; }
+        public bool IsManaRestore { set; get; }
 
         public MagicListManager.MagicItemInfo CurrentMagicInUse
         {
@@ -105,6 +109,18 @@ namespace Engine
 
         private MouseState _lastMouseState;
         private KeyboardState _lastKeyboardState;
+
+        protected override bool MagicFromCache
+        {
+            get { return false; }
+        }
+
+        private void SetFlyIniAdditionalEffect(Magic.AddonEffect effect)
+        {
+            if (FlyIni != null) FlyIni.AdditionalEffect = effect;
+            if (FlyIni2 != null) FlyIni2.AdditionalEffect = effect;
+        }
+
         protected override bool HasObstacle(Vector2 tilePosition)
         {
             return (NpcManager.IsObstacle(tilePosition) ||
@@ -118,6 +134,11 @@ namespace Engine
 
         public void Equiping(Good equip, Good currentEquip)
         {
+            //Save for restore
+            var life = Life;
+            var thew = Thew;
+            var mana = Mana;
+
             UnEquiping(currentEquip);
             if (equip != null)
             {
@@ -127,7 +148,30 @@ namespace Engine
                 LifeMax += equip.LifeMax;
                 ThewMax += equip.ThewMax;
                 ManaMax += equip.ManaMax;
+                switch (equip.TheEffectType)
+                {
+                    case Good.GoodEffectType.ThewNotLoseWhenRun:
+                        IsNotUseThewWhenRun = true;
+                        break;
+                    case Good.GoodEffectType.ManaRestore:
+                        IsManaRestore = true;
+                        break;
+                    case Good.GoodEffectType.EnemyFrozen:
+                        SetFlyIniAdditionalEffect(Magic.AddonEffect.Frozen);
+                        break;
+                    case Good.GoodEffectType.EnemyPoisoned:
+                        SetFlyIniAdditionalEffect(Magic.AddonEffect.Poision);
+                        break;
+                    case Good.GoodEffectType.EnemyPetrified:
+                        SetFlyIniAdditionalEffect(Magic.AddonEffect.Petrified);
+                        break;
+                }
             }
+
+            //Restore
+            Life = life;
+            Thew = thew;
+            Mana = mana;
         }
 
         public void UnEquiping(Good equip)
@@ -140,16 +184,42 @@ namespace Engine
                 LifeMax -= equip.LifeMax;
                 ThewMax -= equip.ThewMax;
                 ManaMax -= equip.ManaMax;
+                switch (equip.TheEffectType)
+                {
+                    case Good.GoodEffectType.ThewNotLoseWhenRun:
+                        IsNotUseThewWhenRun = false;
+                        break;
+                    case Good.GoodEffectType.ManaRestore:
+                        IsManaRestore = false;
+                        break;
+                    case Good.GoodEffectType.EnemyFrozen:
+                    case Good.GoodEffectType.EnemyPoisoned:
+                    case Good.GoodEffectType.EnemyPetrified:
+                        SetFlyIniAdditionalEffect(Magic.AddonEffect.None);
+                        break;
+                }
             }
         }
 
         public bool UseDrug(Good drug)
         {
-            if (drug != null)
+            if (drug != null && drug.Kind == Good.GoodKind.Drug)
             {
                 Life += drug.Life;
                 Thew += drug.Thew;
                 Mana += drug.Mana;
+                switch (drug.TheEffectType)
+                {
+                    case Good.GoodEffectType.ClearFrozen:
+                        ClearFrozen();
+                        break;
+                    case Good.GoodEffectType.ClearPoison:
+                        ClearPoison();
+                        break;
+                    case Good.GoodEffectType.ClearPetrifaction:
+                        ClearPetrifaction();
+                        break;
+                }
                 return true;
             }
             return false;
@@ -185,6 +255,7 @@ namespace Engine
 
         protected override bool CanRunning()
         {
+            if (IsNotUseThewWhenRun) return true;
             if (Thew > 0)
             {
                 Thew -= 1;
@@ -302,6 +373,8 @@ namespace Engine
                 {
                     Life += (int)(ListRestorePercent * LifeMax);
                     Thew += (int)(ThewRestorePercent * ThewMax);
+                    if (IsManaRestore)
+                        Mana += (int)(ManaMax * ManaRestorePercent);
                     _standingMilliseconds = 0f;
                 }
             }

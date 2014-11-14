@@ -44,10 +44,10 @@ namespace Engine
                                 type = GoodEffectType.ClearFrozen;
                                 break;
                             case 2:
-                                type = GoodEffectType.ClearPoisoned;
+                                type = GoodEffectType.ClearPoison;
                                 break;
                             case 3:
-                                type = GoodEffectType.ClearPetrified;
+                                type = GoodEffectType.ClearPetrifaction;
                                 break;
                         }
                     }
@@ -225,9 +225,9 @@ namespace Engine
             EnemyFrozen,
             ClearFrozen,
             EnemyPoisoned,
-            ClearPoisoned,
+            ClearPoison,
             EnemyPetrified,
-            ClearPetrified
+            ClearPetrifaction
         }
 
         public enum EquipPosition

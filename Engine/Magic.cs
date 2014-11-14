@@ -42,6 +42,7 @@ namespace Engine
         private bool _isOk;
 
         #region Public properties
+        public AddonEffect AdditionalEffect { set; get; }
 
         public MagicListManager.MagicItemInfo ItemInfo { set; get; }
 
@@ -333,6 +334,14 @@ namespace Engine
             if (_level == null ||
                 !_level.ContainsKey(level)) return this;
             return _level[level];
+        }
+
+        public enum AddonEffect
+        {
+            None = 0,
+            Frozen,
+            Poision,
+            Petrified
         }
     }
 }
