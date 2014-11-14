@@ -87,6 +87,7 @@ namespace Engine.Gui
                 _expText.Text = info.Exp + "/" + info.TheMagic.LevelupExp;
                 _nameText.Text = info.TheMagic == null ? "无" : info.TheMagic.Name;
                 _introText.Text = info.TheMagic == null ? "无" : info.TheMagic.Intro;
+                _infoItem.BaseTexture = MagicListManager.GetTexture(ItemIndex);
             }
             else
             {
@@ -94,6 +95,7 @@ namespace Engine.Gui
                 _expText.Text = "0/0";
                 _nameText.Text = "";
                 _introText.Text = "";
+                _infoItem.BaseTexture = null;
             }
         }
 

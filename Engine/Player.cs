@@ -132,22 +132,32 @@ namespace Engine
             SoundManager.PlaySoundEffectOnce(soundEffect);
         }
 
-        public void Equiping(Good equip, Good currentEquip)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="equip"></param>
+        /// <param name="currentEquip"></param>
+        /// <param name="justEffectType">Don't applay Attack, Defend,Evade,LifeMax,ThewMax,ManaMax, just equip effect</param>
+        public void Equiping(Good equip, Good currentEquip, bool justEffectType = false)
         {
             //Save for restore
             var life = Life;
             var thew = Thew;
             var mana = Mana;
 
-            UnEquiping(currentEquip);
+            UnEquiping(currentEquip, justEffectType);
             if (equip != null)
             {
-                Attack += equip.Attack;
-                Defend += equip.Defend;
-                Evade += equip.Evade;
-                LifeMax += equip.LifeMax;
-                ThewMax += equip.ThewMax;
-                ManaMax += equip.ManaMax;
+                if (!justEffectType)
+                {
+                    Attack += equip.Attack;
+                    Defend += equip.Defend;
+                    Evade += equip.Evade;
+                    LifeMax += equip.LifeMax;
+                    ThewMax += equip.ThewMax;
+                    ManaMax += equip.ManaMax;
+                }
+
                 switch (equip.TheEffectType)
                 {
                     case Good.GoodEffectType.ThewNotLoseWhenRun:
@@ -174,16 +184,19 @@ namespace Engine
             Mana = mana;
         }
 
-        public void UnEquiping(Good equip)
+        public void UnEquiping(Good equip, bool justEffectType = false)
         {
             if (equip != null)
             {
-                Attack -= equip.Attack;
-                Defend -= equip.Defend;
-                Evade -= equip.Evade;
-                LifeMax -= equip.LifeMax;
-                ThewMax -= equip.ThewMax;
-                ManaMax -= equip.ManaMax;
+                if (!justEffectType)
+                {
+                    Attack -= equip.Attack;
+                    Defend -= equip.Defend;
+                    Evade -= equip.Evade;
+                    LifeMax -= equip.LifeMax;
+                    ThewMax -= equip.ThewMax;
+                    ManaMax -= equip.ManaMax;
+                }
                 switch (equip.TheEffectType)
                 {
                     case Good.GoodEffectType.ThewNotLoseWhenRun:

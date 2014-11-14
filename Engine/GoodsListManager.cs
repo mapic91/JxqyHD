@@ -75,12 +75,12 @@ namespace Engine.Gui
             GuiManager.UpdateGoodsView();
         }
 
-        public static void EquipFromList(Player player)
+        public static void ApplyEquipSpecialEffectFromList(Player player)
         {
             if(player == null) return;
             for (var i = EquipIndexBegin; i <= EquipIndexEnd; i++)
             {
-                player.Equiping(Get(i), null);
+                player.Equiping(Get(i), null, true);
             }
         }
 

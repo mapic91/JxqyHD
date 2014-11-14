@@ -182,6 +182,15 @@ namespace Engine.Gui
             }
         }
 
+        public void UpdateItems()
+        {
+            foreach (var item in _items)
+            {
+                var index = ((GoodsGui.GoodItemData) item.Data).Index;
+                item.BaseTexture = GoodsListManager.GetTexture(index);
+            }
+        }
+
         private bool CanDrop(DragDropItem.DropEvent arg2, Good.EquipPosition position)
         {
             var sourceItem = arg2.Source;
@@ -272,11 +281,6 @@ namespace Engine.Gui
             {
                 item.Draw(spriteBatch);
             }
-        }
-
-        public void UpdateItems()
-        {
-
         }
     }
 }
