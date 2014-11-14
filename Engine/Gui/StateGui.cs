@@ -9,7 +9,7 @@ namespace Engine.Gui
         private TextGui[] _items;
         private bool _isShow;
 
-        public new bool IsShow
+        public override bool IsShow
         {
             set
             {

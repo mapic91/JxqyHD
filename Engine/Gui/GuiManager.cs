@@ -5,6 +5,7 @@ using IniParser;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Engine.Gui
 {
@@ -13,7 +14,9 @@ namespace Engine.Gui
         private static SoundEffect _dropSound;
         private static SoundEffect _interfaceShow;
         private static SoundEffect _interfaceMiss;
-        private static LinkedList<GuiItem> _allGuiItems = new LinkedList<GuiItem>(); 
+        private static LinkedList<GuiItem> _allGuiItems = new LinkedList<GuiItem>();
+        private static LinkedList<GuiItem> _panels = new LinkedList<GuiItem>(); 
+        private static KeyboardState _lastKeyboardState;
 
         public static MagicGui MagicInterface;
         public static XiuLianGui XiuLianInterface;
@@ -42,24 +45,41 @@ namespace Engine.Gui
 
             TopInterface = new TopGui();
             _allGuiItems.AddLast(TopInterface);
+
             BottomInterface = new BottomGui();
             _allGuiItems.AddLast(BottomInterface);
+
             ColumnInterface = new ColumnGui();
             _allGuiItems.AddLast(ColumnInterface);
+
             MagicInterface = new MagicGui();
             _allGuiItems.AddLast(MagicInterface);
+            _panels.AddLast(MagicInterface);
+
             XiuLianInterface = new XiuLianGui();
             _allGuiItems.AddLast(XiuLianInterface);
+            _panels.AddLast(XiuLianInterface);
+
             GoodsInterface = new GoodsGui();
             _allGuiItems.AddLast(GoodsInterface);
+            _panels.AddLast(GoodsInterface);
+
             MemoInterface = new MemoGui();
             _allGuiItems.AddLast(MemoInterface);
+            _panels.AddLast(MemoInterface);
+
             StateInterface = new StateGui();
             _allGuiItems.AddLast(StateInterface);
+            _panels.AddLast(StateInterface);
+
             EquipInterface = new EquipGui();
             _allGuiItems.AddLast(EquipInterface);
+            _panels.AddLast(EquipInterface);
+
             ToolTipInterface = new ToolTipGui();
             _allGuiItems.AddLast(ToolTipInterface);
+            _panels.AddLast(ToolTipInterface);
+
             MouseInterface = new MouseGui();
             MessageInterface = new MessageGui();
             _allGuiItems.AddLast(MessageInterface);
@@ -198,6 +218,23 @@ namespace Engine.Gui
             }
         }
 
+        public static void HideAllPanels()
+        {
+            foreach (var panel in _panels)
+            {
+                panel.IsShow = false;
+            }
+        }
+
+        public static bool HasPanelsShow()
+        {
+            foreach (var panel in _panels)
+            {
+                if (panel.IsShow) return true;
+            }
+            return false;
+        }
+
         public static void ShowMessage(string message)
         {
             MessageInterface.ShowMessage(message);
@@ -205,6 +242,13 @@ namespace Engine.Gui
 
         public static void Update(GameTime gameTime)
         {
+            var keyboardState = Keyboard.GetState();
+            if (keyboardState.IsKeyDown(Keys.Escape) &&
+                _lastKeyboardState.IsKeyUp(Keys.Escape))
+            {
+                if (HasPanelsShow()) HideAllPanels();
+            }
+
             IsMouseStateEated = false;
             TopInterface.Update(gameTime);
             BottomInterface.Update(gameTime);
@@ -226,7 +270,7 @@ namespace Engine.Gui
                 IsDropped = false;
                 if (DragDropSourceItem != null)
                 {
-                    DragDropSourceItem.IsShow = true;             
+                    DragDropSourceItem.IsShow = true;
                 }
                 if (DragDropSourceTexture != null &&
                     DragDropSourceTexture.Data != null)

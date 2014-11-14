@@ -13,7 +13,7 @@ namespace Engine.Gui
         private const int ItemIndex = 49;
         private bool _isShow = false;
 
-        public new bool IsShow
+        public override bool IsShow
         {
             get { return _isShow; }
             set
