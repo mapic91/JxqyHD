@@ -112,6 +112,7 @@
     <Compile Include="PathFinder.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="ResFile.cs" />
+    <Compile Include="Script\ScriptParser.cs" />
     <Compile Include="SoundManager.cs" />
     <Compile Include="Sprite.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

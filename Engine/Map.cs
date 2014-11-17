@@ -48,7 +48,11 @@ namespace Engine
         private int _viewWidth;
         private int _viewHeight;
 
+        private string _mapFileNameWithoutExtension;
+
         #region Public Properties
+        public string MapFileNameWithoutExtension { get { return _mapFileNameWithoutExtension; } }
+
         public int ViewHeight
         {
             get { return _viewHeight; }
@@ -422,6 +426,7 @@ namespace Engine
             {
                 Log.LogFileLoadError("Map", path, e);
             }
+            _mapFileNameWithoutExtension = Path.GetFileNameWithoutExtension(path);
         }
 
         public void LoadMap(byte[] buf)

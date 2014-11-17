@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Engine.Script;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -43,8 +44,8 @@ namespace Engine
         private Obj _bodyIni;
         private Magic _flyIni;
         private Magic _flyIni2;
-        private string _scriptFile;
-        private string _deathScript;
+        private ScriptParser _scriptFile;
+        private ScriptParser _deathScript;
         private int _expBonus;
         private int _fixedPos;
         private int _idle;
@@ -334,13 +335,13 @@ namespace Engine
             set { _flyIni2 = value; }
         }
 
-        public string ScriptFile
+        public ScriptParser ScriptFile
         {
             get { return _scriptFile; }
             set { _scriptFile = value; }
         }
 
-        public string DeathScript
+        public ScriptParser DeathScript
         {
             get { return _deathScript; }
             set { _deathScript = value; }
@@ -469,11 +470,16 @@ namespace Engine
                 var info = this.GetType().GetProperty(nameValue[0]);
                 switch (nameValue[0])
                 {
-                    case "DeathScript":
                     case "FixedPos":
                     case "Name":
-                    case "ScriptFile":
                         info.SetValue(this, nameValue[1], null);
+                        break;
+                    case "ScriptFile":
+                    case "DeathScript":
+                        if(!string.IsNullOrEmpty(nameValue[1]))
+                            info.SetValue(this, 
+                                new ScriptParser(Utils.GetScriptFilePath(nameValue[1])), 
+                                null);
                         break;
                     case "NpcIni":
                         info.SetValue(this,

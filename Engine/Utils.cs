@@ -14,7 +14,7 @@ namespace Engine
     {
         public static Dictionary<int, Asf> AsfFiles = new Dictionary<int, Asf>();
         public static Dictionary<int, Magic> Magics = new Dictionary<int, Magic>();
-        public static Dictionary<int, Good> Goods = new Dictionary<int, Good>(); 
+        public static Dictionary<int, Good> Goods = new Dictionary<int, Good>();
 
         //static public int GetBigEndianIntegerFromByteArray(byte[] data, ref int startIndex)
         //{
@@ -222,7 +222,7 @@ namespace Engine
 
         //axes:x point to (1,0), y point to is (1,0) in game axes
         //direction: 0-31 clockwise, 0 point to (0,1)
-        private static List<Vector2> _direction32List; 
+        private static List<Vector2> _direction32List;
         public static Vector2 GetDirection32(int direction)
         {
             if (direction < 0 || direction > 31)
@@ -287,14 +287,38 @@ namespace Engine
 
         public static MouseState GetMouseState(int x, int y)
         {
-            return new MouseState(x, 
-                y, 
+            return new MouseState(x,
+                y,
                 0,
-                ButtonState.Released, 
-                ButtonState.Released, 
-                ButtonState.Released, 
-                ButtonState.Released, 
+                ButtonState.Released,
+                ButtonState.Released,
+                ButtonState.Released,
+                ButtonState.Released,
                 ButtonState.Released);
+        }
+
+        /// <summary>
+        /// Get script file path from file name.
+        /// </summary>
+        /// <param name="fileName">Script file name</param>
+        /// <param name="goodsScript">Whether script file is good script</param>
+        /// <returns></returns>
+        public static string GetScriptFilePath(string fileName, bool goodsScript = false)
+        {
+            if (goodsScript)
+            {
+                return  @"script\goods\" + fileName;
+            }
+            else
+            {
+                var path = @"script\map\" + Globals.TheMap.MapFileNameWithoutExtension
+                + @"\" + fileName;
+                if (!File.Exists(path))
+                {
+                    return @"script\common\" + fileName;
+                }
+                return path;
+            }
         }
 
         public struct LevelDetail

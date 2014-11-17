@@ -41,7 +41,7 @@ namespace Engine
 
         public bool IsInteractive
         {
-            get { return (!string.IsNullOrEmpty(ScriptFile) || IsEnemy || IsFriend); }
+            get { return (ScriptFile != null || IsEnemy || IsFriend); }
         }
         #endregion
 
