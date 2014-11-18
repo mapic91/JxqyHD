@@ -86,7 +86,7 @@ namespace Engine
                 else
                 {
                     //just walk to last find position,don't attack
-                    ClearAttackingTarget();
+                    ClearTarget();
                 }
             }
             base.Update(gameTime);

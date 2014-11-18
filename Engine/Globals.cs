@@ -35,6 +35,7 @@ namespace Engine
 
         #region Sprite out edge
         public static Npc OutEdgeNpc;
+        public static Obj OutEdgeObj;
         public static Sprite OutEdgeSprite;
         public static Texture2D OutEdgeTexture;
         public static int OffX;
@@ -43,6 +44,7 @@ namespace Engine
         public static void ClearGlobalOutEdge()
         {
             OutEdgeNpc = null;
+            OutEdgeObj = null;
             Globals.OutEdgeSprite = null;
             Globals.OutEdgeTexture = null;
             Globals.OffX = Globals.OffY = 0;

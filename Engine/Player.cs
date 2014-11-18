@@ -327,6 +327,7 @@ namespace Engine
                         var texture = one.GetCurrentTexture();
                         if (mouseTilePosition == one.TilePosition)
                         {
+                            Globals.OutEdgeObj = one;
                             Globals.OutEdgeSprite = one;
                             Globals.OutEdgeTexture = TextureGenerator.GetOuterEdge(texture, Globals.ObjEdgeColor);
                             break;
@@ -338,18 +339,25 @@ namespace Engine
                 {
                     if (mouseState.LeftButton == ButtonState.Pressed)
                     {
+                        var isRun = (keyboardState.IsKeyDown(Keys.LeftShift) ||
+                                     keyboardState.IsKeyDown(Keys.RightShift));
+
                         if (Globals.OutEdgeNpc != null)
                         {
-                            Attacking(Globals.OutEdgeNpc.TilePosition);
+                            if(Globals.OutEdgeNpc.IsEnemy)
+                                Attacking(Globals.OutEdgeNpc.TilePosition, isRun);
+                            else if(Globals.OutEdgeNpc.ScriptFile != null)
+                                InteractWith(Globals.OutEdgeNpc, isRun);
                         }
-                        else if (keyboardState.IsKeyDown(Keys.LeftShift) ||
-                            keyboardState.IsKeyDown(Keys.RightShift))
+                        else if (Globals.OutEdgeObj != null && Globals.OutEdgeObj.ScriptFile != null)
+                            InteractWith(Globals.OutEdgeObj, isRun);
+                        else if (isRun)
                             RunTo(mouseTilePosition);
                         else if (keyboardState.IsKeyDown(Keys.LeftAlt) ||
-                            keyboardState.IsKeyDown(Keys.RightAlt))
+                                 keyboardState.IsKeyDown(Keys.RightAlt))
                             JumpTo(mouseTilePosition);
                         else if (keyboardState.IsKeyDown(Keys.LeftControl) ||
-                            keyboardState.IsKeyDown(Keys.RightControl))
+                                 keyboardState.IsKeyDown(Keys.RightControl))
                             PerformeAttack(mouseWorldPosition);
                         else WalkTo(mouseTilePosition);
                     }
@@ -358,7 +366,7 @@ namespace Engine
                     {
                         if (CurrentMagicInUse == null)
                         {
-                            GuiManager.ShowMessage("请先在底部武功栏使用鼠标右键选择武功");
+                            GuiManager.ShowMessage("请在武功栏使用鼠标右键选择武功");
                         }
                         else
                         {

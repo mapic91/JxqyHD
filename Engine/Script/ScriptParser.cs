@@ -10,8 +10,10 @@ namespace Engine.Script
     public class ScriptParser
     {
         private List<Code> _codes;
+        private int _currentIndex;
         public string FilePath { private set; get; }
         public bool IsOk { private set; get; }
+        public bool IsEnd { private set; get; }
         public ScriptParser() { }
 
         public ScriptParser(string filePath)
@@ -127,6 +129,19 @@ namespace Engine.Script
             {
                 ParserLine(line);
             }
+            return true;
+        }
+
+        public void Run()
+        {
+            IsEnd = false;
+            _currentIndex = 0;
+            Continue();
+        }
+
+        public bool Continue()
+        {
+            if (IsEnd) return false;
             return true;
         }
 

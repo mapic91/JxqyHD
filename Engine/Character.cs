@@ -59,6 +59,8 @@ namespace Engine
         private Vector2 _destinationAttackTilePosition = Vector2.Zero;
         private Vector2 _destinationAttackPositionInWorld = Vector2.Zero;
         private LinkedList<Vector2> _path;
+        private object _interactiveTarget;
+        private bool _isRunToTarget;
         private bool _isDeath;
         private float _poisonedMilliSeconds;
         private float _frozenSeconds;
@@ -100,13 +102,13 @@ namespace Engine
         public float PetrifiedSeconds
         {
             get { return _petrifiedSeconds; }
-            set 
+            set
             {
                 if (IsInDeathing) return;
                 if (value < 0) value = 0;
                 _frozenSeconds = 0;
                 _poisonSeconds = 0;
-                _petrifiedSeconds = value; 
+                _petrifiedSeconds = value;
             }
         }
 
@@ -432,7 +434,7 @@ namespace Engine
             protected set { _isDeath = value; }
         }
 
-        public bool IsInDeathing { get { return State == (int) CharacterState.Death; } }
+        public bool IsInDeathing { get { return State == (int)CharacterState.Death; } }
 
         #endregion Public properties
 
@@ -476,9 +478,9 @@ namespace Engine
                         break;
                     case "ScriptFile":
                     case "DeathScript":
-                        if(!string.IsNullOrEmpty(nameValue[1]))
-                            info.SetValue(this, 
-                                new ScriptParser(Utils.GetScriptFilePath(nameValue[1])), 
+                        if (!string.IsNullOrEmpty(nameValue[1]))
+                            info.SetValue(this,
+                                new ScriptParser(Utils.GetScriptFilePath(nameValue[1])),
                                 null);
                         break;
                     case "NpcIni":
@@ -602,6 +604,7 @@ namespace Engine
                     }
                 }
                 if (AttackingIsOk()) PerformeAttack();
+                if (InteractIsOk()) PerformeInteract();
                 if (IsRuning())
                 {
                     if (!CanRunning())
@@ -783,8 +786,8 @@ namespace Engine
         {
             EndPlayCurrentDirOnce();
             DestinationMoveTilePosition = Vector2.Zero;
-            DestinationAttackTilePosition = Vector2.Zero;
             Path = null;
+            ClearTarget();
         }
 
         public bool IsStanding()
@@ -819,7 +822,7 @@ namespace Engine
                 if (IsWalking())
                 {
                     DestinationMoveTilePosition = destinationTilePosition;
-                    ClearAttackingTarget();
+                    ClearTarget();
                 }
                 else
                 {
@@ -859,7 +862,7 @@ namespace Engine
                         }
                     }
                 }
-                else
+                else//Thew not enough
                 {
                     WalkTo(destinationTilePosition);
                 }
@@ -883,7 +886,7 @@ namespace Engine
                 !Globals.TheMap.IsObstacleForCharacter(destinationTilePosition) &&
                 !HasObstacle(destinationTilePosition))
             {
-                if(!CanJump()) return;
+                if (!CanJump()) return;
                 StateInitialize();
                 DestinationMoveTilePosition = destinationTilePosition;
                 Path = new LinkedList<Vector2>();
@@ -979,16 +982,21 @@ namespace Engine
             else IsDeath = true;
         }
 
-        public void Attacking(Vector2 destinationTilePosition)
+        public void Attacking(Vector2 destinationTilePosition, bool isRun = false)
         {
-            DestinationAttackTilePosition = destinationTilePosition;
-            if (IsStanding() && AttackingIsOk())
-                PerformeAttack();
+            if (PerformActionOk())
+            {
+                _isRunToTarget = isRun;
+                DestinationAttackTilePosition = destinationTilePosition;
+                if (IsStanding() && AttackingIsOk())
+                    PerformeAttack();
+            }
         }
 
-        public void ClearAttackingTarget()
+        public void ClearTarget()
         {
             DestinationAttackTilePosition = Vector2.Zero;
+            _interactiveTarget = null;
         }
 
         protected bool AttackingIsOk()
@@ -1001,11 +1009,12 @@ namespace Engine
                 if (tileDistance == AttackRadius)
                 {
                     if (attackCanReach) return true;
-                    else WalkToAndKeepingAttactTarget(DestinationAttackTilePosition);
+                    else
+                        MoveToTarget(DestinationAttackTilePosition);
                 }
                 if (tileDistance > AttackRadius)
                 {
-                    WalkToAndKeepingAttactTarget(DestinationAttackTilePosition);
+                    MoveToTarget(DestinationAttackTilePosition);
                 }
                 else
                 {
@@ -1017,17 +1026,40 @@ namespace Engine
                     Path = Engine.PathFinder.FindPath(TilePosition, neighbor, PathType);
                     if (Path == null) return true;
 
-                    WalkToAndKeepingAttactTarget(neighbor);
+                    MoveToTarget(neighbor);
                 }
             }
             return false;
         }
 
-        protected void WalkToAndKeepingAttactTarget(Vector2 destinationTilePosition)
+        private void MoveToTarget(Vector2 destinationTilePosition)
         {
-            var keep = DestinationAttackTilePosition;//keep value
+            if (_isRunToTarget)
+                RunToAndKeepingTarget(destinationTilePosition);
+            else
+                WalkToAndKeepingTarget(destinationTilePosition);
+        }
+
+        protected void WalkToAndKeepingTarget(Vector2 destinationTilePosition)
+        {
+            //keep value
+            var attack = DestinationAttackTilePosition;
+            var interact = _interactiveTarget;
             WalkTo(destinationTilePosition);
-            DestinationAttackTilePosition = keep; // restore
+            // restore
+            DestinationAttackTilePosition = attack;
+            _interactiveTarget = interact;
+        }
+
+        protected void RunToAndKeepingTarget(Vector2 destinationTilePosition)
+        {
+            //keep value
+            var attack = DestinationAttackTilePosition;
+            var interact = _interactiveTarget;
+            RunTo(destinationTilePosition);
+            // restore
+            DestinationAttackTilePosition = attack;
+            _interactiveTarget = interact;
         }
 
         protected void PerformeAttack()
@@ -1068,6 +1100,58 @@ namespace Engine
             if (IsRuning()) SetState(CharacterState.Run);
             if (State == (int)CharacterState.FightStand) SetState(CharacterState.Stand);
         }
+
+        public void InteractWith(object target, bool isRun = false)
+        {
+            if (PerformActionOk())
+            {
+                _isRunToTarget = isRun;
+                _interactiveTarget = target;
+                if (IsStanding() && InteractIsOk())
+                    PerformeInteract();
+            }
+        }
+
+        private bool InteractIsOk()
+        {
+            if (_interactiveTarget == null) return false;
+            var character = _interactiveTarget as Character;
+            var obj = _interactiveTarget as Obj;
+            Vector2 destinationTilePositon;
+            int interactDistance;
+            if (character != null)
+            {
+                destinationTilePositon = character.TilePosition;
+                interactDistance = character.DialogRadius;
+            }
+            else if (obj != null)
+            {
+                destinationTilePositon = obj.TilePosition;
+                interactDistance = 1;
+            }
+            else
+                return false;
+
+            var tileDistance = Engine.PathFinder.GetTileDistance(TilePosition, destinationTilePositon);
+            if (tileDistance <= interactDistance)
+            {
+                return true;
+            }
+            else
+            {
+                MoveToTarget(destinationTilePositon);
+                return false;
+            }
+        }
+
+        private void PerformeInteract()
+        {
+            if (PerformActionOk())
+            {
+                StandingImmediately();
+
+            }
+        }
         #endregion Perform action
 
         public static float GetTrueDistance(Vector2 distance)
@@ -1098,7 +1182,7 @@ namespace Engine
                 {
                     _poisonedMilliSeconds = 0;
                     Life -= 10;
-                    if(Life <= 0) Death();
+                    if (Life <= 0) Death();
                 }
             }
 
@@ -1110,20 +1194,20 @@ namespace Engine
 
             if (FrozenSeconds > 0)
             {
-                FrozenSeconds -= (float) elapsedGameTime.TotalSeconds;
-                elapsedGameTime = new TimeSpan(elapsedGameTime.Ticks/2);
+                FrozenSeconds -= (float)elapsedGameTime.TotalSeconds;
+                elapsedGameTime = new TimeSpan(elapsedGameTime.Ticks / 2);
             }
 
             switch ((CharacterState)State)
             {
                 case CharacterState.Walk:
                 case CharacterState.FightWalk:
-                {
-                    MoveAlongPath((float)elapsedGameTime.TotalSeconds, WalkSpeed);
-                    SoundManager.Apply3D(_sound,
-                                PositionInWorld - Globals.ListenerPosition);
-                    Update(gameTime, WalkSpeed);
-                }
+                    {
+                        MoveAlongPath((float)elapsedGameTime.TotalSeconds, WalkSpeed);
+                        SoundManager.Apply3D(_sound,
+                                    PositionInWorld - Globals.ListenerPosition);
+                        Update(gameTime, WalkSpeed);
+                    }
                     break;
                 case CharacterState.Run:
                 case CharacterState.FightRun:
@@ -1235,7 +1319,7 @@ namespace Engine
             var color = Color.White;
             if (FrozenSeconds > 0)
                 color = new Color(80, 80, 255);
-            if(PoisonSeconds > 0)
+            if (PoisonSeconds > 0)
                 color = new Color(50, 255, 50);
             if (PetrifiedSeconds > 0)
                 texture = TextureGenerator.ToGrayScale(texture);

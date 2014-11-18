@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Mime;
 using System.Text;
+using Engine.Script;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -21,7 +22,7 @@ namespace Engine
         private int _height;
         private int _lum;
         private StateMapList _objFile;
-        private string _scriptFile;
+        private ScriptParser _scriptFile;
         private SoundEffect _wavFile;
         private int _offX;
         private int _offY;
@@ -76,7 +77,7 @@ namespace Engine
             set { _objFile = value; }
         }
 
-        public string ScriptFile
+        public ScriptParser ScriptFile
         {
             get { return _scriptFile; }
             set { _scriptFile = value; }
@@ -117,7 +118,7 @@ namespace Engine
 
         public bool IsInteractive
         {
-            get { return !string.IsNullOrEmpty(ScriptFile); }
+            get { return ScriptFile != null; }
         }
 
         public bool IsTrap
@@ -177,8 +178,13 @@ namespace Engine
                 switch (nameValue[0])
                 {
                     case "ObjName":
-                    case "ScriptFile":
                         info.SetValue(this, nameValue[1], null);
+                        break;
+                    case "ScriptFile":
+                        if(!string.IsNullOrEmpty(nameValue[1]))
+                            info.SetValue(this,
+                                Utils.GetScriptFilePath(nameValue[1]),
+                                null);
                         break;
                     case "WavFile":
                         info.SetValue(this, Utils.GetSoundEffect(nameValue[1]), null);
