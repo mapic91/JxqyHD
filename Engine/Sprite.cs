@@ -40,6 +40,12 @@ namespace Engine
         }
 
         #region Public properties
+
+        public bool IsPlayingCurrentDirOnce
+        {
+            get { return _isPlayingCurrentDirOnce; }
+        }
+
         public Asf Texture
         {
             get { return _texture; }

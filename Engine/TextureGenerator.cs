@@ -133,5 +133,17 @@ namespace Engine
         {
             return (color.A < 200);
         }
+
+        public static Texture2D GetColorTexture(Color color, int width, int height)
+        {
+            if (width <= 0 || height <= 0) return null;
+            var size = width*height;
+            var data = new Color[size];
+            for (var i = 0; i < size; i++)
+                data[i] = color;
+            var texture = new Texture2D(Globals.TheGame.GraphicsDevice, width, height);
+            texture.SetData(data);
+            return texture;
+        }
     }
 }

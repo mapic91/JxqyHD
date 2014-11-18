@@ -480,7 +480,7 @@ namespace Engine
                     case "DeathScript":
                         if (!string.IsNullOrEmpty(nameValue[1]))
                             info.SetValue(this,
-                                new ScriptParser(Utils.GetScriptFilePath(nameValue[1])),
+                                new ScriptParser(Utils.GetScriptFilePath(nameValue[1]), this),
                                 null);
                         break;
                     case "NpcIni":
@@ -951,6 +951,7 @@ namespace Engine
         public void Death()
         {
             if (State == (int)CharacterState.Death) return;
+            ScriptManager.RunScript(DeathScript);
             StateInitialize();
             if (NpcIni.ContainsKey((int)CharacterState.Death))
             {

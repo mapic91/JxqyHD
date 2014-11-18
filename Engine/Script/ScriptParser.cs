@@ -15,12 +15,13 @@ namespace Engine.Script
         private Code _currentCode;
         public string FilePath { private set; get; }
         public bool IsOk { private set; get; }
+        public object BelongObject { private set; get; }
 
         public ScriptParser() { }
 
-        public ScriptParser(string filePath)
+        public ScriptParser(string filePath, object belongObject)
         {
-            ReadFile(filePath);
+            ReadFile(filePath, belongObject);
         }
 
         private static readonly Regex _regGoto = new Regex(@"^@([a-zA-Z]+):");
@@ -62,6 +63,7 @@ namespace Engine.Script
                 }
             }
 
+            code.Literal = line;
             _codes.Add(code);
         }
 
@@ -108,47 +110,9 @@ namespace Engine.Script
             return parameters;
         }
 
-
-        /// <summary>
-        /// RunCode
-        /// </summary>
-        /// <param name="code">Code to run</param>
-        /// <returns>True if code runed, false if code is running</returns>
-        private bool RunCode(Code code)
+        public bool ReadFile(string filePath, object belongObject)
         {
-            if (code == null || string.IsNullOrEmpty(code.Name)) return true;
-                
-            var isEnd = false;
-            if (_currentCode != null)
-            {
-                switch (_currentCode.Name)
-                {
-                    case "Say":
-                        if (GuiManager.IsDialogEnd())
-                            isEnd = true;
-                        break;
-                }
-            }
-            else
-            {
-                _currentCode = code;
-                switch (_currentCode.Name)
-                {
-                    case "Say":
-                        GuiManager.ShowDialog(Utils.RemoveStringQuotes(_currentCode.Parameters[0]));
-                        break;
-                }
-            }
-
-            if (isEnd)
-            {
-                _currentCode = null;
-            }
-            return isEnd;
-        }
-
-        public bool ReadFile(string filePath)
-        {
+            BelongObject = belongObject;
             IsOk = false;
             FilePath = filePath;
             try
@@ -185,7 +149,28 @@ namespace Engine.Script
             var count = _codes.Count;
             for (; _currentIndex < count; _currentIndex++)
             {
-                if (!RunCode(_codes[_currentIndex])) break;
+                string gotoPosition;
+                bool scriptEnd;
+                if (!RunCode(_codes[_currentIndex], out gotoPosition, out scriptEnd)) break;
+                if (scriptEnd)
+                {
+                    _currentIndex = count;
+                    return false;
+                }
+                if (!string.IsNullOrEmpty(gotoPosition))
+                {
+                    gotoPosition += ":";
+                    _currentIndex++;
+                    while (_currentIndex < count)
+                    {
+                        if (_codes[_currentIndex].IsGoto &&
+                            _codes[_currentIndex].Name == gotoPosition)
+                        {
+                            break;
+                        }
+                        else _currentIndex++;
+                    }
+                }
             }
             return _currentIndex != count;
         }
@@ -195,6 +180,7 @@ namespace Engine.Script
             public string Name;
             public List<string> Parameters;
             public string Result;
+            public string Literal;
             public bool IsGoto;
         }
 
@@ -207,5 +193,120 @@ namespace Engine.Script
             Goto,
             Result
         }
+
+        #region Code run
+        /// <summary>
+        /// RunCode
+        /// </summary>
+        /// <param name="code">Code to run</param>
+        /// <param name="gotoPosition"></param>
+        /// <param name="scriptEnd">Script is returned if true</param>
+        /// <returns>True if code runed, false if code is running</returns>
+        private bool RunCode(Code code, out string gotoPosition, out bool scriptEnd)
+        {
+            gotoPosition = null;
+            scriptEnd = false;
+            if (code == null ||
+                code.IsGoto ||
+                string.IsNullOrEmpty(code.Name)) return true;
+
+            var isEnd = true;
+            try
+            {
+                if (_currentCode != null)
+                {
+                    switch (_currentCode.Name)
+                    {
+                        case "Say":
+                            isEnd = GuiManager.IsDialogEnd();
+                            break;
+                        case "FadeOut":
+                            isEnd = ScriptExecuter.IsFadeOutEnd();
+                            break;
+                        case "FadeIn":
+                            isEnd = ScriptExecuter.IsFadeInEnd();
+                            break;
+                    }
+                }
+                else
+                {
+                    _currentCode = code;
+                    var parameters = _currentCode.Parameters;
+                    switch (_currentCode.Name)
+                    {
+                        case "Say":
+                            ScriptExecuter.Say(parameters);
+                            isEnd = GuiManager.IsDialogEnd();
+                            break;
+                        case "If":
+                            if (ScriptExecuter.If(parameters))
+                                gotoPosition = _currentCode.Result;
+                            break;
+                        case "Return":
+                            scriptEnd = true;
+                            break;
+                        case "Goto":
+                            gotoPosition = _currentCode.Parameters != null
+                                ? _currentCode.Parameters[0]
+                                : _currentCode.Result;
+                            break;
+                        case "Add":
+                            ScriptExecuter.Add(parameters);
+                            break;
+                        case "Assign":
+                            ScriptExecuter.Assign(parameters);
+                            break;
+                        case "FadeOut":
+                            ScriptExecuter.FadeOut();
+                            isEnd = ScriptExecuter.IsFadeOutEnd();
+                            break;
+                        case "FadeIn":
+                            ScriptExecuter.FadeIn();
+                            isEnd = ScriptExecuter.IsFadeInEnd();
+                            break;
+                        case "DelNpc":
+                            ScriptExecuter.DeleteNpc(parameters);
+                            break;
+                        case "ClearBody":
+                            ScriptExecuter.ClearBody();
+                            break;
+                        case "StopMusic":
+                            ScriptExecuter.StopMusic();
+                            break;
+                        case "PlayMusic":
+                            ScriptExecuter.PlayMusic(parameters);
+                            break;
+                        case "PlaySound":
+                            ScriptExecuter.PlaySound(parameters, BelongObject);
+                            break;
+                        case "OpenBox":
+                            ScriptExecuter.OpenBox(parameters, BelongObject);
+                            break;
+                        case "SetObjScript":
+                            ScriptExecuter.SetObjScript(parameters, BelongObject);
+                            break;
+                        case "AddRandMoney":
+                            ScriptExecuter.AddRandMoney(parameters);
+                            break;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                var message = "Script error.";
+                if (_currentCode != null)
+                {
+                    message += ("Code: " + _currentCode.Literal);
+                }
+                Log.LogMessageToFile(message);
+            }
+
+            if (isEnd)
+            {
+                _currentCode = null;
+            }
+            return isEnd;
+        }
+        #endregion Code run
     }
 }

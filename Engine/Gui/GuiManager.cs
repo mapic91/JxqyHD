@@ -245,10 +245,10 @@ namespace Engine.Gui
             MessageInterface.ShowMessage(message);
         }
 
-        public static void ShowDialog(string text)
+        public static void ShowDialog(string text, int portraitIndex = -1)
         {
             AllPanelsShow(false);
-            DialogInterface.ShowText(text);
+            DialogInterface.ShowText(text, portraitIndex);
         }
 
         public static bool IsDialogEnd()
@@ -262,6 +262,7 @@ namespace Engine.Gui
             var mouseState = Mouse.GetState();
 
             MouseInterface.Update(gameTime);
+            ColumnInterface.Update(gameTime);
 
             //check mouse state
             if (
@@ -298,7 +299,6 @@ namespace Engine.Gui
 
                 TopInterface.Update(gameTime);
                 BottomInterface.Update(gameTime);
-                ColumnInterface.Update(gameTime);
                 MagicInterface.Update(gameTime);
                 XiuLianInterface.Update(gameTime);
                 GoodsInterface.Update(gameTime);

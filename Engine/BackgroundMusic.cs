@@ -15,8 +15,9 @@ namespace Engine
             BindingFlags.NonPublic | BindingFlags.Instance, null,
             new[] { typeof(string), typeof(string), typeof(int) }, null);
 
-        public static void Play(string path)
+        public static void Play(string fileName)
         {
+            var path = @"music\" + fileName;
             try
             {
                 var song = (Song)SongCtr.Invoke(new object[] { "BackgroundMusic", path, 0 });
@@ -27,6 +28,11 @@ namespace Engine
             {
                 Log.LogFileLoadError("Music file", path, exception);
             }
+        }
+
+        public static void Stop()
+        {
+            MediaPlayer.Stop();
         }
 
         public static void SetVolume(float volume)

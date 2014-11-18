@@ -61,7 +61,7 @@ namespace Engine
             set { _levelIni = value; }
         }
 
-        public int Money
+        private int Money
         {
             get { return _money; }
             set { _money = value; }
@@ -130,6 +130,59 @@ namespace Engine
         protected override void PlaySoundEffect(SoundEffect soundEffect)
         {
             SoundManager.PlaySoundEffectOnce(soundEffect);
+        }
+
+        protected override bool CanPerformeAttack()
+        {
+            if (Thew < ThewUseAmountWhenAttack)
+            {
+                GuiManager.ShowMessage("体力不足!");
+                return false;
+            }
+            else
+            {
+                Thew -= ThewUseAmountWhenAttack;
+                return true;
+            }
+        }
+
+        protected override bool CanUseMagic()
+        {
+            if (Mana < MagicUse.ManaCost)
+            {
+                GuiManager.ShowMessage("没有足够的内力使用这种武功");
+                return false;
+            }
+            else
+            {
+                Mana -= MagicUse.ManaCost;
+                return true;
+            }
+        }
+
+        protected override bool CanRunning()
+        {
+            if (IsNotUseThewWhenRun) return true;
+            if (Thew > 0)
+            {
+                Thew -= 1;
+                return true;
+            }
+            return false;
+        }
+
+        protected override bool CanJump()
+        {
+            if (Thew < ThewUseAmountWhenJump)
+            {
+                GuiManager.ShowMessage("体力不足!");
+                return false;
+            }
+            else
+            {
+                Thew -= ThewUseAmountWhenJump;
+                return true;
+            }
         }
 
         /// <summary>
@@ -238,56 +291,18 @@ namespace Engine
             return false;
         }
 
-        protected override bool CanPerformeAttack()
+        public void AddMoney(int money)
         {
-            if (Thew < ThewUseAmountWhenAttack)
+            if (money > 0)
             {
-                GuiManager.ShowMessage("体力不足!");
-                return false;
+                Money += money;
+                GuiManager.ShowMessage("你得到了 " + money + " 两银子。");
             }
-            else
+            else if (money < 0)
             {
-                Thew -= ThewUseAmountWhenAttack;
-                return true;
-            }
-        }
-
-        protected override bool CanUseMagic()
-        {
-            if (Mana < MagicUse.ManaCost)
-            {
-                GuiManager.ShowMessage("没有足够的内力使用这种武功");
-                return false;
-            }
-            else
-            {
-                Mana -= MagicUse.ManaCost;
-                return true;
-            }
-        }
-
-        protected override bool CanRunning()
-        {
-            if (IsNotUseThewWhenRun) return true;
-            if (Thew > 0)
-            {
-                Thew -= 1;
-                return true;
-            }
-            return false;
-        }
-
-        protected override bool CanJump()
-        {
-            if (Thew < ThewUseAmountWhenJump)
-            {
-                GuiManager.ShowMessage("体力不足!");
-                return false;
-            }
-            else
-            {
-                Thew -= ThewUseAmountWhenJump;
-                return true;
+                Money += money;
+                money = -money;
+                GuiManager.ShowMessage("你失去了 " + money + " 两银子。");
             }
         }
 

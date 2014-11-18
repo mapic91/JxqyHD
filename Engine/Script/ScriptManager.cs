@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Engine.Script
 {
@@ -26,6 +27,12 @@ namespace Engine.Script
                     _list.Remove(node);
                 node = next;
             }
+            ScriptExecuter.Update(gameTime);
+        }
+
+        public static void Draw(SpriteBatch spriteBatch)
+        {
+            
         }
     }
 }

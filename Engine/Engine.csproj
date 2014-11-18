@@ -113,6 +113,7 @@
     <Compile Include="PathFinder.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="ResFile.cs" />
+    <Compile Include="Script\ScriptExecuter.cs" />
     <Compile Include="Script\ScriptManager.cs" />
     <Compile Include="Script\ScriptParser.cs" />
     <Compile Include="SoundManager.cs" />

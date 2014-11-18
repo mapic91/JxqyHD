@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using Engine;
 using Engine.Gui;
+using Engine.Script;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -45,7 +46,7 @@ namespace Jxqy
             SoundEffect.MasterVolume = Globals.SoundEffectVolume;
             MediaPlayer.Volume = Globals.MusicVolume;
             Log.Initialize();
-            Log.DebugOn = false;
+            Log.LogOn = Globals.IsLogOn;
 
             Log.LogMessageToFile("Game is running...");
 
@@ -117,6 +118,7 @@ namespace Jxqy
             if (!IsActive) return;
 
             GuiManager.Update(gameTime);
+            ScriptManager.Update(gameTime);
 
             if (Globals.InSuperMagicMode)
             {
@@ -183,6 +185,13 @@ namespace Jxqy
                 "ÄÚ£º " + Globals.ThePlayer.Mana.ToString(),
                 new Vector2(5, 45), Color.Red);
             if (Globals.InSuperMagicMode) Globals.SuperModeMagicSprite.Draw(_spriteBatch);
+
+            //Fade in, fade out
+            if (ScriptExecuter.IsInFadeIn || ScriptExecuter.IsInFadeOut)
+            {
+                ScriptExecuter.DrawFade(_spriteBatch);
+            }
+
             GuiManager.Draw(_spriteBatch);
             _spriteBatch.End();
             base.Draw(gameTime);

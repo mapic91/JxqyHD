@@ -206,6 +206,18 @@ namespace Engine
             return GetObstacle((int)tilePosition.X, (int)tilePosition.Y);
         }
 
+        public static void DeleteNpc(string npcName)
+        {
+            for (var node = _list.First; node != null; node = node.Next)
+            {
+                if (node.Value.Name == npcName)
+                {
+                    RemoveNpc(node);
+                    break;
+                }
+            }
+        }
+
         public static void Update(GameTime gameTime)
         {
             for (var node = _list.First; node != null; )

@@ -69,6 +69,7 @@ namespace Engine
         public static int WindowWidth = 1366;
         public static int WindowHeight = 768;
         public static bool IsFullScreen = true;
+        public static bool IsLogOn = false;
 
         public static void Initialize()
         {
@@ -84,6 +85,8 @@ namespace Engine
                     WindowWidth = value;
                 if (int.TryParse(setting["Height"], out value))
                     WindowHeight = value;
+                if (int.TryParse(setting["Log"], out value))
+                    IsLogOn = (value == 1);
             }
             catch (Exception)
             {

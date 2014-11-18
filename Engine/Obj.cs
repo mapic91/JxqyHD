@@ -125,6 +125,11 @@ namespace Engine
         {
             get { return Kind == 6; }
         }
+
+        public bool IsBody
+        {
+            get { return Kind == 2; }
+        }
         #endregion
 
         public Obj() { }
@@ -183,7 +188,7 @@ namespace Engine
                     case "ScriptFile":
                         if(!string.IsNullOrEmpty(nameValue[1]))
                             info.SetValue(this,
-                                Utils.GetScriptFilePath(nameValue[1]),
+                                new ScriptParser(Utils.GetScriptFilePath(nameValue[1]), this),
                                 null);
                         break;
                     case "WavFile":
@@ -205,9 +210,15 @@ namespace Engine
             }
         }
 
+        public void OpenBox()
+        {
+            PlayCurrentDirOnce();
+        }
+
         public override void Update(GameTime gameTime)
         {
-            if(Texture.FrameCounts > 1 && IsAutoPlay)
+            if((Texture.FrameCounts > 1 && IsAutoPlay) ||
+                IsPlayingCurrentDirOnce)
                 base.Update(gameTime);
         }
 

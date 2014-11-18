@@ -100,10 +100,27 @@ namespace Engine
             }
         }
 
+        private static void RemoveObj(LinkedListNode<Obj> node)
+        {
+            _list.Remove(node);
+            _objListChanged = true;
+        }
+
         public static void ClearAllObj()
         {
             _list.Clear();
             _objListChanged = true;
+        }
+
+        public static void ClearBody()
+        {
+            for (var node = _list.First; node != null;)
+            {
+                var next = node.Next;
+                if(node.Value.IsBody)
+                    RemoveObj(node);
+                node = next;
+            }
         }
 
         public static bool IsObstacle(int tileX, int tileY)
@@ -151,6 +168,16 @@ namespace Engine
         public static Obj GetObstacle(Vector2 tilePosition)
         {
             return GetObstacle((int)tilePosition.X, (int)tilePosition.Y);
+        }
+
+        public static Obj GetObj(string objName)
+        {
+            foreach (var obj in _list)
+            {
+                if (obj.ObjName == objName)
+                    return obj;
+            }
+            return null;
         }
 
         public static void Update(GameTime gameTime)

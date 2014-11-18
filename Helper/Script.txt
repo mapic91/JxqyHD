@@ -1,0 +1,445 @@
+///////////////////////////////////////////////////////////////////
+//////////////////    Implemented   Start  ///////////////////////
+/////////////////////////////////////////////////////////////////
+If
+If ($Color == 1) @Color1;
+If ($GoodsNum >> 0) @AlreadyHave0;
+If ($Event >= 60) @Label1;
+If ($Lany << 2 )   @ContinueTouch;
+If ($Event <= 45) @Label1;
+If ($Event <> 10) @end;
+
+Say(a)
+Say("酒肆老板：烦劳公子啦。");
+
+Say(a, b)
+Say("杨影枫：这位仁兄好雅兴。", 2);
+
+
+Return
+Return;
+
+Goto
+Goto(@end);
+
+Add(a,b)
+Add ($Enemy2, 1);
+
+Assign(a, b);
+Assign ($Event, 200);
+
+FadeIn()
+FadeIn();
+
+FadeOut()
+FadeOut();
+
+DelNpc(a)
+DelNpc("月眉儿");
+
+ClearBody()
+ClearBody();
+
+StopMusic()
+StopMusic();
+
+PlayMusic(a)
+PlayMusic("mc000.mp3");
+
+PlaySound(a)
+PlaySound("物-银子.wav");
+
+OpenBox()
+OpenBox();
+
+OpenBox(a)
+OpenBox("渔船");
+
+SetObjScript(a,b)
+SetObjScript("","")
+SetObjScript("","关宝箱.txt");
+SetObjScript("罂粟", "支线草药.txt");
+SetObjScript("草葱", "");
+
+AddRandMoney(a,b)
+AddRandMoney(3000,4000);
+
+///////////////////////////////////////////////////////////////////
+//////////////////    Implemented   End  /////////////////////////
+/////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+ 
+AddExp(a)
+AddExp(7520);
+
+AddGoods(a)
+AddGoods("Goods-m09-冰蚕.ini");
+
+AddLife(a)
+AddLife(-500);
+
+AddMagic(a)
+AddMagic("player-magic-银钩铁划.ini");
+
+AddMana(a)
+AddMana(-1000);
+
+AddMoney(a)
+AddMoney(200);
+
+AddNpc(a,b,c,d)
+AddNpc("月眉儿.ini",8,18,7);
+
+AddObj(a,b,c,d)
+AddNpc("纳兰真.ini", 54, 79, 7);
+
+AddRandGoods(a)
+AddRandGoods("6级防具.ini");
+
+
+
+AddThew(a)
+AddThew(-1000);
+
+AddToMemo(a)
+AddToMemo(142);
+
+
+
+BeginRain(a)
+BeginRain("Rain2.ini");
+
+BuyGoods(a)
+BuyGoods("衣3级.ini");
+
+ChangeAsfColor(a, b, c)
+ChangeAsfColor(255, 255, 255);
+
+ChangeMapColor(a, b, c)
+ChangeMapColor(250, 250, 250);
+
+Choose(a, b, c, d);
+Choose("请选择游戏的难易：", "难", "易", $Level);
+
+
+
+CloseBox(a)
+CloseBox("通天塔开关A");
+
+CloseTimeLimit()
+CloseTimeLimit();
+
+CloseWaterEffect()
+CloseWaterEffect();
+
+DelCurObj()
+DelCurObj();
+
+DelGoods()
+DelGoods();
+
+DelGoods(a)
+DelGoods("Goods-e21-玫瑰花.ini");
+
+
+
+DelObj(a)
+DelObj("罂粟");
+
+DisableFight()
+DisableFight();
+
+DisableInput()
+DisableInput();
+
+DisableJump()
+DisableJump();
+
+DisableNpcAI()
+DisableNpcAI();
+
+DisableRun()
+DisableRun();
+
+EnableFight()
+EnableFight();
+
+EnableInput()
+EnableInput();
+
+EnableJump()
+EnableJump();
+
+EnableNpcAI()
+EnableNpcAI();
+
+EnableRun()
+EnableRun();
+
+EndRain()
+EndRain();
+
+EquipGoods(a,b)
+EquipGoods(1, 5);
+
+
+
+FollowNpc("慕容老头","杨影枫")
+FollowNpc("慕容老头","杨影枫")
+
+FreeMap()
+FreeMap();
+
+FullLife()
+FullLife();
+
+FullMana()
+FullMana();
+
+FullThew()
+FullThew();
+
+GetGoodsNum(a)
+GetGoodsNum("goods-n13-紫霞玉佩.ini");
+
+GetMoneyNum()
+GetMoneyNum();
+
+GetMoneyNum(a)
+GetMoneyNum($TwentyMoney);
+
+GetNpcCount(1,1)
+GetNpcCount(1,1);
+
+GetPartnerIdx(a)
+GetPartnerIdx($PartnerNo);
+
+GetRandNum(a, b, c)
+GetRandNum($Map003RandVal, 1, 2);
+
+HideTimerWnd()
+HideTimerWnd();
+
+LimitMana(a)
+LimitMana(1);
+
+LoadGame(a)
+LoadGame(0);
+
+LoadMap(a)
+LoadMap("map_002_凌绝峰峰顶.map");
+
+LoadNpc(a)
+LoadNpc("map064_bomb.npc");
+
+LoadObj(a)
+LoadObj("map002_obj.obj");
+
+Memo(a)
+Memo("帮武当山下酒肆老板寻找野姜、草葱和罂粟。");
+
+MergeNpc(a)
+MergeNpc("SubEvent01.npc");
+
+MoveScreen(a,b,c)
+MoveScreen(6,100,2);
+
+MoveScreenEx(a, b, c)
+MoveScreenEx(40, 32, 4);
+
+NpcAttack(a,b,c)
+NpcAttack("杨影枫",10,35);
+
+NpcGoto(a,b,c)
+NpcGoto("卢肇灏",4,99);
+
+NpcGotoDir(a,b,c)
+NpcGotoDir("蔷薇",1,2);
+
+NpcGotoEx(a,b,c)
+NpcGotoEx("纳兰真",9,31);
+
+NpcSpecialAction(a,b)
+NpcSpecialAction("霹雳堂爆炸","听雷阁爆炸.asf");
+
+NpcSpecialActionEx(a, b)
+NpcSpecialActionEx("杨影枫", "mpc006_跪.asf");
+
+OpenObj(a)
+OpenObj("宝箱");
+
+OpenTimeLimit(a)
+OpenTimeLimit(2);
+
+OpenWaterEffect()
+OpenWaterEffect();
+
+PlayerChange(a)
+PlayerChange(1);
+
+PlayerGoto(a, b)
+PlayerGoto(24, 43);
+
+PlayerGotoDir(a, b)
+PlayerGotoDir(5, 2);
+
+PlayerGotoEx(a,b)
+PlayerGotoEx(8,19);
+
+PlayerJumpTo(a, b)
+PlayerJumpTo(36, 40);
+
+PlayerRunTo(a,b)
+PlayerRunTo(9,29);
+
+PlayerRunToEx(a,b)
+PlayerRunToEx(4,78);
+
+PlayMovie(a)
+PlayMovie("open.avi");
+
+PlayMovie(a,b,c,d);
+PlayMovie("team.avi",0,0,0);
+
+
+
+
+
+ReturnToTitle()
+ReturnToTitle();
+
+RunScript(a)
+RunScript("Begin.txt");
+
+SaveMapTrap()
+SaveMapTrap();
+
+SaveNpc()
+SaveNpc();
+
+SaveNpc(a)
+SaveNpc("temp_wudangshanxia.npc");
+
+SaveObj()
+SaveObj();
+
+SaveObj(a)
+SaveObj("temp_map063_obj.obj");
+
+Select(a,b,c,d)
+Select(281,	282, 283, $SelectVal);
+
+SellGoods(a)
+SellGoods("低级药品.ini");
+
+SetLevelFile(a)
+SetLevelFile("Level-easy.ini");
+
+SetMagicLevel(a,b)
+SetMagicLevel("player-magic-蚀骨血仞.ini",4);
+
+SetMapPos(a, b)
+SetMapPos(32, 67);
+
+SetMapTime(a)
+SetMapTime(1);
+
+SetMapTrap(a,b)
+SetMapTrap(1,"");
+SetMapTrap(1,"trap01.txt");
+
+SetMoneyNum(a)
+SetMoneyNum(0);
+
+SetNpcAction(a,b)
+SetNpcAction("孟知秋",0);
+
+SetNpcAction(a, b, c, d)
+SetNpcAction("卓非凡", 11, 0, 0);
+
+SetNpcActionFile(a, b, c)
+SetNpcActionFile("杨影枫", 0, "mpc001_跪.asf");
+
+SetNpcDeathScript(a,b)
+SetNpcDeathScript("月眉儿","月眉儿之死.txt");
+
+SetNpcDir(a)
+SetNpcDir(5);
+
+SetNpcDir(a,b)
+SetNpcDir("武当山下酒客",0);
+
+SetNpcKind(a, b)
+SetNpcKind("杨影枫", 1);
+
+SetNpcLevel(a, b)
+SetNpcLevel("杨影枫", 5);
+
+SetNpcMagicFile(a,b)
+SetNpcMagicFile("杨影枫","player-magic-武道德经.ini");
+
+SetNpcPos(a,b,c)
+SetNpcPos("紫轩",16,27);
+
+SetNpcRelation(a,b)
+SetNpcRelation("月眉儿",1);
+
+SetNpcRes(a,b)
+SetNpcRes("月眉儿","npc016-躺着的月眉儿.ini");
+
+SetNpcScript(a,b)
+SetNpcScript("纳兰真","真儿对话.txt");
+
+SetObjOfs(a,b,c);
+SetObjOfs("躺着的月眉儿",-10,10);
+
+
+
+SetPlayerDir(a)
+SetPlayerDir(6);
+
+SetPlayerPos(a, b)
+SetPlayerPos(26,107);
+
+SetPlayerScn()
+SetPlayerScn();
+
+SetPlayerState(a)
+SetPlayerState(1);
+
+SetTimeScript(a,b)
+SetTimeScript(1,"changecolor.txt");
+SetTimeScript(60, "time60.txt");
+
+SetTrap(a,b,c)
+SetTrap("map_028_连接地图",2,"");
+SetTrap("map_017_连接地图",3,"Trap03.txt");
+
+ShowMessage(a)
+ShowMessage(94400);
+
+ShowNpc(a, b)
+ShowNpc("杨影枫", 0);
+
+ShowSnow(a)
+ShowSnow(0);
+ShowSnow(1);
+
+Sleep(a)
+Sleep(2000);
+
+
+
+Talk(a,b)
+Talk(14050,14090);
+
+Watch(a, b, c)
+Watch("杨影枫", "纳兰真", 0);
+
