@@ -56,6 +56,8 @@ namespace Engine
             if (string.IsNullOrEmpty(fileName)) return null;
             try
             {
+                if (string.IsNullOrEmpty(basePath) || basePath[basePath.Length - 1] != '\\')
+                    basePath += "\\";
                 var path = basePath + fileName;
                 var hashCode = path.GetHashCode();
                 if (AsfFiles.ContainsKey(hashCode))
@@ -318,6 +320,18 @@ namespace Engine
                     return @"script\common\" + fileName;
                 }
                 return path;
+            }
+        }
+
+        public static string RemoveStringQuotes(string str)
+        {
+            try
+            {
+                return str.Substring(1, str.Length - 2);
+            }
+            catch (Exception)
+            {
+                return "";
             }
         }
 

@@ -15,8 +15,9 @@ namespace Engine.Gui
         private static SoundEffect _interfaceShow;
         private static SoundEffect _interfaceMiss;
         private static LinkedList<GuiItem> _allGuiItems = new LinkedList<GuiItem>();
-        private static LinkedList<GuiItem> _panels = new LinkedList<GuiItem>(); 
+        private static LinkedList<GuiItem> _panels = new LinkedList<GuiItem>();
         private static KeyboardState _lastKeyboardState;
+        private static MouseState _lastMouseState;
 
         public static MagicGui MagicInterface;
         public static XiuLianGui XiuLianInterface;
@@ -30,6 +31,7 @@ namespace Engine.Gui
 
         public static ToolTipGui ToolTipInterface;
         public static MessageGui MessageInterface;
+        public static DialogGui DialogInterface;
         public static MouseGui MouseInterface;
 
         public static bool IsMouseStateEated;
@@ -83,6 +85,9 @@ namespace Engine.Gui
             MouseInterface = new MouseGui();
             MessageInterface = new MessageGui();
             _allGuiItems.AddLast(MessageInterface);
+
+            DialogInterface = new DialogGui();
+            _allGuiItems.AddLast(DialogInterface);
 
             MagicListManager.RenewList();
             GoodsListManager.RenewList();
@@ -218,7 +223,7 @@ namespace Engine.Gui
             }
         }
 
-        public static void HideAllPanels()
+        public static void AllPanelsShow(bool show = true)
         {
             foreach (var panel in _panels)
             {
@@ -240,46 +245,88 @@ namespace Engine.Gui
             MessageInterface.ShowMessage(message);
         }
 
+        public static void ShowDialog(string text)
+        {
+            AllPanelsShow(false);
+            DialogInterface.ShowText(text);
+        }
+
+        public static bool IsDialogEnd()
+        {
+            return !DialogInterface.IsShow;
+        }
+
         public static void Update(GameTime gameTime)
         {
             var keyboardState = Keyboard.GetState();
-            if (keyboardState.IsKeyDown(Keys.Escape) &&
-                _lastKeyboardState.IsKeyUp(Keys.Escape))
-            {
-                if (HasPanelsShow()) HideAllPanels();
-            }
-
-            IsMouseStateEated = false;
-            TopInterface.Update(gameTime);
-            BottomInterface.Update(gameTime);
-            ColumnInterface.Update(gameTime);
-            MagicInterface.Update(gameTime);
-            XiuLianInterface.Update(gameTime);
-            GoodsInterface.Update(gameTime);
-            MemoInterface.Update(gameTime);
-            StateInterface.Update(gameTime);
-            EquipInterface.Update(gameTime);
-            ToolTipInterface.Update(gameTime);
+            var mouseState = Mouse.GetState();
 
             MouseInterface.Update(gameTime);
 
-            MessageInterface.Update(gameTime);
-
-            if (IsDropped)
+            //check mouse state
+            if (
+                IsMouseStateEated &&
+                    (
+                    mouseState.LeftButton == ButtonState.Pressed ||
+                    mouseState.RightButton == ButtonState.Pressed ||
+                    mouseState.MiddleButton == ButtonState.Pressed
+                    )
+                )
             {
-                IsDropped = false;
-                if (DragDropSourceItem != null)
-                {
-                    DragDropSourceItem.IsShow = true;
-                }
-                if (DragDropSourceTexture != null &&
-                    DragDropSourceTexture.Data != null)
-                {
-                    _dropSound.Play();
-                }
-                DragDropSourceItem = null;
-                DragDropSourceTexture = null;
+                IsMouseStateEated = true;
             }
+            else IsMouseStateEated = false;
+
+            if (DialogInterface.IsShow)
+            {
+                IsMouseStateEated = true;
+                DialogInterface.Update(gameTime);
+                if (mouseState.LeftButton == ButtonState.Pressed &&
+                    _lastMouseState.LeftButton == ButtonState.Released)
+                {
+                    if (!DialogInterface.NextPage())
+                        DialogInterface.IsShow = false;
+                }
+            }
+            else
+            {
+                if (keyboardState.IsKeyDown(Keys.Escape) &&
+                    _lastKeyboardState.IsKeyUp(Keys.Escape))
+                {
+                    if (HasPanelsShow()) AllPanelsShow(false);
+                }
+
+                TopInterface.Update(gameTime);
+                BottomInterface.Update(gameTime);
+                ColumnInterface.Update(gameTime);
+                MagicInterface.Update(gameTime);
+                XiuLianInterface.Update(gameTime);
+                GoodsInterface.Update(gameTime);
+                MemoInterface.Update(gameTime);
+                StateInterface.Update(gameTime);
+                EquipInterface.Update(gameTime);
+                ToolTipInterface.Update(gameTime);
+
+                MessageInterface.Update(gameTime);
+
+                if (IsDropped)
+                {
+                    IsDropped = false;
+                    if (DragDropSourceItem != null)
+                    {
+                        DragDropSourceItem.IsShow = true;
+                    }
+                    if (DragDropSourceTexture != null &&
+                        DragDropSourceTexture.Data != null)
+                    {
+                        _dropSound.Play();
+                    }
+                    DragDropSourceItem = null;
+                    DragDropSourceTexture = null;
+                }
+            }
+            _lastKeyboardState = keyboardState;
+            _lastMouseState = mouseState;
         }
 
         public static void Draw(SpriteBatch spriteBatch)
@@ -295,9 +342,10 @@ namespace Engine.Gui
             EquipInterface.Draw(spriteBatch);
             ToolTipInterface.Draw(spriteBatch);
 
-            MouseInterface.Draw(spriteBatch);
-
             MessageInterface.Draw(spriteBatch);
+            DialogInterface.Draw(spriteBatch);
+
+            MouseInterface.Draw(spriteBatch);
         }
     }
 }

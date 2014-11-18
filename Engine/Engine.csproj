@@ -76,6 +76,7 @@
     <Compile Include="Gui\BottomGui.cs" />
     <Compile Include="Gui\ColumnGui.cs" />
     <Compile Include="Gui\ColumnView.cs" />
+    <Compile Include="Gui\DialogGui.cs" />
     <Compile Include="Gui\DragDropItem.cs" />
     <Compile Include="Gui\EquipGui.cs" />
     <Compile Include="Gui\GoodsGui.cs" />

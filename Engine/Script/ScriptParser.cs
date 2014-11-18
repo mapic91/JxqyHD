@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Engine.Gui;
 
 namespace Engine.Script
 {
@@ -11,9 +12,10 @@ namespace Engine.Script
     {
         private List<Code> _codes;
         private int _currentIndex;
+        private Code _currentCode;
         public string FilePath { private set; get; }
         public bool IsOk { private set; get; }
-        public bool IsEnd { private set; get; }
+
         public ScriptParser() { }
 
         public ScriptParser(string filePath)
@@ -106,6 +108,45 @@ namespace Engine.Script
             return parameters;
         }
 
+
+        /// <summary>
+        /// RunCode
+        /// </summary>
+        /// <param name="code">Code to run</param>
+        /// <returns>True if code runed, false if code is running</returns>
+        private bool RunCode(Code code)
+        {
+            if (code == null || string.IsNullOrEmpty(code.Name)) return true;
+                
+            var isEnd = false;
+            if (_currentCode != null)
+            {
+                switch (_currentCode.Name)
+                {
+                    case "Say":
+                        if (GuiManager.IsDialogEnd())
+                            isEnd = true;
+                        break;
+                }
+            }
+            else
+            {
+                _currentCode = code;
+                switch (_currentCode.Name)
+                {
+                    case "Say":
+                        GuiManager.ShowDialog(Utils.RemoveStringQuotes(_currentCode.Parameters[0]));
+                        break;
+                }
+            }
+
+            if (isEnd)
+            {
+                _currentCode = null;
+            }
+            return isEnd;
+        }
+
         public bool ReadFile(string filePath)
         {
             IsOk = false;
@@ -124,7 +165,7 @@ namespace Engine.Script
 
         public bool ReadFromLines(string[] lines)
         {
-            _codes = new List<Code>();
+            _codes = new List<Code>(lines.Count());
             foreach (var line in lines)
             {
                 ParserLine(line);
@@ -134,15 +175,19 @@ namespace Engine.Script
 
         public void Run()
         {
-            IsEnd = false;
             _currentIndex = 0;
+            _currentCode = null;
             Continue();
         }
 
         public bool Continue()
         {
-            if (IsEnd) return false;
-            return true;
+            var count = _codes.Count;
+            for (; _currentIndex < count; _currentIndex++)
+            {
+                if (!RunCode(_codes[_currentIndex])) break;
+            }
+            return _currentIndex != count;
         }
 
         public class Code

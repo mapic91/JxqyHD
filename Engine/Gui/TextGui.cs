@@ -110,7 +110,7 @@ namespace Engine.Gui
             _drawInfo.Clear();
             try
             {
-                if (TextStream == null &&
+                if (TextStream == null ||
                     _endIndex >= TextStream.Length)
                     return false;
 
@@ -132,10 +132,10 @@ namespace Engine.Gui
                         switch (text.ToString())
                         {
                             case "color=Red":
-                                DefaultColor = Color.Red;
+                                DefaultColor = Color.Red*0.8f;
                                 break;
                             case "color=Black":
-                                DefaultColor = Color.Black;
+                                DefaultColor = Color.Black*0.8f;
                                 break;
                             case "enter":
                                 AddLinespace(ref y);

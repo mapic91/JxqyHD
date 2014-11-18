@@ -1148,8 +1148,21 @@ namespace Engine
         {
             if (PerformActionOk())
             {
+                var character = _interactiveTarget as Character;
+                var obj = _interactiveTarget as Obj;
+                ScriptParser script = null;
+                if (character != null)
+                {
+                    script = character.ScriptFile;
+                    SetDirection(character.PositionInWorld - PositionInWorld);
+                }
+                else if (obj != null)
+                {
+                    script = obj.ScriptFile;
+                    SetDirection(obj.PositionInWorld - PositionInWorld);
+                }
                 StandingImmediately();
-
+                ScriptManager.RunScript(script);
             }
         }
         #endregion Perform action

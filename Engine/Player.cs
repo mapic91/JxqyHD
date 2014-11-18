@@ -401,9 +401,7 @@ namespace Engine
             }
             else _standingMilliseconds = 0f;
 
-            _lastMouseState = GuiManager.IsMouseStateEated
-                ? Utils.GetMouseState(mouseState.X, mouseState.Y)
-                : mouseState;
+            _lastMouseState =  mouseState;
             _lastKeyboardState = keyboardState;
             base.Update(gameTime);
         }

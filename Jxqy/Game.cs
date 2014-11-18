@@ -40,6 +40,7 @@ namespace Jxqy
         /// </summary>
         protected override void Initialize()
         {
+            Globals.Initialize();
             Globals.TheGame = this;
             SoundEffect.MasterVolume = Globals.SoundEffectVolume;
             MediaPlayer.Volume = Globals.MusicVolume;
@@ -50,6 +51,8 @@ namespace Jxqy
 
             _graphics.PreferredBackBufferWidth = Globals.WindowWidth;
             _graphics.PreferredBackBufferHeight = Globals.WindowHeight;
+            _graphics.ApplyChanges();
+            _graphics.IsFullScreen = Globals.IsFullScreen;
             _graphics.ApplyChanges();
 
             Globals.TheMap.ViewWidth = _graphics.PreferredBackBufferWidth;
@@ -138,6 +141,12 @@ namespace Jxqy
                     Globals.TheMap.SwitchLayerDraw(1);
                 if (keyboardState.IsKeyDown(Keys.D3) && _lastKeyboardState.IsKeyUp(Keys.D3))
                     Globals.TheMap.SwitchLayerDraw(2);
+                if (keyboardState.IsKeyDown(Keys.LeftAlt) || keyboardState.IsKeyDown(Keys.RightAlt))
+                {
+                    if(keyboardState.IsKeyDown(Keys.Enter) &&
+                        _lastKeyboardState.IsKeyUp(Keys.Enter))
+                        _graphics.ToggleFullScreen();
+                }
 
                 Globals.ThePlayer.Update(gameTime);
                 MagicManager.Update(gameTime);

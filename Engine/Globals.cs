@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using IniParser;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -67,6 +68,27 @@ namespace Engine
 
         public static int WindowWidth = 1366;
         public static int WindowHeight = 768;
+        public static bool IsFullScreen = true;
 
+        public static void Initialize()
+        {
+            try
+            {
+                var parser = new FileIniDataParser();
+                var data = parser.ReadFile("Jxqy.ini");
+                var setting = data["Setting"];
+                int value;
+                if (int.TryParse(setting["FullScreen"], out value))
+                    IsFullScreen = (value == 1);
+                if (int.TryParse(setting["Width"], out value))
+                    WindowWidth = value;
+                if (int.TryParse(setting["Height"], out value))
+                    WindowHeight = value;
+            }
+            catch (Exception)
+            {
+                //no setting file, do nothing
+            }
+        }
     }
 }
