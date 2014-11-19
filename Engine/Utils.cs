@@ -159,8 +159,15 @@ namespace Engine
             return null;
         }
 
+        private static readonly Dictionary<int,Dictionary<int, LevelDetail>> LevelList = 
+            new Dictionary<int, Dictionary<int, LevelDetail>>(); 
         public static Dictionary<int, LevelDetail> GetLevelLists(string filePath)
         {
+            if (!File.Exists(filePath)) return null;
+
+            var hashCode = filePath.GetHashCode();
+            if (LevelList.ContainsKey(hashCode))
+                return LevelList[hashCode];
             var lists = new Dictionary<int, LevelDetail>();
 
             try
@@ -219,6 +226,7 @@ namespace Engine
                 return lists;
             }
 
+            LevelList[hashCode] = lists;
             return lists;
         }
 
@@ -335,7 +343,7 @@ namespace Engine
             }
         }
 
-        public struct LevelDetail
+        public class LevelDetail
         {
             public int LevelUpExp;
             public int LifeMax;

@@ -67,11 +67,18 @@ namespace Engine
         private float _poisonSeconds;
         private float _petrifiedSeconds;
         private bool _notAddBody;
+        private Dictionary<int, Utils.LevelDetail> _levelIni;
         protected Magic MagicUse;
 
         #region Public properties
 
         public LinkedList<MagicSprite> MagicSpritesInEffect = new LinkedList<MagicSprite>();
+
+        public Dictionary<int, Utils.LevelDetail> LevelIni
+        {
+            get { return _levelIni; }
+            set { _levelIni = value; }
+        }
 
         public float FrozenSeconds
         {
@@ -1175,6 +1182,66 @@ namespace Engine
             return distance.Length();
         }
 
+        public void AddLife(int amount)
+        {
+            Life += amount;
+            if (Life <= 0) Death();
+        }
+
+        public void AddMana(int amount)
+        {
+            Mana += amount;
+        }
+
+        public void AddThew(int amount)
+        {
+            Thew += amount;
+        }
+
+        public virtual void AddMagic(string magicFileName)
+        {
+            
+        }
+
+        public virtual void SetLevelTo(int level)
+        {
+            if (LevelIni == null)
+            {
+                Level = level;
+                return;
+            }
+            Utils.LevelDetail detail = null, currentDetail = null;
+            if (LevelIni.ContainsKey(level) &&
+                LevelIni.ContainsKey(Level))
+            {
+                detail = LevelIni[level];
+                currentDetail = LevelIni[Level];
+            }
+            if (detail != null)
+            {
+                LifeMax += (detail.LifeMax - currentDetail.LifeMax);
+                ThewMax += (detail.ThewMax - currentDetail.ThewMax);
+                ManaMax += (detail.ManaMax - currentDetail.ManaMax);
+                Life = LifeMax;
+                Thew = ThewMax;
+                Mana = ManaMax;
+                Attack += (detail.Attack - currentDetail.Attack);
+                Defend += (detail.Defend - currentDetail.Defend);
+                Evade += (detail.Evade - currentDetail.Evade);
+                LevelUpExp = detail.LevelUpExp;
+                Level = level;
+                if (!string.IsNullOrEmpty(detail.NewMagic))
+                {
+                    AddMagic(detail.NewMagic);
+                }
+            }
+            else
+            {
+                Exp = 0;
+                LevelUpExp = 0;
+            }
+        }
+
         protected abstract void PlaySoundEffect(SoundEffect soundEffect);
 
         protected virtual bool CanUseMagic()
@@ -1195,8 +1262,7 @@ namespace Engine
                 if (_poisonedMilliSeconds > 250)
                 {
                     _poisonedMilliSeconds = 0;
-                    Life -= 10;
-                    if (Life <= 0) Death();
+                    AddLife(-10);
                 }
             }
 

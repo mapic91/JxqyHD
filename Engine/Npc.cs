@@ -47,7 +47,13 @@ namespace Engine
 
         public Npc() { }
 
-        public Npc(string filePath) : base(filePath) { }
+        public Npc(string filePath) : base(filePath)
+        {
+            if (LevelIni == null)
+            {
+                LevelIni = Utils.GetLevelLists(@"ini\level\level-npc.ini");
+            }
+        }
 
         protected override bool HasObstacle(Vector2 tilePosition)
         {

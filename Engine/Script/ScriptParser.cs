@@ -285,15 +285,39 @@ namespace Engine.Script
                         case "SetObjScript":
                             ScriptExecuter.SetObjScript(parameters, BelongObject);
                             break;
+                        case "SetNpcScript":
+                            ScriptExecuter.SetNpcScript(parameters, BelongObject);
+                            break;
+                        case "SetNpcDeathScript":
+                            ScriptExecuter.SetNpcDeathScript(parameters, BelongObject);
+                            break;
+                        case "SetNpcLevel":
+                            ScriptExecuter.SetNpcLevel(parameters, BelongObject);
+                            break;
+                        case "SetLevelFile":
+                            ScriptExecuter.SetLevelFile(parameters, BelongObject);
+                            break;
                         case "AddRandMoney":
                             ScriptExecuter.AddRandMoney(parameters);
+                            break;
+                        case "AddLife":
+                            ScriptExecuter.AddLife(parameters);
+                            break;
+                        case "AddThew":
+                            ScriptExecuter.AddThew(parameters);
+                            break;
+                        case "AddMana":
+                            ScriptExecuter.AddMana(parameters);
+                            break;
+                        case "AddExp":
+                            ScriptExecuter.AddExp(parameters);
                             break;
                     }
                 }
             }
             catch (Exception)
             {
-                var message = "Script error.";
+                var message = "Script error! File: " + Path.GetFullPath(FilePath) +".";
                 if (_currentCode != null)
                 {
                     message += ("Code: " + _currentCode.Literal);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text.RegularExpressions;
 using Engine.Gui;
 using Microsoft.Xna.Framework;
@@ -26,6 +27,33 @@ namespace Engine.Script
         public static bool IsInFadeOut = false;
         public static bool IsInFadeIn = false;
 
+        private static void GetTargetAndScript(string nameWithQuotes, 
+            string scriptFileNameWithQuotes, 
+            object belongObject, 
+            out Character target,
+            out ScriptParser script)
+        {
+            GetTarget(nameWithQuotes, belongObject, out target);
+            var scriptFileName = Utils.RemoveStringQuotes(scriptFileNameWithQuotes);
+            script = null;
+            if (!string.IsNullOrEmpty(scriptFileName))
+                script = new ScriptParser(Utils.GetScriptFilePath(scriptFileName), target);
+        }
+
+        private static void GetTarget(string nameWithQuotes,
+            object belongObject,
+            out Character target)
+        {
+            var name = Utils.RemoveStringQuotes(nameWithQuotes);
+            target = belongObject as Character;
+            if (!string.IsNullOrEmpty(name))
+            {
+                if (Globals.ThePlayer.Name == name)
+                    target = Globals.ThePlayer;
+                else target = NpcManager.GetNpc(name);
+            }
+        }
+
         public static void Update(GameTime gameTime)
         {
             if (IsInFadeOut && FadeTransparence < 1f)
@@ -41,7 +69,7 @@ namespace Engine.Script
 
         public static void Draw(SpriteBatch spriteBatch)
         {
-            
+
         }
 
         public static void Say(List<string> parameters)
@@ -88,7 +116,7 @@ namespace Engine.Script
                         case "<>":
                             return Variables[variable] != value;
                     }
-                    
+
                 }
             }
             return false;
@@ -173,7 +201,7 @@ namespace Engine.Script
             var soundPosition = Globals.ListenerPosition;
             var sprit = belongObject as Sprite;
             if (sprit != null) soundPosition = sprit.PositionInWorld;
-            
+
             SoundManager.Play3DSoundOnece(sound, soundPosition - Globals.ListenerPosition);
         }
 
@@ -199,17 +227,71 @@ namespace Engine.Script
 
         public static void SetObjScript(List<string> parameters, object belongObject)
         {
-            var objName = Utils.RemoveStringQuotes(parameters[0]);
+            var name = Utils.RemoveStringQuotes(parameters[0]);
             var scriptFileName = Utils.RemoveStringQuotes(parameters[1]);
-            var obj = belongObject as Obj;
+            var target = belongObject as Obj;
             ScriptParser script = null;
-            if (!string.IsNullOrEmpty(objName))
-                obj = ObjManager.GetObj(objName);
-            if(!string.IsNullOrEmpty(scriptFileName))
-                script = new ScriptParser(Utils.GetScriptFilePath(scriptFileName), obj);
-            if (obj != null)
+            if (!string.IsNullOrEmpty(name))
+                target = ObjManager.GetObj(name);
+            if (!string.IsNullOrEmpty(scriptFileName))
+                script = new ScriptParser(Utils.GetScriptFilePath(scriptFileName), target);
+            if (target != null)
             {
-                obj.ScriptFile = script;
+                target.ScriptFile = script;
+            }
+        }
+
+        public static void SetNpcScript(List<string> parameters, object belongObject)
+        {
+            Character target;
+            ScriptParser script;
+            GetTargetAndScript(parameters[0],
+                parameters[1],
+                belongObject,
+                out target,
+                out script);
+            if (target != null)
+            {
+                target.ScriptFile = script;
+            }
+        }
+
+        public static void SetNpcDeathScript(List<string> parameters, object belongObject)
+        {
+            Character target;
+            ScriptParser script;
+            GetTargetAndScript(parameters[0],
+                parameters[1],
+                belongObject,
+                out target,
+                out script);
+            if (target != null)
+            {
+                target.DeathScript = script;
+            }
+        }
+
+        public static void SetNpcLevel(List<string> parameters, object belongObject)
+        {
+            Character target;
+            ScriptParser script;
+            GetTarget(parameters[0],
+                belongObject,
+                out target);
+            var value = int.Parse(parameters[1]);
+            if (target != null)
+            {
+                target.SetLevelTo(value);
+            }
+        }
+
+        public static void SetLevelFile(List<string> parameters, object belongObject)
+        {
+            var target = belongObject as Character;
+            if (target != null)
+            {
+                var path = @"ini\level\" + Utils.RemoveStringQuotes(parameters[0]);
+                target.LevelIni = Utils.GetLevelLists(path);
             }
         }
 
@@ -220,6 +302,32 @@ namespace Engine.Script
             var money = Globals.TheRandom.Next(min, max);
             Globals.ThePlayer.AddMoney(money);
         }
+
+        public static void AddLife(List<string> parameters)
+        {
+            var value = int.Parse(parameters[0]);
+            Globals.ThePlayer.AddLife(value);
+        }
+
+        public static void AddThew(List<string> parameters)
+        {
+            var value = int.Parse(parameters[0]);
+            Globals.ThePlayer.AddThew(value);
+        }
+
+        public static void AddMana(List<string> parameters)
+        {
+            var value = int.Parse(parameters[0]);
+            Globals.ThePlayer.AddMana(value);
+        }
+
+        public static void AddExp(List<string> parameters)
+        {
+            Globals.ThePlayer.AddExp(int.Parse(parameters[0]));
+        }
+
+
+        
     }
     // List<string> parameters
 }

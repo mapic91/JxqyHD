@@ -18,7 +18,6 @@ namespace Engine
         private int _belong;
         private int _fight;
         private int _money;
-        private Dictionary<int, Utils.LevelDetail> _levelIni;
         private const float MaxNonFightingTime = 7f;
         private const int ThewUseAmountWhenAttack = 5;
         private const int ThewUseAmountWhenJump = 10;
@@ -53,12 +52,6 @@ namespace Engine
                     return Engine.PathFinder.PathType.PerfectMaxTry2000;
                 return Engine.PathFinder.PathType.PathOneStep;
             }
-        }
-
-        public Dictionary<int, Utils.LevelDetail> LevelIni
-        {
-            get { return _levelIni; }
-            set { _levelIni = value; }
         }
 
         private int Money
@@ -119,6 +112,24 @@ namespace Engine
         {
             if (FlyIni != null) FlyIni.AdditionalEffect = effect;
             if (FlyIni2 != null) FlyIni2.AdditionalEffect = effect;
+        }
+
+        private void ToLevel(int exp)
+        {
+            if (LevelIni != null)
+            {
+                var count = LevelIni.Count;
+                var i = 1;
+                for (; i <= count; i++)
+                {
+                    if (LevelIni.ContainsKey(i))
+                    {
+                        if (LevelIni[i].LevelUpExp > exp)
+                            break;
+                    }
+                }
+                SetLevelTo(i);
+            }
         }
 
         protected override bool HasObstacle(Vector2 tilePosition)
@@ -306,6 +317,16 @@ namespace Engine
             }
         }
 
+        public void AddExp(int amount)
+        {
+            Exp += amount;
+            if (Exp > LevelUpExp)
+            {
+                ToLevel(Exp);
+                GuiManager.ShowMessage(Name + "的等级提升了");
+            }
+        }
+
         public override void Update(GameTime gameTime)
         {
             var mouseState = Mouse.GetState();
@@ -359,13 +380,20 @@ namespace Engine
 
                         if (Globals.OutEdgeNpc != null)
                         {
-                            if(Globals.OutEdgeNpc.IsEnemy)
+                            if (Globals.OutEdgeNpc.IsEnemy)
                                 Attacking(Globals.OutEdgeNpc.TilePosition, isRun);
-                            else if(Globals.OutEdgeNpc.ScriptFile != null)
-                                InteractWith(Globals.OutEdgeNpc, isRun);
+                            else if (Globals.OutEdgeNpc.ScriptFile != null)
+                            {
+                                if (_lastMouseState.LeftButton == ButtonState.Released)
+                                    InteractWith(Globals.OutEdgeNpc, isRun);
+                            }
                         }
-                        else if (Globals.OutEdgeObj != null && Globals.OutEdgeObj.ScriptFile != null)
-                            InteractWith(Globals.OutEdgeObj, isRun);
+                        else if (Globals.OutEdgeObj != null &&
+                                 Globals.OutEdgeObj.ScriptFile != null)
+                        {
+                            if (_lastMouseState.LeftButton == ButtonState.Released)
+                                InteractWith(Globals.OutEdgeObj, isRun);
+                        }
                         else if (isRun)
                             RunTo(mouseTilePosition);
                         else if (keyboardState.IsKeyDown(Keys.LeftAlt) ||
@@ -416,7 +444,7 @@ namespace Engine
             }
             else _standingMilliseconds = 0f;
 
-            _lastMouseState =  mouseState;
+            _lastMouseState = mouseState;
             _lastKeyboardState = keyboardState;
             base.Update(gameTime);
         }

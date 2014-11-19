@@ -149,9 +149,8 @@ namespace Engine
                             break;
                     }
                 }
-                character.Life -= effect;
-                if (character.Life <= 0) character.Death();
-                else
+                character.AddLife(-effect);
+                if(character.Life > 0)
                 {
                     if (Globals.TheRandom.Next(4) == 0
                         && BelongMagic.SpecialKind != 3)//Can't hurted when going to be petrified 

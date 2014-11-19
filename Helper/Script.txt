@@ -61,8 +61,32 @@ SetObjScript("","关宝箱.txt");
 SetObjScript("罂粟", "支线草药.txt");
 SetObjScript("草葱", "");
 
+SetNpcScript(a,b)
+SetNpcScript("纳兰真","真儿对话.txt");
+
+SetNpcDeathScript(a,b)
+SetNpcDeathScript("月眉儿","月眉儿之死.txt");
+
+SetNpcLevel(a, b)
+SetNpcLevel("杨影枫", 5);
+
+SetLevelFile(a)
+SetLevelFile("Level-easy.ini");
+
 AddRandMoney(a,b)
 AddRandMoney(3000,4000);
+
+AddLife(a)
+AddLife(-500);
+
+AddThew(a)
+AddThew(-1000);
+
+AddMana(a)
+AddMana(-1000);
+
+AddExp(a)
+AddExp(7520);
 
 ///////////////////////////////////////////////////////////////////
 //////////////////    Implemented   End  /////////////////////////
@@ -76,20 +100,16 @@ AddRandMoney(3000,4000);
 
 
  
-AddExp(a)
-AddExp(7520);
+
 
 AddGoods(a)
 AddGoods("Goods-m09-冰蚕.ini");
 
-AddLife(a)
-AddLife(-500);
 
 AddMagic(a)
 AddMagic("player-magic-银钩铁划.ini");
 
-AddMana(a)
-AddMana(-1000);
+
 
 AddMoney(a)
 AddMoney(200);
@@ -105,8 +125,7 @@ AddRandGoods("6级防具.ini");
 
 
 
-AddThew(a)
-AddThew(-1000);
+
 
 AddToMemo(a)
 AddToMemo(142);
@@ -339,8 +358,7 @@ Select(281,	282, 283, $SelectVal);
 SellGoods(a)
 SellGoods("低级药品.ini");
 
-SetLevelFile(a)
-SetLevelFile("Level-easy.ini");
+
 
 SetMagicLevel(a,b)
 SetMagicLevel("player-magic-蚀骨血仞.ini",4);
@@ -367,8 +385,7 @@ SetNpcAction("卓非凡", 11, 0, 0);
 SetNpcActionFile(a, b, c)
 SetNpcActionFile("杨影枫", 0, "mpc001_跪.asf");
 
-SetNpcDeathScript(a,b)
-SetNpcDeathScript("月眉儿","月眉儿之死.txt");
+
 
 SetNpcDir(a)
 SetNpcDir(5);
@@ -379,8 +396,7 @@ SetNpcDir("武当山下酒客",0);
 SetNpcKind(a, b)
 SetNpcKind("杨影枫", 1);
 
-SetNpcLevel(a, b)
-SetNpcLevel("杨影枫", 5);
+
 
 SetNpcMagicFile(a,b)
 SetNpcMagicFile("杨影枫","player-magic-武道德经.ini");
@@ -394,8 +410,7 @@ SetNpcRelation("月眉儿",1);
 SetNpcRes(a,b)
 SetNpcRes("月眉儿","npc016-躺着的月眉儿.ini");
 
-SetNpcScript(a,b)
-SetNpcScript("纳兰真","真儿对话.txt");
+
 
 SetObjOfs(a,b,c);
 SetObjOfs("躺着的月眉儿",-10,10);
