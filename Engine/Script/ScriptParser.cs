@@ -240,7 +240,9 @@ namespace Engine.Script
                             break;
                         case "If":
                             if (ScriptExecuter.If(parameters))
-                                gotoPosition = _currentCode.Result;
+                                if (_currentCode.Result == "Return")
+                                    scriptEnd = true;
+                                else gotoPosition = _currentCode.Result;
                             break;
                         case "Return":
                             scriptEnd = true;
