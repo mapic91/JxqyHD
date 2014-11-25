@@ -539,16 +539,19 @@ namespace Engine
             var script = GetTileTrapScriptParser(tilePosition);
             if (script != null)
             {
-                if(_currentScriptInRunning != null && 
-                    !_currentScriptInRunning.IsEnd &&
+                if (_currentScriptInRunning != null &&
                     _currentScriptInRunning.FilePath == script.FilePath)
-                    return;//Can't run same script same time
+                    return; //Can't continue run same script
                 else
                 {
                     _currentScriptInRunning = script;
                     ScriptManager.RunScript(_currentScriptInRunning);
                     Globals.ThePlayer.StandingImmediately();
                 }
+            }
+            else
+            {
+                _currentScriptInRunning = null;
             }
         }
         #endregion Trap
