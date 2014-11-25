@@ -7,6 +7,8 @@ namespace Engine.Gui
     public static class MagicListManager
     {
         private const int MaxMagic = 49;
+        private const int ListStart = 1;
+        private const int ListEnd = 36;
         private static readonly MagicItemInfo[] MagicList = new MagicItemInfo[MaxMagic + 1];
 
         public const int XiuLianIndex = 49;
@@ -105,6 +107,40 @@ namespace Engine.Gui
         public static MagicItemInfo GetItemInfo(int index)
         {
             return IndexInRange(index) ? MagicList[index] : null;
+        }
+
+        public static bool AddMagicToList(string fileName, out int index, out Magic outMagic)
+        {
+            index = -1;
+            outMagic = null;
+            for (var i = 1; i <= MaxMagic; i++)
+            {
+                if (MagicList[i] != null)
+                {
+                    var magic = MagicList[i].TheMagic;
+                    if (magic != null)
+                    {
+                        if (magic.FileName == fileName)
+                        {
+                            index = i;
+                            outMagic = magic;
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            for (var i = ListStart; i <= ListEnd; i++)
+            {
+                if (MagicList[i] == null)
+                {
+                    MagicList[i] = new MagicItemInfo(fileName, 1, 0);
+                    index = i;
+                    outMagic = MagicList[i].TheMagic;
+                    return true;
+                }
+            }
+            return false;
         }
 
         public class MagicItemInfo

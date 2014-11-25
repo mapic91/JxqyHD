@@ -7,6 +7,7 @@ namespace Engine.Gui
     public class GoodsGui : GuiItem
     {
         private ListView _listView;
+        private TextGui _money;
 
         public static void DropHandler(object arg1, DragDropItem.DropEvent arg2)
         {
@@ -123,6 +124,15 @@ namespace Engine.Gui
             _listView.RegisterItemMouseRightClickeHandler(RightClickHandler);
             _listView.RegisterItemMouseStayOverHandler(MouseStayOverHandler);
             _listView.RegisterItemMouseLeaveHandler(MouseLeaveHandler);
+            _money = new TextGui(_listView,
+                new Vector2(137, 363),
+                100,
+                12,
+                Globals.FontSize7,
+                0,
+                0,
+                "",
+                Color.White*0.8f);
         }
 
         public bool IsItemShow(int listIndex, out int index)
@@ -161,6 +171,14 @@ namespace Engine.Gui
             if (!IsShow) return;
 
             _listView.Update(gameTime);
+            if (Globals.ThePlayer != null)
+            {
+                _money.Text = Globals.ThePlayer.Money.ToString();
+            }
+            else
+            {
+                _money.Text = "";
+            }
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -168,6 +186,7 @@ namespace Engine.Gui
             if (!IsShow) return;
 
             _listView.Draw(spriteBatch);
+            _money.Draw(spriteBatch);
         }
 
         public class GoodItemData

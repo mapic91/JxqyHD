@@ -73,10 +73,11 @@ namespace Engine
             return closedNpc;
         }
 
-        public static bool Load(string filePath)
+        public static bool Load(string fileName)
         {
             try
             {
+                var filePath = Utils.GetNpcObjFilePath(fileName);
                 var lines = File.ReadAllLines(filePath, Globals.SimpleChinaeseEncoding);
                 Load(lines);
             }

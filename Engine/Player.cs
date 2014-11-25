@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Engine.Gui;
+using Engine.Script;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -54,10 +55,14 @@ namespace Engine
             }
         }
 
-        private int Money
+        public int Money
         {
             get { return _money; }
-            set { _money = value; }
+            private set
+            {
+                _money = value;
+                if (_money < 0) _money = 0;
+            }
         }
 
         public int Fight
@@ -103,11 +108,6 @@ namespace Engine
         private MouseState _lastMouseState;
         private KeyboardState _lastKeyboardState;
 
-        protected override bool MagicFromCache
-        {
-            get { return false; }
-        }
-
         private void SetFlyIniAdditionalEffect(Magic.AddonEffect effect)
         {
             if (FlyIni != null) FlyIni.AdditionalEffect = effect;
@@ -130,6 +130,11 @@ namespace Engine
                 }
                 SetLevelTo(i);
             }
+        }
+
+        protected override bool MagicFromCache
+        {
+            get { return false; }
         }
 
         protected override bool HasObstacle(Vector2 tilePosition)
@@ -194,6 +199,15 @@ namespace Engine
                 Thew -= ThewUseAmountWhenJump;
                 return true;
             }
+        }
+
+
+        /// <summary>
+        /// Check whether current tile in map has trap, if has run it
+        /// </summary>
+        protected override void CheckMapTrap()
+        {
+            Globals.TheMap.RunTileTrapScript(TilePosition);
         }
 
         /// <summary>
@@ -282,6 +296,9 @@ namespace Engine
         {
             if (drug != null && drug.Kind == Good.GoodKind.Drug)
             {
+                LifeMax += drug.LifeMax;
+                ThewMax += drug.ThewMax;
+                ManaMax += drug.ManaMax;
                 Life += drug.Life;
                 Thew += drug.Thew;
                 Mana += drug.Mana;

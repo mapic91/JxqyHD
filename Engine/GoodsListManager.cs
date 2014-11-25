@@ -126,8 +126,10 @@ namespace Engine.Gui
             return false;
         }
 
-        public static bool AddGoodToList(string fileName, out int index)
+        public static bool AddGoodToList(string fileName, out int index, out Good outGood)
         {
+            index = -1;
+            outGood = null;
             for (var i = ListIndexBegin; i <= ListIndexEnd; i++)
             {
                 var info = GoodsList[i];
@@ -137,6 +139,7 @@ namespace Engine.Gui
                     {
                         info.Count += 1;
                         index = i;
+                        outGood = info.TheGood;
                         return true;
                     }
                 }
@@ -149,11 +152,11 @@ namespace Engine.Gui
                 {
                     GoodsList[i] = new GoodsItemInfo(fileName, 1);
                     index = i;
+                    outGood = GoodsList[i].TheGood;
                     return true;
                 }
             }
 
-            index = 0;
             return false;
         }
 

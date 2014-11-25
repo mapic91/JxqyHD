@@ -83,8 +83,10 @@ namespace Engine.Gui
             _panels.AddLast(ToolTipInterface);
 
             MouseInterface = new MouseGui();
+
             MessageInterface = new MessageGui();
             _allGuiItems.AddLast(MessageInterface);
+            _panels.AddLast(MessageInterface);
 
             DialogInterface = new DialogGui();
             _allGuiItems.AddLast(DialogInterface);

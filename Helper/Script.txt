@@ -88,6 +88,30 @@ AddMana(-1000);
 AddExp(a)
 AddExp(7520);
 
+SetPlayerDir(a)
+SetPlayerDir(6);
+
+SetPlayerPos(a, b)
+SetPlayerPos(26,107);
+
+LoadMap(a)
+LoadMap("map_002_Áè¾ø·å·å¶¥.map");
+
+LoadNpc(a)
+LoadNpc("map064_bomb.npc");
+
+LoadObj(a)
+LoadObj("map002_obj.obj");
+
+AddGoods(a)
+AddGoods("Goods-m09-±ù²Ï.ini");
+
+AddMagic(a)
+AddMagic("player-magic-Òø¹³Ìú»®.ini");
+
+AddMoney(a)
+AddMoney(200);
+
 ///////////////////////////////////////////////////////////////////
 //////////////////    Implemented   End  /////////////////////////
 /////////////////////////////////////////////////////////////////
@@ -102,17 +126,13 @@ AddExp(7520);
  
 
 
-AddGoods(a)
-AddGoods("Goods-m09-±ù²Ï.ini");
-
-
-AddMagic(a)
-AddMagic("player-magic-Òø¹³Ìú»®.ini");
 
 
 
-AddMoney(a)
-AddMoney(200);
+
+
+
+
 
 AddNpc(a,b,c,d)
 AddNpc("ÔÂÃ¼¶ù.ini",8,18,7);
@@ -252,14 +272,9 @@ LimitMana(1);
 LoadGame(a)
 LoadGame(0);
 
-LoadMap(a)
-LoadMap("map_002_Áè¾ø·å·å¶¥.map");
 
-LoadNpc(a)
-LoadNpc("map064_bomb.npc");
 
-LoadObj(a)
-LoadObj("map002_obj.obj");
+
 
 Memo(a)
 Memo("°ïÎäµ±É½ÏÂ¾ÆËÁÀÏ°åÑ°ÕÒÒ°½ª¡¢²Ý´ÐºÍó¿ËÚ¡£");
@@ -417,11 +432,7 @@ SetObjOfs("ÌÉ×ÅµÄÔÂÃ¼¶ù",-10,10);
 
 
 
-SetPlayerDir(a)
-SetPlayerDir(6);
 
-SetPlayerPos(a, b)
-SetPlayerPos(26,107);
 
 SetPlayerScn()
 SetPlayerScn();

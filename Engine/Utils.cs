@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using Engine.Script;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -159,6 +160,17 @@ namespace Engine
             return null;
         }
 
+        public class LevelDetail
+        {
+            public int LevelUpExp;
+            public int LifeMax;
+            public int ThewMax;
+            public int ManaMax;
+            public int Attack;
+            public int Defend;
+            public int Evade;
+            public string NewMagic;
+        }
         private static readonly Dictionary<int,Dictionary<int, LevelDetail>> LevelList = 
             new Dictionary<int, Dictionary<int, LevelDetail>>(); 
         public static Dictionary<int, LevelDetail> GetLevelLists(string filePath)
@@ -311,9 +323,10 @@ namespace Engine
         /// Get script file path from file name.
         /// </summary>
         /// <param name="fileName">Script file name</param>
+        /// <param name="mapName">Map name used to get script path, use current map name if null or empty</param>
         /// <param name="goodsScript">Whether script file is good script</param>
         /// <returns></returns>
-        public static string GetScriptFilePath(string fileName, bool goodsScript = false)
+        public static string GetScriptFilePath(string fileName, string mapName = null, bool goodsScript = false)
         {
             if (goodsScript)
             {
@@ -321,14 +334,28 @@ namespace Engine
             }
             else
             {
-                var path = @"script\map\" + Globals.TheMap.MapFileNameWithoutExtension
-                + @"\" + fileName;
+                if (string.IsNullOrEmpty(mapName))
+                    mapName = Globals.TheMap.MapFileNameWithoutExtension;
+                var path = @"script\map\" + mapName + @"\" + fileName;
                 if (!File.Exists(path))
                 {
                     return @"script\common\" + fileName;
                 }
                 return path;
             }
+        }
+
+        /// <summary>
+        /// Get ScriptParser from file name.
+        /// </summary>
+        /// <param name="fileName">Script file name</param>
+        /// <param name="belongObject">Belong object of returned ScriptParser</param>
+        /// <param name="mapName">Map name used to get script path, use current map name if null or empty</param>
+        /// <param name="goodsScript">Whether script file is good script</param>
+        /// <returns></returns>
+        public static ScriptParser GetScriptParser(string fileName, object belongObject = null, string mapName = null, bool goodsScript = false)
+        {
+            return new ScriptParser(GetScriptFilePath(fileName, mapName, goodsScript), belongObject);
         }
 
         public static string RemoveStringQuotes(string str)
@@ -343,16 +370,14 @@ namespace Engine
             }
         }
 
-        public class LevelDetail
+        public static string GetNpcObjFilePath(string fileName)
         {
-            public int LevelUpExp;
-            public int LifeMax;
-            public int ThewMax;
-            public int ManaMax;
-            public int Attack;
-            public int Defend;
-            public int Evade;
-            public string NewMagic;
+            var path = @"save\game\" + fileName;
+            if (!File.Exists(path))
+            {
+                path = @"ini\save\" + fileName;
+            }
+            return path;
         }
     }
 }

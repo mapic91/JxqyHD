@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Engine.Script;
+using IniParser;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -42,6 +44,9 @@ namespace Engine
         private MapMpcIndex[] _layer1, _layer2, _layer3;
         private MapTileInfo[] _tileInfos;
         private readonly bool[] _isLayerDraw = new bool[3]{true, true, true};
+
+        private Dictionary<string, Dictionary<int, string>> _traps = new Dictionary<string, Dictionary<int, string>>();
+        private ScriptParser _currentScriptInRunning;
 
         private int _viewBeginX;
         private int _viewBeginY;
@@ -169,6 +174,7 @@ namespace Engine
         }
         #endregion public static method
 
+        #region Private map load
         private void LoadMapTiles(byte[] buf, ref int offset)
         {
             var totalTile = _mapColumnCounts * _mapRowCounts;
@@ -233,8 +239,7 @@ namespace Engine
             _mapPixelHeight = ((_mapRowCounts - 3) / 2 + 1) * 32;
             return true;
         }
-
-        
+        #endregion Private map load
 
         #region Tiles region in view
         public Vector2 GetStartTileInView()
@@ -271,6 +276,7 @@ namespace Engine
         }
         #endregion Tiles region in view
 
+        #region Tile 
         public Texture2D GetTileTexture(int x, int y, int layer)
         {
             MapMpcIndex[] idx;
@@ -384,6 +390,54 @@ namespace Engine
             return IsObstacleForMagic((int) tilePosition.X, (int) tilePosition.Y);
         }
 
+        /// <summary>
+        /// Get tile trap index, return 0 if no trap
+        /// </summary>
+        /// <param name="col">Column</param>
+        /// <param name="row">Row</param>
+        /// <returns></returns>
+        public int GetTileTrapIndex(int col, int row)
+        {
+            if (IsTileInMapViewRange(col, row))
+            {
+                return _tileInfos[col + row*MapColumnCounts].TrapIndex;
+            }
+            return 0;
+        }
+
+        /// <summary>
+        ///  Get tile trap index, return 0 if no trap
+        /// </summary>
+        /// <param name="tilePosition">Tile column row positon</param>
+        /// <returns></returns>
+        public int GetTileTrapIndex(Vector2 tilePosition)
+        {
+            return GetTileTrapIndex((int) tilePosition.X, (int) tilePosition.Y);
+        }
+
+        /// <summary>
+        /// Get current map tile trap  script.Return null if no trap
+        /// </summary>
+        /// <param name="col">Column</param>
+        /// <param name="row">Row</param>
+        /// <returns></returns>
+        public ScriptParser GetTileTrapScriptParser(int col, int row)
+        {
+            var index = GetTileTrapIndex(col, row);
+            if (index == 0) return null;
+            return GetMapTrap(index);
+        }
+
+        /// <summary>
+        /// Get current map tile trap  script.Return null if no trap
+        /// </summary>
+        /// <param name="tilePosition">Tile column row positon</param>
+        /// <returns></returns>
+        public ScriptParser GetTileTrapScriptParser(Vector2 tilePosition)
+        {
+            return GetTileTrapScriptParser((int) tilePosition.X, (int) tilePosition.Y);
+        }
+
         public void DrawTile(SpriteBatch spriteBatch, Texture2D texture, Vector2 tilePos, float depth)
         {
             if (texture == null) return;
@@ -399,7 +453,107 @@ namespace Engine
                         SpriteEffects.None,
                         depth);
         }
+        #endregion Tile
 
+        #region Trap
+        public void LoadTrap(string filePath)
+        {
+            _traps.Clear();
+            try
+            {
+                var parser = new FileIniDataParser();
+                var data = parser.ReadFile(filePath);
+                foreach (var section in data.Sections)
+                {
+                    var list = new Dictionary<int, string>();
+                    foreach (var key in section.Keys)
+                    {
+                        list[int.Parse(key.KeyName)] = key.Value;
+                    }
+                    _traps[section.SectionName] = list;
+                }
+            }
+            catch (Exception exception)
+            {
+                Log.LogFileLoadError("Trap", filePath, exception);
+            }
+        }
+
+        /// <summary>
+        /// Set map trap
+        /// </summary>
+        /// <param name="mapName">If null or empty, use current map name</param>
+        /// <param name="index">Trap index</param>
+        /// <param name="trapFileName">Trap file name</param>
+        public void SetMapTrap(int index, string trapFileName, string mapName = null)
+        {
+            if (string.IsNullOrEmpty(mapName))
+                mapName = _mapFileNameWithoutExtension;
+            if(string.IsNullOrEmpty(mapName)) return;//no map name
+
+            if (!_traps.ContainsKey(mapName))
+            {
+                _traps[mapName] = new Dictionary<int, string>();//add key
+            }
+            var list = _traps[mapName];
+            if (!list.ContainsKey(index))
+            {
+                list[index] = "";//add key
+            }
+            if (string.IsNullOrEmpty(trapFileName))
+                list.Remove(index); //remove trap
+            else 
+                list[index] = trapFileName; // change trap
+        }
+
+        /// <summary>
+        /// Get map trap, if failed retrun null
+        /// </summary>
+        /// <param name="mapName">If null or empty, use current map name</param>
+        /// <param name="index">Trap index</param>
+        /// <returns></returns>
+        public ScriptParser GetMapTrap(int index, string mapName = null)
+        {
+            if (string.IsNullOrEmpty(mapName))
+                mapName = _mapFileNameWithoutExtension;
+            if (string.IsNullOrEmpty(mapName)) return null;//no map name
+
+            if (_traps.ContainsKey(mapName))
+            {
+                var list = _traps[mapName];
+                if (list.ContainsKey(index))
+                {
+                    return Utils.GetScriptParser(list[index], null, mapName);
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Run trap script in current tile position
+        /// </summary>
+        /// <param name="tilePosition"></param>
+        public void RunTileTrapScript(Vector2 tilePosition)
+        {
+            var script = GetTileTrapScriptParser(tilePosition);
+            if (script != null)
+            {
+                if(_currentScriptInRunning != null && 
+                    !_currentScriptInRunning.IsEnd &&
+                    _currentScriptInRunning.FilePath == script.FilePath)
+                    return;//Can't run same script same time
+                else
+                {
+                    _currentScriptInRunning = script;
+                    ScriptManager.RunScript(_currentScriptInRunning);
+                    Globals.ThePlayer.StandingImmediately();
+                }
+            }
+        }
+        #endregion Trap
+
+        #region Layer
         public void DrawLayer(SpriteBatch spriteBatch, int layer)
         {
             if ((layer < 0 || layer > 2) || !IsLayerDraw(layer)) return;
@@ -415,8 +569,27 @@ namespace Engine
             }
         }
 
-        public void LoadMap(string path)
+        public void SetLayerDraw(int layer, bool isDraw)
         {
+            if (layer < 0 || layer > 2) return;
+            _isLayerDraw[layer] = isDraw;
+        }
+
+        public bool IsLayerDraw(int layer)
+        {
+            if (layer < 0 || layer > 2) return false;
+            return _isLayerDraw[layer];
+        }
+
+        public void SwitchLayerDraw(int layer)
+        {
+            SetLayerDraw(layer, !IsLayerDraw(layer));
+        }
+        #endregion Layer
+
+        public void LoadMap(string mapFileName)
+        {
+            var path = @"map\" + mapFileName;
             try
             {
                 var buf = File.ReadAllBytes(path);
@@ -426,6 +599,8 @@ namespace Engine
             {
                 Log.LogFileLoadError("Map", path, e);
             }
+            Globals.TheCarmera.WorldWidth = MapPixelWidth;
+            Globals.TheCarmera.WorldHeight = MapPixelHeight;
             _mapFileNameWithoutExtension = Path.GetFileNameWithoutExtension(path);
         }
 
@@ -444,23 +619,6 @@ namespace Engine
             }
         }
 
-        public void SetLayerDraw(int layer, bool isDraw)
-        {
-            if(layer < 0 || layer > 2) return;
-            _isLayerDraw[layer] = isDraw;
-        }
-
-        public bool IsLayerDraw(int layer)
-        {
-            if (layer < 0 || layer > 2) return false;
-            return _isLayerDraw[layer];
-        }
-
-        public void SwitchLayerDraw(int layer)
-        {
-            SetLayerDraw(layer, !IsLayerDraw(layer));
-        }
-
         public void Update(GameTime gameTime)
         {
             //在月影传说中，禁用了地图的循环功能
@@ -471,6 +629,7 @@ namespace Engine
             Globals.TheCarmera.Update(gameTime);
             ViewBeginX = Globals.TheCarmera.ViewBeginX;
             ViewBeginY = Globals.TheCarmera.ViewBeginY;
+
         }
 
         public void Draw(SpriteBatch spriteBatch)

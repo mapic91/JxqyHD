@@ -73,19 +73,16 @@ namespace Jxqy
             Globals.FontSize10 = Content.Load<SpriteFont>(@"font\GB2312_ASCII_√‘ƒ„ºÚœ∏‘≤_10");
             Globals.FontSize12 = Content.Load<SpriteFont>(@"font\GB2312_ASCII_√‘ƒ„ºÚœ∏‘≤_12");
 
-            Globals.TheMap.LoadMap(@"map\map_005_œ¥Ω£≥ÿ.map");
+            Globals.TheMap.LoadMap("map_005_œ¥Ω£≥ÿ.map");
             Globals.TheMap.ViewBeginX = 0;
             Globals.TheMap.ViewBeginY = 0;
-            Globals.TheCarmera = new Carmera(Globals.TheMap.ViewBeginX,
-                Globals.TheMap.ViewBeginY,
-                Globals.TheMap.ViewWidth,
-                Globals.TheMap.ViewHeight,
-                Globals.TheMap.MapPixelWidth,
-                Globals.TheMap.MapPixelHeight);
+            Globals.TheMap.LoadTrap(@"ini\save\traps.ini");
+            Globals.TheCarmera.ViewWidth = Globals.WindowWidth;
+            Globals.TheCarmera.ViewHeight = Globals.WindowHeight;
 
             Globals.ThePlayer = new Player(@"save\rpg2\player0.ini");
-            NpcManager.Load(@"save\rpg2\xijianchi.npc");
-            ObjManager.Load(@"save\rpg2\map005_obj.obj");
+            NpcManager.Load(@"xijianchi.npc");
+            ObjManager.Load(@"map005_obj.obj");
             GuiManager.Starting();
             GuiManager.Load(@"save\rpg2\Magic0.ini",
                     @"save\rpg2\Goods0.ini",

@@ -195,7 +195,7 @@ namespace Engine.Gui
             {
                 spriteBatch.DrawString(Font, 
                     info.Text, 
-                    new Vector2((int)info.Position.X, (int)info.Position.Y), 
+                    info.Position, 
                     info.DrawColor);
             }
         }

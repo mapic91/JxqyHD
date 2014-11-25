@@ -277,6 +277,11 @@ namespace Engine
             }
         }
 
+        public void SetDirection(int direction)
+        {
+            CurrentDirection = direction;
+        }
+
         public Texture2D GetCurrentTexture()
         {
             if (Texture == null) return null;

@@ -533,8 +533,6 @@ namespace Engine
 
         }
 
-        protected abstract bool HasObstacle(Vector2 tilePosition);
-
         private void MoveAlongPath(float elapsedSeconds, int speedFold)
         {
             if (Path == null || Path.Count < 2)
@@ -610,6 +608,7 @@ namespace Engine
                         MovedDistance = 0;
                     }
                 }
+                CheckMapTrap();
                 if (AttackingIsOk()) PerformeAttack();
                 if (InteractIsOk()) PerformeInteract();
                 if (IsRuning())
@@ -655,8 +654,15 @@ namespace Engine
                     Path.RemoveFirst();
                 }
             }
-            if (IsPlayCurrentDirOnceEnd()) StandingImmediately();
+            if (IsPlayCurrentDirOnceEnd())
+            {
+                StandingImmediately();
+                CheckMapTrap();
+            }
         }
+
+        protected abstract bool HasObstacle(Vector2 tilePosition);
+        protected virtual void CheckMapTrap() { }
 
         public bool Load(string filePath)
         {
@@ -756,7 +762,7 @@ namespace Engine
         }
 
         #region Perform action
-        private void StandingImmediately()
+        public void StandingImmediately()
         {
             StateInitialize();
             if (_isInFighting && NpcIni.ContainsKey((int)CharacterState.FightStand)) SetState(CharacterState.FightStand);

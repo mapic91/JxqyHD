@@ -53,7 +53,7 @@ namespace Engine
         #endregion
 
         public static Game TheGame;
-        public static Carmera TheCarmera;
+        public static Carmera TheCarmera = new Carmera();
         public static Map TheMap = new Map();
         public static Player ThePlayer;
 

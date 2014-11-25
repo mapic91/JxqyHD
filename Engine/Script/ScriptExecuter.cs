@@ -88,7 +88,7 @@ namespace Engine.Script
             }
         }
 
-        private static readonly Regex IfParameterPatten = new Regex(@"(\$[a-zA-Z]+) *([><=]+) *(.+)");
+        private static readonly Regex IfParameterPatten = new Regex(@"(\$[a-zA-Z0-9]+) *([><=]+) *(.+)");
         public static bool If(List<string> parameters)
         {
             var parmeter = parameters[0];
@@ -326,8 +326,82 @@ namespace Engine.Script
             Globals.ThePlayer.AddExp(int.Parse(parameters[0]));
         }
 
+        public static void SetPlayerPos(List<string> parameters)
+        {
+            var x = int.Parse(parameters[0]);
+            var y = int.Parse(parameters[1]);
+            Globals.ThePlayer.TilePosition = new Vector2(x, y);
+        }
 
-        
+        public static void SetPlayerDir(List<string> parameters)
+        {
+            Globals.ThePlayer.SetDirection(int.Parse(parameters[0]));
+        }
+
+        public static void LoadMap(List<string> parameters)
+        {
+            Globals.TheMap.LoadMap(Utils.RemoveStringQuotes(parameters[0]));
+        }
+
+        public static void LoadNpc(List<string> parameters)
+        {
+            NpcManager.Load(Utils.RemoveStringQuotes(parameters[0]));
+        }
+
+        public static void LoadObj(List<string> parameters)
+        {
+            ObjManager.Load(Utils.RemoveStringQuotes(parameters[0]));
+        }
+
+        public static void AddGoods(List<string> parameters)
+        {
+            int index;
+            Good good;
+            var result = GoodsListManager.AddGoodToList(
+                Utils.RemoveStringQuotes(parameters[0]), 
+                out index,
+                out good);
+            if (result && good != null)
+            {
+                GuiManager.ShowMessage("你获得了" + good.Name);
+            }
+            else
+            {
+                GuiManager.ShowMessage("错误");
+            }
+            GuiManager.UpdateGoodsView();
+        }
+
+        public static void AddMagic(List<string> parameters)
+        {
+            int index;
+            Magic magic;
+            var  result = MagicListManager.AddMagicToList(
+                Utils.RemoveStringQuotes(parameters[0]),
+                out index,
+                out magic);
+            if (result)
+            {
+                GuiManager.ShowMessage("你学会了" + magic.Name);
+                GuiManager.UpdateMagicView();
+            }
+            else
+            {
+                if (magic != null)
+                {
+                    GuiManager.ShowMessage("你已经学会了" + magic.Name);
+                }
+                else
+                {
+                    GuiManager.ShowMessage("错误");
+                }
+            }
+        }
+
+        public static void AddMoney(List<string> parameters)
+        {
+            Globals.ThePlayer.AddMoney(int.Parse(parameters[0]));
+        }
     }
     // List<string> parameters
 }

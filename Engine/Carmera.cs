@@ -16,19 +16,21 @@ namespace Engine
         private bool _isInMove;
         private Vector2 _moveDestination;
         private float _movedDistance, _maxMoveDistance;
-        private void Init(int beginX, int beginY, int width, int height, int worldWidth, int worldHeight)
+        private void Init(int beginX, int beginY, int viewWidth, int viewHeight, int worldWidth, int worldHeight)
         {
             WorldWidth = worldWidth;
             WorldHeight = worldHeight;
             ViewBeginX = beginX;
             ViewBeginY = beginY;
-            ViewWidth = width;
-            ViewHeight = height;
+            ViewWidth = viewWidth;
+            ViewHeight = viewHeight;
         }
 
-        public Carmera(int beginX, int beginY, int width, int height, int worldWidth, int worldHeight)
+        public Carmera() { }
+
+        public Carmera(int beginX, int beginY, int viewWidth, int viewHeight, int worldWidth, int worldHeight)
         {
-            Init(beginX, beginY, width, height, worldWidth, worldHeight);
+            Init(beginX, beginY, viewWidth, viewHeight, worldWidth, worldHeight);
         }
 
         public Carmera(Rectangle region, int worldWidth, int worldHeight)

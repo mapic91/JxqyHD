@@ -16,6 +16,7 @@ namespace Engine.Script
         public string FilePath { private set; get; }
         public bool IsOk { private set; get; }
         public object BelongObject { private set; get; }
+        public bool IsEnd { private set; get; }
 
         public ScriptParser() { }
 
@@ -24,11 +25,11 @@ namespace Engine.Script
             ReadFile(filePath, belongObject);
         }
 
-        private static readonly Regex _regGoto = new Regex(@"^@([a-zA-Z]+):");
+        private static readonly Regex _regGoto = new Regex(@"^@([a-zA-Z0-9]+):");
         private static readonly Regex _regComment = new Regex(@"^//.*");
         private static readonly Regex _regFunction = new Regex(@"^([a-zA-Z]+)(.*);");
         private static readonly Regex _regParameter = new Regex(@"^\((.+)\)(.*)");
-        private static readonly Regex _regResult = new Regex(@"^@[a-zA-Z]+");
+        private static readonly Regex _regResult = new Regex(@"^@[a-zA-Z0-9]+");
         private void ParserLine(string line)
         {
             var code = new Code();
@@ -154,6 +155,7 @@ namespace Engine.Script
                 if (!RunCode(_codes[_currentIndex], out gotoPosition, out scriptEnd)) break;
                 if (scriptEnd)
                 {
+                    IsEnd = true;
                     _currentIndex = count;
                     return false;
                 }
@@ -172,7 +174,8 @@ namespace Engine.Script
                     }
                 }
             }
-            return _currentIndex != count;
+            IsEnd = (_currentIndex == count);
+            return !IsEnd;
         }
 
         public class Code
@@ -313,6 +316,30 @@ namespace Engine.Script
                             break;
                         case "AddExp":
                             ScriptExecuter.AddExp(parameters);
+                            break;
+                        case "SetPlayerPos":
+                            ScriptExecuter.SetPlayerPos(parameters);
+                            break;
+                        case "SetPlayerDir":
+                            ScriptExecuter.SetPlayerDir(parameters);
+                            break;
+                        case "LoadMap":
+                            ScriptExecuter.LoadMap(parameters);
+                            break;
+                        case "LoadNpc":
+                            ScriptExecuter.LoadNpc(parameters);
+                            break;
+                        case "LoadObj":
+                            ScriptExecuter.LoadObj(parameters);
+                            break;
+                        case "AddGoods":
+                            ScriptExecuter.AddGoods(parameters);
+                            break;
+                        case "AddMagic":
+                            ScriptExecuter.AddMagic(parameters);
+                            break;
+                        case "AddMoney":
+                            ScriptExecuter.AddMoney(parameters);
                             break;
                     }
                 }
