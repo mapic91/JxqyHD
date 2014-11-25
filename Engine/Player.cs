@@ -35,7 +35,7 @@ namespace Engine
         public bool IsNotUseThewWhenRun { set; get; }
         public bool IsManaRestore { set; get; }
 
-        public bool IsDisableInput
+        public bool IsInputDisabled
         {
             get { return (ScriptExecuter.IsInFadeIn || ScriptExecuter.IsInFadeOut); }
         }
@@ -358,7 +358,7 @@ namespace Engine
             var mouseTilePosition = Map.ToTilePosition(mouseWorldPosition);
 
             Globals.ClearGlobalOutEdge();
-            if (!GuiManager.IsMouseStateEated && !IsDisableInput)
+            if (!GuiManager.IsMouseStateEated && !IsInputDisabled)
             {
                 foreach (var one in NpcManager.NpcsInView)
                 {
@@ -447,7 +447,7 @@ namespace Engine
             if (keyboardState.IsKeyDown(Keys.V) &&
                 _lastKeyboardState.IsKeyUp(Keys.V) &&
                 !IsPetrified &&
-                !IsDisableInput)
+                !IsInputDisabled)
             {
                 if (IsSitting()) Standing();
                 else Sitdown();
