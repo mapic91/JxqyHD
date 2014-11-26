@@ -7,6 +7,7 @@ using System.Reflection;
 using Engine;
 using Engine.Gui;
 using Engine.Script;
+using Engine.TextData;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -43,6 +44,7 @@ namespace Jxqy
         {
             Globals.Initialize();
             Globals.TheGame = this;
+            TalkTextList.Initialize();
             SoundEffect.MasterVolume = Globals.SoundEffectVolume;
             MediaPlayer.Volume = Globals.MusicVolume;
             Log.Initialize();

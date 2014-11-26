@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
+using Engine.Gui;
 using IniParser;
 
-namespace Engine.Gui
+namespace Engine
 {
     public static class MagicListManager
     {

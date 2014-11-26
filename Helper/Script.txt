@@ -106,6 +106,9 @@ LoadObj("map002_obj.obj");
 AddGoods(a)
 AddGoods("Goods-m09-冰蚕.ini");
 
+AddRandGoods(a)
+AddRandGoods("6级防具.ini");
+
 AddMagic(a)
 AddMagic("player-magic-银钩铁划.ini");
 
@@ -117,6 +120,9 @@ AddNpc("月眉儿.ini",8,18,7);
 
 AddObj(a,b,c,d)
 AddNpc("纳兰真.ini", 54, 79, 7);
+
+Talk(a,b)
+Talk(14050,14090);
 
 ///////////////////////////////////////////////////////////////////
 //////////////////    Implemented   End  /////////////////////////
@@ -141,8 +147,7 @@ AddNpc("纳兰真.ini", 54, 79, 7);
 
 
 
-AddRandGoods(a)
-AddRandGoods("6级防具.ini");
+
 
 
 
@@ -464,8 +469,7 @@ Sleep(2000);
 
 
 
-Talk(a,b)
-Talk(14050,14090);
+
 
 Watch(a, b, c)
 Watch("杨影枫", "纳兰真", 0);

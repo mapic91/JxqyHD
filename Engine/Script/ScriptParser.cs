@@ -229,6 +229,9 @@ namespace Engine.Script
                         case "FadeIn":
                             isEnd = ScriptExecuter.IsFadeInEnd();
                             break;
+                        case "Talk":
+                            isEnd = !ScriptExecuter.IsInTalk;
+                            break;
                     }
                 }
                 else
@@ -341,11 +344,21 @@ namespace Engine.Script
                         case "AddGoods":
                             ScriptExecuter.AddGoods(parameters);
                             break;
+                        case "AddRandGoods":
+                            ScriptExecuter.AddRandGoods(parameters);
+                            break;
                         case "AddMagic":
                             ScriptExecuter.AddMagic(parameters);
                             break;
                         case "AddMoney":
                             ScriptExecuter.AddMoney(parameters);
+                            break;
+                        case "Talk":
+                            ScriptExecuter.Talk(parameters);
+                            isEnd = !ScriptExecuter.IsInTalk;
+                            break;
+                        case "Memo":
+                            ScriptExecuter.Memo(parameters);
                             break;
                     }
                 }

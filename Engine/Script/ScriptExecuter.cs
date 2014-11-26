@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using Engine.Gui;
+using Engine.TextData;
+using IniParser;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -12,6 +14,9 @@ namespace Engine.Script
     {
         private static readonly Dictionary<string, int> Variables = new Dictionary<string, int>();
         private static float _fadeTransparence;
+        private static int _talkStartIndex;
+        private static int _talkEndIndex;
+        private static int _talkCurrentIndex;
 
         public static float FadeTransparence
         {
@@ -24,12 +29,13 @@ namespace Engine.Script
             }
         }
 
-        public static bool IsInFadeOut = false;
-        public static bool IsInFadeIn = false;
+        public static bool IsInFadeOut;
+        public static bool IsInFadeIn;
+        public static bool IsInTalk;
 
-        private static void GetTargetAndScript(string nameWithQuotes, 
-            string scriptFileNameWithQuotes, 
-            object belongObject, 
+        private static void GetTargetAndScript(string nameWithQuotes,
+            string scriptFileNameWithQuotes,
+            object belongObject,
             out Character target,
             out ScriptParser script)
         {
@@ -54,6 +60,20 @@ namespace Engine.Script
             }
         }
 
+        private static void GetNextTalkTextDeatil(out TalkTextDetail detail)
+        {
+            detail = null;
+            for (; _talkCurrentIndex <= _talkEndIndex; _talkCurrentIndex++)
+            {
+                detail = TalkTextList.GetTextDetail(_talkCurrentIndex);
+                if (detail != null)
+                {
+                    _talkCurrentIndex++; // Finded, move to next index
+                    break;
+                }
+            }
+        }
+
         public static void Update(GameTime gameTime)
         {
             if (IsInFadeOut && FadeTransparence < 1f)
@@ -64,6 +84,23 @@ namespace Engine.Script
             {
                 FadeTransparence -= 0.02f;
                 if (FadeTransparence <= 0f) IsInFadeIn = false;
+            }
+
+            if (IsInTalk)
+            {
+                if (GuiManager.IsDialogEnd())
+                {
+                    TalkTextDetail detail;
+                    GetNextTalkTextDeatil(out detail);
+                    if (detail != null)
+                    {
+                        GuiManager.ShowDialog(detail.Text, detail.PortraitIndex);
+                    }
+                    else
+                    {
+                        IsInTalk = false;
+                    }
+                }
             }
         }
 
@@ -274,7 +311,6 @@ namespace Engine.Script
         public static void SetNpcLevel(List<string> parameters, object belongObject)
         {
             Character target;
-            ScriptParser script;
             GetTarget(parameters[0],
                 belongObject,
                 out target);
@@ -355,10 +391,15 @@ namespace Engine.Script
 
         public static void AddGoods(List<string> parameters)
         {
+            AddGoods(Utils.RemoveStringQuotes(parameters[0]));
+        }
+
+        public static void AddGoods(string fileName)
+        {
             int index;
             Good good;
             var result = GoodsListManager.AddGoodToList(
-                Utils.RemoveStringQuotes(parameters[0]), 
+                fileName,
                 out index,
                 out good);
             if (result && good != null)
@@ -372,11 +413,34 @@ namespace Engine.Script
             GuiManager.UpdateGoodsView();
         }
 
+        public static void AddRandGoods(List<string> parameters)
+        {
+            var fileName = GetRandItem(@"ini\buy\" + Utils.RemoveStringQuotes(parameters[0]));
+            if(string.IsNullOrEmpty(fileName)) return;
+            AddGoods(fileName);
+        }
+
+        public static string GetRandItem(string filePath)
+        {
+            try
+            {
+                var parser = new FileIniDataParser();
+                var data = parser.ReadFile(filePath);
+                var count = int.Parse(data["Header"]["Count"]);
+                var rand = Globals.TheRandom.Next(1, count + 1);
+                return data[rand.ToString()]["IniFile"];
+            }
+            catch (Exception)
+            {
+                return "";
+            }
+        }
+
         public static void AddMagic(List<string> parameters)
         {
             int index;
             Magic magic;
-            var  result = MagicListManager.AddMagicToList(
+            var result = MagicListManager.AddMagicToList(
                 Utils.RemoveStringQuotes(parameters[0]),
                 out index,
                 out magic);
@@ -405,7 +469,7 @@ namespace Engine.Script
 
         public static void AddNpc(List<string> parameters)
         {
-            NpcManager.AddNpc(Utils.RemoveStringQuotes(parameters[0]), 
+            NpcManager.AddNpc(Utils.RemoveStringQuotes(parameters[0]),
                 int.Parse(parameters[1]),
                 int.Parse(parameters[2]),
                 int.Parse(parameters[3]));
@@ -418,6 +482,29 @@ namespace Engine.Script
                 int.Parse(parameters[2]),
                 int.Parse(parameters[3]));
         }
+
+        public static void Talk(List<string> parameters)
+        {
+            IsInTalk = true;
+            _talkStartIndex = int.Parse(parameters[0]);
+            _talkEndIndex = int.Parse(parameters[1]);
+            _talkCurrentIndex = _talkStartIndex;
+            TalkTextDetail detail;
+            GetNextTalkTextDeatil(out detail);
+            if (detail != null)
+            {
+                GuiManager.ShowDialog(detail.Text, detail.PortraitIndex);
+            }
+            else
+            {
+                IsInTalk = false;
+            }
+        }
+
+        public static void Memo(List<string> parameters)
+        {
+            var memo = Utils.RemoveStringQuotes(parameters[0]);
+
+        }
     }
-    // List<string> parameters
 }

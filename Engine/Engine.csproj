@@ -119,6 +119,8 @@
     <Compile Include="SoundManager.cs" />
     <Compile Include="Sprite.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TextData\TalkTextDetail.cs" />
+    <Compile Include="TextData\TalkTextList.cs" />
     <Compile Include="TextDrawer.cs" />
     <Compile Include="TextureBase.cs" />
     <Compile Include="TextureGenerator.cs" />
