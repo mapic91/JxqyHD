@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace Engine.TextData
+namespace Engine.ListManager
 {
     public static class TalkTextList
     {

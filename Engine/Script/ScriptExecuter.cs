@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using Engine.Gui;
-using Engine.TextData;
+using Engine.ListManager;
 using IniParser;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -503,8 +503,14 @@ namespace Engine.Script
 
         public static void Memo(List<string> parameters)
         {
-            var memo = Utils.RemoveStringQuotes(parameters[0]);
+            GuiManager.AddMemo(Utils.RemoveStringQuotes(parameters[0]));
+        }
 
+        public static void AddToMemo(List<string> parameters)
+        {
+            var detail = TalkTextList.GetTextDetail(int.Parse(parameters[0]));
+            if(detail == null) return;
+            GuiManager.AddMemo(detail.Text);
         }
     }
 }

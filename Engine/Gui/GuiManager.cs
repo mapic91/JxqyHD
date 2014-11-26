@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.NetworkInformation;
+using Engine.ListManager;
 using IniParser;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -256,6 +257,12 @@ namespace Engine.Gui
         public static bool IsDialogEnd()
         {
             return !DialogInterface.IsShow;
+        }
+
+        public static void AddMemo(string text)
+        {
+            MemoListManager.AddMemo(text);
+            UpdateMemoView();
         }
 
         public static void Update(GameTime gameTime)

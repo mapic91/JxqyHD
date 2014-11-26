@@ -360,6 +360,9 @@ namespace Engine.Script
                         case "Memo":
                             ScriptExecuter.Memo(parameters);
                             break;
+                        case "AddToMemo":
+                            ScriptExecuter.AddToMemo(parameters);
+                            break;
                     }
                 }
             }

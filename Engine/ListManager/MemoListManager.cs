@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using Engine.Gui;
 using IniParser;
 
-namespace Engine
+namespace Engine.ListManager
 {
     public static class MemoListManager
     {
-        private static readonly List<string> MemoList = new List<string>(); 
+        private static readonly LinkedList<string> MemoList = new LinkedList<string>(); 
         public static void LoadList(string filePath)
         {
             RenewList();
@@ -20,7 +20,7 @@ namespace Engine
                 var count = int.Parse(section["Count"]);
                 for (var i = 0; i < count; i++)
                 {
-                    MemoList.Add(section[i.ToString()]);
+                    MemoList.AddLast(section[i.ToString()]);
                 }
             }
             catch (Exception exception)
@@ -48,8 +48,27 @@ namespace Engine
         public static string GetString(int index)
         {
             if (IndexInRange(index))
-                return MemoList[index];
+            {
+                var node = MemoList.First;
+                for (var i = 0; i < index; i++)
+                {
+                    node = node.Next;
+                }
+                return node.Value;
+            }
             return "";
+        }
+
+        public static void AddMemo(string text)
+        {
+            text = "●" + text;
+            var lines = Utils.SpliteStringInCharCount(text, 10);
+            var count = lines.Count;
+            //Add reversely
+            for (var i = count - 1; i >= 0; i--)
+            {
+                MemoList.AddFirst(lines[i]);
+            }
         }
     }
 }

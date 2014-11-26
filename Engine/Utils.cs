@@ -379,5 +379,24 @@ namespace Engine
             }
             return path;
         }
+
+        /// <summary>
+        /// Splite long string to short string by character count
+        /// </summary>
+        /// <param name="text">Long string</param>
+        /// <param name="charCount">Character count</param>
+        /// <returns>Splited strings</returns>
+        public static List<string> SpliteStringInCharCount(string text, int charCount)
+        {
+            var lines = new List<string>();
+            if (string.IsNullOrEmpty(text) || charCount < 1) return lines;
+            while (text.Length > charCount)
+            {
+                lines.Add(text.Substring(0, 10));
+                text = text.Substring(10);
+            }
+            lines.Add(text);
+            return lines;
+        }
     }
 }

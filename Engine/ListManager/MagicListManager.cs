@@ -2,7 +2,7 @@
 using Engine.Gui;
 using IniParser;
 
-namespace Engine
+namespace Engine.ListManager
 {
     public static class MagicListManager
     {

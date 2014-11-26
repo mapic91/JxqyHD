@@ -1,4 +1,4 @@
-﻿namespace Engine.TextData
+﻿namespace Engine.ListManager
 {
     public class TalkTextDetail
     {
