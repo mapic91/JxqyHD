@@ -112,6 +112,12 @@ AddMagic("player-magic-银钩铁划.ini");
 AddMoney(a)
 AddMoney(200);
 
+AddNpc(a,b,c,d)
+AddNpc("月眉儿.ini",8,18,7);
+
+AddObj(a,b,c,d)
+AddNpc("纳兰真.ini", 54, 79, 7);
+
 ///////////////////////////////////////////////////////////////////
 //////////////////    Implemented   End  /////////////////////////
 /////////////////////////////////////////////////////////////////
@@ -134,11 +140,6 @@ AddMoney(200);
 
 
 
-AddNpc(a,b,c,d)
-AddNpc("月眉儿.ini",8,18,7);
-
-AddObj(a,b,c,d)
-AddNpc("纳兰真.ini", 54, 79, 7);
 
 AddRandGoods(a)
 AddRandGoods("6级防具.ini");

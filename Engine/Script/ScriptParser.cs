@@ -25,37 +25,37 @@ namespace Engine.Script
             ReadFile(filePath, belongObject);
         }
 
-        private static readonly Regex _regGoto = new Regex(@"^@([a-zA-Z0-9]+):");
-        private static readonly Regex _regComment = new Regex(@"^//.*");
-        private static readonly Regex _regFunction = new Regex(@"^([a-zA-Z]+)(.*);");
-        private static readonly Regex _regParameter = new Regex(@"^\((.+)\)(.*)");
-        private static readonly Regex _regResult = new Regex(@"^@[a-zA-Z0-9]+");
+        private static readonly Regex RegGoto = new Regex(@"^@([a-zA-Z0-9]+):");
+        private static readonly Regex RegComment = new Regex(@"^//.*");
+        private static readonly Regex RegFunction = new Regex(@"^([a-zA-Z]+)(.*);");
+        private static readonly Regex RegParameter = new Regex(@"^\((.+)\)(.*)");
+        private static readonly Regex RegResult = new Regex(@"^@[a-zA-Z0-9]+");
         private void ParserLine(string line)
         {
             var code = new Code();
             line = line.Trim();
             if (line.Length < 2) return;
 
-            if (_regGoto.IsMatch(line))
+            if (RegGoto.IsMatch(line))
             {
-                var match = _regGoto.Match(line);
+                var match = RegGoto.Match(line);
                 code.IsGoto = true;
                 code.Name = match.Value;
             }
-            else if (_regComment.IsMatch(line)) 
+            else if (RegComment.IsMatch(line)) 
             {
                 return;
             }
-            else if (_regFunction.IsMatch(line))
+            else if (RegFunction.IsMatch(line))
             {
-                var matchFunction = _regFunction.Match(line);
+                var matchFunction = RegFunction.Match(line);
                 code.Name = matchFunction.Groups[1].Value;
-                var matchParmeter = _regParameter.Match(matchFunction.Groups[2].Value.Trim());
+                var matchParmeter = RegParameter.Match(matchFunction.Groups[2].Value.Trim());
                 if (matchParmeter.Success)
                 {
                     code.Parameters = ParserParameter(matchParmeter.Groups[1].Value);
                 }
-                var matchResult = _regResult.Match(matchParmeter.Success
+                var matchResult = RegResult.Match(matchParmeter.Success
                     ? matchParmeter.Groups[2].Value.Trim()
                     : matchFunction.Groups[2].Value.Trim());
                 if (matchResult.Success)
@@ -331,6 +331,12 @@ namespace Engine.Script
                             break;
                         case "LoadObj":
                             ScriptExecuter.LoadObj(parameters);
+                            break;
+                        case "AddNpc":
+                            ScriptExecuter.AddNpc(parameters);
+                            break;
+                        case "AddObj":
+                            ScriptExecuter.AddObj(parameters);
                             break;
                         case "AddGoods":
                             ScriptExecuter.AddGoods(parameters);

@@ -402,6 +402,22 @@ namespace Engine.Script
         {
             Globals.ThePlayer.AddMoney(int.Parse(parameters[0]));
         }
+
+        public static void AddNpc(List<string> parameters)
+        {
+            NpcManager.AddNpc(Utils.RemoveStringQuotes(parameters[0]), 
+                int.Parse(parameters[1]),
+                int.Parse(parameters[2]),
+                int.Parse(parameters[3]));
+        }
+
+        public static void AddObj(List<string> parameters)
+        {
+            ObjManager.AddObj(Utils.RemoveStringQuotes(parameters[0]),
+                int.Parse(parameters[1]),
+                int.Parse(parameters[2]),
+                int.Parse(parameters[3]));
+        }
     }
     // List<string> parameters
 }

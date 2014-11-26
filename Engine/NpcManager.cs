@@ -120,8 +120,20 @@ namespace Engine
 
         public static void AddNpc(Npc npc)
         {
-            _list.AddLast(npc);
-            _npcListChanged = true;
+            if (npc != null)
+            {
+                _list.AddLast(npc);
+                _npcListChanged = true;
+            }
+        }
+
+        public static void AddNpc(string fileName, int tileX, int tileY, int direction)
+        {
+            var path = @"ini\npc\" + fileName;
+            var npc = new Npc(path);
+            npc.TilePosition = new Vector2(tileX, tileY);
+            npc.SetDirection(direction);
+            AddNpc(npc);
         }
 
         public static void ClearAllNpc()

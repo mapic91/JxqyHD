@@ -101,6 +101,15 @@ namespace Engine
             }
         }
 
+        public static void AddObj(string fileName, int tileX, int tileY, int direction)
+        {
+            var path = @"ini\obj\" + fileName;
+            var obj = new Obj(path);
+            obj.TilePosition = new Vector2(tileX, tileY);
+            obj.SetDirection(direction);
+            AddObj(obj);
+        }
+
         private static void RemoveObj(LinkedListNode<Obj> node)
         {
             _list.Remove(node);
