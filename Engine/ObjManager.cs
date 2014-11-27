@@ -110,7 +110,7 @@ namespace Engine
             AddObj(obj);
         }
 
-        private static void RemoveObj(LinkedListNode<Obj> node)
+        private static void DeleteObj(LinkedListNode<Obj> node)
         {
             _list.Remove(node);
             _objListChanged = true;
@@ -128,7 +128,7 @@ namespace Engine
             {
                 var next = node.Next;
                 if(node.Value.IsBody)
-                    RemoveObj(node);
+                    DeleteObj(node);
                 node = next;
             }
         }
@@ -190,11 +190,29 @@ namespace Engine
             return null;
         }
 
+        public static void DeleteObj(string objName)
+        {
+            for (var node = _list.First; node != null; node = node.Next)
+            {
+                if (node.Value.ObjName == objName)
+                {
+                    DeleteObj(node);
+                    return;
+                }
+            }
+        }
+
         public static void Update(GameTime gameTime)
         {
-            foreach (var obj in _list)
+            for(var node = _list.First; node != null;)
             {
-                obj.Update(gameTime);
+                var next = node.Next;
+                node.Value.Update(gameTime);
+                if (node.Value.IsRemoved)
+                {
+                    DeleteObj(node);
+                }
+                node = next;
             }
         }
 

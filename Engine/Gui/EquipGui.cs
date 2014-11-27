@@ -189,6 +189,15 @@ namespace Engine.Gui
             {
                 var index = ((GoodsGui.GoodItemData) item.Data).Index;
                 item.BaseTexture = GoodsListManager.GetTexture(index);
+                var info = GoodsListManager.GetItemInfo(index);
+                if (info != null && info.Count > 0)
+                {
+                    item.TopLeftText = info.Count.ToString();
+                }
+                else
+                {
+                    item.TopLeftText = "";
+                }
             }
         }
 

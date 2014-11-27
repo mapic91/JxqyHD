@@ -120,7 +120,7 @@ namespace Engine.ListManager
                     var magic = MagicList[i].TheMagic;
                     if (magic != null)
                     {
-                        if (magic.FileName == fileName)
+                        if (Utils.EqualNoCase(magic.FileName, fileName))
                         {
                             index = i;
                             outMagic = magic;

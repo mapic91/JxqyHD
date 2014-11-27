@@ -273,7 +273,7 @@ namespace Engine.Script
                             isEnd = ScriptExecuter.IsFadeInEnd();
                             break;
                         case "DelNpc":
-                            ScriptExecuter.DeleteNpc(parameters);
+                            ScriptExecuter.DelNpc(parameters);
                             break;
                         case "ClearBody":
                             ScriptExecuter.ClearBody();
@@ -362,6 +362,27 @@ namespace Engine.Script
                             break;
                         case "AddToMemo":
                             ScriptExecuter.AddToMemo(parameters);
+                            break;
+                        case "DelGoods":
+                            ScriptExecuter.DelGoods(parameters, BelongObject);
+                            break;
+                        case "DelCurObj":
+                            ScriptExecuter.DelCurObj(BelongObject);
+                            break;
+                        case "DelObj":
+                            ScriptExecuter.DelObj(parameters, BelongObject);
+                            break;
+                        case "FreeMap":
+                            ScriptExecuter.FreeMap();
+                            break;
+                        case "FullLife":
+                            ScriptExecuter.FullLife();
+                            break;
+                        case "FullMana":
+                            ScriptExecuter.FullMana();
+                            break;
+                        case "FullThew":
+                            ScriptExecuter.FullThew();
                             break;
                     }
                 }

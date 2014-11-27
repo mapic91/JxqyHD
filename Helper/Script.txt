@@ -130,6 +130,30 @@ Memo("帮武当山下酒肆老板寻找野姜、草葱和罂粟。");
 AddToMemo(a)
 AddToMemo(142);
 
+DelGoods()
+DelGoods();
+
+DelGoods(a)
+DelGoods("Goods-e21-玫瑰花.ini");
+
+DelCurObj()
+DelCurObj();
+
+DelObj(a)
+DelObj("罂粟");
+
+FreeMap()
+FreeMap();
+
+FullLife()
+FullLife();
+
+FullMana()
+FullMana();
+
+FullThew()
+FullThew();
+
 ///////////////////////////////////////////////////////////////////
 //////////////////    Implemented   End  /////////////////////////
 /////////////////////////////////////////////////////////////////
@@ -189,19 +213,11 @@ CloseTimeLimit();
 CloseWaterEffect()
 CloseWaterEffect();
 
-DelCurObj()
-DelCurObj();
-
-DelGoods()
-DelGoods();
-
-DelGoods(a)
-DelGoods("Goods-e21-玫瑰花.ini");
 
 
 
-DelObj(a)
-DelObj("罂粟");
+
+
 
 DisableFight()
 DisableFight();
@@ -244,17 +260,7 @@ EquipGoods(1, 5);
 FollowNpc("慕容老头","杨影枫")
 FollowNpc("慕容老头","杨影枫")
 
-FreeMap()
-FreeMap();
 
-FullLife()
-FullLife();
-
-FullMana()
-FullMana();
-
-FullThew()
-FullThew();
 
 GetGoodsNum(a)
 GetGoodsNum("goods-n13-紫霞玉佩.ini");

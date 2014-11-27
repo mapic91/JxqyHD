@@ -210,7 +210,7 @@ namespace Engine.Script
                 Color.White);
         }
 
-        public static void DeleteNpc(List<string> parameters)
+        public static void DelNpc(List<string> parameters)
         {
             NpcManager.DeleteNpc(Utils.RemoveStringQuotes(parameters[0]));
         }
@@ -511,6 +511,73 @@ namespace Engine.Script
             var detail = TalkTextList.GetTextDetail(int.Parse(parameters[0]));
             if(detail == null) return;
             GuiManager.AddMemo(detail.Text);
+        }
+
+        public static void DelGoods(List<string> parameters, object belongObject)
+        {
+            if (parameters == null)
+            {
+                var good = belongObject as Good;
+                if (good != null)
+                {
+                    GuiManager.DeleteGood(good.FileName);
+                }
+            }
+            else
+            {
+                GuiManager.DeleteGood(Utils.RemoveStringQuotes(parameters[0]));
+            }
+        }
+
+        public static void DelCurObj(object belongObject)
+        {
+            var obj = belongObject as Obj;
+            if(obj == null) return;
+            obj.IsRemoved = true;
+        }
+
+        public static void DelObj(List<string> parameters, object belongObject)
+        {
+            if (parameters == null || parameters[0] == "\"\"")
+            {
+                DelCurObj(belongObject);
+            }
+            else
+            {
+                ObjManager.DeleteObj(Utils.RemoveStringQuotes(parameters[0]));
+            }
+        }
+
+        public static void FreeMap()
+        {
+            if (Globals.TheMap != null)
+            {
+                Globals.TheMap.Free();
+            }
+        }
+
+        public static void FullLife()
+        {
+            if (Globals.ThePlayer != null)
+            {
+                Globals.ThePlayer.FullLife();
+            }
+        }
+
+        public static void FullMana()
+        {
+            if (Globals.ThePlayer != null)
+            {
+                Globals.ThePlayer.FullMana();
+            }
+        }
+
+        public static void FullThew()
+        {
+            if (Globals.ThePlayer != null)
+            {
+                Globals.ThePlayer.FullThew();
+            }
         }
     }
 }

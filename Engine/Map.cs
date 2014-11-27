@@ -34,8 +34,8 @@ namespace Engine
         private const byte CanOverTrans = 0x60; //跳透，可跳过
         private const byte CanOver = 0x20; //可跳过
 
-        private List<Mpc> _mpcList;
-        private List<Mpc> _loopingList;
+        private readonly List<Mpc> _mpcList = new List<Mpc>(255);
+        private readonly List<Mpc> _loopingList = new List<Mpc>();
         private string _mpcDirPath;
         private int _mapColumnCounts;
         private int _mapRowCounts;
@@ -45,7 +45,7 @@ namespace Engine
         private MapTileInfo[] _tileInfos;
         private readonly bool[] _isLayerDraw = new bool[3]{true, true, true};
 
-        private Dictionary<string, Dictionary<int, string>> _traps = new Dictionary<string, Dictionary<int, string>>();
+        private readonly Dictionary<string, Dictionary<int, string>> _traps = new Dictionary<string, Dictionary<int, string>>();
         private ScriptParser _currentScriptInRunning;
 
         private int _viewBeginX;
@@ -56,6 +56,9 @@ namespace Engine
         private string _mapFileNameWithoutExtension;
 
         #region Public Properties
+
+        public bool IsOk { private set; get; }
+
         public string MapFileNameWithoutExtension { get { return _mapFileNameWithoutExtension; } }
 
         public int ViewHeight
@@ -198,8 +201,6 @@ namespace Engine
 
         private void LoadMpc(byte[] buf, ref int offset)
         {
-            _mpcList = new List<Mpc>(255);
-            _loopingList = new List<Mpc>();
             offset = 192;
             for(var k = 0; k < 255; k++)
             {
@@ -277,8 +278,25 @@ namespace Engine
         #endregion Tiles region in view
 
         #region Tile 
+        private bool IsTileInMapRange(int x, int y)
+        {
+            return (x >= 0 &&
+                    x < _mapColumnCounts &&
+                    y >= 0 &&
+                    y < _mapRowCounts);
+        }
+
+        private bool IsTileInMapViewRange(int col, int row)
+        {
+            return (col < MapColumnCounts - 1 &&
+                row < MapRowCounts - 3 &&
+                col > 0 &&
+                row > 0);
+        }
+
         public Texture2D GetTileTexture(int x, int y, int layer)
         {
+            if (!IsTileInMapRange(x, y)) return null;
             MapMpcIndex[] idx;
             switch (layer)
             {
@@ -301,6 +319,7 @@ namespace Engine
 
         public Texture2D GetTileTextureAndRegion(int x, int y, int layer, ref Rectangle region)
         {
+            if (!IsOk) return null;
             var texture = GetTileTexture(x, y, layer);
             if (texture != null)
             {
@@ -308,14 +327,6 @@ namespace Engine
                 region = new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height);
             }
             return texture;
-        }
-
-        public bool IsTileInMapViewRange(int col, int row)
-        {
-            return (col < MapColumnCounts - 1 && 
-                row < MapRowCounts - 3 && 
-                col > 0 && 
-                row > 0);
         }
 
         public static bool HasNpcObjObstacleInMap(Vector2 tilePositon)
@@ -559,6 +570,7 @@ namespace Engine
         #region Layer
         public void DrawLayer(SpriteBatch spriteBatch, int layer)
         {
+            if(!IsOk) return;
             if ((layer < 0 || layer > 2) || !IsLayerDraw(layer)) return;
             var start = GetStartTileInView();
             var end = GetEndTileInView();
@@ -609,6 +621,7 @@ namespace Engine
 
         public void LoadMap(byte[] buf)
         {
+            Free();
             var offset = 0;
             try
             {
@@ -620,6 +633,23 @@ namespace Engine
             {
                 Log.LogMessageToFile("Map file is corrupted" + ": " + e);
             }
+            IsOk = true;
+        }
+
+        /// <summary>
+        /// Free map resource, make map to empty map
+        /// </summary>
+        public void Free()
+        {
+            IsOk = false;
+            _mpcList.Clear();
+            _loopingList.Clear();
+            _layer1 = _layer2 = _layer3 = null;
+            _tileInfos = null;
+            _mapColumnCounts = 
+                _mapRowCounts = 
+                _mapPixelWidth = 
+                _mapPixelHeight = 0;
         }
 
         public void Update(GameTime gameTime)
@@ -632,7 +662,6 @@ namespace Engine
             Globals.TheCarmera.Update(gameTime);
             ViewBeginX = Globals.TheCarmera.ViewBeginX;
             ViewBeginY = Globals.TheCarmera.ViewBeginY;
-
         }
 
         public void Draw(SpriteBatch spriteBatch)

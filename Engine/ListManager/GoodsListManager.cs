@@ -135,7 +135,7 @@ namespace Engine.ListManager
                 var info = GoodsList[i];
                 if (info != null && info.TheGood != null)
                 {
-                    if (info.TheGood.FileName == fileName)
+                    if (Utils.EqualNoCase(info.TheGood.FileName, fileName))
                     {
                         info.Count += 1;
                         index = i;
@@ -158,6 +158,34 @@ namespace Engine.ListManager
             }
 
             return false;
+        }
+
+        public static void DeleteGood(string fileName)
+        {
+            var i = ListIndexBegin;
+            for (; i <= ListIndexEnd; i++)
+            {
+                if(GoodsList[i] != null && 
+                    GoodsList[i].TheGood != null &&
+                    Utils.EqualNoCase(GoodsList[i].TheGood.FileName, fileName))
+                    break;
+            }
+            if (i <= ListIndexEnd)
+            {
+                var info = GoodsList[i];
+                var good = info.TheGood;
+                if (info.Count == 1)
+                    GoodsList[i] = null;
+                else
+                    info.Count -= 1;
+
+                //if goods is unequiped
+                if (i >= EquipIndexBegin && i <= EquipIndexEnd && GoodsList[i] == null)
+                {
+                    if(Globals.ThePlayer != null)
+                        Globals.ThePlayer.UnEquiping(good);
+                }
+            }
         }
 
         public static bool CanEquip(int goodIndex, Good.EquipPosition position)

@@ -1248,6 +1248,21 @@ namespace Engine
             }
         }
 
+        public void FullLife()
+        {
+            Life = LifeMax;
+        }
+
+        public void FullThew()
+        {
+            Thew = ThewMax;
+        }
+
+        public void FullMana()
+        {
+            Mana = ManaMax;
+        }
+
         protected abstract void PlaySoundEffect(SoundEffect soundEffect);
 
         protected virtual bool CanUseMagic()

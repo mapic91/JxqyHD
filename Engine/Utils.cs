@@ -398,5 +398,10 @@ namespace Engine
             lines.Add(text);
             return lines;
         }
+
+        public static bool EqualNoCase(string str1, string str2)
+        {
+            return string.Equals(str1, str2, StringComparison.OrdinalIgnoreCase);
+        }
     }
 }

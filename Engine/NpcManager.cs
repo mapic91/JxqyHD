@@ -48,7 +48,7 @@ namespace Engine
             return list;
         }
 
-        private static void RemoveNpc(LinkedListNode<Npc> node)
+        private static void DeleteNpc(LinkedListNode<Npc> node)
         {
             _list.Remove(node);
             _npcListChanged = true;
@@ -230,7 +230,7 @@ namespace Engine
             {
                 if (node.Value.Name == npcName)
                 {
-                    RemoveNpc(node);
+                    DeleteNpc(node);
                     break;
                 }
             }
@@ -243,7 +243,7 @@ namespace Engine
                 var npc = node.Value;
                 var next = node.Next;
                 npc.Update(gameTime);
-                if (npc.IsDeath) RemoveNpc(node);
+                if (npc.IsDeath) DeleteNpc(node);
                 node = next;
             }
         }

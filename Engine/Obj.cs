@@ -29,6 +29,8 @@ namespace Engine
 
         #region Public properties
 
+        public bool IsRemoved { set; get; }
+
         public string ObjName
         {
             get { return _objName; }

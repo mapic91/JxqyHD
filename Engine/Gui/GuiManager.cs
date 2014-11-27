@@ -243,6 +243,7 @@ namespace Engine.Gui
             return false;
         }
 
+        #region Functionail method
         public static void ShowMessage(string message)
         {
             MessageInterface.ShowMessage(message);
@@ -264,6 +265,14 @@ namespace Engine.Gui
             MemoListManager.AddMemo(text);
             UpdateMemoView();
         }
+
+        public static void DeleteGood(string fileName)
+        {
+            GoodsListManager.DeleteGood(fileName);
+            UpdateGoodsView();
+        }
+
+        #endregion Functionail method
 
         public static void Update(GameTime gameTime)
         {
