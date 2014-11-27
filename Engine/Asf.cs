@@ -74,5 +74,15 @@ namespace Engine
         {
             Load(path);
         }
+
+        public Asf(Texture2D texture)
+        {
+            if(texture == null) return;
+            Frames.Add(texture);
+            Head.GlobleWidth = texture.Width;
+            Head.GlobleHeight = texture.Height;
+            Head.Direction = 1;
+            _isOk = true;
+        }
     }
 }

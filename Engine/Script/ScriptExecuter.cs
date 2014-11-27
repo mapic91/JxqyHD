@@ -4,6 +4,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using Engine.Gui;
 using Engine.ListManager;
+using Engine.Weather;
 using IniParser;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -632,6 +633,12 @@ namespace Engine.Script
             var level = int.Parse(parameters[1]);
             MagicListManager.SetMagicLevel(fileName, level);
             GuiManager.XiuLianInterface.UpdateItem();
+        }
+
+        public static void ShowSnow(List<string> parameters)
+        {
+            var isShow = (int.Parse(parameters[0]) != 0);
+            WeatherManager.ShowSnow(isShow);
         }
     }
 }

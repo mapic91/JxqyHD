@@ -402,6 +402,9 @@ namespace Engine.Script
                         case "SetMagicLevel":
                             ScriptExecuter.SetMagicLevel(parameters);
                             break;
+                        case "ShowSnow":
+                            ScriptExecuter.ShowSnow(parameters);
+                            break;
                     }
                 }
             }

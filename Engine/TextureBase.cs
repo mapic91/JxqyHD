@@ -12,9 +12,9 @@ namespace Engine
     public abstract class TextureBase
     {
         private readonly List<Texture2D> _frames = new List<Texture2D>();
-        private bool _isOk;
         private int _frameCountsPerDirection = 1;
 
+        protected bool _isOk;
         protected FileHead Head;
         protected Color[] Palette;
 

@@ -125,6 +125,10 @@
     <Compile Include="TextureBase.cs" />
     <Compile Include="TextureGenerator.cs" />
     <Compile Include="Utils.cs" />
+    <Compile Include="Weather\Rain.cs" />
+    <Compile Include="Weather\Snow.cs" />
+    <Compile Include="Weather\SnowFlake.cs" />
+    <Compile Include="Weather\WeatherManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="LICENSE" />

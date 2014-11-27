@@ -8,6 +8,7 @@ using Engine;
 using Engine.Gui;
 using Engine.ListManager;
 using Engine.Script;
+using Engine.Weather;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -156,6 +157,8 @@ namespace Jxqy
 
                 Globals.TheMap.Update(gameTime);
 
+                WeatherManager.Update(gameTime);
+
                 _lastKeyboardState = keyboardState;
                 _lastMouseState = mouseState;
             }
@@ -184,6 +187,9 @@ namespace Jxqy
                 "ÄÚ£º " + Globals.ThePlayer.Mana.ToString(),
                 new Vector2(5, 45), Color.Red);
             if (Globals.InSuperMagicMode) Globals.SuperModeMagicSprite.Draw(_spriteBatch);
+
+            //Draw weather
+            WeatherManager.Draw(_spriteBatch);
 
             //Fade in, fade out
             if (ScriptExecuter.IsInFadeIn || ScriptExecuter.IsInFadeOut)
