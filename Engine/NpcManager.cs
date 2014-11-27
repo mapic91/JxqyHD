@@ -236,6 +236,30 @@ namespace Engine
             }
         }
 
+        public static void ShowNpc(string npcName, bool isShow = true)
+        {
+            Character character = null;
+            if (Globals.ThePlayer != null &&
+                Globals.ThePlayer.Name == npcName)
+            {
+                character = Globals.ThePlayer;
+            }
+            else
+            {
+                foreach (var npc in _list)
+                {
+                    if (npc.Name == npcName)
+                    {
+                        character = npc;
+                    }
+                }
+            }
+            if (character != null)
+            {
+                character.IsHide = !isShow;
+            }
+        }
+
         public static void Update(GameTime gameTime)
         {
             for (var node = _list.First; node != null; )

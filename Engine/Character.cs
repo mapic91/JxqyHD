@@ -67,6 +67,7 @@ namespace Engine
         private float _poisonSeconds;
         private float _petrifiedSeconds;
         private bool _notAddBody;
+        private bool _isNextStepStand;
         private Dictionary<int, Utils.LevelDetail> _levelIni;
         protected Magic MagicUse;
 
@@ -79,6 +80,8 @@ namespace Engine
             get { return _levelIni; }
             set { _levelIni = value; }
         }
+
+        public bool IsHide { get; set; }
 
         public float FrozenSeconds
         {
@@ -580,7 +583,14 @@ namespace Engine
 
             if (MovedDistance >= distance)
             {
-                if (DestinationMovePositionInWorld != Path.Last.Value) // new destination
+                if (_isNextStepStand)
+                {
+                    _isNextStepStand = false;
+                    PositionInWorld = to;
+                    StandingImmediately();
+                    MovedDistance = 0;
+                }
+                else if (DestinationMovePositionInWorld != Path.Last.Value) // new destination
                 {
                     var destination = DestinationMovePositionInWorld;
                     PositionInWorld = to;
@@ -776,9 +786,16 @@ namespace Engine
             }
         }
 
-        public void Standing()
+        /// <summary>
+        /// If is in walk or run, when reach next step(tile), standing.
+        /// Don't like StandingImmediately() staning now,  this is a soft standing
+        /// </summary>
+        public void NextStepStaning()
         {
-            WalkTo(Vector2.Zero);
+            if (IsWalking() || IsRuning())
+            {
+                _isNextStepStand = true;
+            }
         }
 
         public bool PerformActionOk()
@@ -1416,7 +1433,7 @@ namespace Engine
 
         public virtual void Draw(SpriteBatch spriteBatch, Texture2D texture)
         {
-            if (IsDeath) return;
+            if (IsDeath || IsHide) return;
             var color = Color.White;
             if (FrozenSeconds > 0)
                 color = new Color(80, 80, 255);

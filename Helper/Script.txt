@@ -121,6 +121,9 @@ AddNpc("月眉儿.ini",8,18,7);
 AddObj(a,b,c,d)
 AddNpc("纳兰真.ini", 54, 79, 7);
 
+ShowNpc(a, b)
+ShowNpc("杨影枫", 0);
+
 Talk(a,b)
 Talk(14050,14090);
 
@@ -145,6 +148,14 @@ DelObj("罂粟");
 FreeMap()
 FreeMap();
 
+SetTrap(a,b,c)
+SetTrap("map_028_连接地图",2,"");
+SetTrap("map_017_连接地图",3,"Trap03.txt");
+
+SetMapTrap(a,b)
+SetMapTrap(1,"");
+SetMapTrap(1,"trap01.txt");
+
 FullLife()
 FullLife();
 
@@ -154,38 +165,18 @@ FullMana();
 FullThew()
 FullThew();
 
+Sleep(a)
+Sleep(2000);
+
+ShowMessage(a)
+ShowMessage(94400);
+
+SetMagicLevel(a,b)
+SetMagicLevel("player-magic-蚀骨血仞.ini",4);
+
 ///////////////////////////////////////////////////////////////////
 //////////////////    Implemented   End  /////////////////////////
 /////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 BeginRain(a)
 BeginRain("Rain2.ini");
@@ -202,8 +193,6 @@ ChangeMapColor(250, 250, 250);
 Choose(a, b, c, d);
 Choose("请选择游戏的难易：", "难", "易", $Level);
 
-
-
 CloseBox(a)
 CloseBox("通天塔开关A");
 
@@ -212,12 +201,6 @@ CloseTimeLimit();
 
 CloseWaterEffect()
 CloseWaterEffect();
-
-
-
-
-
-
 
 DisableFight()
 DisableFight();
@@ -255,12 +238,8 @@ EndRain();
 EquipGoods(a,b)
 EquipGoods(1, 5);
 
-
-
 FollowNpc("慕容老头","杨影枫")
 FollowNpc("慕容老头","杨影枫")
-
-
 
 GetGoodsNum(a)
 GetGoodsNum("goods-n13-紫霞玉佩.ini");
@@ -288,12 +267,6 @@ LimitMana(1);
 
 LoadGame(a)
 LoadGame(0);
-
-
-
-
-
-
 
 MergeNpc(a)
 MergeNpc("SubEvent01.npc");
@@ -358,10 +331,6 @@ PlayMovie("open.avi");
 PlayMovie(a,b,c,d);
 PlayMovie("team.avi",0,0,0);
 
-
-
-
-
 ReturnToTitle()
 ReturnToTitle();
 
@@ -389,20 +358,11 @@ Select(281,	282, 283, $SelectVal);
 SellGoods(a)
 SellGoods("低级药品.ini");
 
-
-
-SetMagicLevel(a,b)
-SetMagicLevel("player-magic-蚀骨血仞.ini",4);
-
 SetMapPos(a, b)
 SetMapPos(32, 67);
 
 SetMapTime(a)
 SetMapTime(1);
-
-SetMapTrap(a,b)
-SetMapTrap(1,"");
-SetMapTrap(1,"trap01.txt");
 
 SetMoneyNum(a)
 SetMoneyNum(0);
@@ -416,8 +376,6 @@ SetNpcAction("卓非凡", 11, 0, 0);
 SetNpcActionFile(a, b, c)
 SetNpcActionFile("杨影枫", 0, "mpc001_跪.asf");
 
-
-
 SetNpcDir(a)
 SetNpcDir(5);
 
@@ -426,8 +384,6 @@ SetNpcDir("武当山下酒客",0);
 
 SetNpcKind(a, b)
 SetNpcKind("杨影枫", 1);
-
-
 
 SetNpcMagicFile(a,b)
 SetNpcMagicFile("杨影枫","player-magic-武道德经.ini");
@@ -441,14 +397,8 @@ SetNpcRelation("月眉儿",1);
 SetNpcRes(a,b)
 SetNpcRes("月眉儿","npc016-躺着的月眉儿.ini");
 
-
-
 SetObjOfs(a,b,c);
 SetObjOfs("躺着的月眉儿",-10,10);
-
-
-
-
 
 SetPlayerScn()
 SetPlayerScn();
@@ -460,27 +410,9 @@ SetTimeScript(a,b)
 SetTimeScript(1,"changecolor.txt");
 SetTimeScript(60, "time60.txt");
 
-SetTrap(a,b,c)
-SetTrap("map_028_连接地图",2,"");
-SetTrap("map_017_连接地图",3,"Trap03.txt");
-
-ShowMessage(a)
-ShowMessage(94400);
-
-ShowNpc(a, b)
-ShowNpc("杨影枫", 0);
-
 ShowSnow(a)
 ShowSnow(0);
 ShowSnow(1);
 
-Sleep(a)
-Sleep(2000);
-
-
-
-
-
 Watch(a, b, c)
 Watch("杨影枫", "纳兰真", 0);
-

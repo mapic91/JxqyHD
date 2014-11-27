@@ -7,8 +7,8 @@ namespace Engine.ListManager
     public static class MagicListManager
     {
         private const int MaxMagic = 49;
-        private const int ListStart = 1;
-        private const int ListEnd = 36;
+        private const int StoreListStart = 1;
+        private const int StoreListEnd = 36;
         private static readonly MagicItemInfo[] MagicList = new MagicItemInfo[MaxMagic + 1];
 
         public const int XiuLianIndex = 49;
@@ -130,7 +130,7 @@ namespace Engine.ListManager
                 }
             }
 
-            for (var i = ListStart; i <= ListEnd; i++)
+            for (var i = StoreListStart; i <= StoreListEnd; i++)
             {
                 if (MagicList[i] == null)
                 {
@@ -143,11 +143,34 @@ namespace Engine.ListManager
             return false;
         }
 
+        public static void SetMagicLevel(string fileName, int level)
+        {
+            for (var i = 1; i <= MaxMagic; i++)
+            {
+                var info = MagicList[i];
+                if (info != null)
+                {
+                    var magic = info.TheMagic;
+                    if (magic != null)
+                    {
+                        if (Utils.EqualNoCase(magic.FileName, fileName))
+                        {
+                            magic = magic.GetLevel(level);
+                            info.TheMagic = magic;
+                            info.Exp = magic.LevelupExp;
+                            info.Level = level;
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
         public class MagicItemInfo
         {
-            public Magic TheMagic { private set; get; }
-            public int Level { private set; get; }
-            public int Exp { private set; get; }
+            public Magic TheMagic { set; get; }
+            public int Level { set; get; }
+            public int Exp { set; get; }
 
             public MagicItemInfo(string iniFile, int level, int exp)
             {

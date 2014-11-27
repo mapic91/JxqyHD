@@ -38,7 +38,9 @@ namespace Engine
 
         public bool IsInputDisabled
         {
-            get { return (ScriptExecuter.IsInFadeIn || ScriptExecuter.IsInFadeOut); }
+            get { return (ScriptExecuter.IsInFadeIn || 
+                ScriptExecuter.IsInFadeOut ||
+                ScriptExecuter.IsInSleep); }
         }
 
         public MagicListManager.MagicItemInfo CurrentMagicInUse
@@ -450,7 +452,7 @@ namespace Engine
                 !IsPetrified &&
                 !IsInputDisabled)
             {
-                if (IsSitting()) Standing();
+                if (IsSitting()) StandingImmediately();
                 else Sitdown();
             }
 
@@ -494,7 +496,7 @@ namespace Engine
             var region = RegionInWorld;
             foreach (var npc in NpcManager.NpcsInView)
             {
-                if (npc.MapY > MapY)
+                if (npc.MapY > MapY && !npc.IsHide)
                     Collider.MakePixelCollidedTransparent(region, texture, npc.RegionInWorld, npc.GetCurrentTexture());
             }
             foreach (var magicSprite in MagicManager.MagicSpritesInView)
@@ -518,14 +520,16 @@ namespace Engine
             }
             base.Draw(spriteBatch, texture);
 
-            if (Globals.OutEdgeSprite != null)
+            if (Globals.OutEdgeSprite != null &&
+                !(Globals.OutEdgeNpc != null && Globals.OutEdgeNpc.IsHide) )
             {
                 Globals.OutEdgeSprite.Draw(spriteBatch,
                     Globals.OutEdgeTexture,
                     Globals.OffX,
                     Globals.OffY);
             }
-            if (Globals.OutEdgeNpc != null)
+            if (Globals.OutEdgeNpc != null && 
+                !Globals.OutEdgeNpc.IsHide)
                 InfoDrawer.DrawLife(spriteBatch, Globals.OutEdgeNpc);
         }
     }

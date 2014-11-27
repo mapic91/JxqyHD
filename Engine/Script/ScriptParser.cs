@@ -375,6 +375,12 @@ namespace Engine.Script
                         case "FreeMap":
                             ScriptExecuter.FreeMap();
                             break;
+                        case "SetTrap":
+                            ScriptExecuter.SetTrap(parameters);
+                            break;
+                        case "SetMapTrap":
+                            ScriptExecuter.SetMapTrap(parameters);
+                            break;
                         case "FullLife":
                             ScriptExecuter.FullLife();
                             break;
@@ -383,6 +389,18 @@ namespace Engine.Script
                             break;
                         case "FullThew":
                             ScriptExecuter.FullThew();
+                            break;
+                        case "ShowNpc":
+                            ScriptExecuter.ShowNpc(parameters);
+                            break;
+                        case "Sleep":
+                            ScriptExecuter.Sleep(parameters);
+                            break;
+                        case "ShowMessage":
+                            ScriptExecuter.ShowMessage(parameters);
+                            break;
+                        case "SetMagicLevel":
+                            ScriptExecuter.SetMagicLevel(parameters);
                             break;
                     }
                 }

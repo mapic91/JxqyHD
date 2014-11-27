@@ -17,6 +17,7 @@ namespace Engine.Script
         private static int _talkStartIndex;
         private static int _talkEndIndex;
         private static int _talkCurrentIndex;
+        private static float _sleepingMilliseconds;
 
         public static float FadeTransparence
         {
@@ -32,6 +33,7 @@ namespace Engine.Script
         public static bool IsInFadeOut;
         public static bool IsInFadeIn;
         public static bool IsInTalk;
+        public static bool IsInSleep;
 
         private static void GetTargetAndScript(string nameWithQuotes,
             string scriptFileNameWithQuotes,
@@ -100,6 +102,15 @@ namespace Engine.Script
                     {
                         IsInTalk = false;
                     }
+                }
+            }
+
+            if (IsInSleep)
+            {
+                _sleepingMilliseconds -= (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                if (_sleepingMilliseconds <= 0)
+                {
+                    IsInSleep = false;
                 }
             }
         }
@@ -556,6 +567,19 @@ namespace Engine.Script
             }
         }
 
+        public static void SetTrap(List<string> parameters)
+        {
+            Globals.TheMap.SetMapTrap(int.Parse(parameters[1]),
+                Utils.RemoveStringQuotes(parameters[2]),
+                Utils.RemoveStringQuotes(parameters[0]));
+        }
+
+        public static void SetMapTrap(List<string> parameters)
+        {
+            Globals.TheMap.SetMapTrap(int.Parse(parameters[0]),
+                Utils.RemoveStringQuotes(parameters[1]));
+        }
+
         public static void FullLife()
         {
             if (Globals.ThePlayer != null)
@@ -578,6 +602,36 @@ namespace Engine.Script
             {
                 Globals.ThePlayer.FullThew();
             }
+        }
+
+        public static void ShowNpc(List<string> parameters)
+        {
+            var name = Utils.RemoveStringQuotes(parameters[0]);
+            var show = (int.Parse(parameters[1]) != 0);
+            NpcManager.ShowNpc(name, show);
+        }
+
+        public static void Sleep(List<string> parameters)
+        {
+            _sleepingMilliseconds = int.Parse(parameters[0]);
+            IsInSleep = true;
+        }
+
+        public static void ShowMessage(List<string> parameters)
+        {
+            var detail = TalkTextList.GetTextDetail(int.Parse(parameters[0]));
+            if (detail != null)
+            {
+                GuiManager.ShowMessage(detail.Text);
+            }
+        }
+
+        public static void SetMagicLevel(List<string> parameters)
+        {
+            var fileName = Utils.RemoveStringQuotes(parameters[0]);
+            var level = int.Parse(parameters[1]);
+            MagicListManager.SetMagicLevel(fileName, level);
+            GuiManager.XiuLianInterface.UpdateItem();
         }
     }
 }
