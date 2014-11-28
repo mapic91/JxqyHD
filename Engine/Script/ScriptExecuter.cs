@@ -640,5 +640,21 @@ namespace Engine.Script
             var isShow = (int.Parse(parameters[0]) != 0);
             WeatherManager.ShowSnow(isShow);
         }
+
+        public static void ChangeMapColor(List<string> parameters)
+        {
+            var color = new Color(int.Parse(parameters[0]),
+                int.Parse(parameters[1]),
+                int.Parse(parameters[2]));
+            Map.DrawColor = color;
+        }
+
+        public static void ChangeAsfColor(List<string> parameters)
+        {
+            var color = new Color(int.Parse(parameters[0]),
+                int.Parse(parameters[1]),
+                int.Parse(parameters[2]));
+            Sprite.DrawColor = color;
+        }
     }
 }

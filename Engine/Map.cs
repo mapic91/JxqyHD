@@ -44,6 +44,7 @@ namespace Engine
         private MapMpcIndex[] _layer1, _layer2, _layer3;
         private MapTileInfo[] _tileInfos;
         private readonly bool[] _isLayerDraw = new bool[3]{true, true, true};
+        private static Color _drawColor = Color.White;
 
         private readonly Dictionary<string, Dictionary<int, string>> _traps = new Dictionary<string, Dictionary<int, string>>();
         private ScriptParser _currentScriptInRunning;
@@ -113,6 +114,12 @@ namespace Engine
         public int MapRowCounts
         {
             get { return _mapRowCounts; }
+        }
+
+        public static Color DrawColor
+        {
+            get { return _drawColor; }
+            set { _drawColor = value; }
         }
 
         #endregion Public Properties
@@ -458,7 +465,7 @@ namespace Engine
             spriteBatch.Draw(texture,
                         new Rectangle((int)tileBegPixelPos.X - ViewBeginX, (int)tileBegPixelPos.Y - ViewBeginY, texture.Width, texture.Height),
                         new Rectangle(0, 0, texture.Width, texture.Height),
-                        Color.White,
+                        DrawColor,
                         0f,
                         new Vector2(0f),
                         SpriteEffects.None,

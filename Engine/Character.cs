@@ -1434,7 +1434,7 @@ namespace Engine
         public virtual void Draw(SpriteBatch spriteBatch, Texture2D texture)
         {
             if (IsDeath || IsHide) return;
-            var color = Color.White;
+            var color = DrawColor;
             if (FrozenSeconds > 0)
                 color = new Color(80, 80, 255);
             if (PoisonSeconds > 0)

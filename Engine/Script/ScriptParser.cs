@@ -405,6 +405,12 @@ namespace Engine.Script
                         case "ShowSnow":
                             ScriptExecuter.ShowSnow(parameters);
                             break;
+                        case "ChangeMapColor":
+                            ScriptExecuter.ChangeMapColor(parameters);
+                            break;
+                        case "ChangeAsfColor":
+                            ScriptExecuter.ChangeAsfColor(parameters);
+                            break;
                     }
                 }
             }

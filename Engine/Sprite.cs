@@ -22,7 +22,14 @@ namespace Engine
         private int _playedFrames;
         private float _movedDistance;
         private bool _isTilePositionNew;
+        private static Color _drawColor = Color.White;
         public int FrameAdvanceCount { protected set; get; }
+
+        public static Color DrawColor
+        {
+            get { return _drawColor; }
+            set { _drawColor = value; }
+        }
 
         public Sprite() { }
 
@@ -295,7 +302,7 @@ namespace Engine
 
         public void Draw(SpriteBatch spriteBatch, Texture2D texture, int offX = 0, int offY = 0)
         {
-            Draw(spriteBatch, texture, Color.White, offX, offY);
+            Draw(spriteBatch, texture, DrawColor, offX, offY);
         }
 
         public void Draw(SpriteBatch spriteBatch, Texture2D texture, Color color, int offX = 0, int offY = 0)
