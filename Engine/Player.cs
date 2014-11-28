@@ -475,7 +475,7 @@ namespace Engine
             base.Update(gameTime);
         }
 
-        public new void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
             var texture = GetCurrentTexture();
             if (texture == null) return;

@@ -295,17 +295,22 @@ namespace Engine
             return Texture.GetFrame(CurrentFrameIndex);
         }
 
-        public void Draw(SpriteBatch spriteBatch, int offX = 0, int offY = 0)
+        public virtual void Draw(SpriteBatch spriteBatch, int offX = 0, int offY = 0)
         {
             Draw(spriteBatch, GetCurrentTexture(), offX, offY);
         }
 
-        public void Draw(SpriteBatch spriteBatch, Texture2D texture, int offX = 0, int offY = 0)
+        public virtual void Draw(SpriteBatch spriteBatch, Color color)
+        {
+            Draw(spriteBatch, GetCurrentTexture(), color);
+        }
+
+        public virtual void Draw(SpriteBatch spriteBatch, Texture2D texture, int offX = 0, int offY = 0)
         {
             Draw(spriteBatch, texture, DrawColor, offX, offY);
         }
 
-        public void Draw(SpriteBatch spriteBatch, Texture2D texture, Color color, int offX = 0, int offY = 0)
+        public virtual void Draw(SpriteBatch spriteBatch, Texture2D texture, Color color, int offX = 0, int offY = 0)
         {
             if (texture == null) return;
             Rectangle des =

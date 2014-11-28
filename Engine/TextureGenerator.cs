@@ -151,16 +151,6 @@ namespace Engine
             var w = Color.White;
             var t = Color.Transparent;
             const int size = 3;
-            //var data = new Color[7*7]
-            //{
-            //    t,t,w,t,w,t,t,
-            //    t,t,t,w,t,t,t,
-            //    w,t,w,w,w,t,w,
-            //    t,w,w,w,w,w,t,
-            //    w,t,w,w,w,t,w,
-            //    t,t,t,w,t,t,t,
-            //    t,t,w,t,w,t,t
-            //};
             var data = new Color[size*size]
             {
                 t, w, t,
@@ -168,6 +158,38 @@ namespace Engine
                 t, w, t
             };
             var texture = new Texture2D(Globals.TheGame.GraphicsDevice, size, size);
+            texture.SetData(data);
+            return texture;
+        }
+
+        public static Texture2D GetRaniDrop()
+        {
+            var w = Color.Gray*0.3f;
+            var l = Color.Gray * 0.2f;
+            var data = new Color[1*20]
+            {
+                l,
+                l,
+                l,
+                l,
+                l,
+                l,
+                w,
+                w,
+                w,
+                w,
+                w,
+                w,
+                w,
+                w,
+                w,
+                l,
+                l,
+                l,
+                l,
+                l
+            };
+            var texture = new Texture2D(Globals.TheGame.GraphicsDevice, 1, 20);
             texture.SetData(data);
             return texture;
         }

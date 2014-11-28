@@ -405,6 +405,9 @@ namespace Engine.Script
                         case "ShowSnow":
                             ScriptExecuter.ShowSnow(parameters);
                             break;
+                        case "BeginRain":
+                            ScriptExecuter.BeginRain(parameters);
+                            break;
                         case "ChangeMapColor":
                             ScriptExecuter.ChangeMapColor(parameters);
                             break;

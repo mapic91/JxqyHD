@@ -178,6 +178,9 @@ ShowSnow(a)
 ShowSnow(0);
 ShowSnow(1);
 
+BeginRain(a)
+BeginRain("Rain2.ini");
+
 ChangeAsfColor(a, b, c)
 ChangeAsfColor(255, 255, 255);
 
@@ -188,13 +191,10 @@ ChangeMapColor(250, 250, 250);
 //////////////////    Implemented   End  /////////////////////////
 /////////////////////////////////////////////////////////////////
 
-BeginRain(a)
-BeginRain("Rain2.ini");
+
 
 BuyGoods(a)
 BuyGoods("衣3级.ini");
-
-
 
 Choose(a, b, c, d);
 Choose("请选择游戏的难易：", "难", "易", $Level);
@@ -415,8 +415,6 @@ SetPlayerState(1);
 SetTimeScript(a,b)
 SetTimeScript(1,"changecolor.txt");
 SetTimeScript(60, "time60.txt");
-
-
 
 Watch(a, b, c)
 Watch("杨影枫", "纳兰真", 0);

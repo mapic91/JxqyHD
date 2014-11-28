@@ -388,6 +388,7 @@ namespace Engine.Script
 
         public static void LoadMap(List<string> parameters)
         {
+            WeatherManager.StopRain();
             Globals.TheMap.LoadMap(Utils.RemoveStringQuotes(parameters[0]));
         }
 
@@ -639,6 +640,11 @@ namespace Engine.Script
         {
             var isShow = (int.Parse(parameters[0]) != 0);
             WeatherManager.ShowSnow(isShow);
+        }
+
+        public static void BeginRain(List<string> parameters)
+        {
+            WeatherManager.BeginRain(Utils.RemoveStringQuotes(parameters[0]));
         }
 
         public static void ChangeMapColor(List<string> parameters)

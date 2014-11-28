@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Engine.Weather;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -394,14 +395,19 @@ namespace Engine
         public void Draw(SpriteBatch spriteBatch)
         {
             if (IsDestroyed) return;
+            var color = DrawColor;
+
+            //When rain make magic sprite has normal light
+            if (WeatherManager.IsRain) color = Color.White;
+
             if (BelongMagic.MoveKind == 15 && IsInDestroy)
             {
                 foreach (var sprite in _superModeDestroySprites)
                 {
-                    sprite.Draw(spriteBatch);
+                    sprite.Draw(spriteBatch, color);
                 }
             }
-            base.Draw(spriteBatch);
+            base.Draw(spriteBatch, color);
         }
     }
 }
