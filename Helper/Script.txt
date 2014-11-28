@@ -187,6 +187,9 @@ ChangeAsfColor(255, 255, 255);
 ChangeMapColor(a, b, c)
 ChangeMapColor(250, 250, 250);
 
+Choose(a, b, c, d);
+Choose("请选择游戏的难易：", "难", "易", $Level);
+
 ///////////////////////////////////////////////////////////////////
 //////////////////    Implemented   End  /////////////////////////
 /////////////////////////////////////////////////////////////////
@@ -195,9 +198,6 @@ ChangeMapColor(250, 250, 250);
 
 BuyGoods(a)
 BuyGoods("衣3级.ini");
-
-Choose(a, b, c, d);
-Choose("请选择游戏的难易：", "难", "易", $Level);
 
 CloseBox(a)
 CloseBox("通天塔开关A");

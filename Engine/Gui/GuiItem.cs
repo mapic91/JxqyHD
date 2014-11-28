@@ -15,6 +15,7 @@ namespace Engine.Gui
         private bool _isStayOver;
         private float _stayOverMilliSecond;
         public event Action<object, MouseEvent> MouseLeave;
+        public event Action<object, MouseEvent> MouseEnter; 
         public event Action<object, MouseEvent> MouseStayOver;
         public event Action<object, MouseMoveEvent> MouseMove;
         public event Action<object, MouseLeftDownEvent> MouseLeftDown;
@@ -124,8 +125,18 @@ namespace Engine.Gui
 
             if (RegionInScreen.Contains(mouseState.X, mouseState.Y))
             {
-                if (InRange == false && EnteredSound != null)
-                    EnteredSound.Play();
+                if (InRange == false)
+                {
+                    if (EnteredSound != null)
+                    {
+                        EnteredSound.Play();
+                    }
+                    if (MouseEnter != null)
+                    {
+                        MouseEnter(this, new MouseEvent(position, screenPosition));
+                    }
+                }
+                    
 
                 if (lastPosition == position && !_isStayOver)
                 {

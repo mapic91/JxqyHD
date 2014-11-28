@@ -11,14 +11,13 @@ namespace Engine.Weather
         private static float _elepsedMilliSeconds;
         private const float IntervalMilliSeconds = 300f;
         private const float Speed = 100;
-        private static Asf _snowFlakeTexture;
+        private static Asf[] _snowFlakeTexture;
 
         private static void GenerateSnowFlakes()
         {
             if (_snowFlakeTexture == null)
             {
-                _snowFlakeTexture = new Asf(
-                    TextureGenerator.GetSnowFlake());
+                _snowFlakeTexture = TextureGenerator.GetSnowFlake();
             }
             var offX = Globals.TheCarmera.ViewBeginX;
             var offY = Globals.TheCarmera.ViewBeginY;
@@ -28,7 +27,7 @@ namespace Engine.Weather
                 var snowFlake = new SnowFlake(new Vector2(i + offX, offY),
                     direction,
                     Speed * Globals.TheRandom.Next(1, 4),
-                    _snowFlakeTexture);
+                    _snowFlakeTexture[Globals.TheRandom.Next(0, 4)]);
                 SnowFlakes.AddLast(snowFlake);
             }
         }

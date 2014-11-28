@@ -255,6 +255,22 @@ namespace Engine.Gui
             DialogInterface.ShowText(text, portraitIndex);
         }
 
+        public static void Selection(string message, string selectA, string selectionB)
+        {
+            AllPanelsShow(false);
+            DialogInterface.Select(message, selectA, selectionB);
+        }
+
+        public static bool IsSelectionEnd()
+        {
+            return !DialogInterface.IsInSelecting;
+        }
+
+        public static int GetSelection()
+        {
+            return DialogInterface.Selection;
+        }
+
         public static bool IsDialogEnd()
         {
             return !DialogInterface.IsShow;
@@ -299,13 +315,26 @@ namespace Engine.Gui
             if (DialogInterface.IsShow)
             {
                 IsMouseStateEated = true;
-                DialogInterface.Update(gameTime);
-                if (mouseState.LeftButton == ButtonState.Pressed &&
-                    _lastMouseState.LeftButton == ButtonState.Released)
+                if (DialogInterface.IsInSelecting)
                 {
-                    if (!DialogInterface.NextPage())
+                    DialogInterface.Update(gameTime);
+                    //Check wheathe selection ended after updated
+                    if (!DialogInterface.IsInSelecting)
+                    {
                         DialogInterface.IsShow = false;
+                    }
                 }
+                else
+                {
+                    DialogInterface.Update(gameTime);
+                    if (mouseState.LeftButton == ButtonState.Pressed &&
+                    _lastMouseState.LeftButton == ButtonState.Released)
+                    {
+                        if (!DialogInterface.NextPage())
+                            DialogInterface.IsShow = false;
+                    }
+                }
+
             }
             else
             {

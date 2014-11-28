@@ -13,6 +13,8 @@ namespace Engine.Gui
         private TextGui _selectB;
         private GuiItem _portrait;
         private Dictionary<int, Texture> _portraitList;
+        public bool IsInSelecting { get; private set; }
+        public int Selection { get; private set; }
 
         private void LoadPortrait()
         {
@@ -51,27 +53,68 @@ namespace Engine.Gui
                 2,
                 "",
                 Color.Black*0.8f);
+            _selectA = new TextGui(this,
+                new Vector2(65, 52),
+                310,
+                20,
+                Globals.FontSize12,
+                1,
+                0,
+                "",
+                Color.Blue* 0.8f);
+            _selectB = new TextGui(this,
+                new Vector2(65, 74),
+                310,
+                20,
+                Globals.FontSize12,
+                1,
+                0,
+                "",
+                Color.Blue* 0.8f);
             _portrait = new GuiItem(this,
                 new Vector2(5, -143),
                 200,
                 160,
                 null);
+            _selectA.MouseEnter += (arg1, arg2) => _selectA.SetDrawColor(Color.Red*0.8f);
+            _selectA.MouseLeave += (arg1, arg2) => _selectA.SetDrawColor(Color.Blue*0.8f);
+            _selectA.MouseLeftDown += (arg1, arg2) =>
+            {
+                IsInSelecting = false;
+                Selection = 0;
+            };
+            _selectB.MouseEnter += (arg1, arg2) => _selectB.SetDrawColor(Color.Red*0.8f);
+            _selectB.MouseLeave += (arg1, arg2) => _selectB.SetDrawColor(Color.Blue*0.8f);
+            _selectB.MouseLeftDown += (arg1, arg2) =>
+            {
+                IsInSelecting = false;
+                Selection = 1;
+            };
         }
 
         public void ShowText(string text, int portraitIndex = -1)
         {
+            IsShow = true;
             _text.Text = text;
             if (portraitIndex != -1 && _portraitList.ContainsKey(portraitIndex))
             {
                 _portrait.BaseTexture = _portraitList[portraitIndex];
             }
             else _portrait.BaseTexture = null;
-            IsShow = true;
         }
 
         public bool NextPage()
         {
             return _text.NextPage();
+        }
+
+        public void Select(string message, string selectA, string selectB)
+        {
+            IsInSelecting = true;
+            IsShow = true;
+            _text.Text = message;
+            _selectA.Text = selectA;
+            _selectB.Text = selectB;
         }
 
         public override void Update(GameTime gameTime)
@@ -80,6 +123,11 @@ namespace Engine.Gui
             base.Update(gameTime);
             _text.Update(gameTime);
             _portrait.Update(gameTime);
+            if (IsInSelecting)
+            {
+                _selectA.Update(gameTime);
+                _selectB.Update(gameTime);
+            }
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -88,6 +136,11 @@ namespace Engine.Gui
             base.Draw(spriteBatch);
             _portrait.Draw(spriteBatch);
             _text.Draw(spriteBatch);
+            if (IsInSelecting)
+            {
+                _selectA.Draw(spriteBatch);
+                _selectB.Draw(spriteBatch);
+            }
         }
     }
 }

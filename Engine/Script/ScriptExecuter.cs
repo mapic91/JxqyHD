@@ -662,5 +662,22 @@ namespace Engine.Script
                 int.Parse(parameters[2]));
             Sprite.DrawColor = color;
         }
+
+        public static void Choose(List<string> parameters)
+        {
+            GuiManager.Selection(Utils.RemoveStringQuotes(parameters[0]),
+                Utils.RemoveStringQuotes(parameters[1]),
+                Utils.RemoveStringQuotes(parameters[2]));
+        }
+
+        public static bool IsChooseEnd(List<string> parameters)
+        {
+            if (GuiManager.IsSelectionEnd())
+            {
+                Variables[parameters[3]] = GuiManager.GetSelection();
+                return true;
+            }
+            return false;
+        }
     }
 }

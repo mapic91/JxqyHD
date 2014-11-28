@@ -187,6 +187,19 @@ namespace Engine.Gui
             return true;
         }
 
+        /// <summary>
+        /// Set default color and current text draw color
+        /// </summary>
+        /// <param name="color">Color</param>
+        public void SetDrawColor(Color color)
+        {
+            DefaultColor = color;
+            foreach (var info in _drawInfo)
+            {
+                info.DrawColor = color;
+            }
+        }
+
         public override void Draw(SpriteBatch spriteBatch)
         {
             if (!IsShow) return;
@@ -200,7 +213,7 @@ namespace Engine.Gui
             }
         }
 
-        private struct Info
+        private class Info
         {
             public string Text;
             public Vector2 Position;

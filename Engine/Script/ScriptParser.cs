@@ -232,6 +232,9 @@ namespace Engine.Script
                         case "Talk":
                             isEnd = !ScriptExecuter.IsInTalk;
                             break;
+                        case "Choose":
+                            isEnd = ScriptExecuter.IsChooseEnd(_currentCode.Parameters);
+                            break;
                     }
                 }
                 else
@@ -413,6 +416,10 @@ namespace Engine.Script
                             break;
                         case "ChangeAsfColor":
                             ScriptExecuter.ChangeAsfColor(parameters);
+                            break;
+                        case "Choose":
+                            ScriptExecuter.Choose(parameters);
+                            isEnd = false;
                             break;
                     }
                 }

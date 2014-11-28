@@ -146,20 +146,44 @@ namespace Engine
             return texture;
         }
 
-        public static Texture2D GetSnowFlake()
+        public static Asf[] GetSnowFlake()
         {
+            var asfs = new Asf[4];
             var w = Color.White;
             var t = Color.Transparent;
-            const int size = 3;
-            var data = new Color[size*size]
+            var data = new Color[3*3]
             {
                 t, w, t,
                 w, w, w,
                 t, w, t
             };
-            var texture = new Texture2D(Globals.TheGame.GraphicsDevice, size, size);
+            var texture = new Texture2D(Globals.TheGame.GraphicsDevice, 3, 3);
             texture.SetData(data);
-            return texture;
+            asfs[0] = new Asf(texture);
+            data = new Color[2*2]
+            {
+                t, w,
+                w, t
+            };
+            texture = new Texture2D(Globals.TheGame.GraphicsDevice, 2, 2);
+            texture.SetData(data);
+            asfs[1] = new Asf(texture);
+            data = new Color[2*2]
+            {
+                w, t,
+                t, w
+            };
+            texture = new Texture2D(Globals.TheGame.GraphicsDevice, 2, 2);
+            texture.SetData(data);
+            asfs[2] = new Asf(texture);
+            data = new Color[1]
+            {
+                w
+            };
+            texture = new Texture2D(Globals.TheGame.GraphicsDevice, 1, 1);
+            texture.SetData(data);
+            asfs[3] = new Asf(texture);
+            return asfs;
         }
 
         public static Texture2D GetRaniDrop()
