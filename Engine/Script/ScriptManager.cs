@@ -10,7 +10,7 @@ namespace Engine.Script
 
         public static void RunScript(ScriptParser scriptParser)
         {
-            if (scriptParser != null)
+            if (scriptParser != null && scriptParser.IsOk)
             {
                 scriptParser.Run();
                 _list.AddLast(scriptParser);

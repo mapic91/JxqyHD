@@ -145,5 +145,31 @@ namespace Engine
             texture.SetData(data);
             return texture;
         }
+
+        public static Texture2D GetSnowFlake()
+        {
+            var w = Color.White;
+            var t = Color.Transparent;
+            const int size = 3;
+            //var data = new Color[7*7]
+            //{
+            //    t,t,w,t,w,t,t,
+            //    t,t,t,w,t,t,t,
+            //    w,t,w,w,w,t,w,
+            //    t,w,w,w,w,w,t,
+            //    w,t,w,w,w,t,w,
+            //    t,t,t,w,t,t,t,
+            //    t,t,w,t,w,t,t
+            //};
+            var data = new Color[size*size]
+            {
+                t, w, t,
+                w, w, w,
+                t, w, t
+            };
+            var texture = new Texture2D(Globals.TheGame.GraphicsDevice, size, size);
+            texture.SetData(data);
+            return texture;
+        }
     }
 }

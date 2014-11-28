@@ -18,8 +18,7 @@ namespace Engine.Weather
             if (_snowFlakeTexture == null)
             {
                 _snowFlakeTexture = new Asf(
-                    TextureGenerator.GetColorTexture(
-                    Color.White*0.8f, 3, 3));
+                    TextureGenerator.GetSnowFlake());
             }
             var offX = Globals.TheCarmera.ViewBeginX;
             var offY = Globals.TheCarmera.ViewBeginY;
