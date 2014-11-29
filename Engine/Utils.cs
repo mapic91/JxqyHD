@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 
 namespace Engine
 {
@@ -88,16 +89,26 @@ namespace Engine
             if (string.IsNullOrEmpty(wavFileName)) return null;
             try
             {
-                var groups = Regex.Match(wavFileName, @"(.+)\.wav").Groups;
-                string assertName = wavFileName;
-                if (groups[0].Success)
-                {
-                    assertName = @"sound\" + groups[1].Value;
-                }
-                return Globals.TheGame.Content.Load<SoundEffect>(assertName);
+                var path = @"sound\" + Path.GetFileNameWithoutExtension(wavFileName);
+                return Globals.TheGame.Content.Load<SoundEffect>(path);
             }
             catch (Exception)
             {
+                return null;
+            }
+        }
+
+        static public Video GetVideo(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName)) return null;
+            try
+            {
+                var path = @"video\" + Path.GetFileNameWithoutExtension(fileName);
+                return Globals.TheGame.Content.Load<Video>(path);
+            }
+            catch (Exception exception)
+            {
+                Log.LogFileLoadError("Movie", fileName, exception);
                 return null;
             }
         }

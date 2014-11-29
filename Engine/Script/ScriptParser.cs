@@ -234,6 +234,9 @@ namespace Engine.Script
                         case "Choose":
                             isEnd = ScriptExecuter.IsChooseEnd(_currentCode.Parameters);
                             break;
+                        case "PlayMovie":
+                            isEnd = !ScriptExecuter.IsInPlayingMovie;
+                            break;
                     }
                 }
                 else
@@ -431,6 +434,7 @@ namespace Engine.Script
                             break;
                         case "PlayMovie":
                             ScriptExecuter.PlayMovie(parameters);
+                            isEnd = !ScriptExecuter.IsInPlayingMovie;
                             break;
                     }
                 }

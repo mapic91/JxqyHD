@@ -946,7 +946,13 @@
       <Processor>SoundEffectProcessor</Processor>
     </Compile>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Compile Include="video\logo.wmv">
+      <Name>logo</Name>
+      <Importer>WmvImporter</Importer>
+      <Processor>VideoProcessor</Processor>
+    </Compile>
+  </ItemGroup>
   <ItemGroup>
     <None Include="font\ASCII_Verdana_7_Bold.xnb">
       <Name>ASCII_Verdana_7_Bold</Name>

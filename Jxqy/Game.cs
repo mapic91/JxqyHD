@@ -53,10 +53,9 @@ namespace Jxqy
 
             Log.LogMessageToFile("Game is running...");
 
+            _graphics.IsFullScreen = Globals.IsFullScreen;
             _graphics.PreferredBackBufferWidth = Globals.WindowWidth;
             _graphics.PreferredBackBufferHeight = Globals.WindowHeight;
-            _graphics.ApplyChanges();
-            _graphics.IsFullScreen = Globals.IsFullScreen;
             _graphics.ApplyChanges();
 
             Globals.TheMap.ViewWidth = _graphics.PreferredBackBufferWidth;
@@ -116,8 +115,9 @@ namespace Jxqy
         protected override void Update(GameTime gameTime)
         {
             if (!IsActive) return;
+            var mouseState = Mouse.GetState();
+            var keyboardState = Keyboard.GetState();
 
-            GuiManager.Update(gameTime);
             ScriptManager.Update(gameTime);
 
             if (Globals.InSuperMagicMode)
@@ -129,14 +129,18 @@ namespace Jxqy
                     Globals.SuperModeMagicSprite = null;
                 }
             }
+            else if (ScriptExecuter.IsInPlayingMovie)
+            {
+                if (keyboardState.IsKeyDown(Keys.Escape) &&
+                    _lastKeyboardState.IsKeyUp(Keys.Escape))
+                {
+                    ScriptExecuter.StopMovie();
+                }
+            }
             else
             {
-                if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-                    this.Exit();
+                GuiManager.Update(gameTime);
 
-                var mouseState = Mouse.GetState();
-
-                var keyboardState = Keyboard.GetState();
                 if (keyboardState.IsKeyDown(Keys.D1) && _lastKeyboardState.IsKeyUp(Keys.D1))
                     Globals.TheMap.SwitchLayerDraw(0);
                 if (keyboardState.IsKeyDown(Keys.D2) && _lastKeyboardState.IsKeyUp(Keys.D2))
@@ -145,7 +149,7 @@ namespace Jxqy
                     Globals.TheMap.SwitchLayerDraw(2);
                 if (keyboardState.IsKeyDown(Keys.LeftAlt) || keyboardState.IsKeyDown(Keys.RightAlt))
                 {
-                    if(keyboardState.IsKeyDown(Keys.Enter) &&
+                    if (keyboardState.IsKeyDown(Keys.Enter) &&
                         _lastKeyboardState.IsKeyUp(Keys.Enter))
                         _graphics.ToggleFullScreen();
                 }
@@ -175,29 +179,28 @@ namespace Jxqy
             GraphicsDevice.Clear(Color.Black);
 
             _spriteBatch.Begin(SpriteSortMode.Deferred, null);
-            Globals.TheMap.Draw(_spriteBatch);
-            Globals.ThePlayer.Draw(_spriteBatch);
-            _spriteBatch.DrawString(Globals.FontSize12,
-                "Ãü£º " + Globals.ThePlayer.Life.ToString(),
-                new Vector2(5, 5), Color.Red);
-            _spriteBatch.DrawString(Globals.FontSize12,
-                "Ìå£º " + Globals.ThePlayer.Thew.ToString(),
-                new Vector2(5, 25), Color.Red);
-            _spriteBatch.DrawString(Globals.FontSize12,
-                "ÄÚ£º " + Globals.ThePlayer.Mana.ToString(),
-                new Vector2(5, 45), Color.Red);
-            if (Globals.InSuperMagicMode) Globals.SuperModeMagicSprite.Draw(_spriteBatch);
-
-            //Draw weather
-            WeatherManager.Draw(_spriteBatch);
-
-            //Fade in, fade out
-            if (ScriptExecuter.IsInFadeIn || ScriptExecuter.IsInFadeOut)
+            if (ScriptExecuter.IsInPlayingMovie)//Movie
             {
-                ScriptExecuter.DrawFade(_spriteBatch);
+                ScriptExecuter.DrawVideo(_spriteBatch);
             }
+            else
+            {
+                Globals.TheMap.Draw(_spriteBatch);
+                Globals.ThePlayer.Draw(_spriteBatch);
+                if (Globals.InSuperMagicMode) Globals.SuperModeMagicSprite.Draw(_spriteBatch);
 
-            GuiManager.Draw(_spriteBatch);
+                //Weather
+                WeatherManager.Draw(_spriteBatch);
+
+                //Fade in, fade out
+                if (ScriptExecuter.IsInFadeIn || ScriptExecuter.IsInFadeOut)
+                {
+                    ScriptExecuter.DrawFade(_spriteBatch);
+                }
+
+                //GUI
+                GuiManager.Draw(_spriteBatch);
+            }
             _spriteBatch.End();
             base.Draw(gameTime);
         }

@@ -8,6 +8,7 @@ using Engine.Weather;
 using IniParser;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Media;
 
 namespace Engine.Script
 {
@@ -19,6 +20,14 @@ namespace Engine.Script
         private static int _talkEndIndex;
         private static int _talkCurrentIndex;
         private static float _sleepingMilliseconds;
+        private static Color _videoDrawColor;
+        private static Video _video;
+        private static VideoPlayer _videoPlayer;
+
+        public static bool IsInFadeOut;
+        public static bool IsInFadeIn;
+        public static bool IsInTalk;
+        public static bool IsInSleep;
 
         public static float FadeTransparence
         {
@@ -31,10 +40,14 @@ namespace Engine.Script
             }
         }
 
-        public static bool IsInFadeOut;
-        public static bool IsInFadeIn;
-        public static bool IsInTalk;
-        public static bool IsInSleep;
+        public static bool IsInPlayingMovie
+        {
+            get
+            {
+                return (_videoPlayer != null &&
+                        _videoPlayer.State != MediaState.Stopped);
+            }
+        }
 
         private static void GetTargetAndScript(string nameWithQuotes,
             string scriptFileNameWithQuotes,
@@ -694,7 +707,50 @@ namespace Engine.Script
 
         public static void PlayMovie(List<string> parameters)
         {
-            
+            _video = Utils.GetVideo(Utils.RemoveStringQuotes(parameters[0]));
+            if (_video == null) return;
+            _videoPlayer = new VideoPlayer();
+            if(_videoPlayer == null) return;
+            _videoDrawColor = Color.White;
+            if (parameters.Count == 4)
+            {
+                _videoDrawColor = new Color(
+                    int.Parse(parameters[1]),
+                    int.Parse(parameters[2]),
+                    int.Parse(parameters[3]));
+            }
+            _videoPlayer.Play(_video);
+        }
+
+        public static void StopMovie()
+        {
+            if (_videoPlayer != null)
+            {
+                _videoPlayer.Stop();
+            }
+        }
+
+        public static void DrawVideo(SpriteBatch spriteBatch)
+        {
+            if (_videoPlayer != null && _videoPlayer.State != MediaState.Stopped)
+            {
+                var texture = _videoPlayer.GetTexture();
+                if (texture != null)
+                {
+                    spriteBatch.Draw(texture,
+                        new Rectangle(0, 0, Globals.WindowWidth, Globals.WindowHeight),
+                        _videoDrawColor);
+                }
+            }
+        }
+
+        public static bool IsMovePlayEnd()
+        {
+            if (_videoPlayer != null)
+            {
+                return _videoPlayer.State == MediaState.Stopped;
+            }
+            return true;
         }
     }
 }
