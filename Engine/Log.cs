@@ -9,11 +9,54 @@ namespace Engine
         private const string LogFilename = "Log.txt";
         public static bool LogOn;
 
+        private enum FileOpration
+        {
+            Save, 
+            Load
+        }
+
         private static string GetLastLine(string text)
         {
             if (string.IsNullOrEmpty(text)) return "";
             string[] lines = text.Replace("\r", "").Split('\n');
             return lines.Length > 0 ? lines.Last() : "";
+        }
+
+        private static void LogFileOperationError(FileOpration opration,
+            string msg,
+            string filePath,
+            Exception exception)
+        {
+            string op = null;
+            switch (opration)
+            {
+                case FileOpration.Save:
+                    op = "save";
+                    break;
+                case FileOpration.Load:
+                    op = "load";
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("opration");
+            }
+            string fullPath;
+            try
+            {
+                fullPath = Path.GetFullPath(filePath);
+            }
+            catch (Exception)
+            {
+                fullPath = filePath;
+            }
+            LogMessageToFile(msg +
+                " [" +
+                fullPath +
+                "] " + 
+                op + 
+                " error: \n" +
+                exception.Message +
+                "\n" +
+                GetLastLine(exception.StackTrace));
         }
 
         public static void Initialize()
@@ -30,22 +73,12 @@ namespace Engine
 
         public static void LogFileLoadError(string msg, string filePath, Exception exception)
         {
-            string fullPath;
-            try
-            {
-                fullPath = Path.GetFullPath(filePath);
-            }
-            catch (Exception)
-            {
-                fullPath = filePath;
-            }
-            LogMessageToFile(msg + 
-                " [" +
-                fullPath + 
-                "] load error: \n" + 
-                exception.Message + 
-                "\n" +
-                GetLastLine(exception.StackTrace));
+            LogFileOperationError(FileOpration.Load, msg, filePath, exception);
+        }
+
+        public static void LogFileSaveError(string msg, string filePath, Exception exception)
+        {
+            LogFileOperationError(FileOpration.Save, msg, filePath, exception);
         }
     }
 }

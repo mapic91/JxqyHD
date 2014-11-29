@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Engine.Script;
+using IniParser.Model;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -41,13 +42,14 @@ namespace Engine
         private int _mana;
         private int _manaMax;
         private StateMapList _npcIni;
+        private string _npcIniFileName;
         private Obj _bodyIni;
         private Magic _flyIni;
         private Magic _flyIni2;
         private ScriptParser _scriptFile;
         private ScriptParser _deathScript;
         private int _expBonus;
-        private int _fixedPos;
+        private string _fixedPos;
         private int _idle;
         private Vector2 _magicDestination;
         private Vector2 _attackDestination;
@@ -164,6 +166,12 @@ namespace Engine
         {
             get { return _state; }
             set { _state = value; }
+        }
+
+        public StateMapList NpcIni
+        {
+            get { return _npcIni; }
+            protected set { _npcIni = value; }
         }
 
         public virtual int PathFinder
@@ -323,12 +331,6 @@ namespace Engine
             }
         }
 
-        public StateMapList NpcIni
-        {
-            get { return _npcIni; }
-            set { _npcIni = value; }
-        }
-
         public Obj BodyIni
         {
             get { return _bodyIni; }
@@ -365,7 +367,7 @@ namespace Engine
             set { _expBonus = value; }
         }
 
-        public int FixedPos
+        public string FixedPos
         {
             get { return _fixedPos; }
             set { _fixedPos = value; }
@@ -494,9 +496,7 @@ namespace Engine
                                 null);
                         break;
                     case "NpcIni":
-                        info.SetValue(this,
-                            ResFile.ReadFile(@"ini\npcres\" + nameValue[1], ResType.Npc),
-                            null);
+                        SetNpcIni(nameValue[1]);
                         break;
                     case "BodyIni":
                         info.SetValue(this, new Obj(@"ini\obj\" + nameValue[1]), null);
@@ -698,6 +698,89 @@ namespace Engine
             }
             Initlize();
             return true;
+        }
+
+        public void SetNpcIni(string fileName)
+        {
+            if(string.IsNullOrEmpty(fileName)) return;
+            _npcIniFileName = fileName;
+            NpcIni = ResFile.ReadFile(@"ini\npcres\" + fileName, ResType.Npc);
+        }
+
+        protected void AddKey(KeyDataCollection keyDataCollection, string key, int value)
+        {
+            if (value != 0)
+            {
+                keyDataCollection.AddKey(key, value.ToString());
+            }
+        }
+
+        protected void AddKey(KeyDataCollection keyDataCollection, string key, string value)
+        {
+            if (!string.IsNullOrEmpty(value))
+            {
+                keyDataCollection.AddKey(key, value);
+            }
+        }
+
+        /// <summary>
+        /// Save to ini
+        /// </summary>
+        /// <param name="keyDataCollection">Ini key value collection</param>
+        public virtual void Save(KeyDataCollection keyDataCollection)
+        {
+            var c = keyDataCollection;
+            keyDataCollection.AddKey("Name", _name);
+            AddKey(keyDataCollection, "Kind", _kind);
+            AddKey(keyDataCollection, "Relation", _relation);
+            AddKey(keyDataCollection, "PathFinder", _pathFinder);
+            AddKey(keyDataCollection, "State", _state);
+            AddKey(keyDataCollection, "VisionRadius", _visionRadius);
+            AddKey(keyDataCollection, "DialogRadius", _dialogRadius);
+            AddKey(keyDataCollection, "AttackRadius", _attackRadius);
+            AddKey(keyDataCollection, "Dir", _dir);
+            keyDataCollection.AddKey("MapX", MapX.ToString());
+            keyDataCollection.AddKey("MapY", MapY.ToString());
+            AddKey(keyDataCollection, "Lum", _lum);
+            AddKey(keyDataCollection, "Action", _action);
+            AddKey(keyDataCollection, "WalkSpeed", _walkSpeed);
+            AddKey(keyDataCollection, "Evade", _evade);
+            AddKey(keyDataCollection, "Attack", _attack);
+            AddKey(keyDataCollection, "AttackLevel", _attackLevel);
+            AddKey(keyDataCollection, "Defend", _defend);
+            AddKey(keyDataCollection, "Exp", _exp);
+            AddKey(keyDataCollection, "LevelUpExp", _levelUpExp);
+            AddKey(keyDataCollection, "Level", _level);
+            AddKey(keyDataCollection, "Life", _life);
+            AddKey(keyDataCollection, "LifeMax", _lifeMax);
+            AddKey(keyDataCollection, "Thew", _thew);
+            AddKey(keyDataCollection, "ThewMax", _thewMax);
+            AddKey(keyDataCollection, "Mana", _mana);
+            AddKey(keyDataCollection, "ManaMax", _manaMax);
+            AddKey(keyDataCollection, "ExpBonus", _expBonus);
+            AddKey(keyDataCollection, "FixedPos", _fixedPos);
+            AddKey(keyDataCollection, "Idle", _idle);
+            AddKey(keyDataCollection, "NpcIni", _npcIniFileName);
+            if (_bodyIni != null)
+            {
+                AddKey(keyDataCollection, "BodyIni", _bodyIni.FileName);
+            }
+            if (_flyIni != null)
+            {
+                AddKey(keyDataCollection, "FlyIni", _flyIni.FileName);
+            }
+            if (_flyIni2 != null)
+            {
+                AddKey(keyDataCollection, "FlyIni2", _flyIni2.FileName);
+            }
+            if (_scriptFile != null)
+            {
+                AddKey(keyDataCollection, "ScriptFile", _scriptFile.FileName);
+            }
+            if (_deathScript != null)
+            {
+                AddKey(keyDataCollection, "DeathScript", _deathScript.FileName);
+            }
         }
 
         public void SetState(CharacterState state)

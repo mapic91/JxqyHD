@@ -13,7 +13,8 @@ namespace Engine.Script
         private List<Code> _codes;
         private int _currentIndex;
         private Code _currentCode;
-        public string FilePath { private set; get; }
+        public string FilePath { get; private set; }
+        public string FileName { get; private set; }
         public bool IsOk { private set; get; }
         public object BelongObject { private set; get; }
         public bool IsEnd { private set; get; }
@@ -118,6 +119,7 @@ namespace Engine.Script
             FilePath = filePath;
             try
             {
+                FileName = Path.GetFileName(filePath);
                 IsOk = ReadFromLines(File.ReadAllLines(filePath, Globals.SimpleChinaeseEncoding));
             }
             catch (Exception exception)
@@ -435,6 +437,15 @@ namespace Engine.Script
                         case "PlayMovie":
                             ScriptExecuter.PlayMovie(parameters);
                             isEnd = !ScriptExecuter.IsInPlayingMovie;
+                            break;
+                        case "SaveMapTrap":
+                            ScriptExecuter.SaveMapTrap();
+                            break;
+                        case "SaveNpc":
+                            ScriptExecuter.SaveNpc(parameters);
+                            break;
+                        case "SaveObj":
+                            ScriptExecuter.SaveObj(parameters);
                             break;
                     }
                 }

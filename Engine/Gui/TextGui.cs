@@ -161,6 +161,13 @@ namespace Engine.Gui
                     else
                     {
                         var stringWidth = Font.MeasureString(drawText).X;
+                        //Make space width correct
+                        if (_endIndex + 1 < endIndex &&
+                            TextStream[_endIndex + 1] == ' ')
+                        {
+                            stringWidth = 2*Font.MeasureString("0").X;
+                            _endIndex++;
+                        }
                         if (IsReachRight(x, stringWidth))
                         {
                             AddLinespace(ref y);

@@ -189,6 +189,7 @@ namespace Engine
             {
                 FileName = Path.GetFileName(filePath);
                 var parser = new FileIniDataParser();
+                parser.Parser.Configuration.NotTrimValue = true;
                 var data = parser.ReadFile(filePath, Globals.SimpleChinaeseEncoding);
                 foreach (var keyValue in data["Init"])
                 {

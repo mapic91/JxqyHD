@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Mime;
 using System.Text;
 using Engine.Script;
+using IniParser.Model;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -12,7 +13,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Engine
 {
     using StateMapList = Dictionary<int, ResStateInfo>;
-    public class Obj: Sprite
+    public class Obj : Sprite
     {
         private string _objName;
         private int _kind;
@@ -22,12 +23,16 @@ namespace Engine
         private int _height;
         private int _lum;
         private StateMapList _objFile;
+        private string _objFileName;
         private ScriptParser _scriptFile;
         private SoundEffect _wavFile;
+        private string _wavFileName;
         private int _offX;
         private int _offY;
 
         #region Public properties
+
+        public string FileName { protected set; get; }
 
         public bool IsRemoved { set; get; }
 
@@ -76,7 +81,7 @@ namespace Engine
         public StateMapList ObjFile
         {
             get { return _objFile; }
-            set { _objFile = value; }
+            protected set { _objFile = value; }
         }
 
         public ScriptParser ScriptFile
@@ -88,7 +93,7 @@ namespace Engine
         public SoundEffect WavFile
         {
             get { return _wavFile; }
-            set { _wavFile = value; }
+            protected set { _wavFile = value; }
         }
 
         public int OffX
@@ -138,7 +143,25 @@ namespace Engine
 
         public Obj(string filePath)
         {
+            try
+            {
+                FileName = Path.GetFileName(filePath);
+            }
+            catch (Exception)
+            {
+                FileName = filePath;
+            }
             Load(filePath);
+        }
+
+        protected void AddKey(KeyDataCollection keyDataCollection, string key, int value)
+        {
+            keyDataCollection.AddKey(key, value.ToString());
+        }
+
+        protected void AddKey(KeyDataCollection keyDataCollection, string key, string value)
+        {
+            keyDataCollection.AddKey(key, value);
         }
 
         public bool Load(string filePath)
@@ -167,9 +190,21 @@ namespace Engine
             return true;
         }
 
+        public void SetObjFile(string fileName)
+        {
+            _objFileName = fileName;
+            _objFile = ResFile.ReadFile(@"ini\objres\" + fileName, ResType.Obj);
+        }
+
+        public void SetWaveFile(string fileName)
+        {
+            _wavFileName = fileName;
+            _wavFile = Utils.GetSoundEffect(fileName);
+        }
+
         public void InitializeFigure()
         {
-            if (ObjFile.ContainsKey((int) ObjState.Common))
+            if (ObjFile.ContainsKey((int)ObjState.Common))
             {
                 Texture = ObjFile[(int)ObjState.Common].Image;
             }
@@ -188,16 +223,16 @@ namespace Engine
                         info.SetValue(this, nameValue[1], null);
                         break;
                     case "ScriptFile":
-                        if(!string.IsNullOrEmpty(nameValue[1]))
+                        if (!string.IsNullOrEmpty(nameValue[1]))
                             info.SetValue(this,
                                 new ScriptParser(Utils.GetScriptFilePath(nameValue[1]), this),
                                 null);
                         break;
                     case "WavFile":
-                        info.SetValue(this, Utils.GetSoundEffect(nameValue[1]), null);
+                        SetWaveFile(nameValue[1]);
                         break;
                     case "ObjFile":
-                        info.SetValue(this, ResFile.ReadFile(@"ini\objres\" + nameValue[1], ResType.Obj), null);
+                        SetObjFile(nameValue[1]);
                         break;
                     default:
                         var integerValue = int.Parse(nameValue[1]);
@@ -219,7 +254,7 @@ namespace Engine
 
         public override void Update(GameTime gameTime)
         {
-            if((Texture.FrameCounts > 1 && IsAutoPlay) ||
+            if ((Texture.FrameCounts > 1 && IsAutoPlay) ||
                 IsPlayingCurrentDirOnce)
                 base.Update(gameTime);
         }
@@ -227,6 +262,30 @@ namespace Engine
         public void Draw(SpriteBatch spriteBatch)
         {
             Draw(spriteBatch, OffX, OffY);
+        }
+
+        public void Save(KeyDataCollection keyDataCollection)
+        {
+            keyDataCollection.AddKey("ObjName", _objName);
+            AddKey(keyDataCollection, "Kind", _kind);
+            AddKey(keyDataCollection, "Dir", _dir);
+            keyDataCollection.AddKey("MapX", MapX.ToString());
+            keyDataCollection.AddKey("MapY", MapY.ToString());
+            AddKey(keyDataCollection, "Damage", _damage);
+            AddKey(keyDataCollection, "Frame", _frame);
+            AddKey(keyDataCollection, "Height", _height);
+            AddKey(keyDataCollection, "Lum", _lum);
+            AddKey(keyDataCollection, "ObjFile", _objFileName);
+            AddKey(keyDataCollection, "OffX", _offX);
+            AddKey(keyDataCollection, "OffY", _offY);
+            if (_scriptFile != null)
+            {
+                AddKey(keyDataCollection, "ScriptFile", _scriptFile.FileName);
+            }
+            if (_wavFile != null)
+            {
+                AddKey(keyDataCollection, "WavFile", _wavFileName);
+            }
         }
     }
 }

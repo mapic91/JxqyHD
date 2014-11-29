@@ -705,21 +705,34 @@ namespace Engine.Script
                 belongObject));
         }
 
-        public static void PlayMovie(List<string> parameters)
+        public static void PlayMovie(string fileName, Color drawColor)
         {
-            _video = Utils.GetVideo(Utils.RemoveStringQuotes(parameters[0]));
+            _video = Utils.GetVideo(fileName);
             if (_video == null) return;
             _videoPlayer = new VideoPlayer();
-            if(_videoPlayer == null) return;
-            _videoDrawColor = Color.White;
+            if (_videoPlayer == null) return;
+            _videoDrawColor = drawColor;
+            
+            _videoPlayer.Play(_video);
+        }
+
+        public static void PlayMovie(string fileName)
+        {
+            PlayMovie(fileName, Color.White);
+        }
+
+        public static void PlayMovie(List<string> parameters)
+        {
+            var fileName = Utils.RemoveStringQuotes(parameters[0]);
+            var color = Color.White;
             if (parameters.Count == 4)
             {
-                _videoDrawColor = new Color(
+                color = new Color(
                     int.Parse(parameters[1]),
                     int.Parse(parameters[2]),
                     int.Parse(parameters[3]));
             }
-            _videoPlayer.Play(_video);
+            PlayMovie(fileName, color);
         }
 
         public static void StopMovie()
@@ -751,6 +764,31 @@ namespace Engine.Script
                 return _videoPlayer.State == MediaState.Stopped;
             }
             return true;
+        }
+
+        public static void SaveMapTrap()
+        {
+            Globals.TheMap.SaveTrap(@"save\game\Traps.ini");
+        }
+
+        public static void SaveNpc(List<string> parameters)
+        {
+            string fileName = null;
+            if (parameters.Count == 1)
+            {
+                fileName = Utils.RemoveStringQuotes(parameters[0]);
+            }
+            NpcManager.Save(fileName);
+        }
+
+        public static void SaveObj(List<string> parameters)
+        {
+            string fileName = null;
+            if (parameters.Count == 1)
+            {
+                fileName = Utils.RemoveStringQuotes(parameters[0]);
+            }
+            ObjManager.Save(fileName);
         }
     }
 }

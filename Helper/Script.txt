@@ -205,6 +205,21 @@ PlayMovie("open.avi");
 PlayMovie(a,b,c,d);
 PlayMovie("team.avi",0,0,0);
 
+SaveMapTrap()
+SaveMapTrap();
+
+SaveNpc()
+SaveNpc();
+
+SaveNpc(a)
+SaveNpc("temp_wudangshanxia.npc");
+
+SaveObj()
+SaveObj();
+
+SaveObj(a)
+SaveObj("temp_map063_obj.obj");
+
 ///////////////////////////////////////////////////////////////////
 //////////////////    Implemented   End  /////////////////////////
 /////////////////////////////////////////////////////////////////
@@ -343,20 +358,9 @@ PlayerRunToEx(4,78);
 ReturnToTitle()
 ReturnToTitle();
 
-SaveMapTrap()
-SaveMapTrap();
 
-SaveNpc()
-SaveNpc();
 
-SaveNpc(a)
-SaveNpc("temp_wudangshanxia.npc");
 
-SaveObj()
-SaveObj();
-
-SaveObj(a)
-SaveObj("temp_map063_obj.obj");
 
 Select(a,b,c,d)
 Select(281,	282, 283, $SelectVal);

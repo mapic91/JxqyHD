@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using IniParser.Model;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -15,6 +16,7 @@ namespace Engine
         private static List<Obj> _objInView = new List<Obj>();
         private static Rectangle _lastViewRegion;
         private static bool _objListChanged = true;
+        private static string _fileName;
 
         public static List<Obj> ObjsInView
         {
@@ -51,6 +53,7 @@ namespace Engine
         {
             try
             {
+                _fileName = fileName;
                 var filePath = Utils.GetNpcObjFilePath(fileName);
                 var lines = File.ReadAllLines(filePath, Globals.SimpleChinaeseEncoding);
                 Load(lines);
@@ -199,6 +202,38 @@ namespace Engine
                     DeleteObj(node);
                     return;
                 }
+            }
+        }
+
+        public static void Save(string fileName = null)
+        {
+            if (string.IsNullOrEmpty(fileName))
+            {
+                fileName = _fileName;
+            }
+            var path = @"save\game\" + fileName;
+            try
+            {
+                var count = _list.Count;
+                var data = new IniData();
+                data.Sections.AddSection("Head");
+                data["Head"].AddKey("Map",
+                    Globals.TheMap.MapFileNameWithoutExtension + ".map");
+                data["Head"].AddKey("Count", count.ToString());
+
+                var node = _list.First;
+                for (var i = 0; i < count; i++, node = node.Next)
+                {
+                    var sectionName = "OBJ" + string.Format("{0:000}", i);
+                    data.Sections.AddSection(sectionName);
+                    var obj = node.Value;
+                    obj.Save(data[sectionName]);
+                }
+                File.WriteAllText(path, data.ToString(), Globals.SimpleChinaeseEncoding);
+            }
+            catch (Exception exception)
+            {
+                Log.LogFileSaveError("Obj", path, exception);
             }
         }
 

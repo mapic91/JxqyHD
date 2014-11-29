@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Engine.Script;
 using IniParser;
+using IniParser.Model;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -43,7 +44,7 @@ namespace Engine
         private int _mapPixelHeight;
         private MapMpcIndex[] _layer1, _layer2, _layer3;
         private MapTileInfo[] _tileInfos;
-        private readonly bool[] _isLayerDraw = new bool[3]{true, true, true};
+        private readonly bool[] _isLayerDraw = new bool[3] { true, true, true };
         private static Color _drawColor = Color.White;
 
         private readonly Dictionary<string, Dictionary<int, string>> _traps = new Dictionary<string, Dictionary<int, string>>();
@@ -209,7 +210,7 @@ namespace Engine
         private void LoadMpc(byte[] buf, ref int offset)
         {
             offset = 192;
-            for(var k = 0; k < 255; k++)
+            for (var k = 0; k < 255; k++)
             {
                 var mpcFileName = new byte[32];
                 var i = 0;
@@ -224,7 +225,7 @@ namespace Engine
                         _mpcDirPath + "\\" +
                         Globals.SimpleChinaeseEncoding.GetString(mpcFileName, 0, i));
                     _mpcList.Add(mpc);
-                    if(buf[offset + 36] ==  1) _loopingList.Add(mpc);
+                    if (buf[offset + 36] == 1) _loopingList.Add(mpc);
                 }
                 offset += 64;
             }
@@ -257,9 +258,9 @@ namespace Engine
 
         public Vector2 GetEndTileInView()
         {
-            return GetEndTileInView(ViewBeginX + ViewWidth, 
-                ViewBeginY + ViewHeight, 
-                MapColumnCounts, 
+            return GetEndTileInView(ViewBeginX + ViewWidth,
+                ViewBeginY + ViewHeight,
+                MapColumnCounts,
                 MapRowCounts);
         }
 
@@ -284,7 +285,7 @@ namespace Engine
         }
         #endregion Tiles region in view
 
-        #region Tile 
+        #region Tile
         private bool IsTileInMapRange(int x, int y)
         {
             return (x >= 0 &&
@@ -330,7 +331,7 @@ namespace Engine
             var texture = GetTileTexture(x, y, layer);
             if (texture != null)
             {
-                var position = Map.ToPixelPosition(x, y) - new Vector2(texture.Width/2f, texture.Height - 16f);
+                var position = Map.ToPixelPosition(x, y) - new Vector2(texture.Width / 2f, texture.Height - 16f);
                 region = new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height);
             }
             return texture;
@@ -355,14 +356,14 @@ namespace Engine
 
         public bool IsObstacle(Vector2 tilePosition)
         {
-            return IsObstacle((int) tilePosition.X, (int) tilePosition.Y);
+            return IsObstacle((int)tilePosition.X, (int)tilePosition.Y);
         }
 
         public bool IsObstacleForCharacter(int col, int row)
         {
             if (IsTileInMapViewRange(col, row))
             {
-                var type = _tileInfos[col + row*MapColumnCounts].BarrierType;
+                var type = _tileInfos[col + row * MapColumnCounts].BarrierType;
                 if (type == None)
                     return false;
             }
@@ -379,7 +380,7 @@ namespace Engine
             if (IsTileInMapViewRange(col, row))
             {
                 var type = _tileInfos[col + row * MapColumnCounts].BarrierType;
-                if (type == None || 
+                if (type == None ||
                     (type & CanOver) != 0)
                     return false;
             }
@@ -388,7 +389,7 @@ namespace Engine
 
         public bool IsObstacleForCharacterJump(Vector2 tilePosition)
         {
-            return IsObstacleForCharacterJump((int) tilePosition.X, (int) tilePosition.Y);
+            return IsObstacleForCharacterJump((int)tilePosition.X, (int)tilePosition.Y);
         }
 
         public bool IsObstacleForMagic(int col, int row)
@@ -396,7 +397,7 @@ namespace Engine
             if (IsTileInMapViewRange(col, row))
             {
                 var type = _tileInfos[col + row * MapColumnCounts].BarrierType;
-                if (type == None || 
+                if (type == None ||
                     (type & Trans) != 0)
                     return false;
             }
@@ -405,7 +406,7 @@ namespace Engine
 
         public bool IsObstacleForMagic(Vector2 tilePosition)
         {
-            return IsObstacleForMagic((int) tilePosition.X, (int) tilePosition.Y);
+            return IsObstacleForMagic((int)tilePosition.X, (int)tilePosition.Y);
         }
 
         /// <summary>
@@ -418,7 +419,7 @@ namespace Engine
         {
             if (IsTileInMapViewRange(col, row))
             {
-                return _tileInfos[col + row*MapColumnCounts].TrapIndex;
+                return _tileInfos[col + row * MapColumnCounts].TrapIndex;
             }
             return 0;
         }
@@ -430,7 +431,7 @@ namespace Engine
         /// <returns></returns>
         public int GetTileTrapIndex(Vector2 tilePosition)
         {
-            return GetTileTrapIndex((int) tilePosition.X, (int) tilePosition.Y);
+            return GetTileTrapIndex((int)tilePosition.X, (int)tilePosition.Y);
         }
 
         /// <summary>
@@ -453,7 +454,7 @@ namespace Engine
         /// <returns></returns>
         public ScriptParser GetTileTrapScriptParser(Vector2 tilePosition)
         {
-            return GetTileTrapScriptParser((int) tilePosition.X, (int) tilePosition.Y);
+            return GetTileTrapScriptParser((int)tilePosition.X, (int)tilePosition.Y);
         }
 
         public void DrawTile(SpriteBatch spriteBatch, Texture2D texture, Vector2 tilePos, float depth)
@@ -474,6 +475,10 @@ namespace Engine
         #endregion Tile
 
         #region Trap
+        /// <summary>
+        /// Load trap from file
+        /// </summary>
+        /// <param name="filePath">File path</param>
         public void LoadTrap(string filePath)
         {
             _traps.Clear();
@@ -498,6 +503,33 @@ namespace Engine
         }
 
         /// <summary>
+        /// Svae trap to file
+        /// </summary>
+        /// <param name="path">File path</param>
+        public void SaveTrap(string path)
+        {
+            try
+            {
+                var data = new IniData();
+                foreach (var key in _traps.Keys)
+                {
+                    data.Sections.AddSection(key);
+                    var list = _traps[key];
+                    if(list == null) continue;
+                    foreach (var k in list.Keys)
+                    {
+                        data[key].AddKey(k.ToString(), list[k]);
+                    }
+                }
+                File.WriteAllText(path, data.ToString(), Globals.SimpleChinaeseEncoding);
+            }
+            catch (Exception exception)
+            {
+                Log.LogFileSaveError("Trap", path, exception);
+            }
+        }
+
+        /// <summary>
         /// Set map trap
         /// </summary>
         /// <param name="mapName">If null or empty, use current map name</param>
@@ -507,7 +539,7 @@ namespace Engine
         {
             if (string.IsNullOrEmpty(mapName))
                 mapName = _mapFileNameWithoutExtension;
-            if(string.IsNullOrEmpty(mapName)) return;//no map name
+            if (string.IsNullOrEmpty(mapName)) return;//no map name
 
             if (!_traps.ContainsKey(mapName))
             {
@@ -520,7 +552,7 @@ namespace Engine
             }
             if (string.IsNullOrEmpty(trapFileName))
                 list.Remove(index); //remove trap
-            else 
+            else
                 list[index] = trapFileName; // change trap
         }
 
@@ -577,7 +609,7 @@ namespace Engine
         #region Layer
         public void DrawLayer(SpriteBatch spriteBatch, int layer)
         {
-            if(!IsOk) return;
+            if (!IsOk) return;
             if ((layer < 0 || layer > 2) || !IsLayerDraw(layer)) return;
             var start = GetStartTileInView();
             var end = GetEndTileInView();
@@ -653,9 +685,9 @@ namespace Engine
             _loopingList.Clear();
             _layer1 = _layer2 = _layer3 = null;
             _tileInfos = null;
-            _mapColumnCounts = 
-                _mapRowCounts = 
-                _mapPixelWidth = 
+            _mapColumnCounts =
+                _mapRowCounts =
+                _mapPixelWidth =
                 _mapPixelHeight = 0;
         }
 
@@ -689,7 +721,7 @@ namespace Engine
                 for (var x = (int)start.X; x < (int)end.X; x++)
                 {
                     Texture2D texture = GetTileTexture(x, y, 1);
-                    if(IsLayerDraw(1))DrawTile(spriteBatch, texture, new Vector2(x, y), 1f);
+                    if (IsLayerDraw(1)) DrawTile(spriteBatch, texture, new Vector2(x, y), 1f);
                     foreach (var npc in npcs)
                     {
                         if (x == npc.MapX && y == npc.MapY)
@@ -697,7 +729,7 @@ namespace Engine
                     }
                     foreach (var obj in objs)
                     {
-                        if(x == obj.MapX && y == obj.MapY)
+                        if (x == obj.MapX && y == obj.MapY)
                             obj.Draw(spriteBatch);
                     }
                     foreach (var magicSprite in magicSprites)
