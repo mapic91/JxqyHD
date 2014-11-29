@@ -20,7 +20,6 @@ namespace Engine
         private int _belong;
         private int _fight;
         private int _money;
-        private const float MaxNonFightingTime = 7f;
         private const int ThewUseAmountWhenAttack = 5;
         private const int ThewUseAmountWhenJump = 10;
         private const float ListRestorePercent = 0.01f;

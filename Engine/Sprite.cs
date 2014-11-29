@@ -72,10 +72,15 @@ namespace Engine
             get { return _currentDirection; }
             set
             {
+                var last = _currentDirection;
                 _currentDirection = value % (_texture.DirectionCounts == 0 ? 1 : _texture.DirectionCounts);
                 _frameBegin = _currentDirection * _texture.FrameCountsPerDirection;
                 _frameEnd = _frameBegin + _texture.FrameCountsPerDirection - 1;
-                CurrentFrameIndex = CurrentFrameIndex;
+                //If direction change,also change frame index
+                if (last != _currentDirection)
+                {
+                    CurrentFrameIndex = _frameBegin;
+                }
             }
         }
 
@@ -215,6 +220,7 @@ namespace Engine
         {
             if (_isPlayingCurrentDirOnce) return;
             _isPlayingCurrentDirOnce = true;
+            _playedFrames = 0;
             CurrentFrameIndex = _frameBegin;//Reset frame
             _playingCurrentDirOnceTotalFrames = _frameEnd - _frameBegin;
         }
@@ -267,8 +273,6 @@ namespace Engine
                     if (_playedFrames >= _playingCurrentDirOnceTotalFrames)
                     {
                         _isPlayingCurrentDirOnce = false;
-                        _playedFrames = 0;
-                        _playingCurrentDirOnceTotalFrames = 0;
                     }
                     
                 }
