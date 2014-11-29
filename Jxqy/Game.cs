@@ -24,8 +24,8 @@ namespace Jxqy
     /// </summary>
     public class Game : Microsoft.Xna.Framework.Game
     {
-        GraphicsDeviceManager _graphics;
-        SpriteBatch _spriteBatch;
+        private GraphicsDeviceManager _graphics;
+        private SpriteBatch _spriteBatch;
 
         public Game()
         {
@@ -33,6 +33,7 @@ namespace Jxqy
             Content.RootDirectory = "Content";
             IsMouseVisible = false;
             _graphics.IsFullScreen = false;
+            GameState.State = GameState.StateType.Playing;
         }
 
         /// <summary>
@@ -114,23 +115,34 @@ namespace Jxqy
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            //Pausing game when inactived
             if (!IsActive) return;
+
             var mouseState = Mouse.GetState();
             var keyboardState = Keyboard.GetState();
 
+            //Fullscreen toggle
+            if (keyboardState.IsKeyDown(Keys.LeftAlt) || keyboardState.IsKeyDown(Keys.RightAlt))
+            {
+                if (keyboardState.IsKeyDown(Keys.Enter) &&
+                    _lastKeyboardState.IsKeyUp(Keys.Enter))
+                    _graphics.ToggleFullScreen();
+            }
+
+            //Map layer draw toggle
+            if (keyboardState.IsKeyDown(Keys.D1) && _lastKeyboardState.IsKeyUp(Keys.D1))
+                Globals.TheMap.SwitchLayerDraw(0);
+            if (keyboardState.IsKeyDown(Keys.D2) && _lastKeyboardState.IsKeyUp(Keys.D2))
+                Globals.TheMap.SwitchLayerDraw(1);
+            if (keyboardState.IsKeyDown(Keys.D3) && _lastKeyboardState.IsKeyUp(Keys.D3))
+                Globals.TheMap.SwitchLayerDraw(2);
+
+            //Update script
             ScriptManager.Update(gameTime);
 
-            if (Globals.InSuperMagicMode)
+            if (ScriptExecuter.IsInPlayingMovie)
             {
-                Globals.SuperModeMagicSprite.Update(gameTime);
-                if (Globals.SuperModeMagicSprite.IsDestroyed)
-                {
-                    Globals.InSuperMagicMode = false;
-                    Globals.SuperModeMagicSprite = null;
-                }
-            }
-            else if (ScriptExecuter.IsInPlayingMovie)
-            {
+                //Stop movie when Esc key pressed
                 if (keyboardState.IsKeyDown(Keys.Escape) &&
                     _lastKeyboardState.IsKeyUp(Keys.Escape))
                 {
@@ -139,33 +151,43 @@ namespace Jxqy
             }
             else
             {
-                GuiManager.Update(gameTime);
-
-                if (keyboardState.IsKeyDown(Keys.D1) && _lastKeyboardState.IsKeyUp(Keys.D1))
-                    Globals.TheMap.SwitchLayerDraw(0);
-                if (keyboardState.IsKeyDown(Keys.D2) && _lastKeyboardState.IsKeyUp(Keys.D2))
-                    Globals.TheMap.SwitchLayerDraw(1);
-                if (keyboardState.IsKeyDown(Keys.D3) && _lastKeyboardState.IsKeyUp(Keys.D3))
-                    Globals.TheMap.SwitchLayerDraw(2);
-                if (keyboardState.IsKeyDown(Keys.LeftAlt) || keyboardState.IsKeyDown(Keys.RightAlt))
+                switch (GameState.State)
                 {
-                    if (keyboardState.IsKeyDown(Keys.Enter) &&
-                        _lastKeyboardState.IsKeyUp(Keys.Enter))
-                        _graphics.ToggleFullScreen();
+                    case GameState.StateType.Start:
+                        GuiManager.Update(gameTime);
+                        break;
+                    case GameState.StateType.Playing:
+                        if (Globals.IsInSuperMagicMode)
+                        {
+                            Globals.SuperModeMagicSprite.Update(gameTime);
+                            if (Globals.SuperModeMagicSprite.IsDestroyed)
+                            {
+                                Globals.IsInSuperMagicMode = false;
+                                Globals.SuperModeMagicSprite = null;
+                            }
+                            break;//Just update super magic
+                        }
+                        GuiManager.Update(gameTime);
+                        //Player
+                        Globals.ThePlayer.Update(gameTime);
+                        //Magic list
+                        MagicManager.Update(gameTime);
+                        //Npc list
+                        NpcManager.Update(gameTime);
+                        //Obj list
+                        ObjManager.Update(gameTime);
+                        //Map
+                        Globals.TheMap.Update(gameTime);
+                        //Weather
+                        WeatherManager.Update(gameTime);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
-
-                Globals.ThePlayer.Update(gameTime);
-                MagicManager.Update(gameTime);
-                NpcManager.Update(gameTime);
-                ObjManager.Update(gameTime);
-
-                Globals.TheMap.Update(gameTime);
-
-                WeatherManager.Update(gameTime);
-
-                _lastKeyboardState = keyboardState;
-                _lastMouseState = mouseState;
             }
+
+            _lastKeyboardState = keyboardState;
+            _lastMouseState = mouseState;
 
             base.Update(gameTime);
         }
@@ -185,19 +207,31 @@ namespace Jxqy
             }
             else
             {
-                Globals.TheMap.Draw(_spriteBatch);
-                Globals.ThePlayer.Draw(_spriteBatch);
-                if (Globals.InSuperMagicMode) Globals.SuperModeMagicSprite.Draw(_spriteBatch);
-
-                //Weather
-                WeatherManager.Draw(_spriteBatch);
-
+                switch (GameState.State)
+                {
+                    case GameState.StateType.Start:
+                        break;
+                    case GameState.StateType.Playing:
+                        //Map npcs objs magic sprite
+                        Globals.TheMap.Draw(_spriteBatch);
+                        //Player
+                        Globals.ThePlayer.Draw(_spriteBatch);
+                        //Weather
+                        WeatherManager.Draw(_spriteBatch);
+                        //Super magic
+                        if (Globals.IsInSuperMagicMode)
+                        {
+                            Globals.SuperModeMagicSprite.Draw(_spriteBatch);
+                        }
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
                 //Fade in, fade out
                 if (ScriptExecuter.IsInFadeIn || ScriptExecuter.IsInFadeOut)
                 {
                     ScriptExecuter.DrawFade(_spriteBatch);
                 }
-
                 //GUI
                 GuiManager.Draw(_spriteBatch);
             }

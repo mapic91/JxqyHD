@@ -72,6 +72,7 @@
     <Compile Include="Character.cs" />
     <Compile Include="Collider.cs" />
     <Compile Include="Dialog.cs" />
+    <Compile Include="GameState.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="Good.cs" />
     <Compile Include="Gui\BottomGui.cs" />

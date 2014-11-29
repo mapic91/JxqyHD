@@ -57,7 +57,7 @@ namespace Engine
         public static Map TheMap = new Map();
         public static Player ThePlayer;
 
-        public static bool InSuperMagicMode;
+        public static bool IsInSuperMagicMode;
         public static MagicSprite SuperModeMagicSprite;
 
         #region Font

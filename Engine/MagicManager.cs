@@ -552,7 +552,7 @@ namespace Engine
 
         private static void AddSuperModeMagic(Character user, Magic magic, Vector2 origin, bool destroyOnEnd)
         {
-            Globals.InSuperMagicMode = true;
+            Globals.IsInSuperMagicMode = true;
             Globals.SuperModeMagicSprite = GetFixedPositionMagicSprite(user, magic, origin, destroyOnEnd);
         }
 

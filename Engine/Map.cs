@@ -671,6 +671,10 @@ namespace Engine
             ViewBeginY = Globals.TheCarmera.ViewBeginY;
         }
 
+        /// <summary>
+        /// Draw map npcs objs magic sprits
+        /// </summary>
+        /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
             DrawLayer(spriteBatch, 0);
