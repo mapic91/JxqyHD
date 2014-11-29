@@ -447,6 +447,9 @@ namespace Engine.Script
                         case "SaveObj":
                             ScriptExecuter.SaveObj(parameters);
                             break;
+                        case "GetRandNum":
+                            ScriptExecuter.GetRandNum(parameters);
+                            break;
                     }
                 }
             }

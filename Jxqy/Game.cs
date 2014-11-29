@@ -137,9 +137,6 @@ namespace Jxqy
             if (keyboardState.IsKeyDown(Keys.D3) && _lastKeyboardState.IsKeyUp(Keys.D3))
                 Globals.TheMap.SwitchLayerDraw(2);
 
-            //Update script
-            ScriptManager.Update(gameTime);
-
             if (ScriptExecuter.IsInPlayingMovie)
             {
                 //Stop movie when Esc key pressed
@@ -185,6 +182,9 @@ namespace Jxqy
                         throw new ArgumentOutOfRangeException();
                 }
             }
+
+            //Update script
+            ScriptManager.Update(gameTime);
 
             _lastKeyboardState = keyboardState;
             _lastMouseState = mouseState;

@@ -220,6 +220,9 @@ SaveObj();
 SaveObj(a)
 SaveObj("temp_map063_obj.obj");
 
+GetRandNum(a, b, c)
+GetRandNum($Map003RandVal, 1, 2);
+
 ///////////////////////////////////////////////////////////////////
 //////////////////    Implemented   End  /////////////////////////
 /////////////////////////////////////////////////////////////////
@@ -288,9 +291,6 @@ GetNpcCount(1,1);
 
 GetPartnerIdx(a)
 GetPartnerIdx($PartnerNo);
-
-GetRandNum(a, b, c)
-GetRandNum($Map003RandVal, 1, 2);
 
 HideTimerWnd()
 HideTimerWnd();

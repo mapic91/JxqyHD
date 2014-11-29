@@ -790,5 +790,12 @@ namespace Engine.Script
             }
             ObjManager.Save(fileName);
         }
+
+        public static void GetRandNum(List<string> parameters)
+        {
+            Variables[parameters[0]] = Globals.TheRandom.Next(
+                int.Parse(parameters[1]),
+                int.Parse(parameters[2]) + 1);
+        }
     }
 }
