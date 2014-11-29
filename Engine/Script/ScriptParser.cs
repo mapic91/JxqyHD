@@ -138,11 +138,10 @@ namespace Engine.Script
             return true;
         }
 
-        public void Run()
+        public void Begin()
         {
             _currentIndex = 0;
             _currentCode = null;
-            Continue();
         }
 
         public bool Continue()
@@ -293,6 +292,9 @@ namespace Engine.Script
                         case "OpenBox":
                             ScriptExecuter.OpenBox(parameters, BelongObject);
                             break;
+                        case "OpenObj":
+                            ScriptExecuter.OpenBox(parameters, BelongObject);
+                            break;
                         case "SetObjScript":
                             ScriptExecuter.SetObjScript(parameters, BelongObject);
                             break;
@@ -411,6 +413,9 @@ namespace Engine.Script
                         case "BeginRain":
                             ScriptExecuter.BeginRain(parameters);
                             break;
+                        case "EndRain":
+                            ScriptExecuter.EndRain();
+                            break;
                         case "ChangeMapColor":
                             ScriptExecuter.ChangeMapColor(parameters);
                             break;
@@ -420,6 +425,9 @@ namespace Engine.Script
                         case "Choose":
                             ScriptExecuter.Choose(parameters);
                             isEnd = false;
+                            break;
+                        case "RunScript":
+                            ScriptExecuter.RunScript(parameters, BelongObject);
                             break;
                     }
                 }

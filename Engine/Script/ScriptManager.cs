@@ -12,7 +12,7 @@ namespace Engine.Script
         {
             if (scriptParser != null && scriptParser.IsOk)
             {
-                scriptParser.Run();
+                scriptParser.Begin();
                 _list.AddLast(scriptParser);
             }
         }
@@ -24,8 +24,16 @@ namespace Engine.Script
                 var next = node.Next;
                 var script = node.Value;
                 if (!script.Continue())
+                {
                     _list.Remove(node);
-                node = next;
+                    node = next;
+                }
+                else
+                {
+                    //Can run one script only
+                    break;
+                }
+                
             }
             ScriptExecuter.Update(gameTime);
         }

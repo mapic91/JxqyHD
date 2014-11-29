@@ -647,6 +647,11 @@ namespace Engine.Script
             WeatherManager.BeginRain(Utils.RemoveStringQuotes(parameters[0]));
         }
 
+        public static void EndRain()
+        {
+            WeatherManager.StopRain();
+        }
+
         public static void ChangeMapColor(List<string> parameters)
         {
             var color = new Color(int.Parse(parameters[0]),
@@ -678,6 +683,13 @@ namespace Engine.Script
                 return true;
             }
             return false;
+        }
+
+        public static void RunScript(List<string> parameters, object belongObject)
+        {
+            ScriptManager.RunScript(new ScriptParser(
+                Utils.GetScriptFilePath(Utils.RemoveStringQuotes(parameters[0])),
+                belongObject));
         }
     }
 }

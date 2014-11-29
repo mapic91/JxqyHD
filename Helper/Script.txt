@@ -55,6 +55,9 @@ OpenBox();
 OpenBox(a)
 OpenBox("Óæ´¬");
 
+OpenObj(a)
+OpenObj("±¦Ïä");
+
 SetObjScript(a,b)
 SetObjScript("","")
 SetObjScript("","¹Ø±¦Ïä.txt");
@@ -181,6 +184,9 @@ ShowSnow(1);
 BeginRain(a)
 BeginRain("Rain2.ini");
 
+EndRain()
+EndRain();
+
 ChangeAsfColor(a, b, c)
 ChangeAsfColor(255, 255, 255);
 
@@ -189,6 +195,15 @@ ChangeMapColor(250, 250, 250);
 
 Choose(a, b, c, d);
 Choose("ÇëÑ¡ÔñÓÎÏ·µÄÄÑÒ×£º", "ÄÑ", "Ò×", $Level);
+
+RunScript(a)
+RunScript("Begin.txt");
+
+PlayMovie(a)
+PlayMovie("open.avi");
+
+PlayMovie(a,b,c,d);
+PlayMovie("team.avi",0,0,0);
 
 ///////////////////////////////////////////////////////////////////
 //////////////////    Implemented   End  /////////////////////////
@@ -237,9 +252,6 @@ EnableNpcAI();
 
 EnableRun()
 EnableRun();
-
-EndRain()
-EndRain();
 
 EquipGoods(a,b)
 EquipGoods(1, 5);
@@ -301,9 +313,6 @@ NpcSpecialAction("Åùö¨ÌÃ±¬Õ¨","ÌýÀ×¸ó±¬Õ¨.asf");
 NpcSpecialActionEx(a, b)
 NpcSpecialActionEx("ÑîÓ°·ã", "mpc006_¹ò.asf");
 
-OpenObj(a)
-OpenObj("±¦Ïä");
-
 OpenTimeLimit(a)
 OpenTimeLimit(2);
 
@@ -331,17 +340,8 @@ PlayerRunTo(9,29);
 PlayerRunToEx(a,b)
 PlayerRunToEx(4,78);
 
-PlayMovie(a)
-PlayMovie("open.avi");
-
-PlayMovie(a,b,c,d);
-PlayMovie("team.avi",0,0,0);
-
 ReturnToTitle()
 ReturnToTitle();
-
-RunScript(a)
-RunScript("Begin.txt");
 
 SaveMapTrap()
 SaveMapTrap();
