@@ -217,6 +217,21 @@ namespace Engine
             Globals.TheMap.RunTileTrapScript(TilePosition);
         }
 
+        public override void SetMagicFile(string fileName)
+        {
+            FlyIni = Utils.GetMagic(fileName, false);
+        }
+
+        public override void SetTilePosition(Vector2 tilePosition)
+        {
+            TilePosition = tilePosition;
+            if (Globals.TheCarmera != null)
+            {
+                //Update carmera follow
+                Globals.TheCarmera.UpdateFollow();
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>

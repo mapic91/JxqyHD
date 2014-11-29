@@ -700,13 +700,6 @@ namespace Engine
             return true;
         }
 
-        public void SetNpcIni(string fileName)
-        {
-            if(string.IsNullOrEmpty(fileName)) return;
-            _npcIniFileName = fileName;
-            NpcIni = ResFile.ReadFile(@"ini\npcres\" + fileName, ResType.Npc);
-        }
-
         protected void AddKey(KeyDataCollection keyDataCollection, string key, int value)
         {
             if (value != 0)
@@ -783,9 +776,15 @@ namespace Engine
             }
         }
 
-        public void SetState(CharacterState state)
+        /// <summary>
+        /// Set character state.Set texture and play sound.
+        /// </summary>
+        /// <param name="state">State to set</param>
+        /// <param name="setIfStateSame">If true renew state if current state is same as the set state</param>
+        public void SetState(CharacterState state, bool setIfStateSame = false)
         {
-            if (State != (int)state && NpcIni.ContainsKey((int)state))
+            if ((State != (int)state || setIfStateSame) &&
+                NpcIni.ContainsKey((int)state))
             {
                 if (_sound != null)
                 {
@@ -1363,6 +1362,57 @@ namespace Engine
             Mana = ManaMax;
         }
 
+        public void SetKind(int kind)
+        {
+            Kind = kind;
+        }
+
+        public virtual void SetMagicFile(string fileName)
+        {
+            FlyIni = Utils.GetMagic(fileName);
+        }
+
+        public virtual void SetTilePosition(Vector2 tilePosition)
+        {
+            TilePosition = tilePosition;
+        }
+
+        public virtual void SetRelation(int relation)
+        {
+            Relation = relation;
+        }
+
+        public void SetNpcIni(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName)) return;
+            _npcIniFileName = fileName;
+            NpcIni = ResFile.ReadFile(@"ini\npcres\" + fileName, ResType.Npc);
+        }
+
+        public void SetRes(string fileName)
+        {
+            SetNpcIni(fileName);
+            if (NpcIni != null && NpcIni.Count > 0)
+            {
+                if (NpcIni.ContainsKey(State))
+                {
+                    SetState((CharacterState)State, true);
+                }
+                else
+                {
+                    foreach (var key in NpcIni.Keys)
+                    {
+                        SetState((CharacterState)key);
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                Texture = null;
+            }
+        }
+
         protected abstract void PlaySoundEffect(SoundEffect soundEffect);
 
         protected virtual bool CanUseMagic()
@@ -1370,6 +1420,7 @@ namespace Engine
             return true;
         }
 
+        #region Update Draw
         public override void Update(GameTime gameTime)
         {
             if (IsDeath) return;
@@ -1527,5 +1578,6 @@ namespace Engine
             DrawMagicSpriteInEffect(spriteBatch);
             base.Draw(spriteBatch, texture, color);
         }
+        #endregion Update Draw
     }
 }

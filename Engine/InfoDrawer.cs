@@ -13,8 +13,8 @@ namespace Engine
             spriteBatch.Draw(rect, coords, color);
         }
 
-        public static Color EnemyLifeColor = new Color(180, 0, 0);
-        public static Color FriendLifeColor = new Color(0, 180, 0);
+        public static Color EnemyLifeColor = new Color(163, 18, 21)*0.9f;
+        public static Color FriendLifeColor = new Color(16, 165, 28)*0.9f;
         public static Color LifeLoseColor = Color.Black * 0.7f;
         public static Color NameColor = Color.White*0.8f;
         public static void DrawLife(SpriteBatch spriteBatch, Npc npc)

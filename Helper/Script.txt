@@ -196,6 +196,9 @@ ChangeMapColor(250, 250, 250);
 Choose(a, b, c, d);
 Choose("请选择游戏的难易：", "难", "易", $Level);
 
+Select(a,b,c,d)
+Select(281,	282, 283, $SelectVal);
+
 RunScript(a)
 RunScript("Begin.txt");
 
@@ -222,6 +225,27 @@ SaveObj("temp_map063_obj.obj");
 
 GetRandNum(a, b, c)
 GetRandNum($Map003RandVal, 1, 2);
+
+SetNpcDir(a)
+SetNpcDir(5);
+
+SetNpcDir(a,b)
+SetNpcDir("武当山下酒客",0);
+
+SetNpcKind(a, b)
+SetNpcKind("杨影枫", 1);
+
+SetNpcMagicFile(a,b)
+SetNpcMagicFile("杨影枫","player-magic-武道德经.ini");
+
+SetNpcPos(a,b,c)
+SetNpcPos("紫轩",16,27);
+
+SetNpcRelation(a,b)
+SetNpcRelation("月眉儿",1);
+
+SetNpcRes(a,b)
+SetNpcRes("月眉儿","npc016-躺着的月眉儿.ini");
 
 ///////////////////////////////////////////////////////////////////
 //////////////////    Implemented   End  /////////////////////////
@@ -358,13 +382,6 @@ PlayerRunToEx(4,78);
 ReturnToTitle()
 ReturnToTitle();
 
-
-
-
-
-Select(a,b,c,d)
-Select(281,	282, 283, $SelectVal);
-
 SellGoods(a)
 SellGoods("低级药品.ini");
 
@@ -385,27 +402,6 @@ SetNpcAction("卓非凡", 11, 0, 0);
 
 SetNpcActionFile(a, b, c)
 SetNpcActionFile("杨影枫", 0, "mpc001_跪.asf");
-
-SetNpcDir(a)
-SetNpcDir(5);
-
-SetNpcDir(a,b)
-SetNpcDir("武当山下酒客",0);
-
-SetNpcKind(a, b)
-SetNpcKind("杨影枫", 1);
-
-SetNpcMagicFile(a,b)
-SetNpcMagicFile("杨影枫","player-magic-武道德经.ini");
-
-SetNpcPos(a,b,c)
-SetNpcPos("紫轩",16,27);
-
-SetNpcRelation(a,b)
-SetNpcRelation("月眉儿",1);
-
-SetNpcRes(a,b)
-SetNpcRes("月眉儿","npc016-躺着的月眉儿.ini");
 
 SetObjOfs(a,b,c);
 SetObjOfs("躺着的月眉儿",-10,10);

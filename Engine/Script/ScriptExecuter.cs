@@ -62,6 +62,16 @@ namespace Engine.Script
                 script = new ScriptParser(Utils.GetScriptFilePath(scriptFileName), target);
         }
 
+        private static Character GetPlayerOrNpc(string name)
+        {
+            if (Globals.ThePlayer != null &&
+                Globals.ThePlayer.Name == name)
+            {
+                return Globals.ThePlayer;
+            }
+            return NpcManager.GetNpc(name);
+        }
+
         private static void GetTarget(string nameWithQuotes,
             object belongObject,
             out Character target)
@@ -70,9 +80,7 @@ namespace Engine.Script
             target = belongObject as Character;
             if (!string.IsNullOrEmpty(name))
             {
-                if (Globals.ThePlayer.Name == name)
-                    target = Globals.ThePlayer;
-                else target = NpcManager.GetNpc(name);
+                target = GetPlayerOrNpc(name);
             }
         }
 
@@ -688,6 +696,13 @@ namespace Engine.Script
                 Utils.RemoveStringQuotes(parameters[2]));
         }
 
+        public static void Select(List<string> parameters)
+        {
+            GuiManager.Selection(TalkTextList.GetTextDetail(int.Parse(parameters[0])).Text,
+                TalkTextList.GetTextDetail(int.Parse(parameters[1])).Text,
+                TalkTextList.GetTextDetail(int.Parse(parameters[2])).Text);
+        }
+
         public static bool IsChooseEnd(List<string> parameters)
         {
             if (GuiManager.IsSelectionEnd())
@@ -796,6 +811,130 @@ namespace Engine.Script
             Variables[parameters[0]] = Globals.TheRandom.Next(
                 int.Parse(parameters[1]),
                 int.Parse(parameters[2]) + 1);
+        }
+
+        public static void SetNpcDir(List<string> parameters, object belongObject)
+        {
+            Character target = null;
+            var dir = 0;
+            if (parameters.Count == 1)
+            {
+                target = belongObject as Character;
+                dir = int.Parse(parameters[0]);
+            }
+            else if (parameters.Count == 2)
+            {
+                target = GetPlayerOrNpc(
+                    Utils.RemoveStringQuotes(parameters[0]));
+                dir = int.Parse(parameters[1]);
+            }
+            if (target != null)
+            {
+                target.SetDirection(dir);
+            }
+        }
+
+        public static void SetNpcKind(List<string> parameters, object belongObject)
+        {
+            Character target = null;
+            var kind = 0;
+            if (parameters.Count == 1)
+            {
+                target = belongObject as Character;
+                kind = int.Parse(parameters[0]);
+            }
+            else if (parameters.Count == 2)
+            {
+                target = GetPlayerOrNpc(
+                    Utils.RemoveStringQuotes(parameters[0]));
+                kind = int.Parse(parameters[1]);
+            }
+            if (target != null)
+            {
+                target.SetKind(kind);
+            }
+        }
+
+        public static void SetNpcMagicFile(List<string> parameters, object belongObject)
+        {
+            Character target = null;
+            var fileName = "";
+            if (parameters.Count == 1)
+            {
+                target = belongObject as Character;
+                fileName = Utils.RemoveStringQuotes(parameters[0]);
+            }
+            else if (parameters.Count == 2)
+            {
+                target = GetPlayerOrNpc(Utils.RemoveStringQuotes(parameters[0]));
+                fileName = Utils.RemoveStringQuotes(parameters[1]);
+            }
+            if (target != null)
+            {
+                target.SetMagicFile(fileName);
+            }
+        }
+
+        public static void SetNpcPos(List<string> parameters, object belongObject)
+        {
+            Character target = null;
+            var position = Vector2.Zero;
+            if (parameters.Count == 2)
+            {
+                target = belongObject as Character;
+                position = new Vector2(int.Parse(parameters[0]),
+                    int.Parse(parameters[1]));
+            }
+            else if (parameters.Count == 3)
+            {
+                target = GetPlayerOrNpc(Utils.RemoveStringQuotes(parameters[0]));
+                position = new Vector2(int.Parse(parameters[1]),
+                    int.Parse(parameters[2]));
+            }
+            if (target != null)
+            {
+                target.SetTilePosition(position);
+            }
+        }
+
+        public static void SetNpcRelation(List<string> parameters, object belongObject)
+        {
+            Character target = null;
+            var relation = 0;
+            if (parameters.Count == 1)
+            {
+                target = belongObject as Character;
+                relation = int.Parse(parameters[0]);
+            }
+            else if (parameters.Count == 2)
+            {
+                target = GetPlayerOrNpc(Utils.RemoveStringQuotes(parameters[0]));
+                relation = int.Parse(parameters[1]);
+            }
+            if (target != null)
+            {
+                target.SetRelation(relation);
+            }
+        }
+
+        public static void SetNpcRes(List<string> parameters, object belongObject)
+        {
+            Character target = null;
+            var fileName = "";
+            if (parameters.Count == 1)
+            {
+                target = belongObject as Character;
+                fileName = Utils.RemoveStringQuotes(parameters[0]);
+            }
+            else if (parameters.Count == 2)
+            {
+                target = GetPlayerOrNpc(Utils.RemoveStringQuotes(parameters[0]));
+                fileName = Utils.RemoveStringQuotes(parameters[1]);
+            }
+            if (target != null)
+            {
+                target.SetRes(fileName);
+            }
         }
     }
 }

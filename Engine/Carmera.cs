@@ -63,10 +63,14 @@ namespace Engine
                     IsInMove = false;
                 }
             }
+            UpdateFollow();
+        }
+
+        public void UpdateFollow()
+        {
             if (IsFollow && _moveControlInWorld != null && !IsInMove)
             {
                 Vector2 pos = _moveControlInWorld.PositionInWorld;
-               // pos += new Vector2((float)_moveControlInWorld.Width / 2, (float)_moveControlInWorld.Height / 2);
                 pos -= new Vector2((float)ViewWidth / 2, (float)ViewHeight / 2);
                 CarmeraBeginPositionInWorld = pos;
             }
@@ -112,6 +116,9 @@ namespace Engine
         #endregion Public method
 
         #region Properties
+        /// <summary>
+        /// Is in smooth move to
+        /// </summary>
         public bool IsInMove
         {
             get { return _isInMove; }

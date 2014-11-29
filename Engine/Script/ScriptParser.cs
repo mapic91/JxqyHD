@@ -234,6 +234,7 @@ namespace Engine.Script
                             isEnd = !ScriptExecuter.IsInTalk;
                             break;
                         case "Choose":
+                        case "Select":
                             isEnd = ScriptExecuter.IsChooseEnd(_currentCode.Parameters);
                             break;
                         case "PlayMovie":
@@ -431,6 +432,10 @@ namespace Engine.Script
                             ScriptExecuter.Choose(parameters);
                             isEnd = false;
                             break;
+                        case "Select":
+                            ScriptExecuter.Select(parameters);
+                            isEnd = false;
+                            break;
                         case "RunScript":
                             ScriptExecuter.RunScript(parameters, BelongObject);
                             break;
@@ -449,6 +454,24 @@ namespace Engine.Script
                             break;
                         case "GetRandNum":
                             ScriptExecuter.GetRandNum(parameters);
+                            break;
+                        case "SetNpcDir":
+                            ScriptExecuter.SetNpcDir(parameters, BelongObject);
+                            break;
+                        case "SetNpcKind":
+                            ScriptExecuter.SetNpcKind(parameters, BelongObject);
+                            break;
+                        case "SetNpcMagicFile":
+                            ScriptExecuter.SetNpcMagicFile(parameters, BelongObject);
+                            break;
+                        case "SetNpcPos":
+                            ScriptExecuter.SetNpcPos(parameters, BelongObject);
+                            break;
+                        case "SetNpcRelation":
+                            ScriptExecuter.SetNpcRelation(parameters, BelongObject);
+                            break;
+                        case "SetNpcRes":
+                            ScriptExecuter.SetNpcRes(parameters, BelongObject);
                             break;
                     }
                 }
