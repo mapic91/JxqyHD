@@ -429,6 +429,9 @@ namespace Engine.Script
                         case "RunScript":
                             ScriptExecuter.RunScript(parameters, BelongObject);
                             break;
+                        case "PlayMovie":
+                            ScriptExecuter.PlayMovie(parameters);
+                            break;
                     }
                 }
             }

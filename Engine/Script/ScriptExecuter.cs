@@ -691,5 +691,10 @@ namespace Engine.Script
                 Utils.GetScriptFilePath(Utils.RemoveStringQuotes(parameters[0])),
                 belongObject));
         }
+
+        public static void PlayMovie(List<string> parameters)
+        {
+            
+        }
     }
 }
