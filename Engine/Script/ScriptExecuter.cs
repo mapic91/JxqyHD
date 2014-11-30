@@ -132,7 +132,7 @@ namespace Engine.Script
                 _sleepingMilliseconds -= (float)gameTime.ElapsedGameTime.TotalMilliseconds;
                 if (_sleepingMilliseconds <= 0)
                 {
-                    IsInSleep = false;
+                    Globals.IsInputDisabled = false;
                 }
             }
         }
@@ -637,7 +637,7 @@ namespace Engine.Script
         public static void Sleep(List<string> parameters)
         {
             _sleepingMilliseconds = int.Parse(parameters[0]);
-            IsInSleep = true;
+            Globals.IsInputDisabled = true;
         }
 
         public static void ShowMessage(List<string> parameters)
@@ -1061,6 +1061,82 @@ namespace Engine.Script
             if (target != null)
             {
                 target.SetOffSet(offX, offY);
+            }
+        }
+
+        public static void DisableFight()
+        {
+            if (Globals.ThePlayer != null)
+            {
+                Globals.ThePlayer.DisableFight();
+            }
+        }
+
+        public static void EnableFight()
+        {
+            if (Globals.ThePlayer != null)
+            {
+                Globals.ThePlayer.EnableFight();
+            }
+        }
+
+        public static void DisableInput()
+        {
+            Globals.IsInputDisabled = true;
+        }
+
+        public static void EnableInput()
+        {
+            Globals.IsInputDisabled = false;
+        }
+
+        public static void DisableJump()
+        {
+            if (Globals.ThePlayer != null)
+            {
+                Globals.ThePlayer.DisableJump();
+            }
+        }
+
+        public static void EnableJump()
+        {
+            if (Globals.ThePlayer != null)
+            {
+                Globals.ThePlayer.EnableJump();
+            }
+        }
+
+        public static void DisableNpcAI()
+        {
+            Npc.DisableAI();
+        }
+
+        public static void EnableNpcAI()
+        {
+            Npc.EnableAI();
+        }
+
+        public static void DisableRun()
+        {
+            if (Globals.ThePlayer != null)
+            {
+                Globals.ThePlayer.DisableRun();
+            }
+        }
+
+        public static void EnableRun()
+        {
+            if (Globals.ThePlayer != null)
+            {
+                Globals.ThePlayer.EnableRun();
+            }
+        }
+
+        public static void SetPlayerState(List<string> parameters)
+        {
+            if (Globals.ThePlayer != null)
+            {
+                Globals.ThePlayer.SetFightState(int.Parse(parameters[0]) != 0);
             }
         }
     }

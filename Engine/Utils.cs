@@ -318,10 +318,15 @@ namespace Engine
             return region / 2;
         }
 
-        public static MouseState GetMouseState(int x, int y)
+        /// <summary>
+        /// Get mouse state just position, button is released, wheel scroll is 0
+        /// </summary>
+        /// <param name="mouseState">The mouse state</param>
+        /// <returns></returns>
+        public static MouseState GetMouseStateJustPosition(MouseState mouseState)
         {
-            return new MouseState(x,
-                y,
+            return new MouseState(mouseState.X,
+                mouseState.Y,
                 0,
                 ButtonState.Released,
                 ButtonState.Released,

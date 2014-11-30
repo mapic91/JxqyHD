@@ -72,6 +72,8 @@ namespace Engine
         public static bool IsLogOn = false;
         public static bool CacheScriptFile = true;
 
+        public static bool IsInputDisabled;
+
         public static void Initialize()
         {
             try

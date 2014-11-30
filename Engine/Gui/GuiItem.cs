@@ -119,6 +119,8 @@ namespace Engine.Gui
         {
             if (!IsShow) return;
             var mouseState = Mouse.GetState();
+            if (Globals.IsInputDisabled)
+                mouseState = Utils.GetMouseStateJustPosition(mouseState);
             var screenPosition = new Vector2(mouseState.X, mouseState.Y);
             var position = screenPosition - ScreenPosition;
             var lastPosition = new Vector2(_lastMouseState.X, _lastMouseState.Y) - ScreenPosition;

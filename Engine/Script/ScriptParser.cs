@@ -488,6 +488,39 @@ namespace Engine.Script
                         case "SetObjOfs":
                             ScriptExecuter.SetObjOfs(parameters, BelongObject);
                             break;
+                        case "DisableFight":
+                            ScriptExecuter.DisableFight();
+                            break;
+                        case "EnableFight":
+                            ScriptExecuter.EnableFight();
+                            break;
+                        case "DisableInput":
+                            ScriptExecuter.DisableInput();
+                            break;
+                        case "EnableInput":
+                            ScriptExecuter.EnableInput();
+                            break;
+                        case "DisableJump":
+                            ScriptExecuter.DisableJump();
+                            break;
+                        case "EnableJump":
+                            ScriptExecuter.EnableJump();
+                            break;
+                        case "DisableNpcAI":
+                            ScriptExecuter.DisableNpcAI();
+                            break;
+                        case "EnableNpcAI":
+                            ScriptExecuter.EnableNpcAI();
+                            break;
+                        case "DisableRun":
+                            ScriptExecuter.DisableRun();
+                            break;
+                        case "EnableRun":
+                            ScriptExecuter.EnableRun();
+                            break;
+                        case "SetPlayerState":
+                            ScriptExecuter.SetPlayerState(parameters);
+                            break;
                     }
                 }
             }

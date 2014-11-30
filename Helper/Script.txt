@@ -269,23 +269,10 @@ Watch("杨影枫", "纳兰真");
 
 SetObjOfs(a,b,c);
 SetObjOfs("躺着的月眉儿",-10,10);
-///////////////////////////////////////////////////////////////////
-//////////////////    Implemented   End  /////////////////////////
-/////////////////////////////////////////////////////////////////
 
-
-
-BuyGoods(a)
-BuyGoods("衣3级.ini");
-
-CloseBox(a)
-CloseBox("通天塔开关A");
-
-CloseTimeLimit()
-CloseTimeLimit();
-
-CloseWaterEffect()
-CloseWaterEffect();
+//没用
+SetMapTime(a)
+SetMapTime(1);
 
 DisableFight()
 DisableFight();
@@ -316,6 +303,26 @@ EnableNpcAI();
 
 EnableRun()
 EnableRun();
+
+SetPlayerState(a)
+SetPlayerState(1);
+///////////////////////////////////////////////////////////////////
+//////////////////    Implemented   End  /////////////////////////
+/////////////////////////////////////////////////////////////////
+
+
+
+BuyGoods(a)
+BuyGoods("衣3级.ini");
+
+CloseBox(a)
+CloseBox("通天塔开关A");
+
+CloseTimeLimit()
+CloseTimeLimit();
+
+CloseWaterEffect()
+CloseWaterEffect();
 
 EquipGoods(a,b)
 EquipGoods(1, 5);
@@ -410,17 +417,11 @@ SellGoods("低级药品.ini");
 SetMapPos(a, b)
 SetMapPos(32, 67);
 
-SetMapTime(a)
-SetMapTime(1);
-
 SetMoneyNum(a)
 SetMoneyNum(0);
 
 SetPlayerScn()
 SetPlayerScn();
-
-SetPlayerState(a)
-SetPlayerState(1);
 
 SetTimeScript(a,b)
 SetTimeScript(1,"changecolor.txt");

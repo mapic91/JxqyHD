@@ -87,6 +87,10 @@ namespace Engine
             set { _levelIni = value; }
         }
 
+        public bool IsFightDisabled { protected set; get; }
+        public bool IsJumpDisabled { protected set; get; }
+        public bool IsRunDisabled { protected set; get; }
+
         public bool IsHide { get; set; }
 
         public float FrozenSeconds
@@ -688,12 +692,12 @@ namespace Engine
 
         protected virtual bool CanRunning()
         {
-            return true;
+            return !IsRunDisabled;
         }
 
         protected virtual bool CanJump()
         {
-            return true;
+            return !IsJumpDisabled;
         }
 
         protected void AddKey(KeyDataCollection keyDataCollection, string key, int value)
@@ -1459,6 +1463,72 @@ namespace Engine
         public void SetNpcActionType(int type)
         {
             Action = type;
+        }
+
+        public void DisableFight()
+        {
+            IsFightDisabled = true;
+        }
+
+        public void EnableFight()
+        {
+            IsFightDisabled = false;
+        }
+
+        public void DisableJump()
+        {
+            IsJumpDisabled = true;
+        }
+
+        public void EnableJump()
+        {
+            IsJumpDisabled = false;
+        }
+
+        public void DisableRun()
+        {
+            IsRunDisabled = true;
+        }
+
+        public void EnableRun()
+        {
+            IsRunDisabled = false;
+        }
+
+        public void SetFightState(bool isFight)
+        {
+            if (isFight)
+            {
+                ToFightingState();
+                if (IsStanding())
+                {
+                    SetState(CharacterState.FightStand);
+                }
+                else if(IsRuning())
+                {
+                    SetState(CharacterState.FightRun);
+                }
+                else if (IsWalking())
+                {
+                    SetState(CharacterState.FightWalk);
+                }
+            }
+            else
+            {
+                ToNonFightingState();
+                if (IsStanding())
+                {
+                    SetState(CharacterState.Stand);
+                }
+                else if (IsRuning())
+                {
+                    SetState(CharacterState.Run);
+                }
+                else if (IsWalking())
+                {
+                    SetState(CharacterState.Walk);
+                }
+            }
         }
 
         #region Update Draw

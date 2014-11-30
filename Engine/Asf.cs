@@ -62,7 +62,7 @@ namespace Engine
                 texture.SetData(data);
                 return texture;
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 //file corrupt
                 return null;

@@ -39,6 +39,7 @@ namespace Engine.Gui
         public static DragDropItem DragDropSourceItem;
         public static Texture DragDropSourceTexture;
         public static bool IsDropped;
+        public static bool IsInputDisabled;
 
         public static void Starting()
         {
@@ -294,6 +295,8 @@ namespace Engine.Gui
         {
             var keyboardState = Keyboard.GetState();
             var mouseState = Mouse.GetState();
+            if (Globals.IsInputDisabled)
+                mouseState = Utils.GetMouseStateJustPosition(mouseState);
 
             MouseInterface.Update(gameTime);
             ColumnInterface.Update(gameTime);

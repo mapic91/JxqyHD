@@ -44,11 +44,14 @@ namespace Engine
         {
             get { return (ScriptFile != null || IsEnemy || IsFriend); }
         }
+
+        public static bool IsAIDisabled { protected set; get; }
         #endregion
 
         public Npc() { }
 
-        public Npc(string filePath) : base(filePath)
+        public Npc(string filePath)
+            : base(filePath)
         {
             if (LevelIni == null)
             {
@@ -69,25 +72,43 @@ namespace Engine
                 PositionInWorld - Globals.ListenerPosition);
         }
 
+        public static void DisableAI()
+        {
+            IsAIDisabled = true;
+        }
+
+        public static void EnableAI()
+        {
+            IsAIDisabled = false;
+        }
+
         public override void Update(GameTime gameTime)
         {
             if (IsEnemy)
             {
+                var attackCanReach = false;
                 var playerTilePosition = Globals.ThePlayer.TilePosition;
-                int tileDistance;
-                var attackCanReach = Engine.PathFinder.CanMagicReach(TilePosition, playerTilePosition, out tileDistance);
-                if (IsStanding())
+                if (IsAIDisabled)
                 {
-                    if ((attackCanReach  && tileDistance <= VisionRadius) ||
-                        (_attackTargetFinded && tileDistance <= VisionRadius)
-                        )
-                        _attackTargetFinded = true;
-                    else _attackTargetFinded = false;
+                    _attackTargetFinded = false;
+                }
+                else
+                {
+                    int tileDistance;
+                    attackCanReach = Engine.PathFinder.CanMagicReach(TilePosition, playerTilePosition, out tileDistance);
+                    if (IsStanding())
+                    {
+                        if ((attackCanReach && tileDistance <= VisionRadius) ||
+                            (_attackTargetFinded && tileDistance <= VisionRadius)
+                            )
+                            _attackTargetFinded = true;
+                        else _attackTargetFinded = false;
+                    }
                 }
 
                 if (_attackTargetFinded)
                 {
-                    if(attackCanReach) Attacking(playerTilePosition);
+                    if (attackCanReach) Attacking(playerTilePosition);
                     else WalkTo(playerTilePosition);
                 }
                 else
