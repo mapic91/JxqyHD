@@ -80,7 +80,7 @@ namespace Engine
         {
             IsFollow = true;
             _moveControlInWorld = moveControlInWorld;
-            SmoothMoveTo(moveControlInWorld.PositionInWorld + moveControlInWorld.Size/2 - ViewSize/2);
+            UpdateFollow();
         }
 
         public void SmoothMoveTo(Vector2 position, int velocity = 5000)
