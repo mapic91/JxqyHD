@@ -247,6 +247,21 @@ SetNpcRelation("月眉儿",1);
 SetNpcRes(a,b)
 SetNpcRes("月眉儿","npc016-躺着的月眉儿.ini");
 
+SetNpcAction(a,b)
+SetNpcAction("孟知秋",0);
+
+SetNpcAction(a, b, c, d)
+SetNpcAction("卓非凡", 11, 0, 0);
+
+SetNpcActionFile(a, b, c)
+SetNpcActionFile("杨影枫", 0, "mpc001_跪.asf");
+
+SetNpcActionType(a,b)
+功能：设置NPC的行为类型
+参数：a: NPC的名字
+      b: 类型0-1 0 = 站立 1 = 走动
+	  
+
 ///////////////////////////////////////////////////////////////////
 //////////////////    Implemented   End  /////////////////////////
 /////////////////////////////////////////////////////////////////
@@ -393,15 +408,6 @@ SetMapTime(1);
 
 SetMoneyNum(a)
 SetMoneyNum(0);
-
-SetNpcAction(a,b)
-SetNpcAction("孟知秋",0);
-
-SetNpcAction(a, b, c, d)
-SetNpcAction("卓非凡", 11, 0, 0);
-
-SetNpcActionFile(a, b, c)
-SetNpcActionFile("杨影枫", 0, "mpc001_跪.asf");
 
 SetObjOfs(a,b,c);
 SetObjOfs("躺着的月眉儿",-10,10);

@@ -15,6 +15,7 @@ namespace Engine
     using StateMapList = Dictionary<int, ResStateInfo>;
     public abstract class Character : Sprite
     {
+        #region Member
         private SoundEffectInstance _sound;
         private int _dir;
         private string _name;
@@ -72,6 +73,9 @@ namespace Engine
         private bool _isNextStepStand;
         private Dictionary<int, Utils.LevelDetail> _levelIni;
         protected Magic MagicUse;
+        #endregion Member
+
+        protected virtual bool MagicFromCache { get { return true; } }
 
         #region Public properties
 
@@ -450,12 +454,14 @@ namespace Engine
 
         #endregion Public properties
 
+        #region Ctor
         public Character(string filePath)
         {
             Load(filePath);
         }
 
         public Character() { }
+        #endregion Ctor
 
         private void Initlize()
         {
@@ -474,8 +480,6 @@ namespace Engine
                 FlyIni2 = FlyIni2.GetLevel(AttackLevel);
             }
         }
-
-        protected virtual bool MagicFromCache { get { return true; } }
 
         private void AssignToValue(string[] nameValue)
         {
@@ -672,7 +676,41 @@ namespace Engine
         }
 
         protected abstract bool HasObstacle(Vector2 tilePosition);
+
         protected virtual void CheckMapTrap() { }
+
+        protected abstract void PlaySoundEffect(SoundEffect soundEffect);
+
+        protected virtual bool CanUseMagic()
+        {
+            return true;
+        }
+
+        protected virtual bool CanRunning()
+        {
+            return true;
+        }
+
+        protected virtual bool CanJump()
+        {
+            return true;
+        }
+
+        protected void AddKey(KeyDataCollection keyDataCollection, string key, int value)
+        {
+            if (value != 0)
+            {
+                keyDataCollection.AddKey(key, value.ToString());
+            }
+        }
+
+        protected void AddKey(KeyDataCollection keyDataCollection, string key, string value)
+        {
+            if (!string.IsNullOrEmpty(value))
+            {
+                keyDataCollection.AddKey(key, value);
+            }
+        }
 
         public bool Load(string filePath)
         {
@@ -698,22 +736,6 @@ namespace Engine
             }
             Initlize();
             return true;
-        }
-
-        protected void AddKey(KeyDataCollection keyDataCollection, string key, int value)
-        {
-            if (value != 0)
-            {
-                keyDataCollection.AddKey(key, value.ToString());
-            }
-        }
-
-        protected void AddKey(KeyDataCollection keyDataCollection, string key, string value)
-        {
-            if (!string.IsNullOrEmpty(value))
-            {
-                keyDataCollection.AddKey(key, value);
-            }
         }
 
         /// <summary>
@@ -981,16 +1003,6 @@ namespace Engine
             }
         }
 
-        protected virtual bool CanRunning()
-        {
-            return true;
-        }
-
-        protected virtual bool CanJump()
-        {
-            return true;
-        }
-
         public void JumpTo(Vector2 destinationTilePosition)
         {
             if (PerformActionOk() &&
@@ -1030,8 +1042,7 @@ namespace Engine
             if (PerformActionOk())
             {
                 StateInitialize();
-                _isInFighting = true;
-                _totalNonFightingSeconds = 0;
+                ToFightingState();
 
                 MagicUse = magicUse;
                 _magicDestination = Map.ToPixelPosition(magicDestinationTilePosition);
@@ -1191,8 +1202,7 @@ namespace Engine
             {
                 if (!CanPerformeAttack()) return;
                 StateInitialize();
-                _isInFighting = true;
-                _totalNonFightingSeconds = 0;
+                ToFightingState();
                 _attackDestination = destination;
 
                 var value = Globals.TheRandom.Next(3);
@@ -1212,6 +1222,12 @@ namespace Engine
             if (IsWalking()) SetState(CharacterState.Walk);
             if (IsRuning()) SetState(CharacterState.Run);
             if (State == (int)CharacterState.FightStand) SetState(CharacterState.Stand);
+        }
+
+        public void ToFightingState()
+        {
+            _isInFighting = true;
+            _totalNonFightingSeconds = 0;
         }
 
         public void InteractWith(object target, bool isRun = false)
@@ -1308,6 +1324,10 @@ namespace Engine
             
         }
 
+        /// <summary>
+        /// Level up to level
+        /// </summary>
+        /// <param name="level">The level</param>
         public virtual void SetLevelTo(int level)
         {
             if (LevelIni == null)
@@ -1367,6 +1387,10 @@ namespace Engine
             Kind = kind;
         }
 
+        /// <summary>
+        /// Set FlyIni
+        /// </summary>
+        /// <param name="fileName">Magic file name</param>
         public virtual void SetMagicFile(string fileName)
         {
             FlyIni = Utils.GetMagic(fileName);
@@ -1382,6 +1406,10 @@ namespace Engine
             Relation = relation;
         }
 
+        /// <summary>
+        /// Set NpcIni flle
+        /// </summary>
+        /// <param name="fileName"></param>
         public void SetNpcIni(string fileName)
         {
             if (string.IsNullOrEmpty(fileName)) return;
@@ -1389,6 +1417,10 @@ namespace Engine
             NpcIni = ResFile.ReadFile(@"ini\npcres\" + fileName, ResType.Npc);
         }
 
+        /// <summary>
+        /// Set NpcIni flle and refresh draw image
+        /// </summary>
+        /// <param name="fileName"></param>
         public void SetRes(string fileName)
         {
             SetNpcIni(fileName);
@@ -1413,11 +1445,20 @@ namespace Engine
             }
         }
 
-        protected abstract void PlaySoundEffect(SoundEffect soundEffect);
-
-        protected virtual bool CanUseMagic()
+        /// <summary>
+        /// Set state image and refresh draw
+        /// </summary>
+        /// <param name="state">State to set</param>
+        /// <param name="fileName">Asf file name</param>
+        public void SetNpcActionFile(CharacterState state, string fileName)
         {
-            return true;
+            ResFile.SetNpcStateImage(NpcIni, state, fileName);
+            SetState((CharacterState)State, true);
+        }
+
+        public void SetNpcActionType(int type)
+        {
+            Action = type;
         }
 
         #region Update Draw

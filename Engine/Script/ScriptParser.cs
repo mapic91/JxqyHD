@@ -473,6 +473,15 @@ namespace Engine.Script
                         case "SetNpcRes":
                             ScriptExecuter.SetNpcRes(parameters, BelongObject);
                             break;
+                        case "SetNpcAction":
+                            ScriptExecuter.SetNpcAction(parameters);
+                            break;
+                        case "SetNpcActionFile":
+                            ScriptExecuter.SetNpcActionFile(parameters);
+                            break;
+                        case "SetNpcActionType":
+                            ScriptExecuter.SetNpcActionType(parameters, BelongObject);
+                            break;
                     }
                 }
             }

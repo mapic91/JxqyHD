@@ -450,7 +450,7 @@ namespace Engine.Script
         public static void AddRandGoods(List<string> parameters)
         {
             var fileName = GetRandItem(@"ini\buy\" + Utils.RemoveStringQuotes(parameters[0]));
-            if(string.IsNullOrEmpty(fileName)) return;
+            if (string.IsNullOrEmpty(fileName)) return;
             AddGoods(fileName);
         }
 
@@ -543,7 +543,7 @@ namespace Engine.Script
         public static void AddToMemo(List<string> parameters)
         {
             var detail = TalkTextList.GetTextDetail(int.Parse(parameters[0]));
-            if(detail == null) return;
+            if (detail == null) return;
             GuiManager.AddMemo(detail.Text);
         }
 
@@ -566,7 +566,7 @@ namespace Engine.Script
         public static void DelCurObj(object belongObject)
         {
             var obj = belongObject as Obj;
-            if(obj == null) return;
+            if (obj == null) return;
             obj.IsRemoved = true;
         }
 
@@ -727,7 +727,7 @@ namespace Engine.Script
             _videoPlayer = new VideoPlayer();
             if (_videoPlayer == null) return;
             _videoDrawColor = drawColor;
-            
+
             _videoPlayer.Play(_video);
         }
 
@@ -934,6 +934,101 @@ namespace Engine.Script
             if (target != null)
             {
                 target.SetRes(fileName);
+            }
+        }
+
+        public static void SetNpcAction(List<string> parameters)
+        {
+            var target = GetPlayerOrNpc(Utils.RemoveStringQuotes(parameters[0]));
+            var action = (CharacterState)int.Parse(parameters[1]);
+            var destination = Vector2.Zero;
+            if (parameters.Count == 4)
+            {
+                destination = new Vector2(int.Parse(parameters[2]),
+                    int.Parse(parameters[3]));
+            }
+            if(target == null) return;
+            switch (action)
+            {
+                case CharacterState.Stand:
+                case CharacterState.Stand1:
+                    target.NextStepStaning();
+                    break;
+                case CharacterState.Walk:
+                    target.WalkTo(destination);
+                    break;
+                case CharacterState.Run:
+                    target.RunTo(destination);
+                    break;
+                case CharacterState.Jump:
+                    target.JumpTo(destination);
+                    break;
+                case CharacterState.Attack:
+                case CharacterState.Attack1:
+                case CharacterState.Attack2:
+                    target.PerformeAttack(destination);
+                    break;
+                case CharacterState.Magic:
+                    target.UseMagic(target.FlyIni, destination);
+                    break;
+                case CharacterState.Sit:
+                    target.Sitdown();
+                    break;
+                case CharacterState.Hurt:
+                    target.Hurting();
+                    break;
+                case CharacterState.Death:
+                    target.Death();
+                    break;
+                case CharacterState.FightStand:
+                    target.NextStepStaning();
+                    target.ToFightingState();
+                    break;
+                case CharacterState.FightWalk:
+                    target.WalkTo(destination);
+                    target.ToFightingState();
+                    break;
+                case CharacterState.FightRun:
+                    target.RunTo(destination);
+                    target.ToFightingState();
+                    break;
+                case CharacterState.FightJump:
+                    target.JumpTo(destination);
+                    target.ToFightingState();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public static void SetNpcActionFile(List<string> parameters)
+        {
+            var target = GetPlayerOrNpc(Utils.RemoveStringQuotes(parameters[0]));
+            var state = (CharacterState) int.Parse(parameters[1]);
+            var fileName = Utils.RemoveStringQuotes(parameters[2]);
+            if (target != null)
+            {
+                target.SetNpcActionFile(state, fileName);
+            }
+        }
+
+
+        public static void SetNpcActionType(List<string> parameters, object belongObject)
+        {
+            var target = belongObject as Character;
+            var type = 0;
+            if (parameters.Count == 1)
+            {
+                type = int.Parse(parameters[0]);
+            }
+            else if (parameters.Count == 2)
+            {
+                target = GetPlayerOrNpc(Utils.RemoveStringQuotes(parameters[0]));
+                type = int.Parse(parameters[1]);
+            }
+            if (target != null)
+            {
+                target.SetNpcActionType(type);
             }
         }
     }

@@ -40,6 +40,12 @@ namespace Engine
             return info;
         }
 
+        public static void SetNpcStateImage(Dictionary<int, ResStateInfo> list, CharacterState state, string fileName)
+        {
+            if(list == null) return;
+            list[(int) state].Image = Utils.GetAsf(GetAsfFilePathBase(fileName, ResType.Npc), fileName);
+        }
+
         private static ResStateInfo GetStateInfo(string image, string sound, ResType type)
         {
             var info = new ResStateInfo();
@@ -179,7 +185,7 @@ namespace Engine
         Common
     }
 
-    public struct ResStateInfo
+    public class ResStateInfo
     {
         public Asf Image;
         public SoundEffect Sound;
