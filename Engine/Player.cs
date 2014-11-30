@@ -405,6 +405,8 @@ namespace Engine
                             Globals.OutEdgeObj = one;
                             Globals.OutEdgeSprite = one;
                             Globals.OutEdgeTexture = TextureGenerator.GetOuterEdge(texture, Globals.ObjEdgeColor);
+                            Globals.OffX = one.OffX;
+                            Globals.OffY = one.OffY;
                             break;
                         }
                     }

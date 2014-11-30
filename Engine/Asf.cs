@@ -31,6 +31,8 @@ namespace Engine
         private Texture2D DecodeFrame(int index)
         {
             if (index < 0 || index >= FrameCounts) return null;
+            //If is already decoded retun cached frame
+            if (Frames[index] != null) return Frames[index];
             try
             {
                 var datastart = _dataoffset[index];

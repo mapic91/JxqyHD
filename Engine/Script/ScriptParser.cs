@@ -482,6 +482,12 @@ namespace Engine.Script
                         case "SetNpcActionType":
                             ScriptExecuter.SetNpcActionType(parameters, BelongObject);
                             break;
+                        case "Watch":
+                            ScriptExecuter.Watch(parameters);
+                            break;
+                        case "SetObjOfs":
+                            ScriptExecuter.SetObjOfs(parameters, BelongObject);
+                            break;
                     }
                 }
             }

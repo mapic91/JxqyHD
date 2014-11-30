@@ -1031,5 +1031,37 @@ namespace Engine.Script
                 target.SetNpcActionType(type);
             }
         }
+
+        public static void Watch(List<string> parameters)
+        {
+            var watcher = GetPlayerOrNpc(Utils.RemoveStringQuotes(parameters[0]));
+            var target = GetPlayerOrNpc(Utils.RemoveStringQuotes(parameters[1]));
+            if (watcher != null && target != null)
+            {
+                watcher.SetDirection(target.PositionInWorld - watcher.PositionInWorld);
+            }
+        }
+
+        public static void SetObjOfs(List<string> parameters, object belongObject)
+        {
+            var target = belongObject as Obj;
+            var offX = 0;
+            var offY = 0;
+            if (parameters.Count == 2)
+            {
+                offX = int.Parse(parameters[0]);
+                offY = int.Parse(parameters[1]);
+            }
+            else if (parameters.Count == 3)
+            {
+                target = ObjManager.GetObj(Utils.RemoveStringQuotes(parameters[0]));
+                offX = int.Parse(parameters[1]);
+                offY = int.Parse(parameters[2]);
+            }
+            if (target != null)
+            {
+                target.SetOffSet(offX, offY);
+            }
+        }
     }
 }

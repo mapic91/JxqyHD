@@ -252,6 +252,17 @@ namespace Engine
             PlayCurrentDirOnce();
         }
 
+        /// <summary>
+        /// Set offset
+        /// </summary>
+        /// <param name="offX">Offset X</param>
+        /// <param name="offY">Offset Y</param>
+        public void SetOffSet(int offX, int offY)
+        {
+            OffX = offX;
+            OffY = offY;
+        }
+
         public override void Update(GameTime gameTime)
         {
             if ((Texture.FrameCounts > 1 && IsAutoPlay) ||
