@@ -11,7 +11,7 @@ namespace Engine
 {
     public abstract class TextureBase
     {
-        private readonly List<Texture2D> _frames = new List<Texture2D>();
+        private Texture2D[] _frames;
         private int _frameCountsPerDirection = 1;
 
         protected bool _isOk;
@@ -48,13 +48,14 @@ namespace Engine
         {
             get { return Head.Direction; }
         }
-        public List<Texture2D> Frames
+        public Texture2D[] Frames
         {
             get { return _frames; }
+            protected set { _frames = value; }
         }
         public int FrameCounts
         {
-            get { return _frames.Count; }
+            get { return Head.FrameCounts; }
         }
 
         public int FrameCountsPerDirection
@@ -71,7 +72,11 @@ namespace Engine
             {
                 var buf = File.ReadAllBytes(path);
                 var offset = 0;
-                if (!LoadHead(buf, ref offset)) return;
+                if (!LoadHead(buf, ref offset))
+                {
+                    Head.FrameCounts = 0;
+                    return;
+                }
                 LoadPalette(buf, ref offset);
                 LoadFrame(buf, ref offset);
                 if (Head.Direction != 0)
@@ -81,7 +86,8 @@ namespace Engine
             }
             catch (Exception e)
             {
-                Log.LogFileLoadError("Asf", path, e);
+                Head.FrameCounts = 0;
+                Log.LogFileLoadError("Texture", path, e);
             }
         }
         private void LoadPalette(byte[] buf, ref int offset)
@@ -101,11 +107,15 @@ namespace Engine
         {
             LoadTexture(path);
         }
-        
-        protected abstract bool LoadHead(byte[] buf, ref int offset);
+
+        protected virtual bool LoadHead(byte[] buf, ref int offset)
+        {
+            Frames = new Texture2D[Head.FrameCounts];
+            return true;
+        }
         protected abstract void LoadFrame(byte[] buf, ref int offset);
 
-        public Texture2D GetFrame(int index)
+        public virtual Texture2D GetFrame(int index)
         {
             if (index >= 0 && index < FrameCounts)
                 return Frames[index];

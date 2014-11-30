@@ -11,9 +11,6 @@ namespace Engine
 {
     public class Mpc : TextureBase
     {
-        private int _frameOff;
-        private int _elapsedMilliSecond;
-
         protected override bool LoadHead(byte[] buf, ref int offset)
         {
             var headinfo = Globals.SimpleChinaeseEncoding.GetString(buf, 0, "MPC File Ver".Length);
@@ -28,7 +25,7 @@ namespace Engine
             Head.Interval = Utils.GetLittleEndianIntegerFromByteArray(buf, ref offset);
             Head.Bottom = Utils.GetLittleEndianIntegerFromByteArray(buf, ref offset);
             offset += 32;
-            return true;
+            return base.LoadHead(buf, ref offset);
         }       
         protected override void LoadFrame(byte[] buf, ref int offset)
         {
@@ -68,7 +65,7 @@ namespace Engine
                 }
                 var texture = new Texture2D(Globals.TheGame.GraphicsDevice, width, height);
                 texture.SetData(data);
-                Frames.Add(texture);
+                Frames[j] = texture;
             }
 
             Palette = null;//palette can be released now
@@ -82,19 +79,8 @@ namespace Engine
         public new Texture2D GetFrame(int index)
         {
             if (index >= 0 && index < FrameCounts)
-                return Frames[(index + _frameOff)%FrameCounts];
+                return Frames[index%FrameCounts];
             return null;
-        }
-
-        public void Update(GameTime gameTime)
-        {
-            _elapsedMilliSecond += (int)gameTime.ElapsedGameTime.TotalMilliseconds;
-            if (_elapsedMilliSecond > Interval)
-            {
-                _elapsedMilliSecond -= Interval;
-                _frameOff++;
-                if (_frameOff >= FrameCounts) _frameOff = 0;
-            }
         }
     }
 }

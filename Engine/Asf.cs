@@ -9,12 +9,63 @@ namespace Engine
 {
     public class Asf : TextureBase
     {
+        private byte[] _fileBuffer;
+        private int[] _dataoffset;
+        private int[] _datalength;
+        private bool _allCached;
+        private void CheckALlFrameCached()
+        {
+            for (var i = 0; i < FrameCounts; i++)
+            {
+                if (Frames[i] == null) return;
+            }
+            _allCached = true;
+            Palette = null;//palette can be released now
+            _fileBuffer = null; //File buffer unneeded
+        }
+
+        private Texture2D DecodeFrame(int index)
+        {
+            if (index < 0 || 
+                index >= FrameCounts ||
+                _fileBuffer == null ||
+                _dataoffset == null ||
+                _datalength == null) return null;
+
+            var datastart = _dataoffset[index];
+            var datalen = _datalength[index];
+            var width = Head.GlobleWidth;
+            var height = Head.GlobleHeight;
+            var data = new Color[width * height];
+            var dataidx = 0;
+            var dataend = datastart + datalen;
+            while (datastart < dataend)
+            {
+                var pixelcount = _fileBuffer[datastart++];
+                var pixelalpha = _fileBuffer[datastart++];
+                for (var k = 0; k < pixelcount; k++)
+                {
+                    if (pixelalpha == 0)
+                    {
+                        data[dataidx++] = Color.Transparent;
+                    }
+                    else
+                    {
+                        data[dataidx++] = Palette[_fileBuffer[datastart++]] * ((float)pixelalpha / (float)0xFF);
+                    }
+                }
+            }
+            var texture = new Texture2D(Globals.TheGame.GraphicsDevice, width, height);
+            texture.SetData(data);
+            return texture;
+        }
+
         protected override bool LoadHead(byte[] buf, ref int offset)
         {
             var headinfo = Globals.SimpleChinaeseEncoding.GetString(buf, 0, "ASF 1.0".Length);
             if (!headinfo.Equals("ASF 1.0")) return false;
             offset += 16;
-            
+
             Head.GlobleWidth = Utils.GetLittleEndianIntegerFromByteArray(buf, ref offset);
             Head.GlobleHeight = Utils.GetLittleEndianIntegerFromByteArray(buf, ref offset);
             Head.FrameCounts = Utils.GetLittleEndianIntegerFromByteArray(buf, ref offset);
@@ -24,64 +75,51 @@ namespace Engine
             Head.Left = Utils.GetLittleEndianIntegerFromByteArray(buf, ref offset);
             Head.Bottom = Utils.GetLittleEndianIntegerFromByteArray(buf, ref offset);
             offset += 16;
-            return true;
+            return base.LoadHead(buf, ref offset);
         }
         protected override void LoadFrame(byte[] buf, ref int offset)
         {
-            var dataoffset = new int[Head.FrameCounts];
-            var datalength = new int[Head.FrameCounts];
+            _fileBuffer = buf;
+            _dataoffset = new int[Head.FrameCounts];
+            _datalength = new int[Head.FrameCounts];
             for (var i = 0; i < Head.FrameCounts; i++)
             {
-                dataoffset[i] = Utils.GetLittleEndianIntegerFromByteArray(buf, ref offset);
-                datalength[i] = Utils.GetLittleEndianIntegerFromByteArray(buf, ref offset);
+                _dataoffset[i] = Utils.GetLittleEndianIntegerFromByteArray(buf, ref offset);
+                _datalength[i] = Utils.GetLittleEndianIntegerFromByteArray(buf, ref offset);
             }
-            for (var j = 0; j < Head.FrameCounts; j++)
-            {
-                var datastart = dataoffset[j];
-                var datalen = datalength[j];
-                var width = Head.GlobleWidth;
-                var height = Head.GlobleHeight;
-                var data = new Color[width * height];
-                var dataidx = 0;
-                var dataend = datastart + datalen;
-                while (datastart < dataend)
-                {
-                    var pixelcount = buf[datastart++];
-                    var pixelalpha = buf[datastart++];
-                    for (var k = 0; k < pixelcount; k++)
-                    {
-                        if (pixelalpha == 0)
-                        {
-                            data[dataidx++] = Color.Transparent;
-                        }
-                        else
-                        {
-                            data[dataidx++] = Palette[buf[datastart++]] * ((float)pixelalpha / (float)0xFF); 
-                        }
-                    }
-                }
-                var texture = new Texture2D(Globals.TheGame.GraphicsDevice, width, height);
-                texture.SetData(data);
-                Frames.Add(texture);
-            }
+        }
 
-            Palette = null;//palette can be released now
+        public override Texture2D GetFrame(int index)
+        {
+            if (index < 0 ||index >= FrameCounts) return null;
+            if (_allCached) return Frames[index];
+
+            var texture = DecodeFrame(index);
+            if (texture != null)
+            {
+                Frames[index] = texture;
+                CheckALlFrameCached();
+            }
+            return texture;
         }
 
         public Asf() { }
 
         public Asf(string path)
         {
+            _allCached = false;
             Load(path);
         }
 
         public Asf(Texture2D texture)
         {
-            if(texture == null) return;
-            Frames.Add(texture);
+            if (texture == null) return;
+            Frames = new Texture2D[] { texture };
             Head.GlobleWidth = texture.Width;
             Head.GlobleHeight = texture.Height;
             Head.Direction = 1;
+            Head.FrameCounts = 1;
+            _allCached = true;
             _isOk = true;
         }
     }

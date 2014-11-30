@@ -693,11 +693,6 @@ namespace Engine
 
         public void Update(GameTime gameTime)
         {
-            //在月影传说中，禁用了地图的循环功能
-            //foreach (var mpc in _loopingList)
-            //{
-            //    mpc.Update(gameTime);
-            //}
             Globals.TheCarmera.Update(gameTime);
             ViewBeginX = Globals.TheCarmera.ViewBeginX;
             ViewBeginY = Globals.TheCarmera.ViewBeginY;
