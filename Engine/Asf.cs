@@ -30,38 +30,41 @@ namespace Engine
 
         private Texture2D DecodeFrame(int index)
         {
-            if (index < 0 || 
-                index >= FrameCounts ||
-                _fileBuffer == null ||
-                _dataoffset == null ||
-                _datalength == null) return null;
-
-            var datastart = _dataoffset[index];
-            var datalen = _datalength[index];
-            var width = Head.GlobleWidth;
-            var height = Head.GlobleHeight;
-            var data = new Color[width * height];
-            var dataidx = 0;
-            var dataend = datastart + datalen;
-            while (datastart < dataend)
+            if (index < 0 || index >= FrameCounts) return null;
+            try
             {
-                var pixelcount = _fileBuffer[datastart++];
-                var pixelalpha = _fileBuffer[datastart++];
-                for (var k = 0; k < pixelcount; k++)
+                var datastart = _dataoffset[index];
+                var datalen = _datalength[index];
+                var width = Head.GlobleWidth;
+                var height = Head.GlobleHeight;
+                var data = new Color[width * height];
+                var dataidx = 0;
+                var dataend = datastart + datalen;
+                while (datastart < dataend)
                 {
-                    if (pixelalpha == 0)
+                    var pixelcount = _fileBuffer[datastart++];
+                    var pixelalpha = _fileBuffer[datastart++];
+                    for (var k = 0; k < pixelcount; k++)
                     {
-                        data[dataidx++] = Color.Transparent;
-                    }
-                    else
-                    {
-                        data[dataidx++] = Palette[_fileBuffer[datastart++]] * ((float)pixelalpha / (float)0xFF);
+                        if (pixelalpha == 0)
+                        {
+                            data[dataidx++] = Color.Transparent;
+                        }
+                        else
+                        {
+                            data[dataidx++] = Palette[_fileBuffer[datastart++]] * ((float)pixelalpha / (float)0xFF);
+                        }
                     }
                 }
+                var texture = new Texture2D(Globals.TheGame.GraphicsDevice, width, height);
+                texture.SetData(data);
+                return texture;
             }
-            var texture = new Texture2D(Globals.TheGame.GraphicsDevice, width, height);
-            texture.SetData(data);
-            return texture;
+            catch (Exception exception)
+            {
+                //file corrupt
+                return null;
+            }
         }
 
         protected override bool LoadHead(byte[] buf, ref int offset)
@@ -95,7 +98,7 @@ namespace Engine
 
         public override Texture2D GetFrame(int index)
         {
-            if (index < 0 ||index >= FrameCounts) return null;
+            if (index < 0 || index >= FrameCounts) return null;
             if (_allCached) return Frames[index];
 
             var texture = DecodeFrame(index);
