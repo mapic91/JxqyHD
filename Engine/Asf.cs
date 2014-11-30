@@ -20,8 +20,12 @@ namespace Engine
                 if (Frames[i] == null) return;
             }
             _allCached = true;
-            Palette = null;//palette can be released now
-            _fileBuffer = null; //File buffer unneeded
+
+            //free resurce
+            Palette = null;
+            _fileBuffer = null;
+            _dataoffset = null;
+            _datalength = null;
         }
 
         private Texture2D DecodeFrame(int index)
