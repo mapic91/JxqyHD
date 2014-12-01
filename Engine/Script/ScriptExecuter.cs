@@ -1139,5 +1139,15 @@ namespace Engine.Script
                 Globals.ThePlayer.SetFightState(int.Parse(parameters[0]) != 0);
             }
         }
+
+        public static void OpenWaterEffect()
+        {
+            Globals.IsWaterEffectEnabled = true;
+        }
+
+        public static void CloseWaterEffect()
+        {
+            Globals.IsWaterEffectEnabled = false;
+        }
     }
 }

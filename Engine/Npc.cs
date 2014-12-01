@@ -19,7 +19,7 @@ namespace Engine
             get
             {
                 if (base.PathFinder == 1)
-                    return Engine.PathFinder.PathType.PerfectMaxTry100;
+                    return Engine.PathFinder.PathType.PerfectMaxNpcTry;
                 else
                     return Engine.PathFinder.PathType.PathOneStep;
             }

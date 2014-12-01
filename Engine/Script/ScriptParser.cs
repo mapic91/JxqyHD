@@ -521,6 +521,12 @@ namespace Engine.Script
                         case "SetPlayerState":
                             ScriptExecuter.SetPlayerState(parameters);
                             break;
+                        case "OpenWaterEffect":
+                            ScriptExecuter.OpenWaterEffect();
+                            break;
+                        case "CloseWaterEffect":
+                            ScriptExecuter.CloseWaterEffect();
+                            break;
                     }
                 }
             }

@@ -73,6 +73,7 @@ namespace Engine
         public static bool CacheScriptFile = true;
 
         public static bool IsInputDisabled;
+        public static bool IsWaterEffectEnabled;
 
         public static void Initialize()
         {

@@ -26,6 +26,9 @@ namespace Jxqy
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+        private Effect _waterEffect;
+        private Texture2D _waterfallTexture;
+        private RenderTarget2D _renderTarget;
 
         public Game()
         {
@@ -35,6 +38,51 @@ namespace Jxqy
             _graphics.IsFullScreen = false;
             GameState.State = GameState.StateType.Playing;
         }
+
+        #region Utils
+        private void LoadEffect()
+        {
+            _waterEffect = Content.Load<Effect>(@"effect\refraction");
+            _waterfallTexture = Content.Load<Texture2D>(@"effect\waterfall");
+        }
+
+        private void WaterEffectBegin()
+        {
+            GraphicsDevice.SetRenderTarget(_renderTarget);
+        }
+
+        private void WaterEffectEnd(GameTime gameTime)
+        {
+            _spriteBatch.End();
+            GraphicsDevice.SetRenderTarget(null);
+            // Set an effect parameter to make the
+            // displacement texture scroll in a giant circle.
+            _waterEffect.Parameters["DisplacementScroll"].SetValue(
+                                        MoveInCircle(gameTime, 0.2f));
+            // Set the displacement texture.
+            _graphics.GraphicsDevice.Textures[1] = _waterfallTexture;
+
+            _spriteBatch.Begin(SpriteSortMode.Deferred,
+                null,
+                null,
+                null,
+                null,
+                _waterEffect);
+            _spriteBatch.Draw(_renderTarget, Vector2.Zero, Color.White);
+            _spriteBatch.End();
+            _spriteBatch.Begin(SpriteSortMode.Deferred, null);
+        }
+
+        static Vector2 MoveInCircle(GameTime gameTime, float speed)
+        {
+            double time = gameTime.TotalGameTime.TotalSeconds * speed;
+
+            float x = (float)Math.Cos(time);
+            float y = (float)Math.Sin(time);
+
+            return new Vector2(x, y);
+        }
+        #endregion Utils
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -58,6 +106,9 @@ namespace Jxqy
             _graphics.PreferredBackBufferWidth = Globals.WindowWidth;
             _graphics.PreferredBackBufferHeight = Globals.WindowHeight;
             _graphics.ApplyChanges();
+            //Set back in case of width height not work
+            Globals.WindowWidth = _graphics.PreferredBackBufferWidth;
+            Globals.WindowHeight = _graphics.PreferredBackBufferHeight;
 
             Globals.TheMap.ViewWidth = _graphics.PreferredBackBufferWidth;
             Globals.TheMap.ViewHeight = _graphics.PreferredBackBufferHeight;
@@ -72,6 +123,10 @@ namespace Jxqy
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+            LoadEffect();
+            _renderTarget = new RenderTarget2D(GraphicsDevice,
+                Globals.WindowWidth,
+                Globals.WindowHeight);
             Globals.FontSize7 = Content.Load<SpriteFont>(@"font\ASCII_Verdana_7_Bold");
             Globals.FontSize10 = Content.Load<SpriteFont>(@"font\GB2312_ASCII_√‘ƒ„ºÚœ∏‘≤_10");
             Globals.FontSize12 = Content.Load<SpriteFont>(@"font\GB2312_ASCII_√‘ƒ„ºÚœ∏‘≤_12");
@@ -199,7 +254,6 @@ namespace Jxqy
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
-
             _spriteBatch.Begin(SpriteSortMode.Deferred, null);
             if (ScriptExecuter.IsInPlayingMovie)//Movie
             {
@@ -212,6 +266,10 @@ namespace Jxqy
                     case GameState.StateType.Start:
                         break;
                     case GameState.StateType.Playing:
+                        if (Globals.IsWaterEffectEnabled)
+                        {
+                            WaterEffectBegin();
+                        }
                         //Map npcs objs magic sprite
                         Globals.TheMap.Draw(_spriteBatch);
                         //Player
@@ -222,6 +280,10 @@ namespace Jxqy
                         if (Globals.IsInSuperMagicMode)
                         {
                             Globals.SuperModeMagicSprite.Draw(_spriteBatch);
+                        }
+                        if (Globals.IsWaterEffectEnabled)
+                        {
+                            WaterEffectEnd(gameTime);
                         }
                         break;
                     default:
@@ -236,6 +298,7 @@ namespace Jxqy
                 GuiManager.Draw(_spriteBatch);
             }
             _spriteBatch.End();
+
             base.Draw(gameTime);
         }
     }

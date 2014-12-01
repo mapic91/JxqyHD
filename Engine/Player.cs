@@ -56,7 +56,7 @@ namespace Engine
             get
             {
                 if (base.PathFinder == 1)
-                    return Engine.PathFinder.PathType.PerfectMaxTry2000;
+                    return Engine.PathFinder.PathType.PerfectMaxPlayerTry;
                 return Engine.PathFinder.PathType.PathOneStep;
             }
         }

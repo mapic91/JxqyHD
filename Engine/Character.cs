@@ -559,6 +559,8 @@ namespace Engine
             var direction = to - from;
             direction.Normalize();
             var distance = Vector2.Distance(from, to);
+            //Sotre value in case of cleared in below code
+            var interactTarget = _interactiveTarget;
 
             if (TilePosition == tileFrom)
             {
@@ -628,6 +630,7 @@ namespace Engine
                 }
                 CheckMapTrap();
                 if (AttackingIsOk()) PerformeAttack();
+                _interactiveTarget = interactTarget;
                 if (InteractIsOk()) PerformeInteract();
                 if (IsRuning())
                 {
@@ -1238,32 +1241,73 @@ namespace Engine
         {
             if (PerformActionOk())
             {
-                _isRunToTarget = isRun;
                 _interactiveTarget = target;
+                _isRunToTarget = isRun;
+
+                Vector2 destinationTilePositon;
+                int interactDistance;
+                if (!GetInteractTargetInfo(out destinationTilePositon, out interactDistance))
+                {
+                    return;
+                }
+                DestinationMoveTilePosition = destinationTilePositon;
+                //if can't reach destination tile positon, find neighbor tile
+                if (Globals.TheMap.IsObstacleForCharacter(destinationTilePositon))
+                {
+                    //find directional neighbor
+                    var neighbor = Engine.PathFinder.FindNeighborInDirection(destinationTilePositon,
+                    destinationTilePositon - PositionInWorld);
+                    //if can't find try other neighbor
+                    if (neighbor == Vector2.Zero)
+                    {
+                        var neighbors = Engine.PathFinder.FindNeighbors(destinationTilePositon);
+                        if (neighbors.Count > 0)
+                        {
+                            DestinationMoveTilePosition = neighbors[0];
+                        }
+                    }
+                    else
+                    {
+                        DestinationMoveTilePosition = neighbor;
+                    }
+                }
+
                 if (IsStanding() && InteractIsOk())
                     PerformeInteract();
             }
         }
 
-        private bool InteractIsOk()
+        private bool GetInteractTargetInfo(out Vector2 tilePosition, out int interactDistance)
         {
+            tilePosition = Vector2.Zero;
+            interactDistance = 0;
             if (_interactiveTarget == null) return false;
             var character = _interactiveTarget as Character;
             var obj = _interactiveTarget as Obj;
-            Vector2 destinationTilePositon;
-            int interactDistance;
             if (character != null)
             {
-                destinationTilePositon = character.TilePosition;
+                tilePosition = character.TilePosition;
                 interactDistance = character.DialogRadius;
             }
             else if (obj != null)
             {
-                destinationTilePositon = obj.TilePosition;
+                tilePosition = obj.TilePosition;
                 interactDistance = 1;
             }
             else
                 return false;
+            return true;
+        }
+
+        private bool InteractIsOk()
+        {
+            if (_interactiveTarget == null) return false;
+            Vector2 destinationTilePositon;
+            int interactDistance;
+            if (!GetInteractTargetInfo(out destinationTilePositon, out interactDistance))
+            {
+                return false;
+            }
 
             var tileDistance = Engine.PathFinder.GetTileDistance(TilePosition, destinationTilePositon);
             if (tileDistance <= interactDistance)
@@ -1272,7 +1316,7 @@ namespace Engine
             }
             else
             {
-                MoveToTarget(destinationTilePositon);
+                MoveToTarget(DestinationMoveTilePosition);
                 return false;
             }
         }
@@ -1325,7 +1369,7 @@ namespace Engine
 
         public virtual void AddMagic(string magicFileName)
         {
-            
+
         }
 
         /// <summary>
@@ -1504,7 +1548,7 @@ namespace Engine
                 {
                     SetState(CharacterState.FightStand);
                 }
-                else if(IsRuning())
+                else if (IsRuning())
                 {
                     SetState(CharacterState.FightRun);
                 }

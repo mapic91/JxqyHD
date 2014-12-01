@@ -9,11 +9,15 @@ namespace Engine
 {
     public static class PathFinder
     {
+        private static Vector2 _lastStartTile = Vector2.Zero;
+        private static Vector2 _lastEndTile = Vector2.Zero;
+        private static LinkedList<Vector2> _lastPath = null; 
+
         public enum PathType
         {
             PathOneStep,
-            PerfectMaxTry100,
-            PerfectMaxTry2000
+            PerfectMaxNpcTry,
+            PerfectMaxPlayerTry
         }
 
         private static LinkedList<Vector2> GetPath(Dictionary<Vector2, Vector2> cameFrom, Vector2 startTile,
@@ -41,9 +45,9 @@ namespace Engine
             {
                 case PathType.PathOneStep:
                     return FindPathStep(startTile, endTile, 10);
-                case PathType.PerfectMaxTry100:
+                case PathType.PerfectMaxNpcTry:
                     return FindPathPerfect(startTile, endTile, 100);
-                case PathType.PerfectMaxTry2000:
+                case PathType.PerfectMaxPlayerTry:
                     return FindPathPerfect(startTile, endTile, 2000);
             }
             return null;
@@ -177,6 +181,17 @@ namespace Engine
             if (Globals.TheMap.IsObstacleForCharacter(endTile))
                 return null;
 
+            //last try can't find path, return null
+            if (_lastPath == null &&
+                _lastStartTile == startTile &&
+                _lastEndTile == endTile)
+            {
+                return null;
+            }
+            //Use chached for performance
+            _lastStartTile = startTile;
+            _lastEndTile = endTile;
+
             var cameFrom = new Dictionary<Vector2, Vector2>();
             var costSoFar = new Dictionary<Vector2, float>();
             var frontier = new C5.IntervalHeap<Node>();
@@ -206,7 +221,8 @@ namespace Engine
 
             }
 
-            return GetPath(cameFrom, startTile, endTile);
+            _lastPath = GetPath(cameFrom, startTile, endTile);
+            return _lastPath;
         }
 
         //Return in tile postiion
@@ -220,7 +236,7 @@ namespace Engine
             return neighbor;
         }
 
-        private static float GetCost(Vector2 fromTile, Vector2 toTile)
+        public static float GetCost(Vector2 fromTile, Vector2 toTile)
         {
             var fromPosition = Map.ToPixelPosition(fromTile);
             var toPosition = Map.ToPixelPosition(toTile);
@@ -228,7 +244,7 @@ namespace Engine
             return Vector2.Distance(fromPosition, toPosition);
         }
 
-        private static List<Vector2> FindNeighbors(Vector2 location)
+        public static List<Vector2> FindNeighbors(Vector2 location)
         {
             var listAll = FindAllNeighbors(location);
 
@@ -274,7 +290,7 @@ namespace Engine
             return list;
         }
 
-        private static List<Vector2> FindAllNeighbors(Vector2 tilePosition)
+        public static List<Vector2> FindAllNeighbors(Vector2 tilePosition)
         {
             var list = new List<Vector2>();
             var x = tilePosition.X;
