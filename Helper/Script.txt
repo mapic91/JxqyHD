@@ -306,6 +306,12 @@ EnableRun();
 
 SetPlayerState(a)
 SetPlayerState(1);
+
+OpenWaterEffect()
+OpenWaterEffect();
+
+CloseWaterEffect()
+CloseWaterEffect();
 ///////////////////////////////////////////////////////////////////
 //////////////////    Implemented   End  /////////////////////////
 /////////////////////////////////////////////////////////////////
@@ -321,8 +327,7 @@ CloseBox("通天塔开关A");
 CloseTimeLimit()
 CloseTimeLimit();
 
-CloseWaterEffect()
-CloseWaterEffect();
+
 
 EquipGoods(a,b)
 EquipGoods(1, 5);
@@ -384,8 +389,7 @@ NpcSpecialActionEx("杨影枫", "mpc006_跪.asf");
 OpenTimeLimit(a)
 OpenTimeLimit(2);
 
-OpenWaterEffect()
-OpenWaterEffect();
+
 
 PlayerChange(a)
 PlayerChange(1);
