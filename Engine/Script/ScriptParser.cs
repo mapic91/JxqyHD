@@ -240,6 +240,26 @@ namespace Engine.Script
                         case "PlayMovie":
                             isEnd = !ScriptExecuter.IsInPlayingMovie;
                             break;
+                        case "PlayerGoto":
+                            isEnd = ScriptExecuter.IsPlayerGotoEnd();
+                            break;
+                        case "PlayerGotoDir":
+                            isEnd = ScriptExecuter.IsPlayerGotoDirEnd();
+                            break;
+                        case "PlayerJumpTo":
+                            isEnd = ScriptExecuter.IsPlayerJumpToEnd();
+                            break;
+                        case "PlayerRunTo":
+                            isEnd = ScriptExecuter.IsPlayerRunToEnd();
+                            break;
+                        case "NpcGoto":
+                            isEnd = ScriptExecuter.IsNpcGotoEnd(_currentCode.Parameters,
+                                BelongObject);
+                            break;
+                        case "NpcGotoDir":
+                            isEnd = ScriptExecuter.IsNpcGotoDirEnd(_currentCode.Parameters,
+                                BelongObject);
+                            break;
                     }
                 }
                 else
@@ -526,6 +546,39 @@ namespace Engine.Script
                             break;
                         case "CloseWaterEffect":
                             ScriptExecuter.CloseWaterEffect();
+                            break;
+                        case "PlayerGoto":
+                            ScriptExecuter.PlayerGoto(parameters);
+                            isEnd = ScriptExecuter.IsPlayerGotoEnd();
+                            break;
+                        case "PlayerGotoDir":
+                            ScriptExecuter.PlayerGotoDir(parameters);
+                            isEnd = ScriptExecuter.IsPlayerGotoDirEnd();
+                            break;
+                        case "PlayerGotoEx":
+                            ScriptExecuter.PlayerGotoEx(parameters);
+                            break;
+                        case "PlayerJumpTo":
+                            ScriptExecuter.PlayerJumpTo(parameters);
+                            isEnd = ScriptExecuter.IsPlayerJumpToEnd();
+                            break;
+                        case "PlayerRunTo":
+                            ScriptExecuter.PlayerRunTo(parameters);
+                            isEnd = ScriptExecuter.IsPlayerRunToEnd();
+                            break;
+                        case "PlayerRunToEx":
+                            ScriptExecuter.PlayerRunToEx(parameters);
+                            break;
+                        case "NpcGoto":
+                            ScriptExecuter.NpcGoto(parameters, BelongObject);
+                            isEnd = ScriptExecuter.IsNpcGotoEnd(parameters, BelongObject);
+                            break;
+                        case "NpcGotoDir":
+                            ScriptExecuter.NpcGotoDir(parameters, BelongObject);
+                            isEnd = ScriptExecuter.IsNpcGotoDirEnd(parameters, BelongObject);
+                            break;
+                        case "NpcGotoEx":
+                            ScriptExecuter.NpcGotoEx(parameters, BelongObject);
                             break;
                     }
                 }

@@ -225,7 +225,12 @@ namespace Engine
             return _lastPath;
         }
 
-        //Return in tile postiion
+        /// <summary>
+        /// Find neighbor in direction
+        /// </summary>
+        /// <param name="tilePosition">Tile position to find</param>
+        /// <param name="direction">Vector direction</param>
+        /// <returns>Return in tile postiion</returns>
         public static Vector2 FindNeighborInDirection(Vector2 tilePosition, Vector2 direction)
         {
             var neighbor = Vector2.Zero;
@@ -234,6 +239,18 @@ namespace Engine
                 neighbor = FindAllNeighbors(tilePosition)[Utils.GetDirectionIndex(direction, 8)];
             }
             return neighbor;
+        }
+
+        /// <summary>
+        /// Find neighbor in direction(0-7)
+        /// </summary>
+        /// <param name="tilePosition">Tile position to find</param>
+        /// <param name="direction">Direction: 0-7</param>
+        /// <returns>Return in tile postiion</returns>
+        public static Vector2 FindNeighborInDirection(Vector2 tilePosition, int direction)
+        {
+            if (direction < 0 || direction > 7) return Vector2.Zero;
+            return FindAllNeighbors(tilePosition)[direction];
         }
 
         public static float GetCost(Vector2 fromTile, Vector2 toTile)

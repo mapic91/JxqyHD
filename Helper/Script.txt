@@ -312,6 +312,34 @@ OpenWaterEffect();
 
 CloseWaterEffect()
 CloseWaterEffect();
+
+PlayerGoto(a, b)
+PlayerGoto(24, 43);
+
+PlayerGotoDir(a, b)
+PlayerGotoDir(5, 2);
+
+PlayerGotoEx(a,b)
+PlayerGotoEx(8,19);
+
+PlayerJumpTo(a, b)
+PlayerJumpTo(36, 40);
+
+PlayerRunTo(a,b)
+PlayerRunTo(9,29);
+
+PlayerRunToEx(a,b)
+PlayerRunToEx(4,78);
+
+NpcGoto(a,b,c)
+NpcGoto("Â¬ÕØå°",4,99);
+
+NpcGotoDir(a,b,c)
+NpcGotoDir("Ç¾Þ±",1,2);
+
+NpcGotoEx(a,b,c)
+NpcGotoEx("ÄÉÀ¼Õæ",9,31);
+
 ///////////////////////////////////////////////////////////////////
 //////////////////    Implemented   End  /////////////////////////
 /////////////////////////////////////////////////////////////////
@@ -326,8 +354,6 @@ CloseBox("Í¨ÌìËþ¿ª¹ØA");
 
 CloseTimeLimit()
 CloseTimeLimit();
-
-
 
 EquipGoods(a,b)
 EquipGoods(1, 5);
@@ -371,15 +397,6 @@ MoveScreenEx(40, 32, 4);
 NpcAttack(a,b,c)
 NpcAttack("ÑîÓ°·ã",10,35);
 
-NpcGoto(a,b,c)
-NpcGoto("Â¬ÕØå°",4,99);
-
-NpcGotoDir(a,b,c)
-NpcGotoDir("Ç¾Þ±",1,2);
-
-NpcGotoEx(a,b,c)
-NpcGotoEx("ÄÉÀ¼Õæ",9,31);
-
 NpcSpecialAction(a,b)
 NpcSpecialAction("Åùö¨ÌÃ±¬Õ¨","ÌýÀ×¸ó±¬Õ¨.asf");
 
@@ -389,28 +406,8 @@ NpcSpecialActionEx("ÑîÓ°·ã", "mpc006_¹ò.asf");
 OpenTimeLimit(a)
 OpenTimeLimit(2);
 
-
-
 PlayerChange(a)
 PlayerChange(1);
-
-PlayerGoto(a, b)
-PlayerGoto(24, 43);
-
-PlayerGotoDir(a, b)
-PlayerGotoDir(5, 2);
-
-PlayerGotoEx(a,b)
-PlayerGotoEx(8,19);
-
-PlayerJumpTo(a, b)
-PlayerJumpTo(36, 40);
-
-PlayerRunTo(a,b)
-PlayerRunTo(9,29);
-
-PlayerRunToEx(a,b)
-PlayerRunToEx(4,78);
 
 ReturnToTitle()
 ReturnToTitle();

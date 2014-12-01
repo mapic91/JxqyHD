@@ -15,7 +15,7 @@ namespace Engine
     using StateMapList = Dictionary<int, ResStateInfo>;
     public abstract class Character : Sprite
     {
-        #region Member
+        #region Field
         private SoundEffectInstance _sound;
         private int _dir;
         private string _name;
@@ -72,8 +72,11 @@ namespace Engine
         private bool _notAddBody;
         private bool _isNextStepStand;
         private Dictionary<int, Utils.LevelDetail> _levelIni;
+        private bool _isInStepMove;
+        private int _stepMoveDirection;
+        private int _leftStepToMove;
         protected Magic MagicUse;
-        #endregion Member
+        #endregion Field
 
         protected virtual bool MagicFromCache { get { return true; } }
 
@@ -92,6 +95,11 @@ namespace Engine
         public bool IsRunDisabled { protected set; get; }
 
         public bool IsHide { get; set; }
+
+        public bool IsInStepMove
+        {
+            get { return _isInStepMove; }
+        }
 
         public float FrozenSeconds
         {
@@ -624,11 +632,16 @@ namespace Engine
                     else
                     {
                         PositionInWorld = to;
-                        StandingImmediately();
+                        //If in step move don't stand
+                        if (!IsInStepMove)
+                        {
+                            StandingImmediately();
+                        }
                         MovedDistance = 0;
                     }
                 }
                 CheckMapTrap();
+                CheckStepMove();
                 if (AttackingIsOk()) PerformeAttack();
                 _interactiveTarget = interactTarget;
                 if (InteractIsOk()) PerformeInteract();
@@ -955,12 +968,48 @@ namespace Engine
             return State == (int)CharacterState.Sit;
         }
 
+        /// <summary>
+        /// Goto direction steps.
+        /// </summary>
+        /// <param name="direction">Direction 0-7</param>
+        /// <param name="moveStep">Steps to move</param>
+        public void WalkToDirection(int direction, int moveStep)
+        {
+            _isInStepMove = true;
+            _leftStepToMove = moveStep;
+            _stepMoveDirection = direction;
+            CheckStepMove();
+        }
+
+        private void CheckStepMove()
+        {
+            if(!_isInStepMove) return;
+            if (_leftStepToMove == 0)
+            {
+                StandingImmediately();
+                _isInStepMove = false;
+                return;
+            }
+            var destinationTilePosition = Engine.PathFinder.FindNeighborInDirection(
+                TilePosition, 
+                _stepMoveDirection);
+            WalkTo(destinationTilePosition);
+            if (Path == null ||
+                HasObstacle(destinationTilePosition))//Unable to move
+            {
+                _isInStepMove = false;
+                return;
+            }
+            _leftStepToMove--;
+        }
+
         public void WalkTo(Vector2 destinationTilePosition)
         {
             if (PerformActionOk() &&
                 destinationTilePosition != TilePosition)
             {
-                if (IsWalking())
+                //If in step move, alway find new path
+                if (IsWalking() && !IsInStepMove)
                 {
                     DestinationMoveTilePosition = destinationTilePosition;
                     ClearTarget();

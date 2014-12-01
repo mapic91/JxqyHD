@@ -255,12 +255,11 @@ namespace Engine
         /// <summary>
         /// Set offset
         /// </summary>
-        /// <param name="offX">Offset X</param>
-        /// <param name="offY">Offset Y</param>
-        public void SetOffSet(int offX, int offY)
+        /// <param name="offSet">Offset value</param>
+        public void SetOffSet(Vector2 offSet)
         {
-            OffX = offX;
-            OffY = offY;
+            OffX = (int)offSet.X;
+            OffY = (int)offSet.Y;
         }
 
         public override void Update(GameTime gameTime)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using Engine.Gui;
 using Engine.ListManager;
@@ -96,6 +97,116 @@ namespace Engine.Script
                     break;
                 }
             }
+        }
+
+        private static bool IsPlayerNull()
+        {
+            return Globals.ThePlayer == null;
+        }
+
+        /// <summary>
+        /// Used for type: name,x, y or x,y
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <param name="belongObject"></param>
+        /// <param name="target"></param>
+        /// <param name="value"></param>
+        private static void GetTargetAndValue3(List<string> parameters,
+            object belongObject,
+            out Character target,
+            out Vector2 value)
+        {
+            target = belongObject as Character;
+            value = Vector2.Zero;
+            if (parameters.Count == 3)
+            {
+                target = GetPlayerOrNpc(Utils.RemoveStringQuotes(parameters[0]));
+                value = new Vector2(
+                    int.Parse(parameters[1]),
+                    int.Parse(parameters[2]));
+            }
+            else if (parameters.Count == 2)
+            {
+                value = new Vector2(
+                    int.Parse(parameters[0]),
+                    int.Parse(parameters[1]));
+            }
+        }
+
+        /// <summary>
+        /// Used for type: name,x or x
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <param name="belongObject"></param>
+        /// <param name="target"></param>
+        /// <param name="value"></param>
+        private static void GetTargetAndValue2(List<string> parameters,
+            object belongObject,
+            out Character target,
+            out int value)
+        {
+            target = belongObject as Character;
+            value = 0;
+            if (parameters.Count == 2)
+            {
+                target = GetPlayerOrNpc(Utils.RemoveStringQuotes(parameters[0]));
+                value = int.Parse(parameters[1]);
+            }
+            else if (parameters.Count == 1)
+            {
+                value = int.Parse(parameters[0]);
+            }
+        }
+
+        /// <summary>
+        /// Used for type: name,x, y or x,y
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <param name="belongObject"></param>
+        /// <param name="target"></param>
+        /// <param name="value"></param>
+        private static void GetTargetAndValue3(List<string> parameters,
+            object belongObject,
+            out Obj target,
+            out Vector2 value)
+        {
+            target = belongObject as Obj;
+            value = Vector2.Zero;
+            if (parameters.Count == 3)
+            {
+                target = ObjManager.GetObj(Utils.RemoveStringQuotes(parameters[0]));
+                value = new Vector2(
+                    int.Parse(parameters[1]),
+                    int.Parse(parameters[2]));
+            }
+            else if (parameters.Count == 2)
+            {
+                value = new Vector2(
+                    int.Parse(parameters[0]),
+                    int.Parse(parameters[1]));
+            }
+        }
+
+        private static bool IsCharacterMoveEndAndStanding(Character character)
+        {
+            if (character != null &&
+                !character.IsStanding())
+            {
+                return false;
+            }
+            Globals.IsInputDisabled = false;
+            return true;
+        }
+
+        private static bool IsCharacterGotoDirEnd(Character character)
+        {
+            if (character != null &&
+                character.IsInStepMove)
+            {
+                return false;
+            }
+            Globals.IsInputDisabled = false;
+            return true;
         }
 
         public static void Update(GameTime gameTime)
@@ -815,43 +926,23 @@ namespace Engine.Script
 
         public static void SetNpcDir(List<string> parameters, object belongObject)
         {
-            Character target = null;
-            var dir = 0;
-            if (parameters.Count == 1)
-            {
-                target = belongObject as Character;
-                dir = int.Parse(parameters[0]);
-            }
-            else if (parameters.Count == 2)
-            {
-                target = GetPlayerOrNpc(
-                    Utils.RemoveStringQuotes(parameters[0]));
-                dir = int.Parse(parameters[1]);
-            }
+            Character target;
+            int value;
+            GetTargetAndValue2(parameters, belongObject, out target, out value);
             if (target != null)
             {
-                target.SetDirection(dir);
+                target.SetDirection(value);
             }
         }
 
         public static void SetNpcKind(List<string> parameters, object belongObject)
         {
-            Character target = null;
-            var kind = 0;
-            if (parameters.Count == 1)
-            {
-                target = belongObject as Character;
-                kind = int.Parse(parameters[0]);
-            }
-            else if (parameters.Count == 2)
-            {
-                target = GetPlayerOrNpc(
-                    Utils.RemoveStringQuotes(parameters[0]));
-                kind = int.Parse(parameters[1]);
-            }
+            Character target;
+            int value;
+            GetTargetAndValue2(parameters, belongObject, out target, out value);
             if (target != null)
             {
-                target.SetKind(kind);
+                target.SetKind(value);
             }
         }
 
@@ -877,43 +968,23 @@ namespace Engine.Script
 
         public static void SetNpcPos(List<string> parameters, object belongObject)
         {
-            Character target = null;
-            var position = Vector2.Zero;
-            if (parameters.Count == 2)
-            {
-                target = belongObject as Character;
-                position = new Vector2(int.Parse(parameters[0]),
-                    int.Parse(parameters[1]));
-            }
-            else if (parameters.Count == 3)
-            {
-                target = GetPlayerOrNpc(Utils.RemoveStringQuotes(parameters[0]));
-                position = new Vector2(int.Parse(parameters[1]),
-                    int.Parse(parameters[2]));
-            }
+            Character target;
+            Vector2 value;
+            GetTargetAndValue3(parameters, belongObject, out target, out value);
             if (target != null)
             {
-                target.SetTilePosition(position);
+                target.SetTilePosition(value);
             }
         }
 
         public static void SetNpcRelation(List<string> parameters, object belongObject)
         {
-            Character target = null;
-            var relation = 0;
-            if (parameters.Count == 1)
-            {
-                target = belongObject as Character;
-                relation = int.Parse(parameters[0]);
-            }
-            else if (parameters.Count == 2)
-            {
-                target = GetPlayerOrNpc(Utils.RemoveStringQuotes(parameters[0]));
-                relation = int.Parse(parameters[1]);
-            }
+            Character target;
+            int value;
+            GetTargetAndValue2(parameters, belongObject, out target, out value);
             if (target != null)
             {
-                target.SetRelation(relation);
+                target.SetRelation(value);
             }
         }
 
@@ -947,7 +1018,7 @@ namespace Engine.Script
                 destination = new Vector2(int.Parse(parameters[2]),
                     int.Parse(parameters[3]));
             }
-            if(target == null) return;
+            if (target == null) return;
             switch (action)
             {
                 case CharacterState.Stand:
@@ -1004,7 +1075,7 @@ namespace Engine.Script
         public static void SetNpcActionFile(List<string> parameters)
         {
             var target = GetPlayerOrNpc(Utils.RemoveStringQuotes(parameters[0]));
-            var state = (CharacterState) int.Parse(parameters[1]);
+            var state = (CharacterState)int.Parse(parameters[1]);
             var fileName = Utils.RemoveStringQuotes(parameters[2]);
             if (target != null)
             {
@@ -1012,23 +1083,14 @@ namespace Engine.Script
             }
         }
 
-
         public static void SetNpcActionType(List<string> parameters, object belongObject)
         {
-            var target = belongObject as Character;
-            var type = 0;
-            if (parameters.Count == 1)
-            {
-                type = int.Parse(parameters[0]);
-            }
-            else if (parameters.Count == 2)
-            {
-                target = GetPlayerOrNpc(Utils.RemoveStringQuotes(parameters[0]));
-                type = int.Parse(parameters[1]);
-            }
+            Character target;
+            int value;
+            GetTargetAndValue2(parameters, belongObject, out target, out value);
             if (target != null)
             {
-                target.SetNpcActionType(type);
+                target.SetNpcActionType(value);
             }
         }
 
@@ -1044,23 +1106,12 @@ namespace Engine.Script
 
         public static void SetObjOfs(List<string> parameters, object belongObject)
         {
-            var target = belongObject as Obj;
-            var offX = 0;
-            var offY = 0;
-            if (parameters.Count == 2)
-            {
-                offX = int.Parse(parameters[0]);
-                offY = int.Parse(parameters[1]);
-            }
-            else if (parameters.Count == 3)
-            {
-                target = ObjManager.GetObj(Utils.RemoveStringQuotes(parameters[0]));
-                offX = int.Parse(parameters[1]);
-                offY = int.Parse(parameters[2]);
-            }
+            Obj target;
+            Vector2 value;
+            GetTargetAndValue3(parameters, belongObject, out target, out value);
             if (target != null)
             {
-                target.SetOffSet(offX, offY);
+                target.SetOffSet(value);
             }
         }
 
@@ -1148,6 +1199,139 @@ namespace Engine.Script
         public static void CloseWaterEffect()
         {
             Globals.IsWaterEffectEnabled = false;
+        }
+
+        public static void PlayerGoto(List<string> parameters)
+        {
+            var tilePosition = new Vector2(
+                int.Parse(parameters[0]),
+                int.Parse(parameters[1]));
+            if (Globals.ThePlayer != null)
+            {
+                Globals.ThePlayer.WalkTo(tilePosition);
+                Globals.IsInputDisabled = true;
+            }
+        }
+
+        public static bool IsPlayerGotoEnd()
+        {
+            return IsCharacterMoveEndAndStanding(Globals.ThePlayer);
+        }
+
+        public static void PlayerGotoDir(List<string> parameters)
+        {
+            if (IsPlayerNull()) return;
+            Globals.ThePlayer.WalkToDirection(int.Parse(parameters[0]),
+                int.Parse(parameters[1]));
+            Globals.IsInputDisabled = true;
+        }
+
+        public static bool IsPlayerGotoDirEnd()
+        {
+            return IsCharacterGotoDirEnd(Globals.ThePlayer);
+        }
+
+        public static void PlayerGotoEx(List<string> parameters)
+        {
+            if (Globals.ThePlayer != null)
+            {
+                Globals.ThePlayer.WalkTo(new Vector2(
+                    int.Parse(parameters[0]),
+                    int.Parse(parameters[1])));
+            }
+        }
+
+        public static void PlayerJumpTo(List<string> parameters)
+        {
+            if (IsPlayerNull()) return;
+            Globals.IsInputDisabled = true;
+            Globals.ThePlayer.JumpTo(new Vector2(
+                int.Parse(parameters[0]),
+                int.Parse(parameters[1])));
+        }
+
+        public static bool IsPlayerJumpToEnd()
+        {
+            return IsCharacterMoveEndAndStanding(Globals.ThePlayer);
+        }
+
+        public static void PlayerRunTo(List<string> parameters)
+        {
+            if (IsPlayerNull()) return;
+            Globals.IsInputDisabled = true;
+            Globals.ThePlayer.RunTo(new Vector2(
+                int.Parse(parameters[0]),
+                int.Parse(parameters[1])));
+        }
+
+        public static bool IsPlayerRunToEnd()
+        {
+            return IsCharacterMoveEndAndStanding(Globals.ThePlayer);
+        }
+
+        public static void PlayerRunToEx(List<string> parameters)
+        {
+            if (IsPlayerNull()) return;
+            Globals.ThePlayer.RunTo(new Vector2(
+                int.Parse(parameters[0]),
+                int.Parse(parameters[1])));
+        }
+
+        public static void NpcGoto(List<string> parameters, object belongObject)
+        {
+            Character target;
+            Vector2 destination;
+            GetTargetAndValue3(parameters, belongObject, out target, out destination);
+            if (target != null)
+            {
+                Globals.IsInputDisabled = true;
+                target.WalkTo(destination);
+            }
+        }
+
+        public static bool IsNpcGotoEnd(List<string> parameters, object belongObject)
+        {
+            Character target;
+            Vector2 destination;
+            GetTargetAndValue3(parameters, belongObject, out target, out destination);
+            if (target != null && !target.IsStanding())
+            {
+                return false;
+            }
+            Globals.IsInputDisabled = false;
+            return true;
+        }
+
+        public static void NpcGotoDir(List<string> parameters, object belongObject)
+        {
+            Character target;
+            Vector2 value;
+            GetTargetAndValue3(parameters, belongObject, out target, out value);
+            if (target != null)
+            {
+                Globals.IsInputDisabled = true;
+                target.WalkToDirection((int)value.X,
+                    (int)value.Y);
+            }
+        }
+
+        public static bool IsNpcGotoDirEnd(List<string> parameters, object belongObject)
+        {
+            Character target;
+            Vector2 value;
+            GetTargetAndValue3(parameters, belongObject, out target, out value);
+            return IsCharacterGotoDirEnd(target);
+        }
+
+        public static void NpcGotoEx(List<string> parameters, object belongObject)
+        {
+            Character target;
+            Vector2 position;
+            GetTargetAndValue3(parameters, belongObject, out target, out position);
+            if (target != null)
+            {
+                target.WalkTo(position);
+            }
         }
     }
 }
