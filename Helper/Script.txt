@@ -340,6 +340,24 @@ NpcGotoDir("«æﬁ±",1,2);
 NpcGotoEx(a,b,c)
 NpcGotoEx("ƒ…¿º’Ê",9,31);
 
+SetMoneyNum(a)
+SetMoneyNum(0);
+
+GetMoneyNum()
+GetMoneyNum();
+
+GetMoneyNum(a)
+GetMoneyNum($TwentyMoney);
+
+SetPlayerScn()
+SetPlayerScn();
+
+MoveScreen(a,b,c)
+MoveScreen(6,100,2);
+
+MoveScreenEx(a, b, c)
+MoveScreenEx(40, 32, 4);
+
 ///////////////////////////////////////////////////////////////////
 //////////////////    Implemented   End  /////////////////////////
 /////////////////////////////////////////////////////////////////
@@ -364,12 +382,6 @@ FollowNpc("ƒΩ»›¿œÕ∑","—Ó”∞∑„")
 GetGoodsNum(a)
 GetGoodsNum("goods-n13-◊œœº”Ò≈Â.ini");
 
-GetMoneyNum()
-GetMoneyNum();
-
-GetMoneyNum(a)
-GetMoneyNum($TwentyMoney);
-
 GetNpcCount(1,1)
 GetNpcCount(1,1);
 
@@ -387,12 +399,6 @@ LoadGame(0);
 
 MergeNpc(a)
 MergeNpc("SubEvent01.npc");
-
-MoveScreen(a,b,c)
-MoveScreen(6,100,2);
-
-MoveScreenEx(a, b, c)
-MoveScreenEx(40, 32, 4);
 
 NpcAttack(a,b,c)
 NpcAttack("—Ó”∞∑„",10,35);
@@ -417,12 +423,6 @@ SellGoods("µÕº∂“©∆∑.ini");
 
 SetMapPos(a, b)
 SetMapPos(32, 67);
-
-SetMoneyNum(a)
-SetMoneyNum(0);
-
-SetPlayerScn()
-SetPlayerScn();
 
 SetTimeScript(a,b)
 SetTimeScript(1,"changecolor.txt");

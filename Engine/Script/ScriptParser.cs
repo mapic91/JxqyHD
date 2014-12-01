@@ -260,6 +260,9 @@ namespace Engine.Script
                             isEnd = ScriptExecuter.IsNpcGotoDirEnd(_currentCode.Parameters,
                                 BelongObject);
                             break;
+                        case "MoveScreen":
+                            isEnd = ScriptExecuter.IsMoveScreenEnd();
+                            break;
                     }
                 }
                 else
@@ -579,6 +582,22 @@ namespace Engine.Script
                             break;
                         case "NpcGotoEx":
                             ScriptExecuter.NpcGotoEx(parameters, BelongObject);
+                            break;
+                        case "SetMoneyNum":
+                            ScriptExecuter.SetMoneyNum(parameters);
+                            break;
+                        case "GetMoneyNum":
+                            ScriptExecuter.GetMoneyNum(parameters);
+                            break;
+                        case "SetPlayerScn":
+                            ScriptExecuter.SetPlayerScn();
+                            break;
+                        case "MoveScreen":
+                            ScriptExecuter.MoveScreen(parameters);
+                            isEnd = ScriptExecuter.IsMoveScreenEnd();
+                            break;
+                        case "MoveScreenEx":
+                            ScriptExecuter.MoveScreenEx(parameters);
                             break;
                     }
                 }

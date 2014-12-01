@@ -291,11 +291,23 @@ namespace Engine
         {
             if (_direction8List == null)
             {
-                _direction8List = new List<Vector2>();
-                var angle = Math.PI * 2 / 8;
+                _direction8List = new List<Vector2>()
+                {
+                    new Vector2(0, 1),//0
+                    new Vector2(-1, 1),//1
+                    new Vector2(-1, 0),//2
+                    new Vector2(-1, -1),//3
+                    new Vector2(0, -1),//4
+                    new Vector2(1, -1),//5
+                    new Vector2(1, 0),//6
+                    new Vector2(1, 1)//7
+                };
+                //Normalize
                 for (var i = 0; i < 8; i++)
                 {
-                    _direction8List.Add(new Vector2((float)-Math.Sin(angle * i), (float)Math.Cos(angle * i))); ;
+                    var dir = _direction8List[i];
+                    dir.Normalize();
+                    _direction8List[i] = dir;
                 }
             }
             return _direction8List;

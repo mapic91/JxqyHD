@@ -10,138 +10,14 @@ namespace Engine
         private int _viewBeginY;
         private int _viewWidth;
         private int _viewHeight;
-        private IMoveControlInWorld _moveControlInWorld;
-        private bool _isFollow;
+
         private int _moveSpeed;
-        private bool _isInMove;
-        private Vector2 _moveDestination;
-        private float _movedDistance, _maxMoveDistance;
-        private void Init(int beginX, int beginY, int viewWidth, int viewHeight, int worldWidth, int worldHeight)
-        {
-            WorldWidth = worldWidth;
-            WorldHeight = worldHeight;
-            ViewBeginX = beginX;
-            ViewBeginY = beginY;
-            ViewWidth = viewWidth;
-            ViewHeight = viewHeight;
-        }
-
-        public Carmera() { }
-
-        public Carmera(int beginX, int beginY, int viewWidth, int viewHeight, int worldWidth, int worldHeight)
-        {
-            Init(beginX, beginY, viewWidth, viewHeight, worldWidth, worldHeight);
-        }
-
-        public Carmera(Rectangle region, int worldWidth, int worldHeight)
-        {
-            Init(region.X, region.Y, region.Width, region.Height, worldWidth, worldHeight);
-        }
-
-        #region Public method
-        public void Update(GameTime gameTime)
-        {
-            var lastCarmerPos = CarmeraBeginPositionInWorld;
-            if (IsInMove)
-            {
-                Vector2 dir = MoveDestination - CarmeraBeginPositionInWorld;
-                if (dir != Vector2.Zero)
-                {
-                    dir.Normalize();
-                    var move = dir*_moveSpeed*(float) gameTime.ElapsedGameTime.TotalSeconds;
-                    CarmeraBeginPositionInWorld += move;
-                    _movedDistance += move.Length();
-                }
-                else
-                {
-                    IsInMove = false;
-                }
-                if (_movedDistance >= _maxMoveDistance ||
-                    (int)lastCarmerPos.X == (int)CarmeraBeginPositionInWorld.X ||
-                    (int)lastCarmerPos.Y == (int)CarmeraBeginPositionInWorld.Y)
-                {
-                    IsInMove = false;
-                }
-            }
-            UpdateFollow();
-        }
-
-        public void UpdateFollow()
-        {
-            if (IsFollow && _moveControlInWorld != null && !IsInMove)
-            {
-                Vector2 pos = _moveControlInWorld.PositionInWorld;
-                pos -= new Vector2((float)ViewWidth / 2, (float)ViewHeight / 2);
-                CarmeraBeginPositionInWorld = pos;
-            }
-        }
-
-        public void Follow(IMoveControlInWorld moveControlInWorld)
-        {
-            IsFollow = true;
-            _moveControlInWorld = moveControlInWorld;
-            UpdateFollow();
-        }
-
-        public void SmoothMoveTo(Vector2 position, int velocity = 5000)
-        {
-            IsInMove = true;
-            MoveDestination = position;
-            _moveSpeed = velocity;
-            _movedDistance = 0f;
-            _maxMoveDistance = (MoveDestination - CarmeraBeginPositionInWorld).Length();
-        }
-
-        public Vector2 ToViewPosition(Vector2 worldPosition)
-        {
-            return worldPosition - CarmeraBeginPositionInWorld;
-        }
-
-        public Vector2 ToWorldPosition(Vector2 viewPosition)
-        {
-            return CarmeraBeginPositionInWorld + viewPosition;
-        }
-
-        public Rectangle ToViewRegion(Rectangle worldRegion)
-        {
-            Vector2 pos = ToViewPosition(new Vector2(worldRegion.X, worldRegion.Y));
-            return new Rectangle((int)pos.X, (int)pos.Y, worldRegion.Width, worldRegion.Height);
-        }
-
-        public Rectangle ToWorldRegion(Rectangle viewRegion)
-        {
-            Vector2 pos = ToWorldPosition(new Vector2(viewRegion.X, viewRegion.Y));
-            return new Rectangle((int)pos.X, (int)pos.Y, viewRegion.Width, viewRegion.Height);
-        }
-        #endregion Public method
+        private int _leftMoveFrames;
+        private Vector2 _moveDirection = Vector2.Zero;
+        private Vector2 _lastPlayerPosition;
 
         #region Properties
-        /// <summary>
-        /// Is in smooth move to
-        /// </summary>
-        public bool IsInMove
-        {
-            get { return _isInMove; }
-            set { _isInMove = value; }
-        }
-
-        public Vector2 MoveDestination
-        {
-            get { return _moveDestination; }
-            set
-            {
-                Vector2 tempPos = CarmeraBeginPositionInWorld;
-                CarmeraBeginPositionInWorld = value; //Restrict value
-                _moveDestination = CarmeraBeginPositionInWorld;
-                CarmeraBeginPositionInWorld = tempPos;//Restore
-            }
-        }
-
-        public bool IsFollow
-        {
-            get { return _isFollow; }
-            set { _isFollow = value; }
-        }
+        public bool IsInMove { get { return _leftMoveFrames > 0; } }
 
         public int ViewHeight
         {
@@ -169,11 +45,11 @@ namespace Engine
 
         public Vector2 ViewSize
         {
-            get { return new Vector2(ViewWidth,ViewHeight); }
+            get { return new Vector2(ViewWidth, ViewHeight); }
             set
             {
-                ViewWidth = (int) value.X;
-                ViewHeight = (int) value.Y;
+                ViewWidth = (int)value.X;
+                ViewHeight = (int)value.Y;
             }
         }
 
@@ -243,5 +119,137 @@ namespace Engine
             }
         }
         #endregion Properties
+
+        #region Ctor
+        public Carmera() { }
+
+        public Carmera(int beginX, int beginY, int viewWidth, int viewHeight, int worldWidth, int worldHeight)
+        {
+            Init(beginX, beginY, viewWidth, viewHeight, worldWidth, worldHeight);
+        }
+
+        public Carmera(Rectangle region, int worldWidth, int worldHeight)
+        {
+            Init(region.X, region.Y, region.Width, region.Height, worldWidth, worldHeight);
+        }
+        #endregion Ctor
+
+        private void Init(int beginX, int beginY, int viewWidth, int viewHeight, int worldWidth, int worldHeight)
+        {
+            WorldWidth = worldWidth;
+            WorldHeight = worldHeight;
+            ViewBeginX = beginX;
+            ViewBeginY = beginY;
+            ViewWidth = viewWidth;
+            ViewHeight = viewHeight;
+        }
+
+        private Vector2 GetHalfViewSize()
+        {
+            return ViewSize/2f;
+        }
+
+        private void UpdateMove()
+        {
+            if (_leftMoveFrames > 0)
+            {
+                var offset = Vector2.Zero;
+                if (_moveDirection.X > 0)
+                {
+                    offset.X += _moveSpeed;
+                }
+                else if (_moveDirection.X < 0)
+                {
+                    offset.X -= _moveSpeed;
+                }
+
+                if (_moveDirection.Y > 0)
+                {
+                    offset.Y += _moveSpeed;
+                }
+                else if (_moveDirection.Y < 0)
+                {
+                    offset.Y -= _moveSpeed;
+                }
+                CarmeraBeginPositionInWorld += offset;
+                _leftMoveFrames--;
+            }
+        }
+
+        private void UpdatePlayerView()
+        {
+            if (Globals.ThePlayer == null) return;
+            var position = Globals.ThePlayer.PositionInWorld;
+            var halfView = GetHalfViewSize();
+            var center = halfView +
+                         new Vector2(ViewBeginX, ViewBeginY);
+            var offset = position - _lastPlayerPosition;
+            if (offset != Vector2.Zero)
+            {
+                if ((offset.X > 0 && position.X > center.X) ||
+                    (offset.X < 0 && position.X < center.X))
+                {
+                    center.X = position.X;
+                }
+                if ((offset.Y > 0 && position.Y > center.Y) ||
+                         (offset.Y < 0 && position.Y < center.Y))
+                {
+                    center.Y = position.Y;
+                }
+            }
+            CarmeraBeginPositionInWorld = center - halfView;
+
+            _lastPlayerPosition = position;
+        }
+
+        #region Public method
+        public void Update(GameTime gameTime)
+        {
+            UpdateMove();   
+            UpdatePlayerView();
+        }
+
+        public void PlayerToCenter()
+        {
+            if (Globals.ThePlayer == null) return;
+            CarmeraBeginPositionInWorld = Globals.ThePlayer.PositionInWorld -
+                                          GetHalfViewSize();
+        }
+
+        /// <summary>
+        /// Move carmera
+        /// </summary>
+        /// <param name="keepFrameCount">Keep frame count.</param>
+        /// <param name="speed">Pixel speed per frame</param>
+        /// <param name="direction">Move direction</param>
+        public void MoveTo(Vector2 direction, int keepFrameCount, int speed)
+        {
+            _leftMoveFrames = keepFrameCount;
+            _moveSpeed = speed;
+            _moveDirection = direction;
+        }
+
+        public Vector2 ToViewPosition(Vector2 worldPosition)
+        {
+            return worldPosition - CarmeraBeginPositionInWorld;
+        }
+
+        public Vector2 ToWorldPosition(Vector2 viewPosition)
+        {
+            return CarmeraBeginPositionInWorld + viewPosition;
+        }
+
+        public Rectangle ToViewRegion(Rectangle worldRegion)
+        {
+            Vector2 pos = ToViewPosition(new Vector2(worldRegion.X, worldRegion.Y));
+            return new Rectangle((int)pos.X, (int)pos.Y, worldRegion.Width, worldRegion.Height);
+        }
+
+        public Rectangle ToWorldRegion(Rectangle viewRegion)
+        {
+            Vector2 pos = ToWorldPosition(new Vector2(viewRegion.X, viewRegion.Y));
+            return new Rectangle((int)pos.X, (int)pos.Y, viewRegion.Width, viewRegion.Height);
+        }
+        #endregion Public method
     }
 }

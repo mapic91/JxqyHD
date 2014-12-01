@@ -510,7 +510,7 @@ namespace Engine.Script
         {
             var x = int.Parse(parameters[0]);
             var y = int.Parse(parameters[1]);
-            Globals.ThePlayer.TilePosition = new Vector2(x, y);
+            Globals.ThePlayer.SetPlayerTilePosition(new Vector2(x, y));
         }
 
         public static void SetPlayerDir(List<string> parameters)
@@ -1332,6 +1332,62 @@ namespace Engine.Script
             {
                 target.WalkTo(position);
             }
+        }
+
+        public static void SetMoneyNum(List<string> parameters)
+        {
+            if(IsPlayerNull()) return;
+            Globals.ThePlayer.SetMoney(int.Parse(parameters[0]));
+        }
+
+        public static void GetMoneyNum(List<string> parameters)
+        {
+            var name = "$MoneyNum";
+            if (parameters != null)
+            {
+                name = parameters[0];
+            }
+            var value = 0;
+            if (!IsPlayerNull())
+            {
+                value = Globals.ThePlayer.GetMoneyAmount();
+            }
+            Variables[name] = value;
+        }
+
+        public static void SetPlayerScn()
+        {
+            if (Globals.TheCarmera != null)
+            {
+                Globals.TheCarmera.PlayerToCenter();
+            }
+        }
+
+        public static void MoveScreen(List<string> parameters)
+        {
+            MoveScreenEx(parameters);
+            Globals.IsInputDisabled = true;
+        }
+
+        public static bool IsMoveScreenEnd()
+        {
+            if (Globals.TheCarmera != null &&
+                Globals.TheCarmera.IsInMove)
+            {
+                return false;
+            }
+            Globals.IsInputDisabled = false;
+            return true;
+        }
+
+        public static void MoveScreenEx(List<string> parameters)
+        {
+            if (Globals.TheCarmera == null) return;
+            var direction = Utils.GetDirection8(int.Parse(
+                parameters[0]));
+            Globals.TheCarmera.MoveTo(direction,
+                int.Parse(parameters[1]),
+                int.Parse(parameters[2]));
         }
     }
 }

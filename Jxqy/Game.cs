@@ -149,7 +149,7 @@ namespace Jxqy
 
             //BackgroundMusic.Play(@"music/Mc003.mp3");
 
-            Globals.TheCarmera.Follow(Globals.ThePlayer);
+            Globals.TheCarmera.PlayerToCenter();
         }
 
         /// <summary>

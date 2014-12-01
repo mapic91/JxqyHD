@@ -223,16 +223,6 @@ namespace Engine
             FlyIni = Utils.GetMagic(fileName, false);
         }
 
-        public override void SetTilePosition(Vector2 tilePosition)
-        {
-            TilePosition = tilePosition;
-            if (Globals.TheCarmera != null)
-            {
-                //Update carmera follow
-                Globals.TheCarmera.UpdateFollow();
-            }
-        }
-
         /// <summary>
         /// 
         /// </summary>
@@ -357,6 +347,16 @@ namespace Engine
             }
         }
 
+        public void SetMoney(int amount)
+        {
+            Money = amount;
+        }
+
+        public int GetMoneyAmount()
+        {
+            return Money;
+        }
+
         public void AddExp(int amount)
         {
             Exp += amount;
@@ -365,6 +365,12 @@ namespace Engine
                 ToLevel(Exp);
                 GuiManager.ShowMessage(Name + "的等级提升了");
             }
+        }
+
+        public void SetPlayerTilePosition(Vector2 tilePosition)
+        {
+            TilePosition = tilePosition;
+            Globals.TheCarmera.PlayerToCenter();
         }
 
         public override void Update(GameTime gameTime)
