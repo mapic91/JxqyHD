@@ -234,13 +234,13 @@ namespace Engine
         public enum EquipPosition
         {
             None,
-            Body,
-            Foot,
             Head,
             Neck,
+            Body,
             Back,
+            Hand,
             Wrist,
-            Hand
+            Foot
         }
         #endregion Enum
     }

@@ -263,6 +263,9 @@ namespace Engine.Script
                         case "MoveScreen":
                             isEnd = ScriptExecuter.IsMoveScreenEnd();
                             break;
+                        case "MoveScreenEx":
+                            isEnd = ScriptExecuter.IsMoveScreenExEnd();
+                            break;
                     }
                 }
                 else
@@ -598,6 +601,13 @@ namespace Engine.Script
                             break;
                         case "MoveScreenEx":
                             ScriptExecuter.MoveScreenEx(parameters);
+                            isEnd = ScriptExecuter.IsMoveScreenExEnd();
+                            break;
+                        case "SetMapPos":
+                            ScriptExecuter.SetMapPos(parameters);
+                            break;
+                        case "EquipGoods":
+                            ScriptExecuter.EquipGoods(parameters);
                             break;
                     }
                 }

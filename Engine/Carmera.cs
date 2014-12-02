@@ -15,10 +15,11 @@ namespace Engine
         private int _leftMoveFrames;
         private Vector2 _moveDirection = Vector2.Zero;
         private Vector2 _lastPlayerPosition;
+        private Vector2 _moveToBeginDestination;
 
         #region Properties
         public bool IsInMove { get { return _leftMoveFrames > 0; } }
-
+        public bool IsInMoveTo { get; private set; }
         public int ViewHeight
         {
             get { return _viewHeight > WorldHeight ? WorldHeight : _viewHeight; }
@@ -153,26 +154,29 @@ namespace Engine
         {
             if (_leftMoveFrames > 0)
             {
-                var offset = Vector2.Zero;
-                if (_moveDirection.X > 0)
-                {
-                    offset.X += _moveSpeed;
-                }
-                else if (_moveDirection.X < 0)
-                {
-                    offset.X -= _moveSpeed;
-                }
-
-                if (_moveDirection.Y > 0)
-                {
-                    offset.Y += _moveSpeed;
-                }
-                else if (_moveDirection.Y < 0)
-                {
-                    offset.Y -= _moveSpeed;
-                }
-                CarmeraBeginPositionInWorld += offset;
+                CarmeraBeginPositionInWorld += _moveDirection*_moveSpeed;
                 _leftMoveFrames--;
+            }
+        }
+
+        private void UpdateMoveTo()
+        {
+            if (IsInMoveTo)
+            {
+                var dir = _moveToBeginDestination - CarmeraBeginPositionInWorld;
+                if (dir.Length() < 5)
+                {
+                    CarmeraBeginPositionInWorld = _moveToBeginDestination;
+                    IsInMoveTo = false;
+                    return;
+                }
+                dir.Normalize();
+                var last = CarmeraBeginPositionInWorld;
+                CarmeraBeginPositionInWorld += dir*_moveSpeed;
+                if (CarmeraBeginPositionInWorld == last)
+                {
+                    IsInMoveTo = false;
+                }
             }
         }
 
@@ -205,7 +209,8 @@ namespace Engine
         #region Public method
         public void Update(GameTime gameTime)
         {
-            UpdateMove();   
+            UpdateMove();
+            UpdateMoveTo();
             UpdatePlayerView();
         }
 
@@ -224,9 +229,24 @@ namespace Engine
         /// <param name="direction">Move direction</param>
         public void MoveTo(Vector2 direction, int keepFrameCount, int speed)
         {
+            if(direction == Vector2.Zero) return;
+            direction.Normalize();
             _leftMoveFrames = keepFrameCount;
             _moveSpeed = speed;
             _moveDirection = direction;
+        }
+
+        /// <summary>
+        /// Move to ceter tile position in speed
+        /// </summary>
+        /// <param name="centerTilePosition"></param>
+        /// <param name="speed"></param>
+        public void MoveTo(Vector2 centerTilePosition, int speed)
+        {
+            _moveToBeginDestination = Map.ToPixelPosition(centerTilePosition) -
+                GetHalfViewSize();
+            _moveSpeed = speed;
+            IsInMoveTo = true;
         }
 
         public Vector2 ToViewPosition(Vector2 worldPosition)

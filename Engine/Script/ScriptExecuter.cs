@@ -1365,7 +1365,12 @@ namespace Engine.Script
 
         public static void MoveScreen(List<string> parameters)
         {
-            MoveScreenEx(parameters);
+            if (Globals.TheCarmera == null) return;
+            var direction = Utils.GetDirection8(int.Parse(
+                parameters[0]));
+            Globals.TheCarmera.MoveTo(direction,
+                int.Parse(parameters[1]),
+                int.Parse(parameters[2]));
             Globals.IsInputDisabled = true;
         }
 
@@ -1383,11 +1388,37 @@ namespace Engine.Script
         public static void MoveScreenEx(List<string> parameters)
         {
             if (Globals.TheCarmera == null) return;
-            var direction = Utils.GetDirection8(int.Parse(
-                parameters[0]));
-            Globals.TheCarmera.MoveTo(direction,
-                int.Parse(parameters[1]),
+            Globals.TheCarmera.MoveTo(new Vector2(
+                int.Parse(parameters[0]), 
+                int.Parse(parameters[1])),
                 int.Parse(parameters[2]));
+            Globals.IsInputDisabled = true;
+        }
+
+        public static bool IsMoveScreenExEnd()
+        {
+            if (Globals.TheCarmera != null &&
+                Globals.TheCarmera.IsInMoveTo)
+            {
+                return false;
+            }
+            Globals.IsInputDisabled = false;
+            return true;
+        }
+
+        public static void SetMapPos(List<string> parameters)
+        {
+            if (Globals.TheCarmera == null) return;
+            Globals.TheCarmera.CarmeraBeginPositionInWorld =
+                Map.ToPixelPosition(int.Parse(parameters[0]),
+                    int.Parse(parameters[1]));
+        }
+
+        public static void EquipGoods(List<string> parameters)
+        {
+            var index = int.Parse(parameters[0]);
+            var part = (Good.EquipPosition) int.Parse(parameters[1]);
+            GuiManager.EquipGoods(index, part);
         }
     }
 }

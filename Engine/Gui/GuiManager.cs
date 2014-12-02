@@ -204,11 +204,11 @@ namespace Engine.Gui
 
         public static void UpdateGoodItemView(int listIndex)
         {
-            if (GoodsListManager.IndexInStoreRange(listIndex))
+            if (GoodsListManager.IsInStoreRange(listIndex))
             {
                 GoodsInterface.UpdateListItem(listIndex);
             }
-            else if (GoodsListManager.IndexInBottomGoodsRange(listIndex))
+            else if (GoodsListManager.IsInBottomGoodsRange(listIndex))
             {
                 BottomInterface.UpdateGoodItem(listIndex);
             }
@@ -287,6 +287,12 @@ namespace Engine.Gui
         {
             GoodsListManager.DeleteGood(fileName);
             UpdateGoodsView();
+        }
+
+        public static void EquipGoods(int goodListIndex, Good.EquipPosition part)
+        {
+            if (!GoodsListManager.CanEquip(goodListIndex, part)) return;
+            EquipInterface.EquipGood(goodListIndex);
         }
 
         #endregion Functionail method

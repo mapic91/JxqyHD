@@ -18,7 +18,7 @@ namespace Engine.Gui
             var sourceData = sourceItem.Data as GoodItemData;
             if (data != null && sourceData != null)
             {
-                if (GoodsListManager.EquipIndexInRange(sourceData.Index))
+                if (GoodsListManager.IsInEquipRange(sourceData.Index))
                 {
                     var info = GoodsListManager.GetItemInfo(data.Index);
                     var sourceGood = GoodsListManager.Get(sourceData.Index);
@@ -68,7 +68,7 @@ namespace Engine.Gui
                             GoodsListManager.UsingGood(data.Index);
                             break;
                         case Good.GoodKind.Equipment:
-                            GuiManager.EquipInterface.EquipStoreGood(data.Index);
+                            GuiManager.EquipInterface.EquipGood(data.Index);
                             break;
                     }
                 }

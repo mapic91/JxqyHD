@@ -32,17 +32,17 @@ namespace Engine.ListManager
             return (index > 0 && index <= MaxGoods);
         }
 
-        public static bool EquipIndexInRange(int index)
+        public static bool IsInEquipRange(int index)
         {
             return (index >= EquipIndexBegin && index <= EquipIndexEnd);
         }
 
-        public static bool IndexInStoreRange(int index)
+        public static bool IsInStoreRange(int index)
         {
             return (index >= StoreIndexBegin && index <= StoreIndexEnd);
         }
 
-        public static bool IndexInBottomGoodsRange(int index)
+        public static bool IsInBottomGoodsRange(int index)
         {
             return (index >= BottomGoodsIndexBegin && index <= BottomGoodsIndexEnd);
         }
@@ -93,7 +93,7 @@ namespace Engine.ListManager
                 var temp = GoodsList[index1];
                 GoodsList[index1] = GoodsList[index2];
                 GoodsList[index2] = temp;
-                Equiping(index1, index2);
+                ChangePlayerEquiping(index1, index2);
             }
         }
 
@@ -105,7 +105,7 @@ namespace Engine.ListManager
         /// <returns></returns>
         public static bool MoveEquipItemToList(int equipItemIndex, out int newIndex)
         {
-            if (EquipIndexInRange(equipItemIndex))
+            if (IsInEquipRange(equipItemIndex))
             {
                 var info = GoodsList[equipItemIndex];
                 if (info != null)
@@ -190,29 +190,30 @@ namespace Engine.ListManager
 
         public static bool CanEquip(int goodIndex, Good.EquipPosition position)
         {
-            return Good.CanEquip(GoodsListManager.Get(goodIndex), position);
+            return (!IsInEquipRange(goodIndex) &&
+                Good.CanEquip(Get(goodIndex), position));
         }
 
-        public static void Equiping(int index, int currentEquipIndex)
+        public static void ChangePlayerEquiping(int index1, int index2)
         {
             Good equip = null;
             Good currentEquip = null;
-            if (EquipIndexInRange(index))
+            if (IsInEquipRange(index1))
             {
-                equip = Get(index);
-                currentEquip = Get(currentEquipIndex);
+                equip = Get(index1);
+                currentEquip = Get(index2);
             }
-            else if(EquipIndexInRange(currentEquipIndex))
+            else if(IsInEquipRange(index2))
             {
-                equip = Get(currentEquipIndex);
-                currentEquip = Get(index);
+                equip = Get(index2);
+                currentEquip = Get(index1);
             }
             Globals.ThePlayer.Equiping(equip, currentEquip);
         }
 
-        public static bool UnEquiping(int equipIndex, out int newIndex)
+        public static bool PlayerUnEquiping(int equipIndex, out int newIndex)
         {
-            if (EquipIndexInRange(equipIndex))
+            if (IsInEquipRange(equipIndex))
             {
                 if (MoveEquipItemToList(equipIndex, out newIndex))
                 {

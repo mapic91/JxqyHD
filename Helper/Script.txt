@@ -358,23 +358,28 @@ MoveScreen(6,100,2);
 MoveScreenEx(a, b, c)
 MoveScreenEx(40, 32, 4);
 
+SetMapPos(a, b)
+SetMapPos(32, 67);
+
+EquipGoods(a,b)
+EquipGoods(1, 5);
+
+SellGoods(a)
+SellGoods("低级药品.ini");
+
+BuyGoods(a)
+BuyGoods("衣3级.ini");
 ///////////////////////////////////////////////////////////////////
 //////////////////    Implemented   End  /////////////////////////
 /////////////////////////////////////////////////////////////////
 
 
 
-BuyGoods(a)
-BuyGoods("衣3级.ini");
-
 CloseBox(a)
 CloseBox("通天塔开关A");
 
 CloseTimeLimit()
 CloseTimeLimit();
-
-EquipGoods(a,b)
-EquipGoods(1, 5);
 
 FollowNpc("慕容老头","杨影枫")
 FollowNpc("慕容老头","杨影枫")
@@ -418,11 +423,7 @@ PlayerChange(1);
 ReturnToTitle()
 ReturnToTitle();
 
-SellGoods(a)
-SellGoods("低级药品.ini");
 
-SetMapPos(a, b)
-SetMapPos(32, 67);
 
 SetTimeScript(a,b)
 SetTimeScript(1,"changecolor.txt");

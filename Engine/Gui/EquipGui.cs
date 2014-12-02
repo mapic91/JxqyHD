@@ -170,7 +170,7 @@ namespace Engine.Gui
                     if (data != null)
                     {
                         int newIndex;
-                        if (GoodsListManager.UnEquiping(data.Index, out newIndex))
+                        if (GoodsListManager.PlayerUnEquiping(data.Index, out newIndex))
                         {
                             theItem.BaseTexture = null;
                             theItem.TopLeftText = "";
@@ -217,10 +217,10 @@ namespace Engine.Gui
             return (GoodsGui.GoodItemData) data;
         }
 
-        public bool EquipStoreGood(int goodListIndex)
+        public bool EquipGood(int goodListIndex)
         {
-            if (GoodsListManager.IndexInStoreRange(goodListIndex) ||
-                GoodsListManager.IndexInBottomGoodsRange(goodListIndex))
+            if (GoodsListManager.IsInStoreRange(goodListIndex) ||
+                GoodsListManager.IsInBottomGoodsRange(goodListIndex))
             {
                 var info = GoodsListManager.GetItemInfo(goodListIndex);
                 if (info == null) return false;
