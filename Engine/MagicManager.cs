@@ -539,11 +539,12 @@ namespace Engine
                         }
                         if (spriteInEffect != null && spriteInEffect.IsLive)
                         {
-                            spriteInEffect.ResetElaspedFrame();
+                            spriteInEffect.ResetPlay();
                         }
                         else
                         {
                             user.MagicSpritesInEffect.AddLast(sprite);
+                            AddMagicSprite(sprite);
                         }
                     }
                     break;

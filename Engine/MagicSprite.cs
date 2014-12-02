@@ -16,7 +16,6 @@ namespace Engine
         private Magic _belongMagic;
         private Vector2 _moveDirection;
         private LinkedList<Vector2> _paths;
-        private int _elapsedFrame;
         private bool _isDestroyed;
         private bool _isInDestroy;
         private bool _destroyOnEnd;
@@ -211,11 +210,7 @@ namespace Engine
 
         public void Begin()
         {
-
-            if (BelongMagic.LifeFrame == 0 ||
-                BelongMagic.MoveKind == 15)
-                PlayCurrentDirOnce();
-
+            ResetPlay();
             if (Velocity != 0)//Move 30
             {
                 var second = 30f / Velocity;
@@ -247,7 +242,7 @@ namespace Engine
                             0f,
                             BelongMagic.VanishImage,
                             0);
-                        sprite.PlayCurrentDirOnce();
+                        sprite.PlayFrames(sprite.FrameCountsPerDirection);
                         _superModeDestroySprites.AddLast(sprite);
                         CharacterHited(npc);
                         SoundManager.Play3DSoundOnece(BelongMagic.VanishSound,
@@ -260,9 +255,8 @@ namespace Engine
             {
                 if (BelongMagic.VanishImage != null)
                 {
-                    EndPlayCurrentDirOnce();
                     Texture = BelongMagic.VanishImage;
-                    PlayCurrentDirOnce();
+                    PlayFrames(FrameCountsPerDirection);
                 }
                 SoundManager.Play3DSoundOnece(BelongMagic.VanishSound,
                 PositionInWorld - Globals.ListenerPosition);
@@ -275,9 +269,20 @@ namespace Engine
             _paths = paths;
         }
 
-        public void ResetElaspedFrame()
+        public void ResetPlay()
         {
-            _elapsedFrame = 0;
+            var framesToPlay = BelongMagic.LifeFrame;
+            if (BelongMagic.LifeFrame == 0 ||
+                BelongMagic.MoveKind == 15)
+            {
+                framesToPlay = FrameCountsPerDirection;
+            }
+            else if (BelongMagic.MoveKind == 13)
+            {
+                framesToPlay = (int)(BelongMagic.LifeFrame * 10f/ Interval);
+            }
+
+            PlayFrames(framesToPlay);
         }
 
         public override void Update(GameTime gameTime)
@@ -336,10 +341,8 @@ namespace Engine
 
             if (BelongMagic.MoveKind == 13)
             {
-                _elapsedFrame++;
                 PositionInWorld = BelongCharacter.PositionInWorld;
             }
-            else _elapsedFrame += FrameAdvanceCount;
 
             if (IsInDestroy)
             {
@@ -349,7 +352,7 @@ namespace Engine
                     foreach (var sprite in _superModeDestroySprites)
                     {
                         sprite.Update(gameTime);
-                        if (sprite.IsPlayCurrentDirOnceEnd())
+                        if (!sprite.IsInPlaying)
                         {
                             end = true;
                             break;
@@ -359,12 +362,12 @@ namespace Engine
                 }
                 else
                 {
-                    if (IsPlayCurrentDirOnceEnd()) _isDestroyed = true;
+                    if (!IsInPlaying) _isDestroyed = true;
                 }
             }
             else if (BelongMagic.MoveKind == 15)
             {
-                if (IsPlayCurrentDirOnceEnd())
+                if (!IsInPlaying)
                     Destroy();
             }
             else if (BelongMagic.MoveKind == 17)
@@ -374,16 +377,15 @@ namespace Engine
             else
             {
                 if (BelongMagic.MoveKind != 13)
+                {
                     CheckCharacterHited();
+                }
 
                 if (Globals.TheMap.IsObstacleForMagic(MapX, MapY))
                 {
                     Destroy();
                 }
-                else if (
-                (BelongMagic.LifeFrame == 0 && IsPlayCurrentDirOnceEnd()) ||
-                (BelongMagic.LifeFrame != 0 && _elapsedFrame >= BelongMagic.LifeFrame)
-                )
+                else if (!IsInPlaying)
                 {
                     if (_destroyOnEnd) Destroy();
                     else _isDestroyed = true;

@@ -1750,18 +1750,9 @@ namespace Engine
             {
                 var next = node.Next;
                 var magicSprite = node.Value;
-                magicSprite.Update(gameTime);
                 if (magicSprite.IsDestroyed)
                     MagicSpritesInEffect.Remove(node);
                 node = next;
-            }
-        }
-
-        public void DrawMagicSpriteInEffect(SpriteBatch spriteBatch)
-        {
-            foreach (var magicSprite in MagicSpritesInEffect)
-            {
-                magicSprite.Draw(spriteBatch);
             }
         }
 
@@ -1780,7 +1771,6 @@ namespace Engine
                 color = new Color(50, 255, 50);
             if (PetrifiedSeconds > 0)
                 texture = TextureGenerator.ToGrayScale(texture);
-            DrawMagicSpriteInEffect(spriteBatch);
             base.Draw(spriteBatch, texture, color);
         }
         #endregion Update Draw

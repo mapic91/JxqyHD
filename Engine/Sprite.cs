@@ -19,6 +19,7 @@ namespace Engine
         private Asf _texture = new Asf();
         private bool _isPlayingCurrentDirOnce;
         private bool _isPlayingCurrentDirOnceFromBack;
+        private int _leftFrameToPlay;
         private int _playToFrame;
         private float _movedDistance;
         private bool _isTilePositionNew;
@@ -50,7 +51,9 @@ namespace Engine
 
         public bool IsInPlaying
         {
-            get { return _isPlayingCurrentDirOnce || _isPlayingCurrentDirOnceFromBack; }
+            get { return _isPlayingCurrentDirOnce || 
+                _isPlayingCurrentDirOnceFromBack ||
+                (_leftFrameToPlay > 0); }
         }
 
         public Asf Texture
@@ -64,6 +67,15 @@ namespace Engine
                 _elapsedMilliSecond = 0;
                 CurrentDirection = CurrentDirection;
                 CurrentFrameIndex = _frameBegin;
+            }
+        }
+
+        public int Interval
+        {
+            get
+            {
+                if (_texture == null) return 0;
+                return _texture.Interval;
             }
         }
 
@@ -94,6 +106,15 @@ namespace Engine
                     _currentFrameIndex = _frameBegin;
                 else if (_currentFrameIndex < _frameBegin)
                     _currentFrameIndex = _frameEnd;
+            }
+        }
+
+        public int FrameCountsPerDirection
+        {
+            get
+            {
+                if (_texture == null) return 1;
+                return _texture.FrameCountsPerDirection;
             }
         }
 
@@ -216,6 +237,15 @@ namespace Engine
             }
         }
 
+        /// <summary>
+        /// Play frames count than stop
+        /// </summary>
+        /// <param name="count">Frame count</param>
+        public void PlayFrames(int count)
+        {
+            _leftFrameToPlay = count;
+        }
+
         public void PlayCurrentDirOnce()
         {
             if (_isPlayingCurrentDirOnce ||
@@ -296,6 +326,10 @@ namespace Engine
                         _isPlayingCurrentDirOnce = false;
                         _isPlayingCurrentDirOnceFromBack = false;
                     }
+                }
+                if (_leftFrameToPlay > 0)
+                {
+                    _leftFrameToPlay--;
                 }
             }
         }
