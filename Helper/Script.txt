@@ -394,6 +394,12 @@ GetNpcCount(1,1);
 
 LimitMana(a)
 LimitMana(1);
+
+NpcAttack(a,b,c)
+NpcAttack("ÑîÓ°·ã",10,35);
+
+MergeNpc(a)
+MergeNpc("SubEvent01.npc");
 ///////////////////////////////////////////////////////////////////
 //////////////////    Implemented   End  /////////////////////////
 /////////////////////////////////////////////////////////////////
@@ -407,12 +413,6 @@ GetPartnerIdx($PartnerNo);
 
 LoadGame(a)
 LoadGame(0);
-
-MergeNpc(a)
-MergeNpc("SubEvent01.npc");
-
-NpcAttack(a,b,c)
-NpcAttack("ÑîÓ°·ã",10,35);
 
 NpcSpecialAction(a,b)
 NpcSpecialAction("Åùö¨ÌÃ±¬Õ¨","ÌýÀ×¸ó±¬Õ¨.asf");

@@ -571,6 +571,11 @@ namespace Engine.Script
             NpcManager.Load(Utils.RemoveStringQuotes(parameters[0]));
         }
 
+        public static void MergeNpc(List<string> parameters)
+        {
+            NpcManager.Merge(Utils.RemoveStringQuotes(parameters[0]));
+        }
+
         public static void LoadObj(List<string> parameters)
         {
             ObjManager.Load(Utils.RemoveStringQuotes(parameters[0]));
@@ -1519,6 +1524,17 @@ namespace Engine.Script
         {
             if(IsPlayerNull()) return;
             Globals.ThePlayer.IsManaLimited = (int.Parse(parameters[0]) != 0);
+        }
+
+        public static void NpcAttack(List<string> parameters, object belongObject)
+        {
+            Character target;
+            Vector2 value;
+            GetTargetAndValue3(parameters, belongObject, out target, out value);
+            if (target != null)
+            {
+                target.PerformeAttack(Map.ToPixelPosition(value));
+            }
         }
     }
 }

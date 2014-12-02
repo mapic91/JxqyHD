@@ -554,6 +554,12 @@ namespace Engine
 
         }
 
+        private void EndInteract()
+        {
+            _isInInteract = false;
+            SetDirection(_directionBeforInteract);
+        }
+
         private void MoveAlongPath(float elapsedSeconds, int speedFold)
         {
             if (Path == null || Path.Count < 2)
@@ -944,6 +950,11 @@ namespace Engine
             DestinationMoveTilePosition = Vector2.Zero;
             Path = null;
             ClearTarget();
+            if (_isInInteract)
+            {
+                //End interact in case of action to perform direction not correct
+                EndInteract();
+            }
         }
 
         public bool IsStanding()
@@ -1254,14 +1265,14 @@ namespace Engine
             return true;
         }
 
-        public void PerformeAttack(Vector2 destination)
+        public void PerformeAttack(Vector2 destinationPositionInWorld)
         {
             if (PerformActionOk())
             {
                 if (!CanPerformeAttack()) return;
                 StateInitialize();
                 ToFightingState();
-                _attackDestination = destination;
+                _attackDestination = destinationPositionInWorld;
 
                 var value = Globals.TheRandom.Next(3);
                 if (value == 1 && NpcIni.ContainsKey((int)CharacterState.Attack1))
@@ -1269,7 +1280,7 @@ namespace Engine
                 else if (value == 2 && NpcIni.ContainsKey((int)CharacterState.Attack2))
                     SetState(CharacterState.Attack2);
                 else SetState(CharacterState.Attack);
-                SetDirection(destination - PositionInWorld);
+                SetDirection(destinationPositionInWorld - PositionInWorld);
                 PlayCurrentDirOnce();
             }
         }
@@ -1655,8 +1666,7 @@ namespace Engine
 
             if (_isInInteract && IsInteractEnd())
             {
-                _isInInteract = false;
-                SetDirection(_directionBeforInteract);
+                EndInteract();
             }
 
             var elapsedGameTime = gameTime.ElapsedGameTime;

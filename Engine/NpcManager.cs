@@ -75,14 +75,14 @@ namespace Engine
             return closedNpc;
         }
 
-        public static bool Load(string fileName)
+        public static bool Load(string fileName, bool clearCurrentNpcs = true)
         {
             try
             {
                 _fileName = fileName;
                 var filePath = Utils.GetNpcObjFilePath(fileName);
                 var lines = File.ReadAllLines(filePath, Globals.SimpleChinaeseEncoding);
-                Load(lines);
+                Load(lines, clearCurrentNpcs);
             }
             catch (Exception)
             {
@@ -91,9 +91,14 @@ namespace Engine
             return true;
         }
 
-        public static bool Load(string[] lines)
+        public static void Merge(string fileName)
         {
-            ClearAllNpc();
+            Load(fileName, false);
+        }
+
+        public static bool Load(string[] lines, bool clearCurrentNpcs = true)
+        {
+            if(clearCurrentNpcs)ClearAllNpc();
 
             var count = lines.Count();
             for (var i = 0; i < count; )

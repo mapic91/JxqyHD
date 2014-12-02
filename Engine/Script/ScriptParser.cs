@@ -384,6 +384,9 @@ namespace Engine.Script
                         case "LoadNpc":
                             ScriptExecuter.LoadNpc(parameters);
                             break;
+                        case "MergeNpc":
+                            ScriptExecuter.MergeNpc(parameters);
+                            break;
                         case "LoadObj":
                             ScriptExecuter.LoadObj(parameters);
                             break;
@@ -649,6 +652,9 @@ namespace Engine.Script
                             break;
                         case "LimitMana":
                             ScriptExecuter.LimitMana(parameters);
+                            break;
+                        case "NpcAttack":
+                            ScriptExecuter.NpcAttack(parameters, BelongObject);
                             break;
                     }
                 }
