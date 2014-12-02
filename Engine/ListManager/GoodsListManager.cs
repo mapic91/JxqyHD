@@ -126,6 +126,13 @@ namespace Engine.ListManager
             return false;
         }
 
+        public static void AddGoodToList(string fileName)
+        {
+            int i;
+            Good g;
+            AddGoodToList(fileName, out i, out g);
+        }
+
         public static bool AddGoodToList(string fileName, out int index, out Good outGood)
         {
             index = -1;

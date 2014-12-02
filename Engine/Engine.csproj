@@ -73,12 +73,14 @@
     <Compile Include="Globals.cs" />
     <Compile Include="Good.cs" />
     <Compile Include="Gui\BottomGui.cs" />
+    <Compile Include="Gui\BuyGui.cs" />
     <Compile Include="Gui\ColumnGui.cs" />
     <Compile Include="Gui\ColumnView.cs" />
     <Compile Include="Gui\DialogGui.cs" />
     <Compile Include="Gui\DragDropItem.cs" />
     <Compile Include="Gui\EquipGui.cs" />
     <Compile Include="Gui\GoodsGui.cs" />
+    <Compile Include="Gui\TimerGui.cs" />
     <Compile Include="ListManager\GoodsListManager.cs" />
     <Compile Include="Gui\GuiItem.cs" />
     <Compile Include="Gui\GuiManager.cs" />

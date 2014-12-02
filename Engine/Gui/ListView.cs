@@ -9,6 +9,7 @@ namespace Engine.Gui
     {
         private ScrollBar _scrollBar;
         private DragDropItem[] _items = new DragDropItem[9];
+        private Vector2 _itemPositinOffset = Vector2.Zero;
         public event Action<object, ListScrollEvent> Scrolled;
 
         public int CurrentScrollValue
@@ -23,12 +24,34 @@ namespace Engine.Gui
 
         public ListView(GuiItem parent,
             Vector2 position,
+            Vector2 slideButtonPosition,
             int width,
             int height,
             Texture baseTexture,
             int rowCouunts)
+            :this(parent, 
+            position, 
+            slideButtonPosition, 
+            width, 
+            height, 
+            baseTexture,
+            rowCouunts, 
+            Vector2.Zero)
+        {
+            
+        }
+
+        public ListView(GuiItem parent,
+            Vector2 position,
+            Vector2 slideButtonPosition,
+            int width,
+            int height,
+            Texture baseTexture,
+            int rowCouunts,
+            Vector2 itemPositionOffset)
             : base(parent, position, width, height, baseTexture)
         {
+            _itemPositinOffset = itemPositionOffset;
             InitializeItems();
             var slideTexture = Utils.GetAsf(@"asf\ui\option\", "slidebtn.asf");
             var slideBaseTexture = new Texture(slideTexture);
@@ -45,7 +68,7 @@ namespace Engine.Gui
             _scrollBar = new ScrollBar(this,
                 ScrollBar.ScrollBarType.Vertical,
                 slideButton,
-                new Vector2(308, 110),
+                slideButtonPosition,
                 190f,
                 0,
                 rowCouunts - 1 - 2,
@@ -59,15 +82,15 @@ namespace Engine.Gui
 
         private void InitializeItems()
         {
-            _items[0] = new DragDropItem(this, new Vector2(72, 91), 60, 75, null);
-            _items[1] = new DragDropItem(this, new Vector2(137, 91), 60, 75, null);
-            _items[2] = new DragDropItem(this, new Vector2(201, 91), 60, 75, null);
-            _items[3] = new DragDropItem(this, new Vector2(72, 170), 60, 75, null);
-            _items[4] = new DragDropItem(this, new Vector2(137, 170), 60, 75, null);
-            _items[5] = new DragDropItem(this, new Vector2(202, 170), 60, 75, null);
-            _items[6] = new DragDropItem(this, new Vector2(72, 250), 60, 75, null);
-            _items[7] = new DragDropItem(this, new Vector2(137, 250), 60, 75, null);
-            _items[8] = new DragDropItem(this, new Vector2(202, 250), 60, 75, null);
+            _items[0] = new DragDropItem(this, new Vector2(72, 91) + _itemPositinOffset, 60, 75, null);
+            _items[1] = new DragDropItem(this, new Vector2(137, 91) + _itemPositinOffset, 60, 75, null);
+            _items[2] = new DragDropItem(this, new Vector2(201, 91) + _itemPositinOffset, 60, 75, null);
+            _items[3] = new DragDropItem(this, new Vector2(72, 170) + _itemPositinOffset, 60, 75, null);
+            _items[4] = new DragDropItem(this, new Vector2(137, 170) + _itemPositinOffset, 60, 75, null);
+            _items[5] = new DragDropItem(this, new Vector2(202, 170) + _itemPositinOffset, 60, 75, null);
+            _items[6] = new DragDropItem(this, new Vector2(72, 250) + _itemPositinOffset, 60, 75, null);
+            _items[7] = new DragDropItem(this, new Vector2(137, 250) + _itemPositinOffset, 60, 75, null);
+            _items[8] = new DragDropItem(this, new Vector2(202, 250) + _itemPositinOffset, 60, 75, null);
         }
 
         public void RegisterItemDragHandler(Action<object, DragDropItem.DragEvent> handler)
@@ -162,6 +185,16 @@ namespace Engine.Gui
             {
                 _items[index].TopLeftText = text;
             }
+        }
+
+        public void SetMaxRow(int value)
+        {
+            _scrollBar.MaxValue = value;
+        }
+
+        public void ScrollToRow(int value)
+        {
+            _scrollBar.Value = value;
         }
 
         public override void Update(GameTime gameTime)

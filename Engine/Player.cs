@@ -36,9 +36,7 @@ namespace Engine
 
         public bool CanInput
         {
-            get { return (ScriptExecuter.IsInFadeIn || 
-                ScriptExecuter.IsInFadeOut ||
-                Globals.IsInputDisabled); }
+            get { return Globals.IsInputDisabled; }
         }
 
         public MagicListManager.MagicItemInfo CurrentMagicInUse
@@ -567,6 +565,18 @@ namespace Engine
             if (Globals.OutEdgeNpc != null && 
                 !Globals.OutEdgeNpc.IsHide)
                 InfoDrawer.DrawLife(spriteBatch, Globals.OutEdgeNpc);
+        }
+
+        public void BuyGood(Good good)
+        {
+            if(good == null) return;
+            var cost = good.Cost;
+            if (Money > cost)
+            {
+                Money -= cost;
+                GoodsListManager.AddGoodToList(good.FileName);
+                GuiManager.UpdateGoodsView();
+            }
         }
     }
 }

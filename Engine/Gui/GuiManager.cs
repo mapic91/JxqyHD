@@ -29,6 +29,8 @@ namespace Engine.Gui
         public static BottomGui BottomInterface;
         public static ColumnGui ColumnInterface;
         public static TopGui TopInterface;
+        public static BuyGui BuyInterface;
+        public static TimerGui TimerInterface;
 
         public static ToolTipGui ToolTipInterface;
         public static MessageGui MessageInterface;
@@ -39,7 +41,6 @@ namespace Engine.Gui
         public static DragDropItem DragDropSourceItem;
         public static Texture DragDropSourceTexture;
         public static bool IsDropped;
-        public static bool IsInputDisabled;
 
         public static void Starting()
         {
@@ -67,6 +68,13 @@ namespace Engine.Gui
             GoodsInterface = new GoodsGui();
             _allGuiItems.AddLast(GoodsInterface);
             _panels.AddLast(GoodsInterface);
+
+            BuyInterface = new BuyGui();
+            _allGuiItems.AddLast(BuyInterface);
+            _panels.AddLast(BuyInterface);
+
+            TimerInterface = new TimerGui();
+            _allGuiItems.AddLast(TimerInterface);
 
             MemoInterface = new MemoGui();
             _allGuiItems.AddLast(MemoInterface);
@@ -295,12 +303,56 @@ namespace Engine.Gui
             EquipInterface.EquipGood(goodListIndex);
         }
 
+        public static void BuyGoods(string listFileName)
+        {
+            AllPanelsShow(false);
+            BuyInterface.BeginBuy(listFileName);
+            GoodsInterface.IsShow = true;
+        }
+
+        public static void EndBuyGoods()
+        {
+            BuyInterface.IsShow = false;
+            GoodsInterface.IsShow = false;
+        }
+
+        public static bool IsBuyGoodsEnd()
+        {
+            return !BuyInterface.IsShow;
+        }
+
+        public static void OpenTimeLimit(int seconds)
+        {
+            TimerInterface.StartTimer(seconds);
+        }
+
+        public static void CloseTimeLimit()
+        {
+            TimerInterface.StopTimer();
+        }
+
+        public static void HideTimerWindow()
+        {
+            TimerInterface.HideTimerWnd();
+        }
+
+        public static int GetTimerCurrentSeconds()
+        {
+            return TimerInterface.GetCurrentSecond();
+        }
+
+        public static bool IsTimerStarted()
+        {
+            return TimerInterface.IsShow;
+        }
+
         #endregion Functionail method
 
         public static void Update(GameTime gameTime)
         {
             var keyboardState = Keyboard.GetState();
             var mouseState = Mouse.GetState();
+            //Can't disable input when at buy sell
             if (Globals.IsInputDisabled)
                 mouseState = Utils.GetMouseStateJustPosition(mouseState);
 
@@ -353,16 +405,34 @@ namespace Engine.Gui
                     if (HasPanelsShow()) AllPanelsShow(false);
                 }
 
-                TopInterface.Update(gameTime);
-                BottomInterface.Update(gameTime);
-                MagicInterface.Update(gameTime);
-                XiuLianInterface.Update(gameTime);
-                GoodsInterface.Update(gameTime);
-                MemoInterface.Update(gameTime);
-                StateInterface.Update(gameTime);
-                EquipInterface.Update(gameTime);
-                ToolTipInterface.Update(gameTime);
+                if (BuyInterface.IsShow)
+                {
+                    //Temporaty enable input
+                    var value = Globals.IsInputDisabled;
+                    Globals.IsInputDisabled = false;
 
+                    BuyInterface.Update(gameTime);
+                    GoodsInterface.Update(gameTime);
+                    BottomInterface.Update(gameTime);
+                    IsMouseStateEated = true;
+
+                    //Restore input
+                    Globals.IsInputDisabled = value;
+                }
+                else
+                {
+                    TopInterface.Update(gameTime);
+                    BottomInterface.Update(gameTime);
+                    MagicInterface.Update(gameTime);
+                    XiuLianInterface.Update(gameTime);
+                    GoodsInterface.Update(gameTime);
+                    MemoInterface.Update(gameTime);
+                    StateInterface.Update(gameTime);
+                    EquipInterface.Update(gameTime);
+                    ToolTipInterface.Update(gameTime);
+                }
+
+                TimerInterface.Update(gameTime);
                 MessageInterface.Update(gameTime);
 
                 if (IsDropped)
@@ -387,12 +457,14 @@ namespace Engine.Gui
 
         public static void Draw(SpriteBatch spriteBatch)
         {
+            TimerInterface.Draw(spriteBatch);
             TopInterface.Draw(spriteBatch);
             BottomInterface.Draw(spriteBatch);
             ColumnInterface.Draw(spriteBatch);
             MagicInterface.Draw(spriteBatch);
             XiuLianInterface.Draw(spriteBatch);
             GoodsInterface.Draw(spriteBatch);
+            BuyInterface.Draw(spriteBatch);
             MemoInterface.Draw(spriteBatch);
             StateInterface.Draw(spriteBatch);
             EquipInterface.Draw(spriteBatch);

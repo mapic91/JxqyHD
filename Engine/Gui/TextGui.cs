@@ -10,7 +10,7 @@ namespace Engine.Gui
     {
         private int _startIndex;
         private int _endIndex;
-        private readonly LinkedList<Info> _drawInfo = new LinkedList<Info>(); 
+        private readonly LinkedList<Info> _drawInfo = new LinkedList<Info>();
         public SpriteFont Font { set; get; }
         public int ExtureCharacterSpace { set; get; }
         public int ExtureLineSpace { set; get; }
@@ -28,11 +28,11 @@ namespace Engine.Gui
         private StringBuilder TextStream { set; get; }
         public Color DefaultColor { get; set; }
 
-        public TextGui(GuiItem parent, 
+        public TextGui(GuiItem parent,
             Vector2 position,
-            int width, 
-            int height, 
-            SpriteFont font, 
+            int width,
+            int height,
+            SpriteFont font,
             string text)
         {
             Init(parent, position, width, height, font, 0, 0, text, Color.Black);
@@ -48,14 +48,14 @@ namespace Engine.Gui
             string text,
             Color defaultColor)
         {
-            Init(parent, 
-                position, 
-                width, 
-                height, 
-                font, 
-                extraCharecterSpace, 
-                extraLineSpace, 
-                text, 
+            Init(parent,
+                position,
+                width,
+                height,
+                font,
+                extraCharecterSpace,
+                extraLineSpace,
+                text,
                 defaultColor);
         }
 
@@ -132,10 +132,10 @@ namespace Engine.Gui
                         switch (text.ToString())
                         {
                             case "color=Red":
-                                DefaultColor = Color.Red*0.8f;
+                                DefaultColor = Color.Red * 0.8f;
                                 break;
                             case "color=Black":
-                                DefaultColor = Color.Black*0.8f;
+                                DefaultColor = Color.Black * 0.8f;
                                 break;
                             case "enter":
                                 AddLinespace(ref y);
@@ -146,7 +146,7 @@ namespace Engine.Gui
                                     return true;
                                 }
                                 break;
-                       }
+                        }
                     }
                     else if (drawText == "\n")
                     {
@@ -162,11 +162,18 @@ namespace Engine.Gui
                     {
                         var stringWidth = Font.MeasureString(drawText).X;
                         //Make space width correct
-                        if (_endIndex + 1 < endIndex &&
-                            TextStream[_endIndex + 1] == ' ')
+                        if (drawText == " ")
                         {
-                            stringWidth = 2*Font.MeasureString("0").X;
-                            _endIndex++;
+                            if (_endIndex + 1 < endIndex &&
+                            TextStream[_endIndex + 1] == ' ')
+                            {
+                                stringWidth = 2 * Font.MeasureString("0").X;
+                                _endIndex++;
+                            }
+                            else
+                            {
+                                stringWidth = Font.MeasureString("0").X;
+                            }
                         }
                         if (IsReachRight(x, stringWidth))
                         {
@@ -188,7 +195,7 @@ namespace Engine.Gui
             {
                 _drawInfo.Clear();
                 _endIndex = TextStream.Length;
-                Log.LogMessageToFile("String [" + TextStream +"] format is bad!");
+                Log.LogMessageToFile("String [" + TextStream + "] format is bad!");
                 return false;
             }
             return true;
@@ -213,9 +220,9 @@ namespace Engine.Gui
             base.Draw(spriteBatch);
             foreach (var info in _drawInfo)
             {
-                spriteBatch.DrawString(Font, 
-                    info.Text, 
-                    info.Position, 
+                spriteBatch.DrawString(Font,
+                    info.Text,
+                    info.Position,
                     info.DrawColor);
             }
         }

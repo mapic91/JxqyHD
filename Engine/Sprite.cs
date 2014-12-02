@@ -18,8 +18,8 @@ namespace Engine
         private int _currentDirection;
         private Asf _texture = new Asf();
         private bool _isPlayingCurrentDirOnce;
-        private int _playingCurrentDirOnceTotalFrames;
-        private int _playedFrames;
+        private bool _isPlayingCurrentDirOnceFromBack;
+        private int _playToFrame;
         private float _movedDistance;
         private bool _isTilePositionNew;
         private static Color _drawColor = Color.White;
@@ -48,9 +48,9 @@ namespace Engine
 
         #region Public properties
 
-        public bool IsPlayingCurrentDirOnce
+        public bool IsInPlaying
         {
-            get { return _isPlayingCurrentDirOnce; }
+            get { return _isPlayingCurrentDirOnce || _isPlayingCurrentDirOnceFromBack; }
         }
 
         public Asf Texture
@@ -218,11 +218,20 @@ namespace Engine
 
         public void PlayCurrentDirOnce()
         {
-            if (_isPlayingCurrentDirOnce) return;
+            if (_isPlayingCurrentDirOnce ||
+                _isPlayingCurrentDirOnceFromBack ||
+                IsFrameAtEnd()) return;
             _isPlayingCurrentDirOnce = true;
-            _playedFrames = 0;
-            CurrentFrameIndex = _frameBegin;//Reset frame
-            _playingCurrentDirOnceTotalFrames = _frameEnd - _frameBegin;
+            _playToFrame = _frameEnd;
+        }
+
+        public void PlayCurrentDirOnceReverse()
+        {
+            if (_isPlayingCurrentDirOnce ||
+                _isPlayingCurrentDirOnceFromBack ||
+                IsFrameAtBegin()) return;
+            _isPlayingCurrentDirOnceFromBack = true;
+            _playToFrame = _frameBegin;
         }
 
         public void EndPlayCurrentDirOnce()
@@ -238,6 +247,11 @@ namespace Engine
         public bool IsFrameAtBegin()
         {
             return CurrentFrameIndex == _frameBegin;
+        }
+
+        public bool IsFrameAtEnd()
+        {
+            return CurrentFrameIndex == _frameEnd;
         }
 
         public void Update(GameTime gameTime, Vector2 direction, int speedFold = 1)
@@ -265,16 +279,23 @@ namespace Engine
             if (_elapsedMilliSecond > Texture.Interval)
             {
                 _elapsedMilliSecond -= Texture.Interval;
-                CurrentFrameIndex++;
-                FrameAdvanceCount = 1;
-                if (_isPlayingCurrentDirOnce)
+                if (_isPlayingCurrentDirOnceFromBack)
                 {
-                    _playedFrames++;
-                    if (_playedFrames >= _playingCurrentDirOnceTotalFrames)
+                    CurrentFrameIndex--;
+                }
+                else
+                {
+                    CurrentFrameIndex++;
+                }
+                FrameAdvanceCount = 1;
+                if (_isPlayingCurrentDirOnce ||
+                    _isPlayingCurrentDirOnceFromBack)
+                {
+                    if (_playToFrame == CurrentFrameIndex)
                     {
                         _isPlayingCurrentDirOnce = false;
+                        _isPlayingCurrentDirOnceFromBack = false;
                     }
-                    
                 }
             }
         }

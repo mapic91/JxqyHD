@@ -24,6 +24,10 @@ namespace Engine.Script
         private static Color _videoDrawColor;
         private static Video _video;
         private static VideoPlayer _videoPlayer;
+        private static bool _isTimeScriptSet;
+        private static int _timeScriptSeconds;
+        private static string _timeScriptFileName;
+
 
         public static bool IsInFadeOut;
         public static bool IsInFadeIn;
@@ -246,6 +250,19 @@ namespace Engine.Script
                     Globals.IsInputDisabled = false;
                 }
             }
+
+            if (_isTimeScriptSet && 
+                GuiManager.IsTimerStarted())
+            {
+                if (_timeScriptSeconds == GuiManager.GetTimerCurrentSeconds())
+                {
+                    ScriptManager.RunScript(new ScriptParser(
+                        Utils.GetScriptFilePath(_timeScriptFileName), 
+                        null));
+                    _isTimeScriptSet = false;
+                    _timeScriptFileName = "";
+                }
+            }
         }
 
         public static void Draw(SpriteBatch spriteBatch)
@@ -324,11 +341,17 @@ namespace Engine.Script
             IsInFadeOut = true;
             IsInFadeIn = false;
             FadeTransparence = 0f;
+            Globals.IsInputDisabled = true;
         }
 
         public static bool IsFadeOutEnd()
         {
-            return FadeTransparence >= 1f;
+            if (FadeTransparence >= 1f)
+            {
+                Globals.IsInputDisabled = false;
+                return true;
+            }
+            return false;
         }
 
         public static void FadeIn()
@@ -336,11 +359,17 @@ namespace Engine.Script
             IsInFadeOut = false;
             IsInFadeIn = true;
             FadeTransparence = 1f;
+            Globals.IsInputDisabled = true;
         }
 
         public static bool IsFadeInEnd()
         {
-            return !IsInFadeIn;
+            if (!IsInFadeIn)
+            {
+                Globals.IsInputDisabled = false;
+                return true;
+            }
+            return false;
         }
 
         public static void DrawFade(SpriteBatch spriteBatch)
@@ -403,6 +432,19 @@ namespace Engine.Script
                 {
                     obj.OpenBox();
                 }
+            }
+        }
+
+        public static void CloseBox(List<string> parameters, object belongObject)
+        {
+            var target = belongObject as Obj;
+            if (parameters != null)
+            {
+                target = ObjManager.GetObj(Utils.RemoveStringQuotes(parameters[0]));
+            }
+            if (target != null)
+            {
+                target.PlayCurrentDirOnceReverse();
             }
         }
 
@@ -1419,6 +1461,46 @@ namespace Engine.Script
             var index = int.Parse(parameters[0]);
             var part = (Good.EquipPosition) int.Parse(parameters[1]);
             GuiManager.EquipGoods(index, part);
+        }
+
+        public static void BuyGoods(List<string> parameters)
+        {
+            GuiManager.BuyGoods(Utils.RemoveStringQuotes(parameters[0]));
+            Globals.IsInputDisabled = true;
+        }
+
+        public static bool IsBuyGoodsEnd()
+        {
+            if (GuiManager.IsBuyGoodsEnd())
+            {
+                Globals.IsInputDisabled = false;
+                return true;
+            }
+            return false;
+        }
+
+        public static void OpenTimeLimit(List<string> parameters)
+        {
+            GuiManager.OpenTimeLimit(int.Parse(parameters[0]));
+        }
+
+        public static void CloseTimeLimit()
+        {
+            GuiManager.CloseTimeLimit();
+            _isTimeScriptSet = false;
+        }
+
+        public static void HideTimerWnd()
+        {
+            GuiManager.HideTimerWindow();
+        }
+
+        public static void SetTimeScript(List<string> parameters)
+        {
+            if(!GuiManager.IsTimerStarted()) return;
+            _timeScriptSeconds = int.Parse(parameters[0]);
+            _timeScriptFileName = Utils.RemoveStringQuotes(parameters[1]);
+            _isTimeScriptSet = true;
         }
     }
 }

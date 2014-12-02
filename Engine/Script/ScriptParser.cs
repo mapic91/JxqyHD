@@ -266,6 +266,10 @@ namespace Engine.Script
                         case "MoveScreenEx":
                             isEnd = ScriptExecuter.IsMoveScreenExEnd();
                             break;
+                        case "SellGoods":
+                        case "BuyGoods":
+                            isEnd = ScriptExecuter.IsBuyGoodsEnd();
+                            break;
                     }
                 }
                 else
@@ -323,6 +327,9 @@ namespace Engine.Script
                             break;
                         case "OpenBox":
                             ScriptExecuter.OpenBox(parameters, BelongObject);
+                            break;
+                        case "CloseBox":
+                            ScriptExecuter.CloseBox(parameters, BelongObject);
                             break;
                         case "OpenObj":
                             ScriptExecuter.OpenBox(parameters, BelongObject);
@@ -608,6 +615,23 @@ namespace Engine.Script
                             break;
                         case "EquipGoods":
                             ScriptExecuter.EquipGoods(parameters);
+                            break;
+                        case "SellGoods":
+                        case "BuyGoods":
+                            ScriptExecuter.BuyGoods(parameters);
+                            isEnd = ScriptExecuter.IsBuyGoodsEnd();
+                            break;
+                        case "OpenTimeLimit":
+                            ScriptExecuter.OpenTimeLimit(parameters);
+                            break;
+                        case "CloseTimeLimit":
+                            ScriptExecuter.CloseTimeLimit();
+                            break;
+                        case "HideTimerWnd":
+                            ScriptExecuter.HideTimerWnd();
+                            break;
+                        case "SetTimeScript":
+                            ScriptExecuter.SetTimeScript(parameters);
                             break;
                     }
                 }

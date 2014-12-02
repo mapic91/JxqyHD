@@ -55,6 +55,9 @@ OpenBox();
 OpenBox(a)
 OpenBox("渔船");
 
+CloseBox(a)
+CloseBox("通天塔开关A");
+
 OpenObj(a)
 OpenObj("宝箱");
 
@@ -369,17 +372,23 @@ SellGoods("低级药品.ini");
 
 BuyGoods(a)
 BuyGoods("衣3级.ini");
+
+OpenTimeLimit(a)
+OpenTimeLimit(2);
+
+CloseTimeLimit()
+CloseTimeLimit();
+
+HideTimerWnd()
+HideTimerWnd();
+
+SetTimeScript(a,b)
+SetTimeScript(1,"changecolor.txt");
+SetTimeScript(60, "time60.txt");
 ///////////////////////////////////////////////////////////////////
 //////////////////    Implemented   End  /////////////////////////
 /////////////////////////////////////////////////////////////////
 
-
-
-CloseBox(a)
-CloseBox("通天塔开关A");
-
-CloseTimeLimit()
-CloseTimeLimit();
 
 FollowNpc("慕容老头","杨影枫")
 FollowNpc("慕容老头","杨影枫")
@@ -392,9 +401,6 @@ GetNpcCount(1,1);
 
 GetPartnerIdx(a)
 GetPartnerIdx($PartnerNo);
-
-HideTimerWnd()
-HideTimerWnd();
 
 LimitMana(a)
 LimitMana(1);
@@ -414,17 +420,8 @@ NpcSpecialAction("霹雳堂爆炸","听雷阁爆炸.asf");
 NpcSpecialActionEx(a, b)
 NpcSpecialActionEx("杨影枫", "mpc006_跪.asf");
 
-OpenTimeLimit(a)
-OpenTimeLimit(2);
-
 PlayerChange(a)
 PlayerChange(1);
 
 ReturnToTitle()
 ReturnToTitle();
-
-
-
-SetTimeScript(a,b)
-SetTimeScript(1,"changecolor.txt");
-SetTimeScript(60, "time60.txt");

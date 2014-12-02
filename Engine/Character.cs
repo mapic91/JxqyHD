@@ -1306,8 +1306,9 @@ namespace Engine
                     //find directional neighbor
                     var neighbor = Engine.PathFinder.FindNeighborInDirection(destinationTilePositon,
                     destinationTilePositon - PositionInWorld);
-                    //if can't find try other neighbor
-                    if (neighbor == Vector2.Zero)
+                    //if can't find  or neighbor is obstacle, try other neighbor
+                    if (neighbor == Vector2.Zero ||
+                        Globals.TheMap.IsObstacleForCharacter(neighbor))
                     {
                         var neighbors = Engine.PathFinder.FindNeighbors(destinationTilePositon);
                         if (neighbors.Count > 0)

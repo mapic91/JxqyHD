@@ -265,7 +265,7 @@ namespace Engine
         public override void Update(GameTime gameTime)
         {
             if ((Texture.FrameCounts > 1 && IsAutoPlay) ||
-                IsPlayingCurrentDirOnce)
+                IsInPlaying)
                 base.Update(gameTime);
         }
 
