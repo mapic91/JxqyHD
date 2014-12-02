@@ -385,6 +385,15 @@ HideTimerWnd();
 SetTimeScript(a,b)
 SetTimeScript(1,"changecolor.txt");
 SetTimeScript(60, "time60.txt");
+
+GetGoodsNum(a)
+GetGoodsNum("goods-n13-×ÏÏ¼ÓñÅå.ini");
+
+GetNpcCount(1,1)
+GetNpcCount(1,1);
+
+LimitMana(a)
+LimitMana(1);
 ///////////////////////////////////////////////////////////////////
 //////////////////    Implemented   End  /////////////////////////
 /////////////////////////////////////////////////////////////////
@@ -393,17 +402,8 @@ SetTimeScript(60, "time60.txt");
 FollowNpc("Ä½ÈÝÀÏÍ·","ÑîÓ°·ã")
 FollowNpc("Ä½ÈÝÀÏÍ·","ÑîÓ°·ã")
 
-GetGoodsNum(a)
-GetGoodsNum("goods-n13-×ÏÏ¼ÓñÅå.ini");
-
-GetNpcCount(1,1)
-GetNpcCount(1,1);
-
 GetPartnerIdx(a)
 GetPartnerIdx($PartnerNo);
-
-LimitMana(a)
-LimitMana(1);
 
 LoadGame(a)
 LoadGame(0);

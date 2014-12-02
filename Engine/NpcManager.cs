@@ -239,6 +239,16 @@ namespace Engine
             }
         }
 
+        public static int GetNpcCount(int kind, int relation)
+        {
+            if (Globals.ThePlayer.Kind == kind &&
+                Globals.ThePlayer.Relation == relation)
+            {
+                return 1;
+            }
+            return _list.Count(npc => npc.Kind == kind && npc.Relation == relation);
+        }
+
         public static void ShowNpc(string npcName, bool isShow = true)
         {
             Character character = null;

@@ -297,5 +297,10 @@ namespace Engine
                 AddKey(keyDataCollection, "WavFile", _wavFileName);
             }
         }
+
+        public void StartInteract()
+        {
+            ScriptManager.RunScript(ScriptFile);
+        }
     }
 }

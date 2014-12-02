@@ -13,11 +13,17 @@ namespace Engine.Script
         private List<Code> _codes;
         private int _currentIndex;
         private Code _currentCode;
+        private bool _isEnd = true;
         public string FilePath { get; private set; }
         public string FileName { get; private set; }
         public bool IsOk { private set; get; }
         public object BelongObject { private set; get; }
-        public bool IsEnd { private set; get; }
+
+        public bool IsEnd
+        {
+            get { return _isEnd; }
+            private set { _isEnd = value; }
+        }
 
         public ScriptParser() { }
 
@@ -142,12 +148,14 @@ namespace Engine.Script
 
         public void Begin()
         {
+            IsEnd = !IsOk;
             _currentIndex = 0;
             _currentCode = null;
         }
 
         public bool Continue()
         {
+            if (IsEnd) return false;
             var count = _codes.Count;
             for (; _currentIndex < count; _currentIndex++)
             {
@@ -632,6 +640,15 @@ namespace Engine.Script
                             break;
                         case "SetTimeScript":
                             ScriptExecuter.SetTimeScript(parameters);
+                            break;
+                        case "GetGoodsNum":
+                            ScriptExecuter.GetGoodsNum(parameters);
+                            break;
+                        case "GetNpcCount":
+                            ScriptExecuter.GetNpcCount(parameters);
+                            break;
+                        case "LimitMana":
+                            ScriptExecuter.LimitMana(parameters);
                             break;
                     }
                 }

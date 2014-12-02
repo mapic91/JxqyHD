@@ -146,7 +146,9 @@ namespace Engine.Gui
                 _items[2].Text = player.LevelUpExp.ToString();
                 _items[3].Text = player.Life + "/" + player.LifeMax;
                 _items[4].Text = player.Thew + "/" + player.ThewMax;
-                _items[5].Text = player.Mana + "/" + player.ManaMax;
+                _items[5].Text = player.IsManaLimited
+                    ? "1/1"
+                    : player.Mana + "/" + player.ManaMax;
                 _items[6].Text = player.Attack.ToString();
                 _items[7].Text = player.Defend.ToString();
                 _items[8].Text = player.Evade.ToString();

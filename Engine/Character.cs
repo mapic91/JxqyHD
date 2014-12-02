@@ -75,6 +75,8 @@ namespace Engine
         private bool _isInStepMove;
         private int _stepMoveDirection;
         private int _leftStepToMove;
+        private bool _isInInteract;
+        private int _directionBeforInteract;
         protected Magic MagicUse;
         #endregion Field
 
@@ -1380,18 +1382,39 @@ namespace Engine
                 ScriptParser script = null;
                 if (character != null)
                 {
-                    script = character.ScriptFile;
+                    character.StartInteract(this);
                     SetDirection(character.PositionInWorld - PositionInWorld);
                 }
                 else if (obj != null)
                 {
-                    script = obj.ScriptFile;
+                    obj.StartInteract();
                     SetDirection(obj.PositionInWorld - PositionInWorld);
                 }
                 StandingImmediately();
-                ScriptManager.RunScript(script);
             }
         }
+
+        public void StartInteract(Character from)
+        {
+            if (from != null && ScriptFile != null)
+            {
+                _isInInteract = true;
+                _directionBeforInteract = CurrentDirection;
+                SetDirection(from.PositionInWorld - PositionInWorld);
+                //In case of reload script file from file, assign ScriptFile back
+                ScriptFile = ScriptManager.RunScript(ScriptFile);
+            }
+        }
+
+        public bool IsInteractEnd()
+        {
+            if (ScriptFile != null)
+            {
+                return ScriptFile.IsEnd;
+            }
+            return true;
+        }
+
         #endregion Perform action
 
         public static float GetTrueDistance(Vector2 distance)
@@ -1630,6 +1653,12 @@ namespace Engine
         {
             if (IsDeath) return;
 
+            if (_isInInteract && IsInteractEnd())
+            {
+                _isInInteract = false;
+                SetDirection(_directionBeforInteract);
+            }
+
             var elapsedGameTime = gameTime.ElapsedGameTime;
 
             if (PoisonSeconds > 0)
@@ -1774,5 +1803,26 @@ namespace Engine
             base.Draw(spriteBatch, texture, color);
         }
         #endregion Update Draw
+
+        #region Type
+        public enum CharacterType
+        {
+            Normal,
+            Fighter,
+            Player,
+            Follower,
+            GroundAnimal,
+            Eventer,
+            AfraidPlayerAnimal,
+            Flyer
+        }
+
+        public enum RelationType
+        {
+            Friend,
+            Enemy,
+            Neutral
+        }
+        #endregion Type
     }
 }

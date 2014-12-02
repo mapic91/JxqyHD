@@ -279,7 +279,8 @@ namespace Engine
             }
             else if (BelongMagic.MoveKind == 13)
             {
-                framesToPlay = (int)(BelongMagic.LifeFrame * 10f/ Interval);
+                var interval = Interval == 0 ? 1000/60 : Interval;
+                framesToPlay = (int)(BelongMagic.LifeFrame * 10f/ interval);
             }
 
             PlayFrames(framesToPlay);

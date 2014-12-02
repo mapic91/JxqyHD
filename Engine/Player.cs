@@ -33,7 +33,10 @@ namespace Engine
 
         public bool IsNotUseThewWhenRun { set; get; }
         public bool IsManaRestore { set; get; }
-
+        /// <summary>
+        /// Can't use mana
+        /// </summary>
+        public bool IsManaLimited { set; get; }
         public bool CanInput
         {
             get { return Globals.IsInputDisabled; }
@@ -168,7 +171,7 @@ namespace Engine
 
         protected override bool CanUseMagic()
         {
-            if (Mana < MagicUse.ManaCost)
+            if (Mana < MagicUse.ManaCost || IsManaLimited)
             {
                 GuiManager.ShowMessage("没有足够的内力使用这种武功");
                 return false;

@@ -167,6 +167,32 @@ namespace Engine.ListManager
             return false;
         }
 
+        public static GoodsItemInfo GetGoodsItemInfoFromFileName(string fileName)
+        {
+            for (var i = ListIndexBegin; i <= ListIndexEnd; i++)
+            {
+                var info = GoodsList[i];
+                if (info != null && info.TheGood != null)
+                {
+                    if (Utils.EqualNoCase(info.TheGood.FileName, fileName))
+                    {
+                        return info;
+                    }
+                }
+            }
+            return null;
+        }
+
+        public static int GetGoodsNum(string fileName)
+        {
+            var info = GetGoodsItemInfoFromFileName(fileName);
+            if (info != null)
+            {
+                return info.Count;
+            }
+            return 0;
+        }
+
         public static void DeleteGood(string fileName)
         {
             var i = ListIndexBegin;

@@ -1502,5 +1502,23 @@ namespace Engine.Script
             _timeScriptFileName = Utils.RemoveStringQuotes(parameters[1]);
             _isTimeScriptSet = true;
         }
+
+        public static void GetGoodsNum(List<string> parameters)
+        {
+            Variables["$GoodsNum"] = GoodsListManager.GetGoodsNum(
+                Utils.RemoveStringQuotes(parameters[0]));
+        }
+
+        public static void GetNpcCount(List<string> parameters)
+        {
+            Variables["$NpcCount"] = NpcManager.GetNpcCount(int.Parse(parameters[0]),
+                int.Parse(parameters[1]));
+        }
+
+        public static void LimitMana(List<string> parameters)
+        {
+            if(IsPlayerNull()) return;
+            Globals.ThePlayer.IsManaLimited = (int.Parse(parameters[0]) != 0);
+        }
     }
 }
