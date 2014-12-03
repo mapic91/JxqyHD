@@ -11,8 +11,6 @@ namespace Engine
 {
     public class Npc : Character
     {
-        private bool _attackTargetFinded;
-
         #region public properties
         public override PathFinder.PathType PathType
         {
@@ -23,26 +21,6 @@ namespace Engine
                 else
                     return Engine.PathFinder.PathType.PathOneStep;
             }
-        }
-
-        public bool IsEnemy
-        {
-            get { return Kind == 1 && Relation == 1; }
-        }
-
-        public bool IsFriend
-        {
-            get { return ((Kind == 1 && Relation == 0) || Kind == 3); }
-        }
-
-        public bool IsFollower
-        {
-            get { return Kind == 3; }
-        }
-
-        public bool IsInteractive
-        {
-            get { return (ScriptFile != null || IsEnemy || IsFriend); }
         }
 
         public static bool IsAIDisabled { protected set; get; }
@@ -72,6 +50,29 @@ namespace Engine
                 PositionInWorld - Globals.ListenerPosition);
         }
 
+        protected override void FollowTargetFinded(bool attackCanReach)
+        {
+            if (IsAIDisabled)
+            {
+                CancleAttackTarget();
+            }
+            else
+            {
+                if (attackCanReach) Attacking(FollowTarget.TilePosition);
+                else WalkTo(FollowTarget.TilePosition);
+            }
+        }
+
+        protected override void FollowTargetLost()
+        {
+            //just walk to last find position
+            CancleAttackTarget();
+            if (IsPartner)
+            {
+                WalkTo(Globals.ThePlayer.TilePosition);
+            }
+        }
+
         public static void DisableAI()
         {
             IsAIDisabled = true;
@@ -84,39 +85,27 @@ namespace Engine
 
         public override void Update(GameTime gameTime)
         {
-            if (IsEnemy)
+            if (IsAIDisabled)
             {
-                var attackCanReach = false;
-                var playerTilePosition = Globals.ThePlayer.TilePosition;
-                if (IsAIDisabled)
+                //do nothing
+            }
+            else
+            {
+                if (!IsFollowTargetFinded ||
+                    FollowTarget == null ||
+                    FollowTarget.IsDeathInvoked)
                 {
-                    _attackTargetFinded = false;
-                }
-                else
-                {
-                    int tileDistance;
-                    attackCanReach = Engine.PathFinder.CanMagicReach(TilePosition, playerTilePosition, out tileDistance);
-                    if (IsStanding())
+                    if (IsEnemy)
                     {
-                        if ((attackCanReach && tileDistance <= VisionRadius) ||
-                            (_attackTargetFinded && tileDistance <= VisionRadius)
-                            )
-                            _attackTargetFinded = true;
-                        else _attackTargetFinded = false;
+                        FollowTarget = NpcManager.GetClosedPlayerOrFighterFriend(PositionInWorld);
+                    }
+                    else if (IsFighterFriend)
+                    {
+                        FollowTarget = NpcManager.GetClosedEnemy(PositionInWorld);
                     }
                 }
-
-                if (_attackTargetFinded)
-                {
-                    if (attackCanReach) Attacking(playerTilePosition);
-                    else WalkTo(playerTilePosition);
-                }
-                else
-                {
-                    //just walk to last find position,don't attack
-                    ClearTarget();
-                }
             }
+
             base.Update(gameTime);
         }
     }

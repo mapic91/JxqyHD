@@ -34,7 +34,7 @@ namespace Engine.Script
 
         private static readonly Regex RegGoto = new Regex(@"^@([a-zA-Z0-9]+):");
         private static readonly Regex RegComment = new Regex(@"^//.*");
-        private static readonly Regex RegFunction = new Regex(@"^([a-zA-Z]+)(.*);");
+        private static readonly Regex RegFunction = new Regex(@"^([a-zA-Z]+)(.*);*");
         private static readonly Regex RegParameter = new Regex(@"^\((.+)\)(.*)");
         private static readonly Regex RegResult = new Regex(@"^@[a-zA-Z0-9]+");
         private void ParserLine(string line)
@@ -277,6 +277,9 @@ namespace Engine.Script
                         case "SellGoods":
                         case "BuyGoods":
                             isEnd = ScriptExecuter.IsBuyGoodsEnd();
+                            break;
+                        case "NpcSpecialActionEx":
+                            isEnd = ScriptExecuter.IsNpcSpecialActionExEnd(_currentCode.Parameters, BelongObject);
                             break;
                     }
                 }
@@ -655,6 +658,16 @@ namespace Engine.Script
                             break;
                         case "NpcAttack":
                             ScriptExecuter.NpcAttack(parameters, BelongObject);
+                            break;
+                        case "FollowNpc":
+                            ScriptExecuter.FollowNpc(parameters, BelongObject);
+                            break;
+                        case "NpcSpecialAction":
+                            ScriptExecuter.NpcSpecialAction(parameters, BelongObject);
+                            break;
+                        case "NpcSpecialActionEx":
+                            ScriptExecuter.NpcSpecialActionEx(parameters, BelongObject);
+                            isEnd = ScriptExecuter.IsNpcSpecialActionExEnd(parameters, BelongObject);
                             break;
                     }
                 }

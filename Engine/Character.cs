@@ -95,6 +95,9 @@ namespace Engine
         public bool IsFightDisabled { protected set; get; }
         public bool IsJumpDisabled { protected set; get; }
         public bool IsRunDisabled { protected set; get; }
+        public Character FollowTarget { protected set; get; }
+        public bool IsFollowTargetFinded { protected set; get; }
+        public bool IsInSpecialAction { protected set; get; }
 
         public bool IsHide { get; set; }
 
@@ -464,9 +467,47 @@ namespace Engine
             protected set { _isDeath = value; }
         }
 
+        /// <summary>
+        /// Death() method invoked
+        /// </summary>
+        public bool IsDeathInvoked { protected set; get; }
+
         public bool IsInDeathing { get { return State == (int)CharacterState.Death; } }
 
         #endregion Public properties
+
+        #region Character Type and Relation
+        public bool IsEnemy
+        {
+            get { return Kind == 1 && Relation == 1; }
+        }
+
+        public bool IsFriend
+        {
+            get { return Relation == (int)RelationType.Friend; }
+        }
+
+        public bool IsFighterFriend
+        {
+            get { return ((Kind == 1 && Relation == 0) || Kind == 3); }
+        }
+
+        public bool IsFighter
+        {
+            get { return Kind == (int)CharacterType.Fighter; }
+        }
+
+        public bool IsPartner
+        {
+            get { return Kind == 3; }
+        }
+
+        public bool IsInteractive
+        {
+            get { return (ScriptFile != null || IsEnemy || IsFighterFriend); }
+        }
+
+        #endregion Character Type and Relation
 
         #region Ctor
         public Character(string filePath)
@@ -477,6 +518,7 @@ namespace Engine
         public Character() { }
         #endregion Ctor
 
+        #region Private method
         private void Initlize()
         {
             if (NpcIni.ContainsKey((int)CharacterState.Stand))
@@ -703,6 +745,50 @@ namespace Engine
             }
         }
 
+        /// <summary>
+        /// Check follow target and perform follow
+        /// </summary>
+        private void UpdateFollow()
+        {
+            if (FollowTarget == null) return;
+            var targetTilePosition = FollowTarget.TilePosition;
+
+            int tileDistance;
+            var attackCanReach = Engine.PathFinder.CanMagicReach(TilePosition, targetTilePosition, out tileDistance);
+
+            if ((attackCanReach && tileDistance <= VisionRadius) || //target in view range
+                (IsFollowTargetFinded && tileDistance <= VisionRadius) //target already find and not lost
+                )
+            {
+                IsFollowTargetFinded = true;
+            }
+            else
+            {
+                IsFollowTargetFinded = false;
+            }
+
+            if (IsFollowTargetFinded)
+            {
+                FollowTargetFinded(attackCanReach);
+            }
+            else
+            {
+                FollowTargetLost();
+            }
+        }
+        #endregion Private method
+
+        #region Protected method
+        protected virtual void FollowTargetFinded(bool attackCanReach)
+        {
+            WalkTo(FollowTarget.TilePosition);
+        }
+
+        protected virtual void FollowTargetLost()
+        {
+            //Do nothing
+        }
+
         protected abstract bool HasObstacle(Vector2 tilePosition);
 
         protected virtual void CheckMapTrap() { }
@@ -739,6 +825,15 @@ namespace Engine
                 keyDataCollection.AddKey(key, value);
             }
         }
+
+        /// <summary>
+        /// Set state to current state
+        /// </summary>
+        protected void ResetState()
+        {
+            SetState((CharacterState)State, true);
+        }
+        #endregion Protected method
 
         public bool Load(string filePath)
         {
@@ -949,7 +1044,7 @@ namespace Engine
             EndPlayCurrentDirOnce();
             DestinationMoveTilePosition = Vector2.Zero;
             Path = null;
-            ClearTarget();
+            CancleAttackTarget();
             if (_isInInteract)
             {
                 //End interact in case of action to perform direction not correct
@@ -996,7 +1091,7 @@ namespace Engine
 
         private void CheckStepMove()
         {
-            if(!_isInStepMove) return;
+            if (!_isInStepMove) return;
             if (_leftStepToMove == 0)
             {
                 StandingImmediately();
@@ -1004,7 +1099,7 @@ namespace Engine
                 return;
             }
             var destinationTilePosition = Engine.PathFinder.FindNeighborInDirection(
-                TilePosition, 
+                TilePosition,
                 _stepMoveDirection);
             WalkTo(destinationTilePosition);
             if (Path == null ||
@@ -1025,7 +1120,7 @@ namespace Engine
                 if (IsWalking() && !IsInStepMove)
                 {
                     DestinationMoveTilePosition = destinationTilePosition;
-                    ClearTarget();
+                    CancleAttackTarget();
                 }
                 else
                 {
@@ -1143,6 +1238,7 @@ namespace Engine
         public void Death()
         {
             if (State == (int)CharacterState.Death) return;
+            IsDeathInvoked = true;
             ScriptManager.RunScript(DeathScript);
             StateInitialize();
             if (NpcIni.ContainsKey((int)CharacterState.Death))
@@ -1186,7 +1282,7 @@ namespace Engine
             }
         }
 
-        public void ClearTarget()
+        public void CancleAttackTarget()
         {
             DestinationAttackTilePosition = Vector2.Zero;
             _interactiveTarget = null;
@@ -1535,6 +1631,17 @@ namespace Engine
 
         public virtual void SetRelation(int relation)
         {
+
+            if (
+                (Relation == (int)RelationType.Friend &&
+                relation == (int)RelationType.Enemy) ||
+                (Relation == (int)RelationType.Enemy &&
+                 relation != (int)RelationType.Enemy)
+                )
+            {
+                //Character can't follow current target now
+                FollowTarget = null;
+            }
             Relation = relation;
         }
 
@@ -1659,9 +1766,73 @@ namespace Engine
             }
         }
 
+        /// <summary>
+        /// Make this enemy and all neighbor enemy walk to target and follow target 
+        /// If follow target is already finded and distance is less than new target,
+        /// don't walk to and follow new target
+        /// </summary>
+        /// <param name="target">The target</param>
+        public void NotifyEnemyAndAllNeighbor(Character target)
+        {
+            //If target is null or this character is not enemy return
+            if (target == null || !IsEnemy) return;
+            var characters = NpcManager.GetNeighborEnemy(this);
+            characters.Add(this);
+            foreach (var character in characters)
+            {
+                if (character.FollowTarget != null &&
+                    character.IsFollowTargetFinded &&
+                    Vector2.Distance(character.PositionInWorld, character.FollowTarget.PositionInWorld) <
+                    Vector2.Distance(character.PositionInWorld, target.PositionInWorld))
+                {
+                    continue;
+                }
+                character.FollowAndWalkToTarget(target);
+            }
+        }
+
+        /// <summary>
+        /// Walk to target and follow target
+        /// </summary>
+        /// <param name="target">Target to walk to</param>
+        public void FollowAndWalkToTarget(Character target)
+        {
+            WalkTo(target.TilePosition);
+            Follow(target);
+        }
+
+        /// <summary>
+        /// Set follow target
+        /// </summary>
+        /// <param name="target">Follow target</param>
+        public void Follow(Character target)
+        {
+            FollowTarget = target;
+            IsFollowTargetFinded = true;
+        }
+
+        public void SetSpecialAction(string asfFileName)
+        {
+            IsInSpecialAction = true;
+            EndPlayCurrentDirOnce();
+            Texture = Utils.GetCharacterAsf(asfFileName);
+            PlayCurrentDirOnce();
+        }
+
         #region Update Draw
         public override void Update(GameTime gameTime)
         {
+            if (IsInSpecialAction)
+            {
+                base.Update(gameTime);
+                if (IsPlayCurrentDirOnceEnd())
+                {
+                    IsInSpecialAction = false;
+                    ResetState();
+                }
+                return;
+            }
+
             if (IsDeath) return;
 
             if (_isInInteract && IsInteractEnd())
@@ -1693,6 +1864,9 @@ namespace Engine
                 FrozenSeconds -= (float)elapsedGameTime.TotalSeconds;
                 elapsedGameTime = new TimeSpan(elapsedGameTime.Ticks / 2);
             }
+
+            //Check follow target 
+            UpdateFollow();
 
             switch ((CharacterState)State)
             {

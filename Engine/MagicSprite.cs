@@ -195,16 +195,18 @@ namespace Engine
 
         private void CheckCharacterHited()
         {
-            if (BelongCharacter.IsPlayer)
+            if (BelongCharacter.IsPlayer || BelongCharacter.IsFriend)
             {
-                CharacterHited(NpcManager.GetEnemy(TilePosition));
+                var target = NpcManager.GetEnemy(TilePosition);
+                CharacterHited(target);
+                if (target != null)
+                {
+                    target.NotifyEnemyAndAllNeighbor(BelongCharacter);
+                }
             }
             else
             {
-                if (TilePosition == Globals.ThePlayer.TilePosition)
-                {
-                    CharacterHited(Globals.ThePlayer);
-                }
+                CharacterHited(NpcManager.GetPlayerOrFighterFriend(TilePosition));
             }
         }
 

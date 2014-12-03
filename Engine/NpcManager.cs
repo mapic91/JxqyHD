@@ -56,24 +56,80 @@ namespace Engine
             _npcListChanged = true;
         }
 
-        public static Npc GetClosedEnemy(Vector2 position)
+        /// <summary>
+        /// Get enemy closed to target position.
+        /// </summary>
+        /// <param name="positionInWorld">Target position</param>
+        /// <returns>If not find, return null</returns>
+        public static Npc GetClosedEnemy(Vector2 positionInWorld)
         {
-            Npc closedNpc = null;
+            Npc closed = null;
             var closedDistance = 99999999f;
             foreach (var npc in NpcManager.NpcList)
             {
                 if (npc.IsEnemy)
                 {
-                    var distance = Vector2.Distance(position, npc.PositionInWorld);
+                    var distance = Vector2.Distance(positionInWorld, npc.PositionInWorld);
                     if (distance < closedDistance)
                     {
-                        closedNpc = npc;
+                        closed = npc;
                         closedDistance = distance;
                     }
                 }
             }
-            return closedNpc;
+            return closed;
         }
+
+        /// <summary>
+        /// Get player or fighter friend closed to target position.
+        /// </summary>
+        /// <param name="positionInWorld">Target position</param>
+        /// <returns>If not find, return null</returns>
+        public static Character GetClosedPlayerOrFighterFriend(Vector2 positionInWorld)
+        {
+            Character closed = null;
+            var closedDistance = 99999999f;
+            foreach (var npc in _list)
+            {
+                if (npc.IsFighterFriend)
+                {
+                    var distance = Vector2.Distance(positionInWorld, npc.PositionInWorld);
+                    if (distance < closedDistance)
+                    {
+                        closed = npc;
+                        closedDistance = distance;
+                    }
+                }
+            }
+
+            if (Vector2.Distance(positionInWorld, Globals.ThePlayer.PositionInWorld) <
+                closedDistance)
+            {
+                closed = Globals.ThePlayer;
+            }
+            return closed;
+        }
+
+        /// <summary>
+        /// Find neighbors of character.If not find returned list count is 0.
+        /// </summary>
+        /// <param name="character">The character to find</param>
+        /// <returns>Finded neighbors.If not find list count is 0.</returns>
+        public static List<Character> GetNeighborEnemy(Character character)
+        {
+            var list = new List<Character>();
+            if (character == null) return list;
+            var neighbors = PathFinder.FindAllNeighbors(character.TilePosition);
+            foreach (var neighbor in neighbors)
+            {
+                var enemy = GetEnemy(neighbor);
+                if (enemy != null)
+                {
+                    list.Add(enemy);
+                }
+            }
+            return list;
+        } 
 
         public static bool Load(string fileName, bool clearCurrentNpcs = true)
         {
@@ -178,6 +234,19 @@ namespace Engine
         public static Npc GetEnemy(Vector2 tilePosition)
         {
             return GetEnemy((int)tilePosition.X, (int)tilePosition.Y);
+        }
+
+        public static Character GetPlayerOrFighterFriend(Vector2 tilePosition)
+        {
+            if (tilePosition == Globals.ThePlayer.TilePosition) return Globals.ThePlayer;
+            foreach (var npc in _list)
+            {
+                if (npc.IsFighterFriend && npc.TilePosition == tilePosition)
+                {
+                    return npc;
+                }
+            }
+            return null;
         }
 
         public static bool IsObstacle(int tileX, int tileY)

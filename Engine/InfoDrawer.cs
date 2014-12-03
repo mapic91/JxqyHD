@@ -21,7 +21,7 @@ namespace Engine
         {
             Color drawColor;
             if (npc.IsEnemy) drawColor = EnemyLifeColor;
-            else if (npc.IsFriend) drawColor = FriendLifeColor;
+            else if (npc.IsFighterFriend) drawColor = FriendLifeColor;
             else return;
 
             const int width = 300;

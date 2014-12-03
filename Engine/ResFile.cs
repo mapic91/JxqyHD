@@ -46,25 +46,7 @@ namespace Engine
             list[(int) state].Image = Utils.GetAsf(GetAsfFilePathBase(fileName, ResType.Npc), fileName);
         }
 
-        private static ResStateInfo GetStateInfo(string image, string sound, ResType type)
-        {
-            var info = new ResStateInfo();
-            var groups = Regex.Match(image, "Image=(.+)").Groups;
-            if (groups[0].Success)
-            {
-                var asfFileName = groups[1].Value;
-                var filePathBase = GetAsfFilePathBase(asfFileName, type);
-                info.Image = Utils.GetAsf(filePathBase, asfFileName);
-            }
-            groups = Regex.Match(sound, "Sound=(.+)").Groups;
-            if (groups[0].Success)
-            {
-                info.Sound = Utils.GetSoundEffect(groups[1].Value);
-            }
-            return info;
-        }
-
-        private static string GetAsfFilePathBase(string asfFileName, ResType type)
+        public static string GetAsfFilePathBase(string asfFileName, ResType type)
         {
             string asfPathBase = string.Empty;
             switch (type)
@@ -81,6 +63,24 @@ namespace Engine
                     break;
             }
             return asfPathBase;
+        }
+
+        private static ResStateInfo GetStateInfo(string image, string sound, ResType type)
+        {
+            var info = new ResStateInfo();
+            var groups = Regex.Match(image, "Image=(.+)").Groups;
+            if (groups[0].Success)
+            {
+                var asfFileName = groups[1].Value;
+                var filePathBase = GetAsfFilePathBase(asfFileName, type);
+                info.Image = Utils.GetAsf(filePathBase, asfFileName);
+            }
+            groups = Regex.Match(sound, "Sound=(.+)").Groups;
+            if (groups[0].Success)
+            {
+                info.Sound = Utils.GetSoundEffect(groups[1].Value);
+            }
+            return info;
         }
 
         private static int GetState(string head, ResType type)

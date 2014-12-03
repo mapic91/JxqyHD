@@ -400,25 +400,24 @@ NpcAttack("ÑîÓ°·ã",10,35);
 
 MergeNpc(a)
 MergeNpc("SubEvent01.npc");
-///////////////////////////////////////////////////////////////////
-//////////////////    Implemented   End  /////////////////////////
-/////////////////////////////////////////////////////////////////
-
 
 FollowNpc("Ä½ÈÝÀÏÍ·","ÑîÓ°·ã")
 FollowNpc("Ä½ÈÝÀÏÍ·","ÑîÓ°·ã")
-
-GetPartnerIdx(a)
-GetPartnerIdx($PartnerNo);
-
-LoadGame(a)
-LoadGame(0);
 
 NpcSpecialAction(a,b)
 NpcSpecialAction("Åùö¨ÌÃ±¬Õ¨","ÌýÀ×¸ó±¬Õ¨.asf");
 
 NpcSpecialActionEx(a, b)
 NpcSpecialActionEx("ÑîÓ°·ã", "mpc006_¹ò.asf");
+///////////////////////////////////////////////////////////////////
+//////////////////    Implemented   End  /////////////////////////
+/////////////////////////////////////////////////////////////////
+
+GetPartnerIdx(a)
+GetPartnerIdx($PartnerNo);
+
+LoadGame(a)
+LoadGame(0);
 
 PlayerChange(a)
 PlayerChange(1);

@@ -397,7 +397,7 @@ namespace Engine
                         Globals.OutEdgeSprite = one;
                         var edgeColor = Globals.NpcEdgeColor;
                         if (one.IsEnemy) edgeColor = Globals.EnemyEdgeColor;
-                        else if (one.IsFriend) edgeColor = Globals.FriendEdgeColor;
+                        else if (one.IsFighterFriend) edgeColor = Globals.FriendEdgeColor;
                         Globals.OutEdgeTexture = TextureGenerator.GetOuterEdge(texture, edgeColor);
                         break;
                     }

@@ -84,6 +84,12 @@ namespace Engine
             }
         }
 
+        static public Asf GetCharacterAsf(string fileName)
+        {
+            return GetAsf(ResFile.GetAsfFilePathBase(fileName, ResType.Npc),
+                fileName);
+        } 
+
         static public SoundEffect GetSoundEffect(string wavFileName)
         {
             if (string.IsNullOrEmpty(wavFileName)) return null;

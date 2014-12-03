@@ -163,6 +163,31 @@ namespace Engine.Script
         }
 
         /// <summary>
+        /// Used for type: name,x or x
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <param name="belongObject"></param>
+        /// <param name="target"></param>
+        /// <param name="value"></param>
+        private static void GetTargetAndValue2(List<string> parameters,
+            object belongObject,
+            out Character target,
+            out string value)
+        {
+            target = belongObject as Character;
+            value = "";
+            if (parameters.Count == 2)
+            {
+                target = GetPlayerOrNpc(Utils.RemoveStringQuotes(parameters[0]));
+                value = Utils.RemoveStringQuotes(parameters[1]);
+            }
+            else if (parameters.Count == 1)
+            {
+                value = Utils.RemoveStringQuotes(parameters[0]);
+            }
+        }
+
+        /// <summary>
         /// Used for type: name,x, y or x,y
         /// </summary>
         /// <param name="parameters"></param>
@@ -1535,6 +1560,60 @@ namespace Engine.Script
             {
                 target.PerformeAttack(Map.ToPixelPosition(value));
             }
+        }
+
+        public static void FollowNpc(List<string> parameters, object belongObject)
+        {
+            var character = belongObject as Character;
+            Character target = null;
+            if (parameters.Count == 1)
+            {
+                target = NpcManager.GetNpc(Utils.RemoveStringQuotes(parameters[0]));
+            }
+            else if (parameters.Count == 2)
+            {
+                character = GetPlayerOrNpc(Utils.RemoveStringQuotes(parameters[0]));
+                target = GetPlayerOrNpc(Utils.RemoveStringQuotes(parameters[1]));
+            }
+
+            if(character == null || target == null) return;
+            character.Follow(target);
+        }
+
+        public static void NpcSpecialAction(List<string> parameters, object belongObject)
+        {
+            Character target;
+            string value;
+            GetTargetAndValue2(parameters, belongObject, out target, out value);
+            if (target != null)
+            {
+                target.SetSpecialAction(value);
+            }
+        }
+
+        public static void NpcSpecialActionEx(List<string> parameters, object belongObject)
+        {
+            Character target;
+            string value;
+            GetTargetAndValue2(parameters, belongObject, out target, out value);
+            if (target != null)
+            {
+                target.SetSpecialAction(value);
+                Globals.IsInputDisabled = true;
+            }
+        }
+
+        public static bool IsNpcSpecialActionExEnd(List<string> parameters, object belongObject)
+        {
+            Character target;
+            string value;
+            GetTargetAndValue2(parameters, belongObject, out target, out value);
+            if (target != null && target.IsInSpecialAction)
+            {
+                return false;
+            }
+            Globals.IsInputDisabled = false;
+            return true;
         }
     }
 }
