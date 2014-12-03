@@ -8,6 +8,7 @@ using Engine;
 using Engine.Gui;
 using Engine.ListManager;
 using Engine.Script;
+using Engine.Storage;
 using Engine.Weather;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -95,8 +96,6 @@ namespace Jxqy
             Globals.Initialize();
             Globals.TheGame = this;
             TalkTextList.Initialize();
-            SoundEffect.MasterVolume = Globals.SoundEffectVolume;
-            MediaPlayer.Volume = Globals.MusicVolume;
             Log.Initialize();
             Log.LogOn = Globals.IsLogOn;
 
@@ -131,25 +130,11 @@ namespace Jxqy
             Globals.FontSize10 = Content.Load<SpriteFont>(@"font\GB2312_ASCII_√‘ƒ„ºÚœ∏‘≤_10");
             Globals.FontSize12 = Content.Load<SpriteFont>(@"font\GB2312_ASCII_√‘ƒ„ºÚœ∏‘≤_12");
 
-            Globals.TheMap.LoadMap("map_005_œ¥Ω£≥ÿ.map");
-            Globals.TheMap.ViewBeginX = 0;
-            Globals.TheMap.ViewBeginY = 0;
-            Globals.TheMap.LoadTrap(@"ini\save\traps.ini");
             Globals.TheCarmera.ViewWidth = Globals.WindowWidth;
             Globals.TheCarmera.ViewHeight = Globals.WindowHeight;
 
-            Globals.ThePlayer = new Player(@"save\rpg2\player0.ini");
-            NpcManager.Load(@"xijianchi.npc");
-            ObjManager.Load(@"map005_obj.obj");
             GuiManager.Starting();
-            GuiManager.Load(@"save\rpg2\Magic0.ini",
-                    @"save\rpg2\Goods0.ini",
-                    @"save\rpg2\memo.ini");
-            GoodsListManager.ApplyEquipSpecialEffectFromList(Globals.ThePlayer);
-
-            //BackgroundMusic.Play(@"music/Mc003.mp3");
-
-            Globals.TheCarmera.PlayerToCenter();
+            Loader.LoadGame();
         }
 
         /// <summary>

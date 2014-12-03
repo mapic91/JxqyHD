@@ -439,6 +439,9 @@ namespace Engine.Script
                         case "SetMapTrap":
                             ScriptExecuter.SetMapTrap(parameters);
                             break;
+                        case "SetMapTime":
+                            Map.MapTime = int.Parse(parameters[0]);
+                            break;
                         case "FullLife":
                             ScriptExecuter.FullLife();
                             break;

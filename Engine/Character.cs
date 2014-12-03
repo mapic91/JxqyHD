@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Engine.Script;
+using IniParser;
 using IniParser.Model;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -42,7 +43,7 @@ namespace Engine
         private int _thewMax;
         private int _mana;
         private int _manaMax;
-        private StateMapList _npcIni;
+        private StateMapList _npcIni = new StateMapList();
         private string _npcIniFileName;
         private Obj _bodyIni;
         private Magic _flyIni;
@@ -510,12 +511,17 @@ namespace Engine
         #endregion Character Type and Relation
 
         #region Ctor
+        public Character() { }
+
         public Character(string filePath)
         {
             Load(filePath);
         }
 
-        public Character() { }
+        public Character(KeyDataCollection keyDataCollection)
+        {
+            Load(keyDataCollection);
+        }
         #endregion Ctor
 
         #region Private method
@@ -537,52 +543,52 @@ namespace Engine
             }
         }
 
-        private void AssignToValue(string[] nameValue)
+        private void AssignToValue(KeyData keyData)
         {
             try
             {
-                var info = this.GetType().GetProperty(nameValue[0]);
-                switch (nameValue[0])
+                var info = this.GetType().GetProperty(keyData.KeyName);
+                switch (keyData.KeyName)
                 {
                     case "FixedPos":
                     case "Name":
-                        info.SetValue(this, nameValue[1], null);
+                        info.SetValue(this, keyData.Value, null);
                         break;
                     case "ScriptFile":
                     case "DeathScript":
-                        if (!string.IsNullOrEmpty(nameValue[1]))
+                        if (!string.IsNullOrEmpty(keyData.Value))
                             info.SetValue(this,
-                                new ScriptParser(Utils.GetScriptFilePath(nameValue[1]), this),
+                                new ScriptParser(Utils.GetScriptFilePath(keyData.Value), this),
                                 null);
                         break;
                     case "NpcIni":
-                        SetNpcIni(nameValue[1]);
+                        SetNpcIni(keyData.Value);
                         break;
                     case "BodyIni":
-                        info.SetValue(this, new Obj(@"ini\obj\" + nameValue[1]), null);
+                        info.SetValue(this, new Obj(@"ini\obj\" + keyData.Value), null);
                         break;
                     case "Defence":
-                        Defend = int.Parse(nameValue[1]);
+                        Defend = int.Parse(keyData.Value);
                         break;
                     case "LevelIni":
-                        info.SetValue(this, Utils.GetLevelLists(@"ini\level\" + nameValue[1]), null);
+                        info.SetValue(this, Utils.GetLevelLists(@"ini\level\" + keyData.Value), null);
                         break;
                     case "FlyIni":
                     case "FlyIni2":
-                        info.SetValue(this, Utils.GetMagic(nameValue[1], MagicFromCache), null);
+                        info.SetValue(this, Utils.GetMagic(keyData.Value, MagicFromCache), null);
                         break;
                     case "Life":
-                        _life = int.Parse(nameValue[1]);
+                        _life = int.Parse(keyData.Value);
                         break;
                     case "Thew":
-                        _thew = int.Parse(nameValue[1]);
+                        _thew = int.Parse(keyData.Value);
                         break;
                     case "Mana":
-                        _mana = int.Parse(nameValue[1]);
+                        _mana = int.Parse(keyData.Value);
                         break;
                     default:
                         {
-                            var integerValue = int.Parse(nameValue[1]);
+                            var integerValue = int.Parse(keyData.Value);
                             info.SetValue(this, integerValue, null);
                             break;
                         }
@@ -839,8 +845,8 @@ namespace Engine
         {
             try
             {
-                var lines = File.ReadAllLines(filePath, Globals.SimpleChinaeseEncoding);
-                return Load(lines);
+                var data = new FileIniDataParser().ReadFile(filePath, Globals.SimpleChinaeseEncoding);
+                return Load(Utils.GetFirstSection(data));
             }
             catch (Exception exception)
             {
@@ -849,13 +855,11 @@ namespace Engine
             }
         }
 
-        public bool Load(string[] lines)
+        public bool Load(KeyDataCollection keyDataCollection)
         {
-            foreach (var line in lines)
+            foreach (var keyData in keyDataCollection)
             {
-                var nameValue = Utils.GetNameValue(line);
-                if (!string.IsNullOrEmpty(nameValue[0]))
-                    AssignToValue(nameValue);
+                AssignToValue(keyData);
             }
             Initlize();
             return true;
@@ -1486,7 +1490,6 @@ namespace Engine
             {
                 var character = _interactiveTarget as Character;
                 var obj = _interactiveTarget as Obj;
-                ScriptParser script = null;
                 if (character != null)
                 {
                     character.StartInteract(this);

@@ -24,15 +24,12 @@ namespace Engine
         public static Color EnemyEdgeColor = Color.Red*0.6f;
         public static Color ObjEdgeColor = Color.Yellow*0.6f;
 
-        public static float MusicVolume = 1f;
-        public static float SoundEffectVolume = 1f;
-
         public static Vector2 ListenerPosition
         {
             get { return ThePlayer.PositionInWorld; }
         }
 
-        public static Random TheRandom = new Random();
+        public static readonly Random TheRandom = new Random();
 
         #region Sprite out edge
         public static Npc OutEdgeNpc;
@@ -53,9 +50,10 @@ namespace Engine
         #endregion
 
         public static Game TheGame;
-        public static Carmera TheCarmera = new Carmera();
-        public static Map TheMap = new Map();
+        public static readonly Carmera TheCarmera = new Carmera();
+        public static readonly Map TheMap = new Map();
         public static Player ThePlayer;
+        public static int PlayerIndex;
 
         public static bool IsInSuperMagicMode;
         public static MagicSprite SuperModeMagicSprite;

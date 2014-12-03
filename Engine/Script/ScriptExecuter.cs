@@ -7,6 +7,7 @@ using Engine.Gui;
 using Engine.ListManager;
 using Engine.Weather;
 using IniParser;
+using IniParser.Model;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
@@ -28,7 +29,7 @@ namespace Engine.Script
         private static int _timeScriptSeconds;
         private static string _timeScriptFileName;
 
-
+        #region Public property
         public static bool IsInFadeOut;
         public static bool IsInFadeIn;
         public static bool IsInTalk;
@@ -53,7 +54,9 @@ namespace Engine.Script
                         _videoPlayer.State != MediaState.Stopped);
             }
         }
+        #endregion Public property
 
+        #region Private
         private static void GetTargetAndScript(string nameWithQuotes,
             string scriptFileNameWithQuotes,
             object belongObject,
@@ -237,7 +240,9 @@ namespace Engine.Script
             Globals.IsInputDisabled = false;
             return true;
         }
+        #endregion Private
 
+        #region Update Draw
         public static void Update(GameTime gameTime)
         {
             if (IsInFadeOut && FadeTransparence < 1f)
@@ -293,6 +298,25 @@ namespace Engine.Script
         public static void Draw(SpriteBatch spriteBatch)
         {
 
+        }
+        #endregion Update Draw
+
+        public static void LoadVariables(KeyDataCollection keyDataCollection)
+        {
+            Variables.Clear();
+            if (keyDataCollection == null) return;
+            foreach (var keys in keyDataCollection)
+            {
+                Variables['$' + keys.KeyName] = int.Parse(keys.Value);
+            }
+        }
+
+        public static void SaveVariables(KeyDataCollection keyDataCollection)
+        {
+            foreach (var key in Variables.Keys)
+            {
+                keyDataCollection.AddKey(key.Substring(1), Variables[key].ToString());
+            }
         }
 
         public static void Say(List<string> parameters)

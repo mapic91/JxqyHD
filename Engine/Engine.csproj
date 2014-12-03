@@ -122,6 +122,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ListManager\TalkTextDetail.cs" />
     <Compile Include="ListManager\TalkTextList.cs" />
+    <Compile Include="Storage\Loader.cs" />
+    <Compile Include="Storage\Saver.cs" />
+    <Compile Include="Storage\StorageBase.cs" />
     <Compile Include="TextureBase.cs" />
     <Compile Include="TextureGenerator.cs" />
     <Compile Include="Utils.cs" />

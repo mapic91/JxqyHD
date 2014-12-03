@@ -37,6 +37,15 @@ namespace Engine
             }
         }
 
+        public Npc(KeyDataCollection keyDataCollection)
+            : base(keyDataCollection)
+        {
+            if (LevelIni == null)
+            {
+                LevelIni = Utils.GetLevelLists(@"ini\level\level-npc.ini");
+            }
+        }
+
         protected override bool HasObstacle(Vector2 tilePosition)
         {
             return (NpcManager.IsObstacle(tilePosition) ||

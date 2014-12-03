@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using IniParser;
 using IniParser.Model;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -129,16 +130,75 @@ namespace Engine
                 }
             }
             return list;
-        } 
+        }
 
-        public static bool Load(string fileName, bool clearCurrentNpcs = true)
+        public static void RemoveAllPartner()
+        {
+            for (var node = _list.First; node != null;)
+            {
+                var next = node.Next;
+                if (node.Value.Kind == (int) Character.CharacterType.Follower)
+                {
+                    DeleteNpc(node);
+                }
+                node = next;
+            }
+        }
+
+        public static List<Npc> GetAllPartner()
+        {
+            var list = new List<Npc>();
+            foreach (var npc in _list)
+            {
+                if (npc.Kind == (int) Character.CharacterType.Follower)
+                {
+                    list.Add(npc);
+                }
+            }
+            return list;
+        }
+
+        public static void LoadPartner(string filePath)
         {
             try
             {
+                RemoveAllPartner();
+                var list = Utils.GetAllKeyDataCollection(filePath, "NPC");
+                foreach (var keyDataCollection in list)
+                {
+                    AddNpc(new Npc(keyDataCollection));
+                }
+            }
+            catch (Exception exception)
+            {
+                Log.LogFileLoadError("Partner", filePath, exception);
+            }
+        }
+
+        public static bool Load(string fileName, bool clearCurrentNpcs = true)
+        {
+            if (string.IsNullOrEmpty(fileName)) return false;
+            try
+            {
+                var partners = new List<Npc>();
+                if (clearCurrentNpcs)
+                {
+                    ClearAllNpc();
+                    //get partners for restore later
+                    partners = GetAllPartner();
+                }
                 _fileName = fileName;
                 var filePath = Utils.GetNpcObjFilePath(fileName);
-                var lines = File.ReadAllLines(filePath, Globals.SimpleChinaeseEncoding);
-                Load(lines, clearCurrentNpcs);
+                var list = Utils.GetAllKeyDataCollection(filePath, "NPC");
+                foreach (var keyDataCollection in list)
+                {
+                    AddNpc(keyDataCollection);
+                }
+                //restore partners
+                foreach (var npc in partners)
+                {
+                    AddNpc(npc);
+                }
             }
             catch (Exception)
             {
@@ -152,33 +212,9 @@ namespace Engine
             Load(fileName, false);
         }
 
-        public static bool Load(string[] lines, bool clearCurrentNpcs = true)
+        public static void AddNpc(KeyDataCollection keyDataCollection)
         {
-            if(clearCurrentNpcs)ClearAllNpc();
-
-            var count = lines.Count();
-            for (var i = 0; i < count; )
-            {
-                var groups = Regex.Match(lines[i++], @"\[NPC([0-9]+)\]").Groups;
-                if (groups[0].Success)
-                {
-                    var contents = new List<string>();
-                    while (i < count && !string.IsNullOrEmpty(lines[i]))
-                    {
-                        contents.Add(lines[i]);
-                        i++;
-                    }
-                    AddNpc(contents.ToArray());
-                    i++;
-                }
-            }
-            return true;
-        }
-
-        public static void AddNpc(string[] lines)
-        {
-            var npc = new Npc();
-            npc.Load(lines);
+            var npc = new Npc(keyDataCollection);
             AddNpc(npc);
         }
 
@@ -299,6 +335,15 @@ namespace Engine
         public static Npc GetNpc(string name)
         {
             return _list.FirstOrDefault(npc => npc.Name == name);
+        }
+
+        public static LinkedListNode<Npc> GetNpcNode(string name)
+        {
+            for (var node = _list.First; node != null; node = node.Next)
+            {
+                if (node.Value.Name == name) return node;
+            }
+            return null;
         }
 
         public static void DeleteNpc(string npcName)

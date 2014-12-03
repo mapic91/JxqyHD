@@ -27,7 +27,6 @@ namespace Engine
             public byte BarrierType;
         }
 
-
         private const byte None = 0; //无
         private const byte Obstacle = 0x80; //障
         private const byte CanOverObstacle = 0xA0; //跳障，可跳过
@@ -62,6 +61,8 @@ namespace Engine
         public bool IsOk { private set; get; }
 
         public string MapFileNameWithoutExtension { get { return _mapFileNameWithoutExtension; } }
+
+        public static int MapTime;
 
         public int ViewHeight
         {

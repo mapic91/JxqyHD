@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Engine.Script;
+using IniParser;
+using IniParser.Model;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -436,6 +439,29 @@ namespace Engine
         public static bool EqualNoCase(string str1, string str2)
         {
             return string.Equals(str1, str2, StringComparison.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// Get all KeyDataCollection from Npc Obj list file
+        /// </summary>
+        /// <param name="filePath">File path</param>
+        /// <param name="sectionNameBegin">Npc is "NPC", Obj is "OBJ"</param>
+        /// <returns></returns>
+        public static List<KeyDataCollection> GetAllKeyDataCollection(string filePath, string sectionNameBegin)
+        {
+            var list = new List<KeyDataCollection>();
+            var data = new FileIniDataParser().ReadFile(filePath, Globals.SimpleChinaeseEncoding);
+            var count = int.Parse(data["Head"]["Count"]);
+            for (var i = 0; i < count; i++)
+            {
+                list.Add(data[sectionNameBegin + string.Format("{0:000}", i)]);
+            }
+            return list;
+        }
+
+        public static KeyDataCollection GetFirstSection(IniData data)
+        {
+            return data.Sections.Select(section => section.Keys).FirstOrDefault();
         }
     }
 }

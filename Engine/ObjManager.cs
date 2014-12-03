@@ -51,6 +51,7 @@ namespace Engine
 
         public static bool Load(string fileName)
         {
+            if (string.IsNullOrEmpty(fileName)) return false;
             try
             {
                 _fileName = fileName;

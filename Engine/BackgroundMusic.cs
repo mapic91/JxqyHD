@@ -17,6 +17,7 @@ namespace Engine
 
         public static void Play(string fileName)
         {
+            if(string.IsNullOrEmpty(fileName)) return;
             var path = @"music\" + fileName;
             try
             {
