@@ -31,7 +31,8 @@ namespace Engine.Forms
         public void SetFileContent(string path)
         {
             var contnet = new StringBuilder();
-            contnet.AppendLine(path);
+            var filePathInfo = "【" + path + "】";
+            contnet.AppendLine(filePathInfo);
             try
             {
                 var lines = File.ReadAllLines(path, Globals.SimpleChinaeseEncoding);
@@ -43,7 +44,8 @@ namespace Engine.Forms
             }
             catch (Exception)
             {
-                fileContenTextBox.Text = contnet.ToString();
+                fileContenTextBox.Text = (filePathInfo + "  读取失败！");
+                return;
             }
             fileContenTextBox.Text = contnet.ToString();
         }

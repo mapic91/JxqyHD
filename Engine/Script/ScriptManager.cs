@@ -35,8 +35,8 @@ namespace Engine.Script
                     if (script.FilePath != _lastFilePath)
                     {
                         Globals.ScriptViewerWindow.AppendLine("【" +
-                            script.FilePath + "】" + 
-                            (script.IsOk ? "" : "脚本未读取成功"));
+                            script.FilePath + "】" +
+                            (script.IsOk ? "" : "  读取失败"));
                         Globals.ScriptViewerWindow.SetFileContent(script.FilePath);
                     }
                     _lastFilePath = script.FilePath;
