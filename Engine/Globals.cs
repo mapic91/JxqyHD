@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
+using Engine.Forms;
 using IniParser;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -74,6 +76,8 @@ namespace Engine
         public static bool IsInputDisabled;
         public static bool IsWaterEffectEnabled;
 
+        public static ScriptViewer ScriptViewerWindow;
+
         public static void Initialize()
         {
             try
@@ -94,6 +98,13 @@ namespace Engine
                     ShowScriptWindow = (value == 1);
                 if (int.TryParse(setting["CacheScriptFile"], out value))
                     CacheScriptFile = (value == 1);
+
+                if (ShowScriptWindow)
+                {
+                    ScriptViewerWindow = new ScriptViewer();
+                    ScriptViewerWindow.Show();
+                    ScriptViewerWindow.AppendLine("[时间]\t[函数]\t[行数]");
+                }
             }
             catch (Exception)
             {

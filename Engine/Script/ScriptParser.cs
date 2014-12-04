@@ -17,6 +17,7 @@ namespace Engine.Script
         private int _currentIndex;
         private Code _currentCode;
         private bool _isEnd = true;
+        private int _lineNumber;
         public string FilePath { get; private set; }
         public string FileName { get; private set; }
         public bool IsOk { private set; get; }
@@ -42,7 +43,7 @@ namespace Engine.Script
         private static readonly Regex RegResult = new Regex(@"^@[a-zA-Z0-9]+");
         private void ParserLine(string line)
         {
-            var code = new Code();
+            var code = new Code {LineNumber = _lineNumber};
             line = line.Trim();
             if (line.Length < 2) return;
 
@@ -141,10 +142,12 @@ namespace Engine.Script
 
         public bool ReadFromLines(string[] lines)
         {
+            _lineNumber = 1;
             _codes = new List<Code>(lines.Count());
             foreach (var line in lines)
             {
                 ParserLine(line);
+                _lineNumber++;
             }
             return true;
         }
@@ -196,6 +199,7 @@ namespace Engine.Script
             public List<string> Parameters = new List<string>();
             public string Result;
             public string Literal;
+            public int LineNumber;
             public bool IsGoto;
         }
 
@@ -293,6 +297,12 @@ namespace Engine.Script
                 {
                     _currentCode = code;
                     var parameters = _currentCode.Parameters;
+                    //If view window exist, log to window
+                    if (Globals.ScriptViewerWindow != null)
+                    {
+                        Globals.ScriptViewerWindow.AppendLine(DateTime.Now.ToString("T") +
+                            "\t" + _currentCode.Literal + "\t[" + _currentCode.LineNumber + "]");
+                    }
                     switch (_currentCode.Name)
                     {
                         case "Say":

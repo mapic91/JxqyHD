@@ -392,6 +392,7 @@ namespace Engine
         /// <returns></returns>
         public static ScriptParser GetScriptParser(string fileName, object belongObject = null, string mapName = null, bool goodsScript = false)
         {
+            if (string.IsNullOrEmpty(fileName)) return null;
             return new ScriptParser(GetScriptFilePath(fileName, mapName, goodsScript), belongObject);
         }
 

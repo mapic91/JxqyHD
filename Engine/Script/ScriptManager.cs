@@ -7,6 +7,7 @@ namespace Engine.Script
     public static class ScriptManager
     {
         private static LinkedList<ScriptParser> _list = new LinkedList<ScriptParser>();
+        private static string _lastFilePath = "";
 
         public static ScriptParser RunScript(ScriptParser scriptParser)
         {
@@ -29,6 +30,17 @@ namespace Engine.Script
             {
                 var next = node.Next;
                 var script = node.Value;
+                if (Globals.ScriptViewerWindow != null)
+                {
+                    if (script.FilePath != _lastFilePath)
+                    {
+                        Globals.ScriptViewerWindow.AppendLine("【" +
+                            script.FilePath + "】" + 
+                            (script.IsOk ? "" : "脚本未读取成功"));
+                        Globals.ScriptViewerWindow.SetFileContent(script.FilePath);
+                    }
+                    _lastFilePath = script.FilePath;
+                }
                 if (!script.Continue())
                 {
                     _list.Remove(node);
