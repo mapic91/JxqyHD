@@ -15,13 +15,6 @@ namespace Engine
             Load
         }
 
-        private static string GetLastLine(string text)
-        {
-            if (string.IsNullOrEmpty(text)) return "";
-            string[] lines = text.Replace("\r", "").Split('\n');
-            return lines.Length > 0 ? lines.Last() : "";
-        }
-
         private static void LogFileOperationError(FileOpration opration,
             string msg,
             string filePath,
@@ -56,7 +49,16 @@ namespace Engine
                 " error: \n" +
                 exception.Message +
                 "\n" +
-                GetLastLine(exception.StackTrace));
+                GetLastLine(exception));
+        }
+
+        public static string GetLastLine(Exception exception)
+        {
+            if (exception == null) return "";
+            var text = exception.StackTrace;
+            if (string.IsNullOrEmpty(text)) return "";
+            string[] lines = text.Replace("\r", "").Split('\n');
+            return lines.Length > 0 ? lines.Last() : "";
         }
 
         public static void Initialize()

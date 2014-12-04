@@ -4,7 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 using Engine.Gui;
+using Engine.Storage;
+using Microsoft.Xna.Framework.GamerServices;
 
 namespace Engine.Script
 {
@@ -78,8 +81,8 @@ namespace Engine.Script
         private List<string> ParserParameter(string str)
         {
             str = str.Trim();
-            if (str.Length == 0) return null;
             var parameters = new List<string>();
+            if (str.Length == 0) return parameters;
             var temp = new StringBuilder();
             for (var i = 0; i < str.Length;i++)
             {
@@ -190,7 +193,7 @@ namespace Engine.Script
         public class Code
         {
             public string Name;
-            public List<string> Parameters;
+            public List<string> Parameters = new List<string>();
             public string Result;
             public string Literal;
             public bool IsGoto;
@@ -281,6 +284,9 @@ namespace Engine.Script
                         case "NpcSpecialActionEx":
                             isEnd = ScriptExecuter.IsNpcSpecialActionExEnd(_currentCode.Parameters, BelongObject);
                             break;
+                        case "Sleep":
+                            isEnd = ScriptExecuter.IsSleepEnd();
+                            break;
                     }
                 }
                 else
@@ -303,7 +309,7 @@ namespace Engine.Script
                             scriptEnd = true;
                             break;
                         case "Goto":
-                            gotoPosition = _currentCode.Parameters != null
+                            gotoPosition = _currentCode.Parameters.Count != 0
                                 ? _currentCode.Parameters[0]
                                 : _currentCode.Result;
                             break;
@@ -456,6 +462,7 @@ namespace Engine.Script
                             break;
                         case "Sleep":
                             ScriptExecuter.Sleep(parameters);
+                            isEnd = ScriptExecuter.IsSleepEnd();
                             break;
                         case "ShowMessage":
                             ScriptExecuter.ShowMessage(parameters);
@@ -672,17 +679,27 @@ namespace Engine.Script
                             ScriptExecuter.NpcSpecialActionEx(parameters, BelongObject);
                             isEnd = ScriptExecuter.IsNpcSpecialActionExEnd(parameters, BelongObject);
                             break;
+                        case "LoadGame":
+                            ScriptExecuter.LoadGame(parameters);
+                            break;
+                        default:
+                            throw new Exception("无此函数");
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception exception)
             {
                 var message = "Script error! File: " + Path.GetFullPath(FilePath) +".";
                 if (_currentCode != null)
                 {
-                    message += ("Code: " + _currentCode.Literal);
+                    message += ("\nCode: " + _currentCode.Literal);
                 }
+                message += "\n" + exception.Message + "\n" + Log.GetLastLine(exception);
                 Log.LogMessageToFile(message);
+                if (Globals.ShowScriptWindow)
+                {
+                    MessageBox.Show(message);
+                }
             }
 
             if (isEnd)

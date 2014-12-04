@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using Engine.Gui;
 using Engine.ListManager;
+using Engine.Storage;
 using Engine.Weather;
 using IniParser;
 using IniParser.Model;
@@ -33,7 +34,6 @@ namespace Engine.Script
         public static bool IsInFadeOut;
         public static bool IsInFadeIn;
         public static bool IsInTalk;
-        public static bool IsInSleep;
 
         public static float FadeTransparence
         {
@@ -78,6 +78,17 @@ namespace Engine.Script
                 return Globals.ThePlayer;
             }
             return NpcManager.GetNpc(name);
+        }
+
+        private static List<Character> GetPlayerAndAllNpcs(string name)
+        {
+            var list = NpcManager.GetAllNpcs(name);
+            if (Globals.ThePlayer != null &&
+                Globals.ThePlayer.Name == name)
+            {
+                list.Add(Globals.ThePlayer);
+            }
+            return list;
         }
 
         private static void GetTarget(string nameWithQuotes,
@@ -272,22 +283,23 @@ namespace Engine.Script
                 }
             }
 
-            if (IsInSleep)
+            if (_sleepingMilliseconds > 0)
             {
                 _sleepingMilliseconds -= (float)gameTime.ElapsedGameTime.TotalMilliseconds;
                 if (_sleepingMilliseconds <= 0)
                 {
+                    _sleepingMilliseconds = 0;
                     Globals.IsInputDisabled = false;
                 }
             }
 
-            if (_isTimeScriptSet && 
+            if (_isTimeScriptSet &&
                 GuiManager.IsTimerStarted())
             {
                 if (_timeScriptSeconds == GuiManager.GetTimerCurrentSeconds())
                 {
                     ScriptManager.RunScript(new ScriptParser(
-                        Utils.GetScriptFilePath(_timeScriptFileName), 
+                        Utils.GetScriptFilePath(_timeScriptFileName),
                         null));
                     _isTimeScriptSet = false;
                     _timeScriptFileName = "";
@@ -346,24 +358,26 @@ namespace Engine.Script
                 var variable = groups[1].Value;
                 var compare = groups[2].Value;
                 var value = int.Parse(groups[3].Value);
+                //default variable value
+                var variableValue = 0;
                 if (Variables.ContainsKey(variable))
                 {
-                    switch (compare)
-                    {
-                        case "==":
-                            return Variables[variable] == value;
-                        case ">>":
-                            return Variables[variable] > value;
-                        case ">=":
-                            return Variables[variable] >= value;
-                        case "<<":
-                            return Variables[variable] < value;
-                        case "<=":
-                            return Variables[variable] <= value;
-                        case "<>":
-                            return Variables[variable] != value;
-                    }
-
+                    variableValue = Variables[variable];
+                }
+                switch (compare)
+                {
+                    case "==":
+                        return variableValue == value;
+                    case ">>":
+                        return variableValue > value;
+                    case ">=":
+                        return variableValue >= value;
+                    case "<<":
+                        return variableValue < value;
+                    case "<=":
+                        return variableValue <= value;
+                    case "<>":
+                        return variableValue != value;
                 }
             }
             return false;
@@ -466,7 +480,7 @@ namespace Engine.Script
 
         public static void OpenBox(List<string> parameters, object belongObject)
         {
-            if (parameters == null)
+            if (parameters.Count == 0)
             {
                 var obj = belongObject as Obj;
                 if (obj != null)
@@ -487,7 +501,7 @@ namespace Engine.Script
         public static void CloseBox(List<string> parameters, object belongObject)
         {
             var target = belongObject as Obj;
-            if (parameters != null)
+            if (parameters.Count != 0)
             {
                 target = ObjManager.GetObj(Utils.RemoveStringQuotes(parameters[0]));
             }
@@ -606,7 +620,7 @@ namespace Engine.Script
 
         public static void SetPlayerDir(List<string> parameters)
         {
-            Globals.ThePlayer.SetDirection(int.Parse(parameters[0]));
+            Globals.ThePlayer.SetDirectionValue(int.Parse(parameters[0]));
         }
 
         public static void LoadMap(List<string> parameters)
@@ -756,7 +770,7 @@ namespace Engine.Script
 
         public static void DelGoods(List<string> parameters, object belongObject)
         {
-            if (parameters == null)
+            if (parameters.Count == 0)
             {
                 var good = belongObject as Good;
                 if (good != null)
@@ -779,14 +793,7 @@ namespace Engine.Script
 
         public static void DelObj(List<string> parameters, object belongObject)
         {
-            if (parameters == null || parameters[0] == "\"\"")
-            {
-                DelCurObj(belongObject);
-            }
-            else
-            {
-                ObjManager.DeleteObj(Utils.RemoveStringQuotes(parameters[0]));
-            }
+            ObjManager.DeleteObj(Utils.RemoveStringQuotes(parameters[0]));
         }
 
         public static void FreeMap()
@@ -845,6 +852,16 @@ namespace Engine.Script
         {
             _sleepingMilliseconds = int.Parse(parameters[0]);
             Globals.IsInputDisabled = true;
+        }
+
+        public static bool IsSleepEnd()
+        {
+            if (_sleepingMilliseconds > 0)
+            {
+                return false;
+            }
+            Globals.IsInputDisabled = false;
+            return true;
         }
 
         public static void ShowMessage(List<string> parameters)
@@ -922,9 +939,13 @@ namespace Engine.Script
 
         public static void RunScript(List<string> parameters, object belongObject)
         {
+            RunScript(Utils.RemoveStringQuotes(parameters[0]), belongObject);
+        }
+
+        public static void RunScript(string fileName, object belongObject = null)
+        {
             ScriptManager.RunScript(new ScriptParser(
-                Utils.GetScriptFilePath(Utils.RemoveStringQuotes(parameters[0])),
-                belongObject));
+                Utils.GetScriptFilePath(fileName), belongObject));
         }
 
         public static void PlayMovie(string fileName, Color drawColor)
@@ -1027,18 +1048,17 @@ namespace Engine.Script
             GetTargetAndValue2(parameters, belongObject, out target, out value);
             if (target != null)
             {
-                target.SetDirection(value);
+                target.SetDirectionValue(value);
             }
         }
 
         public static void SetNpcKind(List<string> parameters, object belongObject)
         {
-            Character target;
-            int value;
-            GetTargetAndValue2(parameters, belongObject, out target, out value);
-            if (target != null)
+            var list = GetPlayerAndAllNpcs(Utils.RemoveStringQuotes(parameters[0]));
+            int value = int.Parse(parameters[1]);
+            foreach (var character in list)
             {
-                target.SetKind(value);
+                character.SetKind(value);
             }
         }
 
@@ -1075,12 +1095,11 @@ namespace Engine.Script
 
         public static void SetNpcRelation(List<string> parameters, object belongObject)
         {
-            Character target;
-            int value;
-            GetTargetAndValue2(parameters, belongObject, out target, out value);
-            if (target != null)
+            var list = GetPlayerAndAllNpcs(Utils.RemoveStringQuotes(parameters[0]));
+            var value = int.Parse(parameters[1]);
+            foreach (var character in list)
             {
-                target.SetRelation(value);
+                character.SetRelation(value);
             }
         }
 
@@ -1432,14 +1451,14 @@ namespace Engine.Script
 
         public static void SetMoneyNum(List<string> parameters)
         {
-            if(IsPlayerNull()) return;
+            if (IsPlayerNull()) return;
             Globals.ThePlayer.SetMoney(int.Parse(parameters[0]));
         }
 
         public static void GetMoneyNum(List<string> parameters)
         {
             var name = "$MoneyNum";
-            if (parameters != null)
+            if (parameters.Count != 0)
             {
                 name = parameters[0];
             }
@@ -1485,7 +1504,7 @@ namespace Engine.Script
         {
             if (Globals.TheCarmera == null) return;
             Globals.TheCarmera.MoveTo(new Vector2(
-                int.Parse(parameters[0]), 
+                int.Parse(parameters[0]),
                 int.Parse(parameters[1])),
                 int.Parse(parameters[2]));
             Globals.IsInputDisabled = true;
@@ -1513,7 +1532,7 @@ namespace Engine.Script
         public static void EquipGoods(List<string> parameters)
         {
             var index = int.Parse(parameters[0]);
-            var part = (Good.EquipPosition) int.Parse(parameters[1]);
+            var part = (Good.EquipPosition)int.Parse(parameters[1]);
             GuiManager.EquipGoods(index, part);
         }
 
@@ -1551,7 +1570,7 @@ namespace Engine.Script
 
         public static void SetTimeScript(List<string> parameters)
         {
-            if(!GuiManager.IsTimerStarted()) return;
+            if (!GuiManager.IsTimerStarted()) return;
             _timeScriptSeconds = int.Parse(parameters[0]);
             _timeScriptFileName = Utils.RemoveStringQuotes(parameters[1]);
             _isTimeScriptSet = true;
@@ -1571,7 +1590,7 @@ namespace Engine.Script
 
         public static void LimitMana(List<string> parameters)
         {
-            if(IsPlayerNull()) return;
+            if (IsPlayerNull()) return;
             Globals.ThePlayer.IsManaLimited = (int.Parse(parameters[0]) != 0);
         }
 
@@ -1600,7 +1619,7 @@ namespace Engine.Script
                 target = GetPlayerOrNpc(Utils.RemoveStringQuotes(parameters[1]));
             }
 
-            if(character == null || target == null) return;
+            if (character == null || target == null) return;
             character.Follow(target);
         }
 
@@ -1638,6 +1657,11 @@ namespace Engine.Script
             }
             Globals.IsInputDisabled = false;
             return true;
+        }
+
+        public static void LoadGame(List<string> parameters)
+        {
+            Loader.LoadGame(int.Parse(parameters[0]));
         }
     }
 }

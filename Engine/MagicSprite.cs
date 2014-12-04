@@ -198,10 +198,18 @@ namespace Engine
             if (BelongCharacter.IsPlayer || BelongCharacter.IsFriend)
             {
                 var target = NpcManager.GetEnemy(TilePosition);
+                var isInDeath = target != null && target.IsDeathInvoked;
                 CharacterHited(target);
                 if (target != null)
                 {
                     target.NotifyEnemyAndAllNeighbor(BelongCharacter);
+                    //Hited character death
+                    if (!isInDeath && target.IsInDeathing && 
+                        (BelongCharacter.IsPlayer ||
+                        BelongCharacter.IsPartner))
+                    {
+                        Globals.ThePlayer.AddExp(Utils.GetNpcDeathExp(target.Level));
+                    }
                 }
             }
             else

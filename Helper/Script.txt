@@ -34,6 +34,7 @@ FadeIn();
 FadeOut()
 FadeOut();
 
+//删除所有名字为a的npc
 DelNpc(a)
 DelNpc("月眉儿");
 
@@ -235,6 +236,7 @@ SetNpcDir(5);
 SetNpcDir(a,b)
 SetNpcDir("武当山下酒客",0);
 
+//改变所有Npc
 SetNpcKind(a, b)
 SetNpcKind("杨影枫", 1);
 
@@ -244,6 +246,7 @@ SetNpcMagicFile("杨影枫","player-magic-武道德经.ini");
 SetNpcPos(a,b,c)
 SetNpcPos("紫轩",16,27);
 
+//所有NPC
 SetNpcRelation(a,b)
 SetNpcRelation("月眉儿",1);
 
@@ -409,6 +412,9 @@ NpcSpecialAction("霹雳堂爆炸","听雷阁爆炸.asf");
 
 NpcSpecialActionEx(a, b)
 NpcSpecialActionEx("杨影枫", "mpc006_跪.asf");
+
+LoadGame(a)
+LoadGame(0);
 ///////////////////////////////////////////////////////////////////
 //////////////////    Implemented   End  /////////////////////////
 /////////////////////////////////////////////////////////////////
@@ -416,8 +422,6 @@ NpcSpecialActionEx("杨影枫", "mpc006_跪.asf");
 GetPartnerIdx(a)
 GetPartnerIdx($PartnerNo);
 
-LoadGame(a)
-LoadGame(0);
 
 PlayerChange(a)
 PlayerChange(1);

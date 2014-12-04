@@ -196,13 +196,14 @@ namespace Engine
 
         public static void DeleteObj(string objName)
         {
-            for (var node = _list.First; node != null; node = node.Next)
+            for (var node = _list.First; node != null;)
             {
+                var next = node.Next;
                 if (node.Value.ObjName == objName)
                 {
                     DeleteObj(node);
-                    return;
                 }
+                node = next;
             }
         }
 

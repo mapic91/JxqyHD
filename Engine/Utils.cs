@@ -463,5 +463,19 @@ namespace Engine
         {
             return data.Sections.Select(section => section.Keys).FirstOrDefault();
         }
+
+        private static List<int> _levelExp = new List<int>()
+        {
+            4, 6, 9, 16, 27, 40,
+            56, 80, 112, 144, 184,
+            227, 275, 344, 416, 480
+        };
+
+        public static int GetNpcDeathExp(int npcLevel)
+        {
+            if (npcLevel < 0) npcLevel = 0;
+            if (npcLevel > 15) npcLevel = 15;
+            return _levelExp[npcLevel];
+        }
     }
 }

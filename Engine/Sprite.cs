@@ -284,6 +284,15 @@ namespace Engine
             return CurrentFrameIndex == _frameEnd;
         }
 
+        /// <summary>
+        /// Set direction directly(not check and correct input direction value)
+        /// </summary>
+        /// <param name="direcion">direction to set</param>
+        public void SetDirectionValue(int direcion)
+        {
+            _currentDirection = direcion;
+        }
+
         public void Update(GameTime gameTime, Vector2 direction, int speedFold = 1)
         {
             var elapsedTime = new TimeSpan(gameTime.ElapsedGameTime.Ticks * speedFold);

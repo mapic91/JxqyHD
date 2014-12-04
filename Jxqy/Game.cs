@@ -37,7 +37,7 @@ namespace Jxqy
             Content.RootDirectory = "Content";
             IsMouseVisible = false;
             _graphics.IsFullScreen = false;
-            GameState.State = GameState.StateType.Playing;
+            GameState.State = GameState.StateType.Start;
         }
 
         #region Utils
@@ -156,7 +156,11 @@ namespace Jxqy
         protected override void Update(GameTime gameTime)
         {
             //Pausing game when inactived
-            if (!IsActive) return;
+            if (!IsActive)
+            {
+                base.Update(gameTime);
+                return;
+            }
 
             var mouseState = Mouse.GetState();
             var keyboardState = Keyboard.GetState();
@@ -166,7 +170,9 @@ namespace Jxqy
             {
                 if (keyboardState.IsKeyDown(Keys.Enter) &&
                     _lastKeyboardState.IsKeyUp(Keys.Enter))
+                {
                     _graphics.ToggleFullScreen();
+                }
             }
 
             //Map layer draw toggle
@@ -191,6 +197,8 @@ namespace Jxqy
                 switch (GameState.State)
                 {
                     case GameState.StateType.Start:
+                        break;
+                    case GameState.StateType.Title:
                         GuiManager.Update(gameTime);
                         break;
                     case GameState.StateType.Playing:

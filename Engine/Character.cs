@@ -100,6 +100,23 @@ namespace Engine
         public bool IsFollowTargetFinded { protected set; get; }
         public bool IsInSpecialAction { protected set; get; }
 
+        public bool IsDeathScriptEnd
+        {
+            get
+            {
+                if (DeathScript == null)
+                {
+                    return true;
+                }
+                return DeathScript.IsEnd;
+            }
+        }
+
+        public bool IsNodAddBody
+        {
+            get { return _notAddBody; }
+        }
+
         public bool IsHide { get; set; }
 
         public bool IsInStepMove
@@ -1424,9 +1441,13 @@ namespace Engine
                         Globals.TheMap.IsObstacleForCharacter(neighbor))
                     {
                         var neighbors = Engine.PathFinder.FindNeighbors(destinationTilePositon);
-                        if (neighbors.Count > 0)
+                        foreach (var tile in neighbors)
                         {
-                            DestinationMoveTilePosition = neighbors[0];
+                            if (!Globals.TheMap.IsObstacleForCharacter(tile))
+                            {
+                                DestinationMoveTilePosition = tile;
+                                break;
+                            }
                         }
                     }
                     else
@@ -1601,6 +1622,8 @@ namespace Engine
         public void FullLife()
         {
             Life = LifeMax;
+            IsDeath = false;
+            IsDeathInvoked = false;
         }
 
         public void FullThew()
@@ -1738,34 +1761,12 @@ namespace Engine
             if (isFight)
             {
                 ToFightingState();
-                if (IsStanding())
-                {
-                    SetState(CharacterState.FightStand);
-                }
-                else if (IsRuning())
-                {
-                    SetState(CharacterState.FightRun);
-                }
-                else if (IsWalking())
-                {
-                    SetState(CharacterState.FightWalk);
-                }
+                SetState(CharacterState.FightStand);
             }
             else
             {
                 ToNonFightingState();
-                if (IsStanding())
-                {
-                    SetState(CharacterState.Stand);
-                }
-                else if (IsRuning())
-                {
-                    SetState(CharacterState.Run);
-                }
-                else if (IsWalking())
-                {
-                    SetState(CharacterState.Walk);
-                }
+                SetState(CharacterState.Stand);
             }
         }
 
@@ -1940,12 +1941,6 @@ namespace Engine
                     if (IsPlayCurrentDirOnceEnd())
                     {
                         IsDeath = true;
-                        if (BodyIni != null && !_notAddBody)
-                        {
-                            BodyIni.PositionInWorld = PositionInWorld;
-                            BodyIni.CurrentDirection = CurrentDirection;
-                            ObjManager.AddObj(BodyIni);
-                        }
                     }
                     else base.Update(gameTime);
                     break;

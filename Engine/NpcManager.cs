@@ -337,6 +337,11 @@ namespace Engine
             return _list.FirstOrDefault(npc => npc.Name == name);
         }
 
+        public static List<Character> GetAllNpcs(string name)
+        {
+            return _list.Where(npc => npc.Name == name).Cast<Character>().ToList();
+        }
+
         public static LinkedListNode<Npc> GetNpcNode(string name)
         {
             for (var node = _list.First; node != null; node = node.Next)
@@ -348,13 +353,14 @@ namespace Engine
 
         public static void DeleteNpc(string npcName)
         {
-            for (var node = _list.First; node != null; node = node.Next)
+            for (var node = _list.First; node != null;)
             {
+                var next = node.Next;
                 if (node.Value.Name == npcName)
                 {
                     DeleteNpc(node);
-                    break;
                 }
+                node = next;
             }
         }
 
@@ -431,7 +437,16 @@ namespace Engine
                 var npc = node.Value;
                 var next = node.Next;
                 npc.Update(gameTime);
-                if (npc.IsDeath) DeleteNpc(node);
+                if (npc.IsDeath && npc.IsDeathScriptEnd)
+                {
+                    if (npc.BodyIni != null && !npc.IsNodAddBody)
+                    {
+                        npc.BodyIni.PositionInWorld = npc.PositionInWorld;
+                        npc.BodyIni.CurrentDirection = npc.CurrentDirection;
+                        ObjManager.AddObj(npc.BodyIni);
+                    }
+                    DeleteNpc(node);
+                }
                 node = next;
             }
         }

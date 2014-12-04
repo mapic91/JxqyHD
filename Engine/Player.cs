@@ -517,6 +517,7 @@ namespace Engine
             var texture = GetCurrentTexture();
             if (texture == null) return;
 
+            //Make new texture is case of texture be locked after draw
             var data = new Color[texture.Width * texture.Height];
             texture.GetData(data);
             texture = new Texture2D(texture.GraphicsDevice, texture.Width, texture.Height);

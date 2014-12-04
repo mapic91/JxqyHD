@@ -74,6 +74,7 @@ namespace Engine
         {
             if (targetTexture != null && colliderTexture != null)
             {
+                var mask = 255*transparentValue;
                 var intersect = Rectangle.Intersect(targetRegion, colliderRegion);
                 if (!intersect.IsEmpty)
                 {
@@ -94,7 +95,7 @@ namespace Engine
                         for (var x = beginX; x < endX; x++)
                         {
                             var index = y*widthA + x;
-                            if (dataA[index].A != 0)
+                            if (dataA[index].A > mask)
                             {
                                 var bX = x + targetRegion.Left - colliderRegion.Left;
                                 var bY = y + targetRegion.Top - colliderRegion.Top;

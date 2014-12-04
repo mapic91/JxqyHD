@@ -67,7 +67,8 @@ namespace Engine
         public static int WindowWidth = 1366;
         public static int WindowHeight = 768;
         public static bool IsFullScreen = true;
-        public static bool IsLogOn = false;
+        public static bool IsLogOn;
+        public static bool ShowScriptWindow;
         public static bool CacheScriptFile = true;
 
         public static bool IsInputDisabled;
@@ -89,6 +90,8 @@ namespace Engine
                     WindowHeight = value;
                 if (int.TryParse(setting["Log"], out value))
                     IsLogOn = (value == 1);
+                if (int.TryParse(setting["ShowScriptWindow"], out value))
+                    ShowScriptWindow = (value == 1);
                 if (int.TryParse(setting["CacheScriptFile"], out value))
                     CacheScriptFile = (value == 1);
             }

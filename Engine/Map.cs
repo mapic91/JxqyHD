@@ -92,7 +92,12 @@ namespace Engine
             get { return _viewBeginX; }
             set
             {
-                if (value + ViewWidth > _mapPixelWidth) _viewBeginX = _mapPixelWidth - ViewWidth;
+                if (value + ViewWidth > _mapPixelWidth)
+                {
+                    _viewBeginX = _mapPixelWidth - ViewWidth;
+                    //if map too small, _viewBeginX is negative
+                    if (_viewBeginX < 0) _viewBeginX = 0;
+                }
                 else if (value < 0) _viewBeginX = 0;
                 else _viewBeginX = value;
             }

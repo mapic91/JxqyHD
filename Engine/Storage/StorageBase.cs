@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.IO;
 using Microsoft.Xna.Framework;
 
 namespace Engine.Storage
@@ -8,6 +9,9 @@ namespace Engine.Storage
         public const string GameIniFilePath = @"save\game\Game.ini";
         public const string MemoListIniFilePath = @"save\game\memo.ini";
         public const string TrapsFilePath = @"save\game\Traps.ini";
+        public const string SaveGameDirectory = @"save\game";
+        public const string SaveRpgDirectory = @"save\rpg";
+        public const string SaveShotDirectory = @"save\Shot";
 
         public static string PlayerFilePath
         {
@@ -37,6 +41,31 @@ namespace Engine.Storage
             return new Color(int.Parse(r, NumberStyles.HexNumber),
                 int.Parse(g, NumberStyles.HexNumber),
                 int.Parse(b, NumberStyles.HexNumber));
+        }
+
+        public static void DeletAllFiles(string path)
+        {
+            if (Directory.Exists(path))
+            {
+                Directory.Delete(path, true);
+            }
+            Directory.CreateDirectory(path);
+        }
+
+        public static void MoveAllFilesToDirectory(string directory, string targetDirectory)
+        {
+            var files = new DirectoryInfo(directory).GetFiles();
+            foreach (var file in files)
+            {
+                var path = Path.Combine(targetDirectory, file.Name);
+                file.CopyTo(path, true);
+            }
+        }
+
+        public static void ClearGameAndCopySaveToGame(int saveIndex)
+        {
+            DeletAllFiles(SaveGameDirectory);
+            MoveAllFilesToDirectory(SaveRpgDirectory + saveIndex, SaveGameDirectory);
         }
     }
 }

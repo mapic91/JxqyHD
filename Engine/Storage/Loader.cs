@@ -28,8 +28,8 @@ namespace Engine.Storage
 
                 //option
                 var option = data["Option"];
-                MediaPlayer.Volume = int.Parse(option["MuiscVolume"])/100f;
-                SoundEffect.MasterVolume = int.Parse(option["SoundVolume"])/100f;
+                MediaPlayer.Volume = (100 - int.Parse(option["MuiscVolume"]))/100f;
+                SoundEffect.MasterVolume = (100 - int.Parse(option["SoundVolume"]))/100f;
                 Map.MapTime = int.Parse(option["MapTime"]);
                 WeatherManager.ShowSnow(int.Parse(option["SnowShow"]) != 0);
                 if (!string.IsNullOrEmpty(option["RainFile"]))
@@ -98,6 +98,18 @@ namespace Engine.Storage
             LoadPlayer();
             LoadParter();
             LoadTraps();
+            GameState.State = GameState.StateType.Playing;
+        }
+
+        public static void LoadGame(int index)
+        {
+            StorageBase.ClearGameAndCopySaveToGame(index);
+            LoadGame();
+        }
+
+        public static void NewGame()
+        {
+            ScriptExecuter.RunScript("NewGame.txt");
         }
     }
 }

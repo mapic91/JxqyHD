@@ -7,6 +7,7 @@
         public enum StateType
         {
             Start,
+            Title,
             Playing,
         }
     }
