@@ -1,9 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
+using System.Windows.Forms;
 using Engine;
 using Engine.Gui;
 using Engine.ListManager;
@@ -11,12 +7,9 @@ using Engine.Script;
 using Engine.Storage;
 using Engine.Weather;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
+using Keys = Microsoft.Xna.Framework.Input.Keys;
 
 namespace Jxqy
 {
@@ -31,6 +24,13 @@ namespace Jxqy
         private Texture2D _waterfallTexture;
         private RenderTarget2D _renderTarget;
 
+        IntPtr _drawSurface;
+        Form _parentForm;
+        PictureBox _pictureBox;
+        Control _gameForm;
+
+        public bool IsPaused { get; set; }
+
         public Game()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -38,6 +38,50 @@ namespace Jxqy
             IsMouseVisible = false;
             _graphics.IsFullScreen = false;
             GameState.State = GameState.StateType.Start;
+        }
+
+        public Game(IntPtr drawSurface, Form parentForm, PictureBox surfacePictureBox)
+            : this()
+        {
+            _drawSurface = drawSurface;
+            _parentForm = parentForm;
+            _pictureBox = surfacePictureBox;
+
+            _graphics.PreparingDeviceSettings += graphics_PreparingDeviceSettings;
+            Mouse.WindowHandle = drawSurface;
+
+            _gameForm = Control.FromHandle(Window.Handle);
+            _gameForm.VisibleChanged += gameForm_VisibleChanged;
+            _pictureBox.SizeChanged += pictureBox_SizeChanged;
+        }
+
+        private void SetDrawSiseToDrawSurfaceSize()
+        {
+            if (_parentForm.WindowState != FormWindowState.Minimized)
+            {
+                _graphics.PreferredBackBufferWidth = _pictureBox.Width;
+                _graphics.PreferredBackBufferHeight = _pictureBox.Height;
+                Globals.TheCarmera.ViewWidth = _pictureBox.Width;
+                Globals.TheCarmera.ViewHeight = _pictureBox.Height;
+                _graphics.ApplyChanges();
+            }
+        }
+
+        private void pictureBox_SizeChanged(object sender, EventArgs e)
+        {
+            SetDrawSiseToDrawSurfaceSize();
+        }
+
+        private void gameForm_VisibleChanged(object sender, EventArgs e)
+        {
+            if (_gameForm.Visible)
+                _gameForm.Visible = false;
+        }
+
+        private void graphics_PreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
+        {
+            e.GraphicsDeviceInformation.PresentationParameters.
+                DeviceWindowHandle = _drawSurface;
         }
 
         #region Utils
@@ -105,9 +149,17 @@ namespace Jxqy
             _graphics.PreferredBackBufferWidth = Globals.WindowWidth;
             _graphics.PreferredBackBufferHeight = Globals.WindowHeight;
             _graphics.ApplyChanges();
+
             //Set back in case of width height not work
             Globals.WindowWidth = _graphics.PreferredBackBufferWidth;
             Globals.WindowHeight = _graphics.PreferredBackBufferHeight;
+
+            //Game run in editor
+            if (_parentForm != null)
+            {
+                //Make draw size correct
+                SetDrawSiseToDrawSurfaceSize();
+            }
 
             Globals.TheMap.ViewWidth = _graphics.PreferredBackBufferWidth;
             Globals.TheMap.ViewHeight = _graphics.PreferredBackBufferHeight;
@@ -155,13 +207,7 @@ namespace Jxqy
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            //Pausing game when inactived
-            if (!IsActive)
-            {
-                base.Update(gameTime);
-                return;
-            }
-
+            if(IsPaused) return;
             var mouseState = Mouse.GetState();
             var keyboardState = Keyboard.GetState();
 

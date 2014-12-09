@@ -39,7 +39,7 @@ namespace Engine
         public bool IsManaLimited { set; get; }
         public bool CanInput
         {
-            get { return Globals.IsInputDisabled; }
+            get { return !Globals.IsInputDisabled && MouseInBound(); }
         }
 
         public MagicListManager.MagicItemInfo CurrentMagicInUse
@@ -137,6 +137,16 @@ namespace Engine
                 }
                 SetLevelTo(i);
             }
+        }
+
+        private bool MouseInBound()
+        {
+            var mouseState = Mouse.GetState();
+            var region = new Rectangle(0,
+                0,
+                Globals.TheGame.GraphicsDevice.PresentationParameters.BackBufferWidth,
+                Globals.TheGame.GraphicsDevice.PresentationParameters.BackBufferHeight);
+            return region.Contains(mouseState.X, mouseState.Y);
         }
 
         protected override bool MagicFromCache
@@ -383,7 +393,7 @@ namespace Engine
             var mouseTilePosition = Map.ToTilePosition(mouseWorldPosition);
 
             Globals.ClearGlobalOutEdge();
-            if (!GuiManager.IsMouseStateEated && !CanInput)
+            if (!GuiManager.IsMouseStateEated && CanInput)
             {
                 foreach (var one in NpcManager.NpcsInView)
                 {
@@ -487,7 +497,7 @@ namespace Engine
             if (keyboardState.IsKeyDown(Keys.V) &&
                 _lastKeyboardState.IsKeyUp(Keys.V) &&
                 !IsPetrified &&
-                !CanInput)
+                CanInput)
             {
                 if (IsSitting()) StandingImmediately();
                 else Sitdown();
