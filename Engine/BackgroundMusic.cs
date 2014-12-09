@@ -11,17 +11,13 @@ namespace Engine
 {
     static public class BackgroundMusic
     {
-        private static ConstructorInfo SongCtr = typeof(Song).GetConstructor(
-            BindingFlags.NonPublic | BindingFlags.Instance, null,
-            new[] { typeof(string), typeof(string), typeof(int) }, null);
-
         public static void Play(string fileName)
         {
             if(string.IsNullOrEmpty(fileName)) return;
-            var path = @"music\" + fileName;
+            var path = @"music\" + Path.GetFileNameWithoutExtension(fileName);
             try
             {
-                var song = (Song)SongCtr.Invoke(new object[] { "BackgroundMusic", path, 0 });
+                var song = Globals.TheGame.Content.Load<Song>(path);
                 MediaPlayer.IsRepeating = true;
                 MediaPlayer.Play(song);
             }

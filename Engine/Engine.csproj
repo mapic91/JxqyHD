@@ -72,12 +72,6 @@
     <Compile Include="Carmera.cs" />
     <Compile Include="Character.cs" />
     <Compile Include="Collider.cs" />
-    <Compile Include="Forms\ScriptViewer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\ScriptViewer.Designer.cs">
-      <DependentUpon>ScriptViewer.cs</DependentUpon>
-    </Compile>
     <Compile Include="GameState.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="Good.cs" />
@@ -115,6 +109,7 @@
     <Compile Include="MagicManager.cs" />
     <Compile Include="MagicSprite.cs" />
     <Compile Include="Map.cs" />
+    <Compile Include="Message\MessageDelegater.cs" />
     <Compile Include="Mpc.cs" />
     <Compile Include="Npc.cs" />
     <Compile Include="NpcManager.cs" />
@@ -151,11 +146,6 @@
       <Project>{5e46dcf4-c473-4171-9f9b-f3910b5ec407}</Project>
       <Name>INIFileParser</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Forms\ScriptViewer.resx">
-      <DependentUpon>ScriptViewer.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />

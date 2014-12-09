@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -30,17 +31,16 @@ namespace Engine.Script
             {
                 var next = node.Next;
                 var script = node.Value;
-                if (Globals.ScriptViewerWindow != null)
+                if (script.FilePath != _lastFilePath)
                 {
-                    if (script.FilePath != _lastFilePath)
-                    {
-                        Globals.ScriptViewerWindow.AppendLine("【" +
-                            script.FilePath + "】" +
-                            (script.IsOk ? "" : "  读取失败"));
-                        Globals.ScriptViewerWindow.SetFileContent(script.FilePath);
-                    }
-                    _lastFilePath = script.FilePath;
+                    Globals.TheMessageSender.SendFunctionCallMessage(Environment.NewLine + 
+                        "【" +
+                        script.FilePath + "】" +
+                        (script.IsOk ? "" : "  读取失败"));
+                    Globals.TheMessageSender.SendScriptFileChangeMessage(script.FilePath);
                 }
+                _lastFilePath = script.FilePath;
+
                 if (!script.Continue())
                 {
                     _list.Remove(node);

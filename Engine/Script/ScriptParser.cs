@@ -43,7 +43,7 @@ namespace Engine.Script
         private static readonly Regex RegResult = new Regex(@"^@[a-zA-Z0-9]+");
         private void ParserLine(string line)
         {
-            var code = new Code {LineNumber = _lineNumber};
+            var code = new Code { LineNumber = _lineNumber };
             line = line.Trim();
             if (line.Length < 2) return;
 
@@ -53,7 +53,7 @@ namespace Engine.Script
                 code.IsGoto = true;
                 code.Name = match.Value;
             }
-            else if (RegComment.IsMatch(line)) 
+            else if (RegComment.IsMatch(line))
             {
                 return;
             }
@@ -85,7 +85,7 @@ namespace Engine.Script
             var parameters = new List<string>();
             if (str.Length == 0) return parameters;
             var temp = new StringBuilder();
-            for (var i = 0; i < str.Length;i++)
+            for (var i = 0; i < str.Length; i++)
             {
                 if (str[i] == '"')
                 {
@@ -98,7 +98,7 @@ namespace Engine.Script
                     parameters.Add(temp.ToString());
                     temp.Clear();
                 }
-                else if(!char.IsWhiteSpace(str[i]))
+                else if (!char.IsWhiteSpace(str[i]))
                 {
                     if (str[i] == ',')
                     {
@@ -297,12 +297,11 @@ namespace Engine.Script
                 {
                     _currentCode = code;
                     var parameters = _currentCode.Parameters;
-                    //If view window exist, log to window
-                    if (Globals.ScriptViewerWindow != null)
-                    {
-                        Globals.ScriptViewerWindow.AppendLine(DateTime.Now.ToString("T") +
-                            "\t" + _currentCode.Literal + "\t[" + _currentCode.LineNumber + "]");
-                    }
+
+                    //Send message to register
+                    Globals.TheMessageSender.SendFunctionCallMessage(DateTime.Now.ToString("T") +
+                        "\t" + _currentCode.Literal + "\t[" + _currentCode.LineNumber + "]");
+
                     switch (_currentCode.Name)
                     {
                         case "Say":
@@ -699,7 +698,7 @@ namespace Engine.Script
             }
             catch (Exception exception)
             {
-                var message = "Script error! File: " + Path.GetFullPath(FilePath) +".";
+                var message = "Script error! File: " + Path.GetFullPath(FilePath) + ".";
                 if (_currentCode != null)
                 {
                     message += ("\nCode: " + _currentCode.Literal);

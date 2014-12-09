@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Engine;
 using Jxqy;
 
 namespace GameEditor
@@ -16,6 +18,7 @@ namespace GameEditor
         public GameEditor()
         {
             InitializeComponent();
+            FunctionRunStateAppendLine("[时间]\t[函数]\t[行数]");
         }
 
         private void GameEditor_FormClosed(object sender, FormClosedEventArgs e)
@@ -43,6 +46,33 @@ namespace GameEditor
         private void DrawSurface_MouseLeave(object sender, EventArgs e)
         {
             Cursor.Show();
+        }
+
+        public void FunctionRunStateAppendLine(string line)
+        {
+            _functionText.AppendText(line + Environment.NewLine);
+        }
+
+        public void SetScriptFileContent(string path)
+        {
+            var contnet = new StringBuilder();
+            var filePathInfo = "【" + path + "】";
+            contnet.AppendLine(filePathInfo);
+            try
+            {
+                var lines = File.ReadAllLines(path, Globals.SimpleChinaeseEncoding);
+                var count = lines.Count();
+                for (var i = 0; i < count; i++)
+                {
+                    contnet.AppendLine((i + 1) + "  " + lines[i]);
+                }
+            }
+            catch (Exception)
+            {
+                _fileText.Text = (filePathInfo + "  读取失败！");
+                return;
+            }
+            _fileText.Text = contnet.ToString();
         }
     }
 }
