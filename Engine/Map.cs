@@ -346,7 +346,8 @@ namespace Engine
         public static bool HasNpcObjObstacleInMap(Vector2 tilePositon)
         {
             return (NpcManager.IsObstacle(tilePositon) ||
-                    ObjManager.IsObstacle(tilePositon));
+                    ObjManager.IsObstacle(tilePositon) ||
+                    Globals.ThePlayer.TilePosition == tilePositon);
         }
 
         public bool IsObstacle(int col, int row)

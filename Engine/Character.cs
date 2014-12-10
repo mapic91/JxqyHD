@@ -507,7 +507,7 @@ namespace Engine
 
         public bool IsFighterFriend
         {
-            get { return ((Kind == 1 && Relation == 0) || Kind == 3); }
+            get { return ((Kind == 1 || Kind == 3) && Relation == 0); }
         }
 
         public bool IsFighter

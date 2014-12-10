@@ -111,6 +111,16 @@ namespace Engine
                     else if (IsFighterFriend)
                     {
                         FollowTarget = NpcManager.GetClosedEnemy(PositionInWorld);
+                        //Fighter friend may be parter
+                        if (FollowTarget == null && IsPartner)
+                        {
+                            //Can't find enemy, walk to player
+                            WalkTo(Globals.ThePlayer.TilePosition);
+                        }
+                    }
+                    else if (IsPartner)
+                    {
+                        WalkTo(Globals.ThePlayer.TilePosition);
                     }
                 }
             }

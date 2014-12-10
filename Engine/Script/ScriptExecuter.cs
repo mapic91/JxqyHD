@@ -1284,6 +1284,7 @@ namespace Engine.Script
 
         public static void DisableRun()
         {
+            return;//DisableRun is useless
             if (Globals.ThePlayer != null)
             {
                 Globals.ThePlayer.DisableRun();
