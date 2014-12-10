@@ -735,7 +735,7 @@ namespace Engine.Script
             ObjManager.AddObj(Utils.RemoveStringQuotes(parameters[0]),
                 int.Parse(parameters[1]),
                 int.Parse(parameters[2]),
-                int.Parse(parameters[3]));
+                parameters.Count == 3 ? 0 : int.Parse(parameters[3]));
         }
 
         public static void Talk(List<string> parameters)

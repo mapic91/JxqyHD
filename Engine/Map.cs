@@ -717,6 +717,16 @@ namespace Engine
             var magicSprites = MagicManager.MagicSpritesInView;
             var npcs = NpcManager.NpcsInView;
             var objs = ObjManager.ObjsInView;
+
+            //Draw body
+            foreach (var obj in objs)
+            {
+                if (obj.Kind == 2)
+                {
+                    obj.Draw(spriteBatch);
+                }
+            }
+
             for (var y = (int)start.Y; y < (int)end.Y; y++)
             {
                 for (var x = (int)start.X; x < (int)end.X; x++)
@@ -725,12 +735,12 @@ namespace Engine
                     if (IsLayerDraw(1)) DrawTile(spriteBatch, texture, new Vector2(x, y), 1f);
                     foreach (var npc in npcs)
                     {
-                        if (x == npc.MapX && y == npc.MapY)
+                        if (x == npc.MapX && y == npc.MapY && npc.Kind != 7)
                             npc.Draw(spriteBatch);
                     }
                     foreach (var obj in objs)
                     {
-                        if (x == obj.MapX && y == obj.MapY)
+                        if (x == obj.MapX && y == obj.MapY && obj.Kind != 2)
                             obj.Draw(spriteBatch);
                     }
                     foreach (var magicSprite in magicSprites)
@@ -740,6 +750,16 @@ namespace Engine
                     }
                 }
             }
+
+            //Draw fly npc
+            foreach (var npc in npcs)
+            {
+                if (npc.Kind == 7)
+                {
+                    npc.Draw(spriteBatch);
+                }
+            }
+
             DrawLayer(spriteBatch, 2);
         }
     }

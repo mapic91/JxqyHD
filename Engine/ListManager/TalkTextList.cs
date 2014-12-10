@@ -14,7 +14,7 @@ namespace Engine.ListManager
         /// </summary>
         public static void Initialize()
         {
-            const string path = @"script\TalkIndex.txt";
+            const string path = @"Content\TalkIndex.txt";
             try
             {
                 var lines = File.ReadAllLines(path, Globals.SimpleChinaeseEncoding);

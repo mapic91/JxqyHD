@@ -43,6 +43,10 @@ namespace Engine
         public static void SetNpcStateImage(Dictionary<int, ResStateInfo> list, CharacterState state, string fileName)
         {
             if(list == null) return;
+            if (!list.ContainsKey((int) state))
+            {
+                list[(int)state] = new ResStateInfo();
+            }
             list[(int) state].Image = Utils.GetAsf(GetAsfFilePathBase(fileName, ResType.Npc), fileName);
         }
 
