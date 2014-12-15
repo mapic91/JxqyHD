@@ -91,5 +91,22 @@ namespace GameEditor
                 Process.Start("explorer", '"' + path + '"');
             }
         }
+
+        private void _fullLifeThewMana_Click(object sender, EventArgs e)
+        {
+            Globals.ThePlayer.FullLife();
+            Globals.ThePlayer.FullMana();
+            Globals.ThePlayer.FullThew();
+        }
+
+        private void _levelUp_Click(object sender, EventArgs e)
+        {
+            Globals.ThePlayer.LevelUp();
+        }
+
+        private void _addMoney1000_Click(object sender, EventArgs e)
+        {
+            Globals.ThePlayer.AddMoney(1000);
+        }
     }
 }

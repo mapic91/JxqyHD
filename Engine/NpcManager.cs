@@ -66,7 +66,7 @@ namespace Engine
             var path = @"save\game\" + fileName;
             try
             {
-                var count = _list.Count;
+                var count = 0;
                 var data = new IniData();
                 data.Sections.AddSection("Head");
                 if (!isSaveParter)
@@ -74,7 +74,6 @@ namespace Engine
                     data["Head"].AddKey("Map",
                         Globals.TheMap.MapFileNameWithoutExtension + ".map");
                 }
-                data["Head"].AddKey("Count", count.ToString());
 
                 var index = 0;
                 foreach (var npc in _list)
@@ -84,7 +83,9 @@ namespace Engine
                     var sectionName = "NPC" + string.Format("{0:000}", index++);
                     data.Sections.AddSection(sectionName);
                     npc.Save(data[sectionName]);
+                    count++;
                 }
+                data["Head"].AddKey("Count", count.ToString());
                 File.WriteAllText(path, data.ToString(), Globals.SimpleChinaeseEncoding);
             }
             catch (Exception exception)
@@ -214,9 +215,11 @@ namespace Engine
         public static bool Load(string fileName, bool clearCurrentNpcs = true)
         {
             if (string.IsNullOrEmpty(fileName)) return false;
+            var success = true;
+            var filePath = Utils.GetNpcObjFilePath(fileName);
+            var partners = new List<Npc>();
             try
             {
-                var partners = new List<Npc>();
                 if (clearCurrentNpcs)
                 {
                     //get partners for restore later
@@ -224,24 +227,23 @@ namespace Engine
                     ClearAllNpc();
                 }
                 _fileName = fileName;
-                var filePath = Utils.GetNpcObjFilePath(fileName);
                 var list = Utils.GetAllKeyDataCollection(filePath, "NPC");
                 foreach (var keyDataCollection in list)
                 {
                     AddNpc(keyDataCollection);
                 }
-
-                //restore partners
-                foreach (var npc in partners)
-                {
-                    AddNpc(npc);
-                }
             }
-            catch (Exception)
+            catch (Exception exception)
             {
-                return false;
+                Log.LogFileLoadError("NPC", filePath, exception);
+                success = false;
             }
-            return true;
+            //restore partners
+            foreach (var npc in partners)
+            {
+                AddNpc(npc);
+            }
+            return success;
         }
 
         public static void Merge(string fileName)
@@ -251,6 +253,7 @@ namespace Engine
 
         public static void AddNpc(KeyDataCollection keyDataCollection)
         {
+            if(keyDataCollection == null) return;
             var npc = new Npc(keyDataCollection);
             AddNpc(npc);
         }

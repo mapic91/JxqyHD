@@ -389,6 +389,19 @@ namespace Engine
             }
         }
 
+        /// <summary>
+        /// To next level
+        /// </summary>
+        public void LevelUp()
+        {
+            if (LevelUpExp == 0)
+            {
+                //Can't level up
+                return;
+            }
+            AddExp(LevelUpExp - Exp + 1);
+        }
+
         public override void SetPosition(Vector2 tilePosition)
         {
             base.SetPosition(tilePosition);
@@ -603,6 +616,10 @@ namespace Engine
                 Money -= cost;
                 GoodsListManager.AddGoodToList(good.FileName);
                 GuiManager.UpdateGoodsView();
+            }
+            else
+            {
+                GuiManager.ShowMessage("没有足够的钱！");
             }
         }
     }

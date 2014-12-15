@@ -46,6 +46,40 @@ namespace Engine
             }
         }
 
+        /// <summary>
+        /// Walk or run to player
+        /// </summary>
+        private void MoveToPlayer()
+        {
+            var distance = Engine.PathFinder.GetTileDistance(TilePosition,
+                Globals.ThePlayer.TilePosition);
+            if (distance > 5)
+            {
+                RunToPlayer();
+            }
+            else if (distance > 2)
+            {
+                if (IsRuning())
+                {
+                    RunToPlayer();
+                }
+                else
+                {
+                    WalkToPlayer();
+                }
+            }
+        }
+
+        private void RunToPlayer()
+        {
+            RunTo(Globals.ThePlayer.TilePosition);
+        }
+
+        private void WalkToPlayer()
+        {
+            WalkTo(Globals.ThePlayer.TilePosition);
+        }
+
         protected override bool HasObstacle(Vector2 tilePosition)
         {
             return (NpcManager.IsObstacle(tilePosition) ||
@@ -114,13 +148,13 @@ namespace Engine
                         //Fighter friend may be parter
                         if (FollowTarget == null && IsPartner)
                         {
-                            //Can't find enemy, walk to player
-                            WalkTo(Globals.ThePlayer.TilePosition);
+                            //Can't find enemy, move to player
+                            MoveToPlayer();
                         }
                     }
                     else if (IsPartner)
                     {
-                        WalkTo(Globals.ThePlayer.TilePosition);
+                        MoveToPlayer();
                     }
                 }
             }

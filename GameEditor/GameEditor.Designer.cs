@@ -34,10 +34,15 @@
             this.DrawSurface = new System.Windows.Forms.PictureBox();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this._functionText = new System.Windows.Forms.TextBox();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this._fileText = new System.Windows.Forms.TextBox();
             this._scriptFilePath = new System.Windows.Forms.Button();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.TheToolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.CheatMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this._fullLifeThewMana = new System.Windows.Forms.ToolStripMenuItem();
+            this._levelUp = new System.Windows.Forms.ToolStripMenuItem();
+            this._addMoney1000 = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -52,6 +57,8 @@
             // 
             // menuStrip1
             // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.CheatMenu});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(928, 24);
@@ -116,6 +123,21 @@
             this._functionText.TabIndex = 0;
             this._functionText.WordWrap = false;
             // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 1;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Controls.Add(this._fileText, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this._scriptFilePath, 0, 0);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 2;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(244, 354);
+            this.tableLayoutPanel1.TabIndex = 3;
+            // 
             // _fileText
             // 
             this._fileText.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -140,20 +162,39 @@
             this._scriptFilePath.UseVisualStyleBackColor = true;
             this._scriptFilePath.Click += new System.EventHandler(this._scriptFilePath_Click);
             // 
-            // tableLayoutPanel1
+            // CheatMenu
             // 
-            this.tableLayoutPanel1.ColumnCount = 1;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Controls.Add(this._fileText, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this._scriptFilePath, 0, 0);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 2;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(244, 354);
-            this.tableLayoutPanel1.TabIndex = 3;
+            this.CheatMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this._fullLifeThewMana,
+            this._levelUp,
+            this._addMoney1000});
+            this.CheatMenu.Name = "CheatMenu";
+            this.CheatMenu.Size = new System.Drawing.Size(45, 20);
+            this.CheatMenu.Text = "作弊";
+            // 
+            // _fullLifeThewMana
+            // 
+            this._fullLifeThewMana.Name = "_fullLifeThewMana";
+            this._fullLifeThewMana.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
+            this._fullLifeThewMana.Size = new System.Drawing.Size(181, 22);
+            this._fullLifeThewMana.Text = "生体内全满";
+            this._fullLifeThewMana.Click += new System.EventHandler(this._fullLifeThewMana_Click);
+            // 
+            // _levelUp
+            // 
+            this._levelUp.Name = "_levelUp";
+            this._levelUp.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.L)));
+            this._levelUp.Size = new System.Drawing.Size(181, 22);
+            this._levelUp.Text = "升一级";
+            this._levelUp.Click += new System.EventHandler(this._levelUp_Click);
+            // 
+            // _addMoney1000
+            // 
+            this._addMoney1000.Name = "_addMoney1000";
+            this._addMoney1000.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.M)));
+            this._addMoney1000.Size = new System.Drawing.Size(181, 22);
+            this._addMoney1000.Text = "加钱1000";
+            this._addMoney1000.Click += new System.EventHandler(this._addMoney1000_Click);
             // 
             // GameEditor
             // 
@@ -168,6 +209,8 @@
             this.Activated += new System.EventHandler(this.GameEditor_Activated);
             this.Deactivate += new System.EventHandler(this.GameEditor_Deactivate);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.GameEditor_FormClosed);
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
@@ -196,5 +239,9 @@
         private System.Windows.Forms.Button _scriptFilePath;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.ToolTip TheToolTip;
+        private System.Windows.Forms.ToolStripMenuItem CheatMenu;
+        private System.Windows.Forms.ToolStripMenuItem _fullLifeThewMana;
+        private System.Windows.Forms.ToolStripMenuItem _levelUp;
+        private System.Windows.Forms.ToolStripMenuItem _addMoney1000;
     }
 }
