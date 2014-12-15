@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -55,9 +56,10 @@ namespace GameEditor
 
         public void SetScriptFileContent(string path)
         {
+            SetScriptFilePath(path);
+
             var contnet = new StringBuilder();
             var filePathInfo = "【" + path + "】";
-            contnet.AppendLine(filePathInfo);
             try
             {
                 var lines = File.ReadAllLines(path, Globals.SimpleChinaeseEncoding);
@@ -73,6 +75,21 @@ namespace GameEditor
                 return;
             }
             _fileText.Text = contnet.ToString();
+        }
+
+        private void SetScriptFilePath(string path)
+        {
+            _scriptFilePath.Text = path;
+            TheToolTip.SetToolTip(_scriptFilePath, path);
+        }
+
+        private void _scriptFilePath_Click(object sender, EventArgs e)
+        {
+            var path = _scriptFilePath.Text;
+            if (File.Exists(path))
+            {
+                Process.Start("explorer", '"' + path + '"');
+            }
         }
     }
 }

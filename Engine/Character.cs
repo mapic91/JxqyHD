@@ -78,6 +78,7 @@ namespace Engine
         private int _leftStepToMove;
         private bool _isInInteract;
         private int _directionBeforInteract;
+        private int _specialActionLastDirection; //Direction before play special action
         protected Magic MagicUse;
         #endregion Field
 
@@ -1818,6 +1819,7 @@ namespace Engine
         public void SetSpecialAction(string asfFileName)
         {
             IsInSpecialAction = true;
+            _specialActionLastDirection = CurrentDirection;
             EndPlayCurrentDirOnce();
             Texture = Utils.GetCharacterAsf(asfFileName);
             PlayCurrentDirOnce();
@@ -1833,6 +1835,8 @@ namespace Engine
                 {
                     IsInSpecialAction = false;
                     ResetState();
+                    //Restore direction
+                    SetDirectionValue(_specialActionLastDirection);
                 }
                 return;
             }

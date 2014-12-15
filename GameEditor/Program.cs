@@ -18,8 +18,11 @@ namespace GameEditor
                 form.DrawSurface.Handle,
                 form,
                 form.DrawSurface);
+
+            //Register log event
             Globals.TheMessageSender.OnFunctionCall += form.FunctionRunStateAppendLine;
             Globals.TheMessageSender.OnScriptFileChange += form.SetScriptFileContent;
+
             form.TheGame.Run();
         }
     }

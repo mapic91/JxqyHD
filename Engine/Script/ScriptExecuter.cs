@@ -230,7 +230,44 @@ namespace Engine.Script
             }
         }
 
-        private static bool IsCharacterMoveEndAndStanding(Character character)
+        /// <summary>
+        /// Check character whether moved to destination.If end enable input.
+        /// </summary>
+        /// <param name="character">The character to check</param>
+        /// <param name="destinationTilePosition">Destination to move</param>
+        /// <param name="isRun">Whether run to.Otherwise walk to</param>
+        /// <returns>True end.False not end.</returns>
+        private static bool IsCharacterMoveEndAndStanding(Character character, Vector2 destinationTilePosition, bool isRun)
+        {
+            if (character != null &&
+                character.TilePosition != destinationTilePosition)
+            {
+                //Is character is standing, walk to destination
+                if (character.IsStanding())
+                {
+                    if (isRun)
+                    {
+                        character.RunTo(destinationTilePosition);
+                    }
+                    else
+                    {
+                        character.WalkTo(destinationTilePosition);
+                    }
+                }
+                return false;
+            }
+            if (character != null &&
+                character.TilePosition == destinationTilePosition &&
+                !character.IsStanding())
+            {
+                //At destination tile keep moving
+                return false;
+            }
+            Globals.IsInputDisabled = false;
+            return true;
+        }
+
+        private static bool IsCharacterStanding(Character character)
         {
             if (character != null &&
                 !character.IsStanding())
@@ -438,11 +475,14 @@ namespace Engine.Script
         public static void DrawFade(SpriteBatch spriteBatch)
         {
             var fadeTextrue = TextureGenerator.GetColorTexture(
-                    Color.Black * ScriptExecuter.FadeTransparence,
+                    Color.Black * FadeTransparence,
                     1,
                     1);
             spriteBatch.Draw(fadeTextrue,
-                new Rectangle(0, 0, Globals.WindowWidth, Globals.WindowHeight),
+                new Rectangle(0, 
+                    0, 
+                    Globals.TheGame.GraphicsDevice.PresentationParameters.BackBufferWidth,
+                    Globals.TheGame.GraphicsDevice.PresentationParameters.BackBufferHeight),
                 Color.White);
         }
 
@@ -1211,11 +1251,12 @@ namespace Engine.Script
 
         public static void Watch(List<string> parameters)
         {
-            var watcher = GetPlayerOrNpc(Utils.RemoveStringQuotes(parameters[0]));
-            var target = GetPlayerOrNpc(Utils.RemoveStringQuotes(parameters[1]));
-            if (watcher != null && target != null)
+            var character1 = GetPlayerOrNpc(Utils.RemoveStringQuotes(parameters[0]));
+            var character2 = GetPlayerOrNpc(Utils.RemoveStringQuotes(parameters[1]));
+            if (character1 != null && character2 != null)
             {
-                watcher.SetDirection(target.PositionInWorld - watcher.PositionInWorld);
+                character1.SetDirection(character2.PositionInWorld - character1.PositionInWorld);
+                character2.SetDirection(character1.PositionInWorld - character2.PositionInWorld);
             }
         }
 
@@ -1317,6 +1358,7 @@ namespace Engine.Script
             Globals.IsWaterEffectEnabled = false;
         }
 
+        private static Vector2 _playerGotoDesitination;
         public static void PlayerGoto(List<string> parameters)
         {
             var tilePosition = new Vector2(
@@ -1325,13 +1367,14 @@ namespace Engine.Script
             if (Globals.ThePlayer != null)
             {
                 Globals.ThePlayer.WalkTo(tilePosition);
+                _playerGotoDesitination = tilePosition;
                 Globals.IsInputDisabled = true;
             }
         }
 
         public static bool IsPlayerGotoEnd()
         {
-            return IsCharacterMoveEndAndStanding(Globals.ThePlayer);
+            return IsCharacterMoveEndAndStanding(Globals.ThePlayer, _playerGotoDesitination, false);
         }
 
         public static void PlayerGotoDir(List<string> parameters)
@@ -1357,6 +1400,7 @@ namespace Engine.Script
             }
         }
 
+        private static Vector2 _playerJumpToDestination;
         public static void PlayerJumpTo(List<string> parameters)
         {
             if (IsPlayerNull()) return;
@@ -1368,21 +1412,24 @@ namespace Engine.Script
 
         public static bool IsPlayerJumpToEnd()
         {
-            return IsCharacterMoveEndAndStanding(Globals.ThePlayer);
+            return IsCharacterStanding(Globals.ThePlayer);
         }
 
+        private static Vector2 _playerRunToDestination;
         public static void PlayerRunTo(List<string> parameters)
         {
             if (IsPlayerNull()) return;
             Globals.IsInputDisabled = true;
-            Globals.ThePlayer.RunTo(new Vector2(
+            _playerRunToDestination = new Vector2(
                 int.Parse(parameters[0]),
-                int.Parse(parameters[1])));
+                int.Parse(parameters[1]));
+            Globals.ThePlayer.RunTo(_playerRunToDestination);
+
         }
 
         public static bool IsPlayerRunToEnd()
         {
-            return IsCharacterMoveEndAndStanding(Globals.ThePlayer);
+            return IsCharacterMoveEndAndStanding(Globals.ThePlayer, _playerRunToDestination, true);
         }
 
         public static void PlayerRunToEx(List<string> parameters)

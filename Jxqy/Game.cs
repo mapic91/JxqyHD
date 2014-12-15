@@ -55,7 +55,7 @@ namespace Jxqy
             _pictureBox.SizeChanged += pictureBox_SizeChanged;
         }
 
-        private void SetDrawSiseToDrawSurfaceSize()
+        public void SetDrawSizeToDrawSurfaceSize()
         {
             if (_parentForm.WindowState != FormWindowState.Minimized)
             {
@@ -69,7 +69,7 @@ namespace Jxqy
 
         private void pictureBox_SizeChanged(object sender, EventArgs e)
         {
-            SetDrawSiseToDrawSurfaceSize();
+            SetDrawSizeToDrawSurfaceSize();
         }
 
         private void gameForm_VisibleChanged(object sender, EventArgs e)
@@ -154,15 +154,17 @@ namespace Jxqy
             Globals.WindowWidth = _graphics.PreferredBackBufferWidth;
             Globals.WindowHeight = _graphics.PreferredBackBufferHeight;
 
+            Globals.TheCarmera.ViewWidth = _graphics.PreferredBackBufferWidth;
+            Globals.TheCarmera.ViewHeight = _graphics.PreferredBackBufferHeight;
+            Globals.TheMap.ViewWidth = _graphics.PreferredBackBufferWidth;
+            Globals.TheMap.ViewHeight = _graphics.PreferredBackBufferHeight;
+
             //Game run in editor
             if (_parentForm != null)
             {
                 //Make draw size correct
-                SetDrawSiseToDrawSurfaceSize();
+                SetDrawSizeToDrawSurfaceSize();
             }
-
-            Globals.TheMap.ViewWidth = _graphics.PreferredBackBufferWidth;
-            Globals.TheMap.ViewHeight = _graphics.PreferredBackBufferHeight;
 
             base.Initialize();
         }
@@ -181,9 +183,6 @@ namespace Jxqy
             Globals.FontSize7 = Content.Load<SpriteFont>(@"font\ASCII_Verdana_7_Bold");
             Globals.FontSize10 = Content.Load<SpriteFont>(@"font\GB2312_ASCII_√‘ƒ„ºÚœ∏‘≤_10");
             Globals.FontSize12 = Content.Load<SpriteFont>(@"font\GB2312_ASCII_√‘ƒ„ºÚœ∏‘≤_12");
-
-            Globals.TheCarmera.ViewWidth = Globals.WindowWidth;
-            Globals.TheCarmera.ViewHeight = Globals.WindowHeight;
 
             GuiManager.Starting();
             Loader.LoadGame();

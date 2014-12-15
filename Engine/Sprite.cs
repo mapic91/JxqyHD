@@ -285,12 +285,21 @@ namespace Engine
         }
 
         /// <summary>
-        /// Set direction directly(not check and correct input direction value)
+        /// Set direction(not correct input direction value)
         /// </summary>
         /// <param name="direcion">direction to set</param>
         public void SetDirectionValue(int direcion)
         {
-            _currentDirection = direcion;
+            if (_texture.DirectionCounts > direcion)
+            {
+                //Direction in current texture direction count range
+                SetDirection(direcion);
+            }
+            else
+            {
+                //Direction not in range
+                _currentDirection = direcion;
+            }
         }
 
         public void Update(GameTime gameTime, Vector2 direction, int speedFold = 1)
