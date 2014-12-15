@@ -276,7 +276,7 @@ namespace Jxqy
                 }
             }
 
-            //Update script
+            //Update script after GuiManager, because script executing rely GUI state.
             ScriptManager.Update(gameTime);
 
             _lastKeyboardState = keyboardState;

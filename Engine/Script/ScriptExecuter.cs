@@ -370,6 +370,9 @@ namespace Engine.Script
 
         public static void Say(List<string> parameters)
         {
+            //Stand when say
+            Globals.ThePlayer.StandingImmediately();
+            Globals.IsInputDisabled = true;
             switch (parameters.Count)
             {
                 case 1:
@@ -382,6 +385,16 @@ namespace Engine.Script
                         int.Parse(parameters[1]));
                     break;
             }
+        }
+
+        public static bool IsSayEnd()
+        {
+            if (GuiManager.IsDialogEnd())
+            {
+                Globals.IsInputDisabled = false;
+                return true;
+            }
+            return false;
         }
 
         private static readonly Regex IfParameterPatten = new Regex(@"(\$[a-zA-Z0-9]+) *([><=]+) *(.+)");
@@ -655,7 +668,7 @@ namespace Engine.Script
         {
             var x = int.Parse(parameters[0]);
             var y = int.Parse(parameters[1]);
-            Globals.ThePlayer.SetPlayerTilePosition(new Vector2(x, y));
+            Globals.ThePlayer.SetPosition(new Vector2(x, y));
         }
 
         public static void SetPlayerDir(List<string> parameters)
@@ -780,6 +793,9 @@ namespace Engine.Script
 
         public static void Talk(List<string> parameters)
         {
+            //Stand when talk
+            Globals.ThePlayer.StandingImmediately();
+
             IsInTalk = true;
             _talkStartIndex = int.Parse(parameters[0]);
             _talkEndIndex = int.Parse(parameters[1]);
@@ -955,6 +971,9 @@ namespace Engine.Script
 
         public static void Choose(List<string> parameters)
         {
+            //Stand when choose
+            Globals.ThePlayer.StandingImmediately();
+
             GuiManager.Selection(Utils.RemoveStringQuotes(parameters[0]),
                 Utils.RemoveStringQuotes(parameters[1]),
                 Utils.RemoveStringQuotes(parameters[2]));
@@ -962,6 +981,9 @@ namespace Engine.Script
 
         public static void Select(List<string> parameters)
         {
+            //Stand when select
+            Globals.ThePlayer.StandingImmediately();
+
             GuiManager.Selection(TalkTextList.GetTextDetail(int.Parse(parameters[0])).Text,
                 TalkTextList.GetTextDetail(int.Parse(parameters[1])).Text,
                 TalkTextList.GetTextDetail(int.Parse(parameters[2])).Text);
@@ -1129,7 +1151,7 @@ namespace Engine.Script
             GetTargetAndValue3(parameters, belongObject, out target, out value);
             if (target != null)
             {
-                target.SetTilePosition(value);
+                target.SetPosition(value);
             }
         }
 
@@ -1253,9 +1275,30 @@ namespace Engine.Script
         {
             var character1 = GetPlayerOrNpc(Utils.RemoveStringQuotes(parameters[0]));
             var character2 = GetPlayerOrNpc(Utils.RemoveStringQuotes(parameters[1]));
-            if (character1 != null && character2 != null)
+            if (character1 == null || character2 == null) return;
+            var watchType = 0;
+            if (parameters.Count == 3)
+            {
+                watchType = int.Parse(parameters[2]);
+            }
+            var isC1 = false;
+            var isC2 = false;
+            switch (watchType)
+            {
+                case 0:
+                    isC1 = true;
+                    isC2 = true;
+                    break;
+                case 1:
+                    isC1 = true;
+                    break;
+            }
+            if (isC1)
             {
                 character1.SetDirection(character2.PositionInWorld - character1.PositionInWorld);
+            }
+            if (isC2)
+            {
                 character2.SetDirection(character1.PositionInWorld - character2.PositionInWorld);
             }
         }
@@ -1322,10 +1365,12 @@ namespace Engine.Script
         {
             Npc.EnableAI();
         }
-
+        
         public static void DisableRun()
         {
+            #pragma warning disable 162
             return;//DisableRun is useless
+            
             if (Globals.ThePlayer != null)
             {
                 Globals.ThePlayer.DisableRun();
@@ -1400,7 +1445,6 @@ namespace Engine.Script
             }
         }
 
-        private static Vector2 _playerJumpToDestination;
         public static void PlayerJumpTo(List<string> parameters)
         {
             if (IsPlayerNull()) return;

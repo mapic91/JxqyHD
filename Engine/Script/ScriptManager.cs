@@ -27,6 +27,9 @@ namespace Engine.Script
 
         public static void Update(GameTime gameTime)
         {
+            //To avoid Sleep() script function end early, update ScriptExecuter first.
+            ScriptExecuter.Update(gameTime);
+
             for (var node = _list.First; node != null; )
             {
                 var next = node.Next;
@@ -53,7 +56,6 @@ namespace Engine.Script
                 }
 
             }
-            ScriptExecuter.Update(gameTime);
         }
 
         public static void Draw(SpriteBatch spriteBatch)

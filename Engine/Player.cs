@@ -149,6 +149,17 @@ namespace Engine
             return region.Contains(mouseState.X, mouseState.Y);
         }
 
+        private void ResetPartnerPosition()
+        {
+            var partners = NpcManager.GetAllPartner();
+            if(partners.Count == 0) return;
+            var neighbors = Engine.PathFinder.FindAllNeighbors(TilePosition);
+            foreach (var partner in partners)
+            {
+                partner.SetPosition(neighbors[0]);
+            }
+        }
+
         protected override bool MagicFromCache
         {
             get { return false; }
@@ -378,10 +389,12 @@ namespace Engine
             }
         }
 
-        public void SetPlayerTilePosition(Vector2 tilePosition)
+        public override void SetPosition(Vector2 tilePosition)
         {
-            TilePosition = tilePosition;
+            base.SetPosition(tilePosition);
             Globals.TheCarmera.PlayerToCenter();
+            //Reset parter position relate to player position
+            ResetPartnerPosition();
         }
 
         public override void Update(GameTime gameTime)

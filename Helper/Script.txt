@@ -266,10 +266,12 @@ SetNpcActionType(a,b)
 功能：设置NPC的行为类型
 参数：a: NPC的名字
       b: 类型0-1 0 = 站立 1 = 走动
-	  
+
+//c为0，相互看，c为1，a往b看，c为其它无效
 Watch(a, b, c)
 Watch("杨影枫", "纳兰真", 0);
 
+//a,b相互看
 Watch(a, b)
 Watch("杨影枫", "纳兰真");
 

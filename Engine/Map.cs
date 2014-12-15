@@ -603,7 +603,6 @@ namespace Engine
                 {
                     _currentScriptInRunning = script;
                     ScriptManager.RunScript(_currentScriptInRunning);
-                    Globals.ThePlayer.StandingImmediately();
                 }
             }
             else

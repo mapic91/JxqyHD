@@ -101,5 +101,23 @@ namespace Engine
                 //no setting file, do nothing
             }
         }
+
+        private static bool _lastIsInputDisabled;
+        /// <summary>
+        /// Temporary enable input.use RestoreInputDisableState() to restore.
+        /// </summary>
+        public static void EnableInputTemporary()
+        {
+            _lastIsInputDisabled = IsInputDisabled;
+            IsInputDisabled = false;
+        }
+
+        /// <summary>
+        /// Restore to last saved input disable state.
+        /// </summary>
+        public static void RestoreInputDisableState()
+        {
+            IsInputDisabled = _lastIsInputDisabled;
+        }
     }
 }

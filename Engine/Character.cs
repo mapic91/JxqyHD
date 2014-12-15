@@ -1656,6 +1656,13 @@ namespace Engine
             TilePosition = tilePosition;
         }
 
+        public virtual void SetPosition(Vector2 tilePosition)
+        {
+            //Stand when reposition
+            StandingImmediately();
+            TilePosition = tilePosition;
+        }
+
         public virtual void SetRelation(int relation)
         {
 

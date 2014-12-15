@@ -237,7 +237,7 @@ namespace Engine.Script
                     switch (_currentCode.Name)
                     {
                         case "Say":
-                            isEnd = GuiManager.IsDialogEnd();
+                            isEnd = ScriptExecuter.IsSayEnd();
                             break;
                         case "FadeOut":
                             isEnd = ScriptExecuter.IsFadeOutEnd();
@@ -306,7 +306,7 @@ namespace Engine.Script
                     {
                         case "Say":
                             ScriptExecuter.Say(parameters);
-                            isEnd = GuiManager.IsDialogEnd();
+                            isEnd = ScriptExecuter.IsSayEnd();
                             break;
                         case "If":
                             if (ScriptExecuter.If(parameters))

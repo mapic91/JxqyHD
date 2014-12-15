@@ -352,9 +352,6 @@ namespace Engine.Gui
         {
             var keyboardState = Keyboard.GetState();
             var mouseState = Mouse.GetState();
-            //Can't disable input when at buy sell
-            if (Globals.IsInputDisabled)
-                mouseState = Utils.GetMouseStateJustPosition(mouseState);
 
             MouseInterface.Update(gameTime);
             ColumnInterface.Update(gameTime);
@@ -375,6 +372,9 @@ namespace Engine.Gui
 
             if (DialogInterface.IsShow)
             {
+                //Temporaty enable input
+                Globals.EnableInputTemporary();
+
                 IsMouseStateEated = true;
                 if (DialogInterface.IsInSelecting)
                 {
@@ -395,7 +395,8 @@ namespace Engine.Gui
                             DialogInterface.IsShow = false;
                     }
                 }
-
+                //Restore input
+                Globals.RestoreInputDisableState();
             }
             else
             {
@@ -408,8 +409,7 @@ namespace Engine.Gui
                 if (BuyInterface.IsShow)
                 {
                     //Temporaty enable input
-                    var value = Globals.IsInputDisabled;
-                    Globals.IsInputDisabled = false;
+                    Globals.EnableInputTemporary();
 
                     BuyInterface.Update(gameTime);
                     GoodsInterface.Update(gameTime);
@@ -417,7 +417,7 @@ namespace Engine.Gui
                     IsMouseStateEated = true;
 
                     //Restore input
-                    Globals.IsInputDisabled = value;
+                    Globals.RestoreInputDisableState();
                 }
                 else
                 {

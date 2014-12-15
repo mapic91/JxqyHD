@@ -183,9 +183,9 @@ namespace Engine
                 var partners = new List<Npc>();
                 if (clearCurrentNpcs)
                 {
-                    ClearAllNpc();
                     //get partners for restore later
                     partners = GetAllPartner();
+                    ClearAllNpc();
                 }
                 _fileName = fileName;
                 var filePath = Utils.GetNpcObjFilePath(fileName);
@@ -194,6 +194,7 @@ namespace Engine
                 {
                     AddNpc(keyDataCollection);
                 }
+
                 //restore partners
                 foreach (var npc in partners)
                 {
@@ -398,7 +399,7 @@ namespace Engine
             }
         }
 
-        public static void Save(string fileName = null)
+        public static void Save(string fileName = null, bool isSaveParter = false)
         {
             if (string.IsNullOrEmpty(fileName))
             {
@@ -410,16 +411,20 @@ namespace Engine
                 var count = _list.Count;
                 var data = new IniData();
                 data.Sections.AddSection("Head");
-                data["Head"].AddKey("Map", 
-                    Globals.TheMap.MapFileNameWithoutExtension + ".map");
+                if(!isSaveParter)
+                {
+                    data["Head"].AddKey("Map", 
+                        Globals.TheMap.MapFileNameWithoutExtension + ".map");
+                }
                 data["Head"].AddKey("Count", count.ToString());
 
-                var node = _list.First;
-                for (var i = 0; i < count; i++, node = node.Next)
+                var index = 0;
+                foreach (var npc in _list)
                 {
-                    var sectionName = "NPC" + string.Format("{0:000}", i);
+                    if ((isSaveParter && !npc.IsPartner) ||
+                        (!isSaveParter && npc.IsPartner))   continue;
+                    var sectionName = "NPC" + string.Format("{0:000}", index++);
                     data.Sections.AddSection(sectionName);
-                    var npc = node.Value;
                     npc.Save(data[sectionName]);
                 }
                 File.WriteAllText(path, data.ToString(), Globals.SimpleChinaeseEncoding);
