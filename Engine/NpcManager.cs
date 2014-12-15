@@ -57,6 +57,42 @@ namespace Engine
             _npcListChanged = true;
         }
 
+        private static void Save(string fileName = null, bool isSaveParter = false)
+        {
+            if (string.IsNullOrEmpty(fileName))
+            {
+                fileName = _fileName;
+            }
+            var path = @"save\game\" + fileName;
+            try
+            {
+                var count = _list.Count;
+                var data = new IniData();
+                data.Sections.AddSection("Head");
+                if (!isSaveParter)
+                {
+                    data["Head"].AddKey("Map",
+                        Globals.TheMap.MapFileNameWithoutExtension + ".map");
+                }
+                data["Head"].AddKey("Count", count.ToString());
+
+                var index = 0;
+                foreach (var npc in _list)
+                {
+                    if ((isSaveParter && !npc.IsPartner) ||
+                        (!isSaveParter && npc.IsPartner)) continue;
+                    var sectionName = "NPC" + string.Format("{0:000}", index++);
+                    data.Sections.AddSection(sectionName);
+                    npc.Save(data[sectionName]);
+                }
+                File.WriteAllText(path, data.ToString(), Globals.SimpleChinaeseEncoding);
+            }
+            catch (Exception exception)
+            {
+                Log.LogFileSaveError("Npc", path, exception);
+            }
+        }
+
         /// <summary>
         /// Get enemy closed to target position.
         /// </summary>
@@ -399,40 +435,14 @@ namespace Engine
             }
         }
 
-        public static void Save(string fileName = null, bool isSaveParter = false)
+        public static void SaveNpc(string fileName = null)
         {
-            if (string.IsNullOrEmpty(fileName))
-            {
-                fileName = _fileName;
-            }
-            var path = @"save\game\" + fileName;
-            try
-            {
-                var count = _list.Count;
-                var data = new IniData();
-                data.Sections.AddSection("Head");
-                if(!isSaveParter)
-                {
-                    data["Head"].AddKey("Map", 
-                        Globals.TheMap.MapFileNameWithoutExtension + ".map");
-                }
-                data["Head"].AddKey("Count", count.ToString());
+            Save(fileName);
+        }
 
-                var index = 0;
-                foreach (var npc in _list)
-                {
-                    if ((isSaveParter && !npc.IsPartner) ||
-                        (!isSaveParter && npc.IsPartner))   continue;
-                    var sectionName = "NPC" + string.Format("{0:000}", index++);
-                    data.Sections.AddSection(sectionName);
-                    npc.Save(data[sectionName]);
-                }
-                File.WriteAllText(path, data.ToString(), Globals.SimpleChinaeseEncoding);
-            }
-            catch (Exception exception)
-            {
-                Log.LogFileSaveError("Npc", path, exception);
-            }
+        public static void SavePartner(string fileName)
+        {
+            Save(fileName, true);
         }
 
         public static void Update(GameTime gameTime)

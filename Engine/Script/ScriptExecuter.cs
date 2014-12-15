@@ -1083,7 +1083,7 @@ namespace Engine.Script
             {
                 fileName = Utils.RemoveStringQuotes(parameters[0]);
             }
-            NpcManager.Save(fileName);
+            NpcManager.SaveNpc(fileName);
         }
 
         public static void SaveObj(List<string> parameters)
