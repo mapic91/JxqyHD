@@ -1,4 +1,5 @@
 using System;
+using System.Windows.Forms;
 using Engine;
 using Jxqy;
 
@@ -12,6 +13,7 @@ namespace GameEditor
         /// </summary>
         static void Main(string[] args)
         {
+            Application.EnableVisualStyles();
             var form = new GameEditor();
             form.Show();
             form.TheGame = new Game(
