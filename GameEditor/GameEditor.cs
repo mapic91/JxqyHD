@@ -108,5 +108,20 @@ namespace GameEditor
         {
             Globals.ThePlayer.AddMoney(1000);
         }
+
+        private void GameEditor_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = false;
+        }
+
+        private void GameEditor_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = false;
+        }
+
+        private void GameEditor_KeyUp(object sender, KeyEventArgs e)
+        {
+            e.Handled = false;
+        }
     }
 }

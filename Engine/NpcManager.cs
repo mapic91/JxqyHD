@@ -195,6 +195,15 @@ namespace Engine
             return list;
         }
 
+        public static void PartnersMoveTo(Vector2 destinationTilePosition)
+        {
+            var partners = GetAllPartner();
+            foreach (var partner in partners)
+            {
+                partner.MoveTo(destinationTilePosition);
+            }
+        }
+
         public static void LoadPartner(string filePath)
         {
             try

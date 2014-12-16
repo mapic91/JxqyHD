@@ -417,16 +417,15 @@ NpcSpecialActionEx("—Ó”∞∑„", "mpc006_πÚ.asf");
 
 LoadGame(a)
 LoadGame(0);
+
+PlayerChange(a)
+PlayerChange(1);
 ///////////////////////////////////////////////////////////////////
 //////////////////    Implemented   End  /////////////////////////
 /////////////////////////////////////////////////////////////////
 
 GetPartnerIdx(a)
 GetPartnerIdx($PartnerNo);
-
-
-PlayerChange(a)
-PlayerChange(1);
 
 ReturnToTitle()
 ReturnToTitle();

@@ -39,22 +39,22 @@ namespace Engine
         }
 
         //Returned path is in pixel position
-        public static LinkedList<Vector2> FindPath(Vector2 startTile, Vector2 endTile, PathType type)
+        public static LinkedList<Vector2> FindPath(Character finder, Vector2 startTile, Vector2 endTile, PathType type)
         {
             switch (type)
             {
                 case PathType.PathOneStep:
-                    return FindPathStep(startTile, endTile, 10);
+                    return FindPathStep(finder, startTile, endTile, 10);
                 case PathType.PerfectMaxNpcTry:
-                    return FindPathPerfect(startTile, endTile, 100);
+                    return FindPathPerfect(finder, startTile, endTile, 100);
                 case PathType.PerfectMaxPlayerTry:
-                    return FindPathPerfect(startTile, endTile, 2000);
+                    return FindPathPerfect(finder, startTile, endTile, 2000);
             }
             return null;
         }
 
         //Returned path is in pixel position
-        public static LinkedList<Vector2> FindPathStep(Vector2 startTile, Vector2 endTile, int stepCount)
+        public static LinkedList<Vector2> FindPathStep(Character finder, Vector2 startTile, Vector2 endTile, int stepCount)
         {
             if (startTile == endTile) return null;
 
@@ -71,7 +71,7 @@ namespace Engine
             while (!frontier.IsEmpty)
             {
                 current = frontier.DeleteMin().Location;
-                if (Map.HasNpcObjObstacleInMap(current) && current != startTile) continue;
+                if (finder.HasObstacle(current) && current != startTile) continue;
                 if (step++ > stepCount) break;
                 if (current == endTile) break;
                 foreach (var neighbor in FindNeighbors(current))
@@ -96,7 +96,7 @@ namespace Engine
         }
 
         //Returned path is in pixel position
-        public static LinkedList<Vector2> FindPathSimple(Vector2 startTile, Vector2 endTile, int maxTry)
+        public static LinkedList<Vector2> FindPathSimple(Character finder, Vector2 startTile, Vector2 endTile, int maxTry)
         {
             if (startTile == endTile) return null;
 
@@ -113,7 +113,7 @@ namespace Engine
                 if (tryCount++ > maxTry) break;
                 var current = frontier.DeleteMin().Location;
                 if (current == endTile) break;
-                if (Map.HasNpcObjObstacleInMap(current) && current != startTile) continue;
+                if (finder.HasObstacle(current) && current != startTile) continue;
                 foreach (var neighbor in FindNeighbors(current))
                 {
                     if (!cameFrom.ContainsKey(neighbor))
@@ -174,7 +174,7 @@ namespace Engine
         }
 
         //Returned path is in pixel position
-        public static LinkedList<Vector2> FindPathPerfect(Vector2 startTile, Vector2 endTile, int maxTryCount)
+        public static LinkedList<Vector2> FindPathPerfect(Character finder, Vector2 startTile, Vector2 endTile, int maxTryCount)
         {
             if (startTile == endTile) return null;
 
@@ -205,7 +205,7 @@ namespace Engine
                 if (tryCount++ > maxTryCount) break;
                 var current = frontier.DeleteMin().Location;
                 if (current.Equals(endTile)) break;
-                if (Map.HasNpcObjObstacleInMap(current) && current != startTile) continue;
+                if (finder.HasObstacle(current) && current != startTile) continue;
                 foreach (var next in FindNeighbors(current))
                 {
                     var newCost = costSoFar[current] + GetCost(current, next);

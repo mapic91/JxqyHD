@@ -224,19 +224,19 @@ namespace Engine
 
         public int VisionRadius
         {
-            get { return _visionRadius; }
+            get { return _visionRadius == 0 ? 1 : _visionRadius; }
             set { _visionRadius = value; }
         }
 
         public int DialogRadius
         {
-            get { return _dialogRadius; }
+            get { return _dialogRadius == 0 ? 1 : _dialogRadius; }
             set { _dialogRadius = value; }
         }
 
         public int AttackRadius
         {
-            get { return _attackRadius; }
+            get { return _attackRadius == 0 ? 1 : _attackRadius; }
             set { _attackRadius = value; }
         }
 
@@ -470,10 +470,10 @@ namespace Engine
             }
         }
 
-        protected LinkedList<Vector2> Path
+        public LinkedList<Vector2> Path
         {
             get { return _path; }
-            set
+            protected set
             {
                 _path = value;
                 MovedDistance = 0;
@@ -649,7 +649,7 @@ namespace Engine
                 if (HasObstacle(tileTo)) //Obstacle in the way
                 {
                     //PositionInWorld = from;
-                    var path = Engine.PathFinder.FindPath(TilePosition, DestinationMoveTilePosition, PathType);
+                    var path = Engine.PathFinder.FindPath(this, TilePosition, DestinationMoveTilePosition, PathType);
                     if (tileTo == DestinationMoveTilePosition || //Just one step, standing
                         path == null //Can't find path
                         )
@@ -686,7 +686,7 @@ namespace Engine
                 {
                     var destination = DestinationMovePositionInWorld;
                     PositionInWorld = to;
-                    Path = Engine.PathFinder.FindPath(TilePosition, Map.ToTilePosition(destination), PathType);
+                    Path = Engine.PathFinder.FindPath(this, TilePosition, Map.ToTilePosition(destination), PathType);
                     if (Path == null) StandingImmediately();
                 }
                 else
@@ -813,7 +813,7 @@ namespace Engine
             //Do nothing
         }
 
-        protected abstract bool HasObstacle(Vector2 tilePosition);
+        public abstract bool HasObstacle(Vector2 tilePosition);
 
         protected virtual void CheckMapTrap() { }
 
@@ -1133,7 +1133,7 @@ namespace Engine
             _leftStepToMove--;
         }
 
-        public void WalkTo(Vector2 destinationTilePosition)
+        public virtual void WalkTo(Vector2 destinationTilePosition)
         {
             if (PerformActionOk() &&
                 destinationTilePosition != TilePosition)
@@ -1147,7 +1147,7 @@ namespace Engine
                 else
                 {
                     StateInitialize();
-                    Path = Engine.PathFinder.FindPath(TilePosition, destinationTilePosition, PathType);
+                    Path = Engine.PathFinder.FindPath(this, TilePosition, destinationTilePosition, PathType);
                     if (Path == null) StandingImmediately();
                     else
                     {
@@ -1160,7 +1160,7 @@ namespace Engine
 
         }
 
-        public void RunTo(Vector2 destinationTilePosition)
+        public virtual void RunTo(Vector2 destinationTilePosition)
         {
             if (PerformActionOk() &&
                 destinationTilePosition != TilePosition)
@@ -1172,7 +1172,7 @@ namespace Engine
                     else
                     {
                         StateInitialize();
-                        Path = Engine.PathFinder.FindPath(TilePosition, destinationTilePosition, PathType);
+                        Path = Engine.PathFinder.FindPath(this, TilePosition, destinationTilePosition, PathType);
                         if (Path == null) StandingImmediately();
                         else
                         {
@@ -1334,7 +1334,7 @@ namespace Engine
 
                     if (HasObstacle(neighbor)) return true;
 
-                    Path = Engine.PathFinder.FindPath(TilePosition, neighbor, PathType);
+                    Path = Engine.PathFinder.FindPath(this, TilePosition, neighbor, PathType);
                     if (Path == null) return true;
 
                     MoveToTarget(neighbor);

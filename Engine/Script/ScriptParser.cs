@@ -100,7 +100,7 @@ namespace Engine.Script
                 }
                 else if (!char.IsWhiteSpace(str[i]))
                 {
-                    if (str[i] == ',')
+                    if (str[i] == ',' || str[i] == '，')
                     {
                         if (temp.Length != 0)
                         {
@@ -690,6 +690,9 @@ namespace Engine.Script
                             break;
                         case "LoadGame":
                             ScriptExecuter.LoadGame(parameters);
+                            break;
+                        case "PlayerChange":
+                            ScriptExecuter.PlayerChange(parameters);
                             break;
                         default:
                             throw new Exception("无此函数");

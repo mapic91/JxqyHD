@@ -30,6 +30,10 @@
         {
             this.components = new System.ComponentModel.Container();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.CheatMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this._fullLifeThewMana = new System.Windows.Forms.ToolStripMenuItem();
+            this._levelUp = new System.Windows.Forms.ToolStripMenuItem();
+            this._addMoney1000 = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.DrawSurface = new System.Windows.Forms.PictureBox();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
@@ -38,10 +42,6 @@
             this._fileText = new System.Windows.Forms.TextBox();
             this._scriptFilePath = new System.Windows.Forms.Button();
             this.TheToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.CheatMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this._fullLifeThewMana = new System.Windows.Forms.ToolStripMenuItem();
-            this._levelUp = new System.Windows.Forms.ToolStripMenuItem();
-            this._addMoney1000 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -64,6 +64,40 @@
             this.menuStrip1.Size = new System.Drawing.Size(928, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
+            // 
+            // CheatMenu
+            // 
+            this.CheatMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this._fullLifeThewMana,
+            this._levelUp,
+            this._addMoney1000});
+            this.CheatMenu.Name = "CheatMenu";
+            this.CheatMenu.Size = new System.Drawing.Size(45, 20);
+            this.CheatMenu.Text = "作弊";
+            // 
+            // _fullLifeThewMana
+            // 
+            this._fullLifeThewMana.Name = "_fullLifeThewMana";
+            this._fullLifeThewMana.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
+            this._fullLifeThewMana.Size = new System.Drawing.Size(181, 22);
+            this._fullLifeThewMana.Text = "生体内全满";
+            this._fullLifeThewMana.Click += new System.EventHandler(this._fullLifeThewMana_Click);
+            // 
+            // _levelUp
+            // 
+            this._levelUp.Name = "_levelUp";
+            this._levelUp.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.L)));
+            this._levelUp.Size = new System.Drawing.Size(181, 22);
+            this._levelUp.Text = "升一级";
+            this._levelUp.Click += new System.EventHandler(this._levelUp_Click);
+            // 
+            // _addMoney1000
+            // 
+            this._addMoney1000.Name = "_addMoney1000";
+            this._addMoney1000.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.M)));
+            this._addMoney1000.Size = new System.Drawing.Size(181, 22);
+            this._addMoney1000.Text = "加钱1000";
+            this._addMoney1000.Click += new System.EventHandler(this._addMoney1000_Click);
             // 
             // splitContainer1
             // 
@@ -162,40 +196,6 @@
             this._scriptFilePath.UseVisualStyleBackColor = true;
             this._scriptFilePath.Click += new System.EventHandler(this._scriptFilePath_Click);
             // 
-            // CheatMenu
-            // 
-            this.CheatMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this._fullLifeThewMana,
-            this._levelUp,
-            this._addMoney1000});
-            this.CheatMenu.Name = "CheatMenu";
-            this.CheatMenu.Size = new System.Drawing.Size(45, 20);
-            this.CheatMenu.Text = "作弊";
-            // 
-            // _fullLifeThewMana
-            // 
-            this._fullLifeThewMana.Name = "_fullLifeThewMana";
-            this._fullLifeThewMana.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
-            this._fullLifeThewMana.Size = new System.Drawing.Size(181, 22);
-            this._fullLifeThewMana.Text = "生体内全满";
-            this._fullLifeThewMana.Click += new System.EventHandler(this._fullLifeThewMana_Click);
-            // 
-            // _levelUp
-            // 
-            this._levelUp.Name = "_levelUp";
-            this._levelUp.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.L)));
-            this._levelUp.Size = new System.Drawing.Size(181, 22);
-            this._levelUp.Text = "升一级";
-            this._levelUp.Click += new System.EventHandler(this._levelUp_Click);
-            // 
-            // _addMoney1000
-            // 
-            this._addMoney1000.Name = "_addMoney1000";
-            this._addMoney1000.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.M)));
-            this._addMoney1000.Size = new System.Drawing.Size(181, 22);
-            this._addMoney1000.Text = "加钱1000";
-            this._addMoney1000.Click += new System.EventHandler(this._addMoney1000_Click);
-            // 
             // GameEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -209,6 +209,9 @@
             this.Activated += new System.EventHandler(this.GameEditor_Activated);
             this.Deactivate += new System.EventHandler(this.GameEditor_Deactivate);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.GameEditor_FormClosed);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.GameEditor_KeyDown);
+            this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.GameEditor_KeyPress);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.GameEditor_KeyUp);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);

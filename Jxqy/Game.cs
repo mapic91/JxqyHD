@@ -61,8 +61,14 @@ namespace Jxqy
             {
                 _graphics.PreferredBackBufferWidth = _pictureBox.Width;
                 _graphics.PreferredBackBufferHeight = _pictureBox.Height;
-                Globals.TheCarmera.ViewWidth = _pictureBox.Width;
-                Globals.TheCarmera.ViewHeight = _pictureBox.Height;
+                Globals.WindowWidth = 
+                    Globals.TheCarmera.ViewWidth = 
+                    Globals.TheMap.ViewWidth = 
+                    _pictureBox.Width;
+                Globals.WindowHeight = 
+                    Globals.TheCarmera.ViewHeight = 
+                    Globals.TheMap.ViewHeight = 
+                    _pictureBox.Height;
                 _graphics.ApplyChanges();
             }
         }

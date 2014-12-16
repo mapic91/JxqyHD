@@ -79,8 +79,14 @@ namespace Engine.Storage
         private static void LoadMagicGoodMemoList()
         {
             GuiManager.Load(StorageBase.MagicListFilePath,
-                StorageBase.GameIniFilePath,
+                StorageBase.GoodsListFilePath,
                 StorageBase.MemoListIniFilePath);
+        }
+
+        private static void LoadMagicGoodList()
+        {
+            MagicListManager.LoadList(StorageBase.MagicListFilePath);
+            GoodsListManager.LoadList(StorageBase.GoodsListFilePath);
         }
 
         private static void LoadTraps()
@@ -110,6 +116,14 @@ namespace Engine.Storage
         public static void NewGame()
         {
             ScriptExecuter.RunScript("NewGame.txt");
+        }
+
+        public static void ChangePlayer(int index)
+        {
+            Globals.PlayerIndex = index;
+            GuiManager.StateInterface.IsFemale = (index == 1);
+            LoadMagicGoodList();
+            LoadPlayer();
         }
     }
 }

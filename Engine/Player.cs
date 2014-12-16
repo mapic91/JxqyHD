@@ -165,7 +165,7 @@ namespace Engine
             get { return false; }
         }
 
-        protected override bool HasObstacle(Vector2 tilePosition)
+        public override bool HasObstacle(Vector2 tilePosition)
         {
             return (NpcManager.IsObstacle(tilePosition) ||
                         ObjManager.IsObstacle(tilePosition));
@@ -243,6 +243,24 @@ namespace Engine
         public override void SetMagicFile(string fileName)
         {
             FlyIni = Utils.GetMagic(fileName, false);
+        }
+
+        public override void WalkTo(Vector2 destinationTilePosition)
+        {
+            base.WalkTo(destinationTilePosition);
+            if (Path == null)
+            {
+                NpcManager.PartnersMoveTo(destinationTilePosition);
+            }
+        }
+
+        public override void RunTo(Vector2 destinationTilePosition)
+        {
+            base.RunTo(destinationTilePosition);
+            if (Path == null)
+            {
+                NpcManager.PartnersMoveTo(destinationTilePosition);
+            }
         }
 
         /// <summary>
@@ -458,7 +476,8 @@ namespace Engine
 
                 if (!IsPetrified)
                 {
-                    if (mouseState.LeftButton == ButtonState.Pressed)
+                    if (mouseState.LeftButton == ButtonState.Pressed &&
+                        _lastMouseState.LeftButton == ButtonState.Released)
                     {
                         var isRun = (keyboardState.IsKeyDown(Keys.LeftShift) ||
                                      keyboardState.IsKeyDown(Keys.RightShift)) &&

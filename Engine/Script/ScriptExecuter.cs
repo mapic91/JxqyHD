@@ -122,6 +122,12 @@ namespace Engine.Script
             return Globals.ThePlayer == null;
         }
 
+        private static void PlayerStandingImmediately()
+        {
+            if(IsPlayerNull()) return;
+            Globals.ThePlayer.StandingImmediately();
+        }
+
         /// <summary>
         /// Used for type: name,x, y or x,y
         /// </summary>
@@ -239,6 +245,7 @@ namespace Engine.Script
         /// <returns>True end.False not end.</returns>
         private static bool IsCharacterMoveEndAndStanding(Character character, Vector2 destinationTilePosition, bool isRun)
         {
+            var isEnd = true;
             if (character != null &&
                 character.TilePosition != destinationTilePosition)
             {
@@ -254,17 +261,30 @@ namespace Engine.Script
                         character.WalkTo(destinationTilePosition);
                     }
                 }
-                return false;
+                //Check moveable
+                if (character.Path == null ||
+                    (character.Path.Count == 2 && character.HasObstacle(
+                    Map.ToTilePosition(character.Path.First.Next.Value))))
+                {
+                    character.StandingImmediately();
+                }
+                else
+                {
+                    isEnd = false;
+                }
             }
-            if (character != null &&
+            else if (character != null &&
                 character.TilePosition == destinationTilePosition &&
                 !character.IsStanding())
             {
                 //At destination tile keep moving
-                return false;
+                isEnd = false;
             }
-            Globals.IsInputDisabled = false;
-            return true;
+            if (isEnd)
+            {
+                Globals.IsInputDisabled = false;
+            }
+            return isEnd;
         }
 
         private static bool IsCharacterStanding(Character character)
@@ -1493,6 +1513,7 @@ namespace Engine.Script
             {
                 Globals.IsInputDisabled = true;
                 target.WalkTo(destination);
+                PlayerStandingImmediately();
             }
         }
 
@@ -1754,6 +1775,11 @@ namespace Engine.Script
         public static void LoadGame(List<string> parameters)
         {
             Loader.LoadGame(int.Parse(parameters[0]));
+        }
+
+        public static void PlayerChange(List<string> parameters)
+        {
+            Loader.ChangePlayer(int.Parse(parameters[0]));
         }
     }
 }

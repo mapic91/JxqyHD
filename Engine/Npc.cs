@@ -47,40 +47,33 @@ namespace Engine
         }
 
         /// <summary>
-        /// Walk or run to player
+        /// Walk or run to destination.
+        /// If distance greater than 5, run to destination.
+        /// If distance greater than 2, and is running, run to destination, else walk to destination.
         /// </summary>
-        private void MoveToPlayer()
+        /// <param name="destinationTilePosition">Destination tile position</param>
+        public void MoveTo(Vector2 destinationTilePosition)
         {
             var distance = Engine.PathFinder.GetTileDistance(TilePosition,
-                Globals.ThePlayer.TilePosition);
+                destinationTilePosition);
             if (distance > 5)
             {
-                RunToPlayer();
+                RunTo(destinationTilePosition);
             }
             else if (distance > 2)
             {
                 if (IsRuning())
                 {
-                    RunToPlayer();
+                    RunTo(destinationTilePosition);
                 }
                 else
                 {
-                    WalkToPlayer();
+                    WalkTo(destinationTilePosition);
                 }
             }
         }
 
-        private void RunToPlayer()
-        {
-            RunTo(Globals.ThePlayer.TilePosition);
-        }
-
-        private void WalkToPlayer()
-        {
-            WalkTo(Globals.ThePlayer.TilePosition);
-        }
-
-        protected override bool HasObstacle(Vector2 tilePosition)
+        public override bool HasObstacle(Vector2 tilePosition)
         {
             return (NpcManager.IsObstacle(tilePosition) ||
                     ObjManager.IsObstacle(tilePosition) ||
@@ -149,12 +142,12 @@ namespace Engine
                         if (FollowTarget == null && IsPartner)
                         {
                             //Can't find enemy, move to player
-                            MoveToPlayer();
+                            MoveTo(Globals.ThePlayer.TilePosition);
                         }
                     }
                     else if (IsPartner)
                     {
-                        MoveToPlayer();
+                        MoveTo(Globals.ThePlayer.TilePosition);
                     }
                 }
             }
