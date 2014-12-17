@@ -248,6 +248,10 @@ namespace Jxqy
                 switch (GameState.State)
                 {
                     case GameState.StateType.Start:
+                        if (!ScriptExecuter.IsInPlayingMovie)
+                        {
+                            GameState.State = GameState.StateType.Title;
+                        }
                         break;
                     case GameState.StateType.Title:
                         GuiManager.Update(gameTime);
@@ -308,6 +312,8 @@ namespace Jxqy
                 switch (GameState.State)
                 {
                     case GameState.StateType.Start:
+                        break;
+                    case GameState.StateType.Title:
                         break;
                     case GameState.StateType.Playing:
                         if (Globals.IsWaterEffectEnabled)
