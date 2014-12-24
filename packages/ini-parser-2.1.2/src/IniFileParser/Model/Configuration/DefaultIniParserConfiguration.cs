@@ -39,10 +39,10 @@ namespace IniParser.Model.Configuration
             AssigmentSpacer = "";
 
             AllowKeysWithoutSection = true;
-            AllowDuplicateKeys = false;
-            AllowDuplicateSections = false;
+            AllowDuplicateKeys = true;
+            AllowDuplicateSections = true;
             ThrowExceptionsOnError = true;
-            SkipInvalidLines = false;
+            SkipInvalidLines = true;
         }
     }
 }

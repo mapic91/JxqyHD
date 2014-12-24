@@ -476,8 +476,7 @@ namespace Engine
 
                 if (!IsPetrified)
                 {
-                    if (mouseState.LeftButton == ButtonState.Pressed &&
-                        _lastMouseState.LeftButton == ButtonState.Released)
+                    if (mouseState.LeftButton == ButtonState.Pressed)
                     {
                         var isRun = (keyboardState.IsKeyDown(Keys.LeftShift) ||
                                      keyboardState.IsKeyDown(Keys.RightShift)) &&

@@ -66,6 +66,14 @@ namespace Engine.Storage
             {
                 Log.LogFileLoadError("Player", path, exception);
             }
+            if (Globals.PlayerIndex == 0)
+            {
+                GuiManager.StateInterface.IsFemale = false;
+            }
+            else
+            {
+                GuiManager.StateInterface.IsFemale = true;
+            }
         }
 
         private static void LoadParter()

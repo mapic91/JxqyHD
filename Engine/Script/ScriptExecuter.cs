@@ -699,6 +699,7 @@ namespace Engine.Script
         public static void LoadMap(List<string> parameters)
         {
             WeatherManager.StopRain();
+            Globals.ThePlayer.StandingImmediately();
             Globals.TheMap.LoadMap(Utils.RemoveStringQuotes(parameters[0]));
         }
 
@@ -1504,6 +1505,8 @@ namespace Engine.Script
                 int.Parse(parameters[1])));
         }
 
+        private static Vector2 _npcGotoDestionation;
+        private static Character _npcGotoCharacter;
         public static void NpcGoto(List<string> parameters, object belongObject)
         {
             Character target;
@@ -1511,6 +1514,8 @@ namespace Engine.Script
             GetTargetAndValue3(parameters, belongObject, out target, out destination);
             if (target != null)
             {
+                _npcGotoDestionation = destination;
+                _npcGotoCharacter = target;
                 Globals.IsInputDisabled = true;
                 target.WalkTo(destination);
                 PlayerStandingImmediately();
@@ -1519,15 +1524,7 @@ namespace Engine.Script
 
         public static bool IsNpcGotoEnd(List<string> parameters, object belongObject)
         {
-            Character target;
-            Vector2 destination;
-            GetTargetAndValue3(parameters, belongObject, out target, out destination);
-            if (target != null && !target.IsStanding())
-            {
-                return false;
-            }
-            Globals.IsInputDisabled = false;
-            return true;
+            return IsCharacterMoveEndAndStanding(_npcGotoCharacter, _npcGotoDestionation, false);
         }
 
         public static void NpcGotoDir(List<string> parameters, object belongObject)
