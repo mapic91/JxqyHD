@@ -56,6 +56,18 @@ namespace Engine
             return result;
         }
 
+        static public Texture2D LoadTexture2D(string contentPath)
+        {
+            try
+            {
+                return Globals.TheGame.Content.Load<Texture2D>(contentPath);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
         static public Asf GetAsf(string basePath, string fileName)
         {
             if (string.IsNullOrEmpty(fileName)) return null;

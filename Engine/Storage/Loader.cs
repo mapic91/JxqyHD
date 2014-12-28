@@ -103,6 +103,7 @@ namespace Engine.Storage
         }
 
         /// <summary>
+        /// Load game from "save/game" directory
         /// GuiManager must started first
         /// </summary>
         public static void LoadGame()
@@ -115,6 +116,10 @@ namespace Engine.Storage
             GameState.State = GameState.StateType.Playing;
         }
 
+        /// <summary>
+        /// Load game form 0-7
+        /// </summary>
+        /// <param name="index">Save index</param>
         public static void LoadGame(int index)
         {
             StorageBase.ClearGameAndCopySaveToGame(index);

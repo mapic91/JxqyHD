@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using Engine.Gui.Base;
 using IniParser;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Texture = Engine.Gui.Base.Texture;
 
 namespace Engine.Gui
 {

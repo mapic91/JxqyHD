@@ -1,7 +1,9 @@
 ﻿using System;
+using Engine.Gui.Base;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Texture = Engine.Gui.Base.Texture;
 
 namespace Engine.Gui
 {

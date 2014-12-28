@@ -191,8 +191,8 @@ namespace Jxqy
             Globals.FontSize10 = Content.Load<SpriteFont>(@"font\GB2312_ASCII_√‘ƒ„ºÚœ∏‘≤_10");
             Globals.FontSize12 = Content.Load<SpriteFont>(@"font\GB2312_ASCII_√‘ƒ„ºÚœ∏‘≤_12");
 
+            //Start gui
             GuiManager.Starting();
-            Loader.LoadGame();
         }
 
         /// <summary>
@@ -249,10 +249,9 @@ namespace Jxqy
                 switch (GameState.State)
                 {
                     case GameState.StateType.Start:
-                        if (!ScriptExecuter.IsInPlayingMovie)
-                        {
-                            GameState.State = GameState.StateType.Title;
-                        }
+                        ScriptManager.RunScript(
+                            Utils.GetScriptParser("title.txt"));
+                        GameState.State = GameState.StateType.Title;
                         break;
                     case GameState.StateType.Title:
                         GuiManager.Update(gameTime);

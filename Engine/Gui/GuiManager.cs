@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.NetworkInformation;
+using Engine.Gui.Base;
 using Engine.ListManager;
 using IniParser;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Texture = Engine.Gui.Base.Texture;
 
 namespace Engine.Gui
 {
@@ -20,6 +22,7 @@ namespace Engine.Gui
         private static KeyboardState _lastKeyboardState;
         private static MouseState _lastMouseState;
 
+        public static TitleGui TitleInterface;
         public static MagicGui MagicInterface;
         public static XiuLianGui XiuLianInterface;
         public static GoodsGui GoodsInterface;
@@ -47,6 +50,9 @@ namespace Engine.Gui
             _dropSound = Utils.GetSoundEffect("界-拖放.wav");
             _interfaceShow = Utils.GetSoundEffect("界-弹出菜单.wav");
             _interfaceMiss = Utils.GetSoundEffect("界-缩回菜单.wav");
+
+            TitleInterface = new TitleGui();
+            _allGuiItems.AddLast(TitleInterface);
 
             TopInterface = new TopGui();
             _allGuiItems.AddLast(TopInterface);
@@ -253,6 +259,12 @@ namespace Engine.Gui
         }
 
         #region Functionail method
+
+        public static void ShowTitle(bool isShow = true)
+        {
+            TitleInterface.IsShow = isShow;
+        }
+
         public static void ShowMessage(string message)
         {
             MessageInterface.ShowMessage(message);
@@ -370,7 +382,11 @@ namespace Engine.Gui
             }
             else IsMouseStateEated = false;
 
-            if (DialogInterface.IsShow)
+            if (TitleInterface.IsShow)
+            {
+                TitleInterface.Update(gameTime);
+            }
+            else if (DialogInterface.IsShow)
             {
                 //Temporaty enable input
                 Globals.EnableInputTemporary();
@@ -457,21 +473,28 @@ namespace Engine.Gui
 
         public static void Draw(SpriteBatch spriteBatch)
         {
-            TimerInterface.Draw(spriteBatch);
-            TopInterface.Draw(spriteBatch);
-            BottomInterface.Draw(spriteBatch);
-            ColumnInterface.Draw(spriteBatch);
-            MagicInterface.Draw(spriteBatch);
-            XiuLianInterface.Draw(spriteBatch);
-            GoodsInterface.Draw(spriteBatch);
-            BuyInterface.Draw(spriteBatch);
-            MemoInterface.Draw(spriteBatch);
-            StateInterface.Draw(spriteBatch);
-            EquipInterface.Draw(spriteBatch);
-            ToolTipInterface.Draw(spriteBatch);
+            if (TitleInterface.IsShow)
+            {
+                TitleInterface.Draw(spriteBatch);
+            }
+            else
+            {
+                TimerInterface.Draw(spriteBatch);
+                TopInterface.Draw(spriteBatch);
+                BottomInterface.Draw(spriteBatch);
+                ColumnInterface.Draw(spriteBatch);
+                MagicInterface.Draw(spriteBatch);
+                XiuLianInterface.Draw(spriteBatch);
+                GoodsInterface.Draw(spriteBatch);
+                BuyInterface.Draw(spriteBatch);
+                MemoInterface.Draw(spriteBatch);
+                StateInterface.Draw(spriteBatch);
+                EquipInterface.Draw(spriteBatch);
+                ToolTipInterface.Draw(spriteBatch);
 
-            MessageInterface.Draw(spriteBatch);
-            DialogInterface.Draw(spriteBatch);
+                MessageInterface.Draw(spriteBatch);
+                DialogInterface.Draw(spriteBatch);
+            }
 
             MouseInterface.Draw(spriteBatch);
         }

@@ -694,6 +694,9 @@ namespace Engine.Script
                         case "PlayerChange":
                             ScriptExecuter.PlayerChange(parameters);
                             break;
+                        case "ReturnToTitle":
+                            ScriptExecuter.ReturnToTitle();
+                            break;
                         default:
                             throw new Exception("无此函数");
                     }

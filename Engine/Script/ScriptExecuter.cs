@@ -1051,13 +1051,13 @@ namespace Engine.Script
         {
             var fileName = Utils.RemoveStringQuotes(parameters[0]);
             var color = Color.White;
-            if (parameters.Count == 4)
-            {
-                color = new Color(
-                    int.Parse(parameters[1]),
-                    int.Parse(parameters[2]),
-                    int.Parse(parameters[3]));
-            }
+            //if (parameters.Count == 4)
+            //{
+            //    color = new Color(
+            //        int.Parse(parameters[1]),
+            //        int.Parse(parameters[2]),
+            //        int.Parse(parameters[3]));
+            //}
             PlayMovie(fileName, color);
         }
 
@@ -1777,6 +1777,12 @@ namespace Engine.Script
         public static void PlayerChange(List<string> parameters)
         {
             Loader.ChangePlayer(int.Parse(parameters[0]));
+        }
+
+        public static void ReturnToTitle()
+        {
+            GuiManager.ShowTitle();
+            GameState.State = GameState.StateType.Title;
         }
     }
 }

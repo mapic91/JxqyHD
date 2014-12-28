@@ -32,7 +32,6 @@ namespace Engine.Script
 
             for (var node = _list.First; node != null; )
             {
-                var next = node.Next;
                 var script = node.Value;
                 if (script.FilePath != _lastFilePath)
                 {
@@ -46,15 +45,16 @@ namespace Engine.Script
 
                 if (!script.Continue())
                 {
+                    //Remove current
                     _list.Remove(node);
-                    node = next;
+                    //Get next
+                    node = _list.First;
                 }
                 else
                 {
-                    //Can run one script only
+                    //Can't run multiple script at same time
                     break;
                 }
-
             }
         }
 
