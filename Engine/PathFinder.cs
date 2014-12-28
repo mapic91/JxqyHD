@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Engine.BenchMark;
 using Microsoft.Xna.Framework;
 
 namespace Engine
@@ -200,6 +201,30 @@ namespace Engine
             costSoFar[startTile] = 0f;
 
             var tryCount = 0; //For performance
+
+            //Decrease max try count when fps low
+            switch ((Fps.FpsValue+5)/10)
+            {
+                case 5:
+                    maxTryCount /= 4;
+                    break;
+                case 4:
+                    maxTryCount /= 8;
+                    break;
+                case 3:
+                    maxTryCount /= 16;
+                    break;
+                case 2:
+                    maxTryCount /= 32;
+                    break;
+                case 1:
+                    maxTryCount = 10;
+                    break;
+                case 0:
+                    maxTryCount = 0;
+                    break;
+            }
+
             while (!frontier.IsEmpty)
             {
                 if (tryCount++ > maxTryCount) break;

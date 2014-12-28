@@ -1,6 +1,7 @@
 using System;
 using System.Windows.Forms;
 using Engine;
+using Engine.BenchMark;
 using Engine.Gui;
 using Engine.ListManager;
 using Engine.Script;
@@ -301,6 +302,9 @@ namespace Jxqy
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            //Update fps marker
+            Fps.Update(gameTime);
+
             GraphicsDevice.Clear(Color.Black);
             _spriteBatch.Begin(SpriteSortMode.Deferred, null);
             if (ScriptExecuter.IsInPlayingMovie)//Movie
