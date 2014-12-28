@@ -50,6 +50,9 @@ namespace Engine.Gui.Base
             }
         }
 
+        /// <summary>
+        /// Is mouse on top of this gui item.
+        /// </summary>
         public bool InRange { get; set; }
 
         public Vector2 ScreenPosition

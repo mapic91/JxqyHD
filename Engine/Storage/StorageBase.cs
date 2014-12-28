@@ -45,11 +45,17 @@ namespace Engine.Storage
 
         public static void DeletAllFiles(string path)
         {
-            if (Directory.Exists(path))
+            var pathInfo = new DirectoryInfo(path);
+            var files = pathInfo.GetFiles();
+            var dirs = pathInfo.GetDirectories();
+            foreach (var fileInfo in files)
             {
-                Directory.Delete(path, true);
+                fileInfo.Delete();
             }
-            Directory.CreateDirectory(path);
+            foreach (var directoryInfo in dirs)
+            {
+                directoryInfo.Delete(true);
+            }
         }
 
         public static void MoveAllFilesToDirectory(string directory, string targetDirectory)

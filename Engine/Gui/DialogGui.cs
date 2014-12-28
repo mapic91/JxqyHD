@@ -44,7 +44,7 @@ namespace Engine.Gui
             BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\dialog\", "panel.asf"));
             Width = BaseTexture.Width;
             Height = BaseTexture.Height;
-            Position = new Vector2((Globals.WindowWidth - BaseTexture.Width) / 2f, 
+            Position = new Vector2((Globals.WindowWidth - BaseTexture.Width) / 2f,
                 Globals.WindowHeight - 208f);
             _text = new TextGui(this,
                 new Vector2(65, 30),
@@ -54,7 +54,7 @@ namespace Engine.Gui
                 1,
                 2,
                 "",
-                Color.Black*0.8f);
+                Color.Black * 0.8f);
             _selectA = new TextGui(this,
                 new Vector2(65, 52),
                 310,
@@ -63,7 +63,7 @@ namespace Engine.Gui
                 1,
                 0,
                 "",
-                Color.Blue* 0.8f);
+                Color.Blue * 0.8f);
             _selectB = new TextGui(this,
                 new Vector2(65, 74),
                 310,
@@ -72,25 +72,31 @@ namespace Engine.Gui
                 1,
                 0,
                 "",
-                Color.Blue* 0.8f);
+                Color.Blue * 0.8f);
             _portrait = new GuiItem(this,
                 new Vector2(5, -143),
                 200,
                 160,
                 null);
-            _selectA.MouseEnter += (arg1, arg2) => _selectA.SetDrawColor(Color.Red*0.8f);
-            _selectA.MouseLeave += (arg1, arg2) => _selectA.SetDrawColor(Color.Blue*0.8f);
-            _selectA.MouseLeftDown += (arg1, arg2) =>
+            _selectA.MouseEnter += (arg1, arg2) => _selectA.SetDrawColor(Color.Red * 0.8f);
+            _selectA.MouseLeave += (arg1, arg2) => _selectA.SetDrawColor(Color.Blue * 0.8f);
+            _selectA.Click += (arg1, arg2) =>
             {
-                IsInSelecting = false;
-                Selection = 0;
+                if (IsInSelecting)
+                {
+                    IsInSelecting = false;
+                    Selection = 0;
+                }
             };
-            _selectB.MouseEnter += (arg1, arg2) => _selectB.SetDrawColor(Color.Red*0.8f);
-            _selectB.MouseLeave += (arg1, arg2) => _selectB.SetDrawColor(Color.Blue*0.8f);
-            _selectB.MouseLeftDown += (arg1, arg2) =>
+            _selectB.MouseEnter += (arg1, arg2) => _selectB.SetDrawColor(Color.Red * 0.8f);
+            _selectB.MouseLeave += (arg1, arg2) => _selectB.SetDrawColor(Color.Blue * 0.8f);
+            _selectB.Click += (arg1, arg2) =>
             {
-                IsInSelecting = false;
-                Selection = 1;
+                if (IsInSelecting)
+                {
+                    IsInSelecting = false;
+                    Selection = 1;
+                }
             };
         }
 
@@ -121,15 +127,14 @@ namespace Engine.Gui
 
         public override void Update(GameTime gameTime)
         {
-            if(!IsShow) return;
+            if (!IsShow) return;
             base.Update(gameTime);
             _text.Update(gameTime);
             _portrait.Update(gameTime);
-            if (IsInSelecting)
-            {
-                _selectA.Update(gameTime);
-                _selectB.Update(gameTime);
-            }
+
+            //Updata selection
+            _selectA.Update(gameTime);
+            _selectB.Update(gameTime);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
