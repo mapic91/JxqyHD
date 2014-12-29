@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 
-namespace Engine.BenchMark
+namespace Engine.Benchmark
 {
     public static class Fps
     {

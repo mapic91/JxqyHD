@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Engine.BenchMark;
+using Engine.Benchmark;
 using Microsoft.Xna.Framework;
 
 namespace Engine

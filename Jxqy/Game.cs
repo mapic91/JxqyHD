@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Forms;
 using Engine;
-using Engine.BenchMark;
+using Engine.Benchmark;
 using Engine.Gui;
 using Engine.ListManager;
 using Engine.Script;
