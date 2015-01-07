@@ -39,6 +39,11 @@ namespace Engine
             get { return _list; }
         }
 
+        public static string FileName
+        {
+            get { return _fileName; }
+        }
+
         private static List<Npc> GetNpcsInView()
         {
             var viewRegion = Globals.TheCarmera.CarmerRegionInWorld;
@@ -86,7 +91,7 @@ namespace Engine
                     count++;
                 }
                 data["Head"].AddKey("Count", count.ToString());
-                File.WriteAllText(path, data.ToString(), Globals.SimpleChinaeseEncoding);
+                File.WriteAllText(path, data.ToString(), Globals.SimpleChineseEncoding);
             }
             catch (Exception exception)
             {

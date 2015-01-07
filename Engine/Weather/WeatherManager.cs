@@ -5,7 +5,9 @@ namespace Engine.Weather
 {
     public static class WeatherManager
     {
-        public static bool IsRain { get { return Rain.IsRain; } }
+        public static bool IsRaining { get { return Rain.IsRaining; } }
+        public static bool IsSnowing { get { return Snow.IsSnowing; } }
+        public static string RainFileName { get; set; }
 
         public static void ShowSnow(bool isShow)
         {
@@ -14,6 +16,7 @@ namespace Engine.Weather
 
         public static void BeginRain(string fileName)
         {
+            RainFileName = fileName;
             Rain.Raining(true);
         }
 

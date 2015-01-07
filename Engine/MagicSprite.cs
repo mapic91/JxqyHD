@@ -411,7 +411,7 @@ namespace Engine
             var color = DrawColor;
 
             //When rain make magic sprite has normal light
-            if (WeatherManager.IsRain) color = Color.White;
+            if (WeatherManager.IsRaining) color = Color.White;
 
             if (BelongMagic.MoveKind == 15 && IsInDestroy)
             {

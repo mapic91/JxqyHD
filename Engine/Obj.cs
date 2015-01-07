@@ -168,7 +168,7 @@ namespace Engine
         {
             try
             {
-                var lines = File.ReadAllLines(filePath, Globals.SimpleChinaeseEncoding);
+                var lines = File.ReadAllLines(filePath, Globals.SimpleChineseEncoding);
                 return Load(lines);
             }
             catch (Exception exception)

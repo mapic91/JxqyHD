@@ -863,7 +863,7 @@ namespace Engine
         {
             try
             {
-                var data = new FileIniDataParser().ReadFile(filePath, Globals.SimpleChinaeseEncoding);
+                var data = new FileIniDataParser().ReadFile(filePath, Globals.SimpleChineseEncoding);
                 return Load(Utils.GetFirstSection(data));
             }
             catch (Exception exception)

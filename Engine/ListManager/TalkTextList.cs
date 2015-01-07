@@ -17,7 +17,7 @@ namespace Engine.ListManager
             const string path = @"Content\TalkIndex.txt";
             try
             {
-                var lines = File.ReadAllLines(path, Globals.SimpleChinaeseEncoding);
+                var lines = File.ReadAllLines(path, Globals.SimpleChineseEncoding);
                 var regex = new Regex(@"^\[([0-9]+),([0-9]+)\](.*)");
                 foreach (var line in lines)
                 {

@@ -7,11 +7,13 @@ namespace Engine.Weather
     public static class Snow
     {
         private static readonly LinkedList<SnowFlake> SnowFlakes = new LinkedList<SnowFlake>();
-        private static bool _isShow;
+        private static bool _isShowing;
         private static float _elepsedMilliSeconds;
         private const float IntervalMilliSeconds = 300f;
         private const float Speed = 100;
         private static Asf[] _snowFlakeTexture;
+
+        public static bool IsSnowing { get { return _isShowing; } }
 
         private static void GenerateSnowFlakes()
         {
@@ -35,12 +37,12 @@ namespace Engine.Weather
         public static void Show(bool isShow)
         {
             SnowFlakes.Clear();
-            _isShow = isShow;
+            _isShowing = isShow;
         }
 
         public static void Update(GameTime gameTime)
         {
-            if(!_isShow) return;
+            if(!_isShowing) return;
             _elepsedMilliSeconds += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
             if (_elepsedMilliSeconds >= IntervalMilliSeconds)
             {
@@ -91,7 +93,7 @@ namespace Engine.Weather
 
         public static void Draw(SpriteBatch spriteBatch)
         {
-            if (!_isShow) return;
+            if (!_isShowing) return;
             foreach (var snowFlake in SnowFlakes)
             {
                 snowFlake.Draw(spriteBatch);

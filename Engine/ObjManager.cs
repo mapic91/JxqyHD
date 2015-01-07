@@ -37,6 +37,11 @@ namespace Engine
             get { return _list; }
         }
 
+        public static string FileName
+        {
+            get { return _fileName; }
+        }
+
         private static List<Obj> GetObjsInView()
         {
             var viewRegion = Globals.TheCarmera.CarmerRegionInWorld;
@@ -56,7 +61,7 @@ namespace Engine
             {
                 _fileName = fileName;
                 var filePath = Utils.GetNpcObjFilePath(fileName);
-                var lines = File.ReadAllLines(filePath, Globals.SimpleChinaeseEncoding);
+                var lines = File.ReadAllLines(filePath, Globals.SimpleChineseEncoding);
                 Load(lines);
             }
             catch (Exception)
@@ -231,7 +236,7 @@ namespace Engine
                     var obj = node.Value;
                     obj.Save(data[sectionName]);
                 }
-                File.WriteAllText(path, data.ToString(), Globals.SimpleChinaeseEncoding);
+                File.WriteAllText(path, data.ToString(), Globals.SimpleChineseEncoding);
             }
             catch (Exception exception)
             {

@@ -43,6 +43,11 @@ namespace Engine.Storage
                 int.Parse(b, NumberStyles.HexNumber));
         }
 
+        public static string GetStringFromColor(Color color)
+        {
+            return string.Format("{0:2X}{1:2X}{2:2X}00", color.B, color.G, color.R);
+        }
+
         public static void DeletAllFiles(string path)
         {
             var pathInfo = new DirectoryInfo(path);

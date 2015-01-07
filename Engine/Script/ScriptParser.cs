@@ -130,7 +130,7 @@ namespace Engine.Script
             try
             {
                 FileName = Path.GetFileName(filePath);
-                IsOk = ReadFromLines(File.ReadAllLines(filePath, Globals.SimpleChinaeseEncoding));
+                IsOk = ReadFromLines(File.ReadAllLines(filePath, Globals.SimpleChineseEncoding));
             }
             catch (Exception exception)
             {

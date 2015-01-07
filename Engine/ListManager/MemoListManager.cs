@@ -15,7 +15,7 @@ namespace Engine.ListManager
             try
             {
                 var parser = new FileIniDataParser();
-                var data = parser.ReadFile(filePath, Globals.SimpleChinaeseEncoding);
+                var data = parser.ReadFile(filePath, Globals.SimpleChineseEncoding);
                 var section = data["Memo"];
                 var count = int.Parse(section["Count"]);
                 for (var i = 0; i < count; i++)

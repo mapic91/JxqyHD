@@ -20,7 +20,7 @@ namespace Engine.ListManager
             try
             {
                 var parser = new FileIniDataParser();
-                var data = parser.ReadFile(filePath, Globals.SimpleChinaeseEncoding);
+                var data = parser.ReadFile(filePath, Globals.SimpleChineseEncoding);
                 foreach (var sectionData in data.Sections)
                 {
                     int head;

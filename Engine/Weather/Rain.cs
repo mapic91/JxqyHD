@@ -8,7 +8,7 @@ namespace Engine.Weather
     public static class Rain
     {
         private static readonly List<RainDrop> RainDrops = new List<RainDrop>();
-        private static bool _isRain;
+        private static bool _isRaining;
         private static Texture2D _texture;
         private static float _elapsedMilliSeconds;
         private const float MaxGeneratMilliSeconds = 2000f;
@@ -18,7 +18,7 @@ namespace Engine.Weather
         private const float FlashMilliSeconds = 100f;
         private static bool _isInFlash;
 
-        public static bool IsRain { get { return _isRain; } }
+        public static bool IsRaining { get { return _isRaining; } }
 
         private static void Initlize()
         {
@@ -48,9 +48,9 @@ namespace Engine.Weather
 
         public static void Raining(bool isRain)
         {
-            _isRain = isRain;
+            _isRaining = isRain;
             GenerateRainDrops();
-            if (_isRain)
+            if (_isRaining)
             {
                 Sprite.DrawColor = Map.DrawColor = RainMapColor;
                 _rainSound.IsLooped = true;
@@ -65,7 +65,7 @@ namespace Engine.Weather
 
         public static void Update(GameTime gameTime)
         {
-            if(!_isRain) return;
+            if(!_isRaining) return;
             //_elapsedMilliSeconds += (float) gameTime.ElapsedGameTime.TotalMilliseconds;
             //if (_elapsedMilliSeconds >= MaxGeneratMilliSeconds)
             //{
@@ -98,7 +98,7 @@ namespace Engine.Weather
 
         public static void Draw(SpriteBatch spriteBatch)
         {
-            if (!_isRain) return;
+            if (!_isRaining) return;
             foreach (var rainDrop in RainDrops)
             {
                 rainDrop.Draw(spriteBatch);

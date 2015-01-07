@@ -62,7 +62,7 @@ namespace GameEditor
             var filePathInfo = "【" + path + "】";
             try
             {
-                var lines = File.ReadAllLines(path, Globals.SimpleChinaeseEncoding);
+                var lines = File.ReadAllLines(path, Globals.SimpleChineseEncoding);
                 var count = lines.Count();
                 for (var i = 0; i < count; i++)
                 {
