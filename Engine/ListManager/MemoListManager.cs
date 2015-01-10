@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Engine.Gui;
 using IniParser;
+using IniParser.Model;
 
 namespace Engine.ListManager
 {
@@ -28,6 +30,30 @@ namespace Engine.ListManager
                 Log.LogFileLoadError("Memo file", filePath, exception);
             }
             GuiManager.UpdateMemoView();
+        }
+
+        public static void SaveList(string filePath)
+        {
+            try
+            {
+                var data = new IniData();
+                data.Sections.AddSection("Memo");
+                var memoSection = data["Memo"];
+                var count = MemoList.Count;
+                memoSection.AddKey("Count", count.ToString());
+                var i = 0;
+                foreach (var memo in MemoList)
+                {
+                    memoSection.AddKey(i.ToString(), memo);
+                    i++;
+                }
+                //Write to file
+                File.WriteAllText(filePath, data.ToString(), Globals.SimpleChineseEncoding);
+            }
+            catch (Exception exception)
+            {
+                Log.LogFileSaveError("Memo file", filePath, exception);
+            }
         }
 
         public static void RenewList()

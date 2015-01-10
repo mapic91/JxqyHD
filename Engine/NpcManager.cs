@@ -39,6 +39,9 @@ namespace Engine
             get { return _list; }
         }
 
+        /// <summary>
+        /// Npc file name.
+        /// </summary>
         public static string FileName
         {
             get { return _fileName; }
@@ -66,6 +69,11 @@ namespace Engine
         {
             if (string.IsNullOrEmpty(fileName))
             {
+                if (isSaveParter || string.IsNullOrEmpty(_fileName))
+                {
+                    //Can't save without file name.
+                    return;
+                }
                 fileName = _fileName;
             }
             var path = @"save\game\" + fileName;

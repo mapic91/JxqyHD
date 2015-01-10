@@ -1,7 +1,9 @@
 ﻿using System;
+using System.IO;
 using Engine.Gui;
 using Engine.Gui.Base;
 using IniParser;
+using IniParser.Model;
 
 namespace Engine.ListManager
 {
@@ -74,6 +76,35 @@ namespace Engine.ListManager
                 Log.LogFileLoadError("Goods list", filePath, exception);
             }
             GuiManager.UpdateGoodsView();
+        }
+
+        public static void SaveList(string filePath)
+        {
+            try
+            {
+                var data = new IniData();
+                data.Sections.AddSection("Head");
+                var count = 0;
+                for (var i = 1; i <= MaxGoods; i++)
+                {
+                    var item = GoodsList[i];
+                    if (item != null && item.TheGood != null)
+                    {
+                        count++;
+                        data.Sections.AddSection(i.ToString());
+                        var section = data[i.ToString()];
+                        section.AddKey("IniFile", item.TheGood.FileName);
+                        section.AddKey("Number", item.Count.ToString());
+                    }
+                }
+                data["Head"].AddKey("Count", count.ToString());
+                //Write to file
+                File.WriteAllText(filePath, data.ToString(), Globals.SimpleChineseEncoding);
+            }
+            catch (Exception exception)
+            {
+                Log.LogFileSaveError("Goods list", filePath, exception);
+            }
         }
 
         public static void ApplyEquipSpecialEffectFromList(Player player)

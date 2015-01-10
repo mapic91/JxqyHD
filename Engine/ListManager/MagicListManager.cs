@@ -1,7 +1,9 @@
 ﻿using System;
+using System.IO;
 using Engine.Gui;
 using Engine.Gui.Base;
 using IniParser;
+using IniParser.Model;
 
 namespace Engine.ListManager
 {
@@ -41,6 +43,36 @@ namespace Engine.ListManager
                 Log.LogFileLoadError("Magic list", filePath, exception);
             }
             GuiManager.UpdateMagicView();
+        }
+
+        public static void SaveList(string filePath)
+        {
+            try
+            {
+                var data = new IniData();
+                data.Sections.AddSection("Head");
+                var count = 0;
+                for (var i = 1; i <= MaxMagic; i++)
+                {
+                    var item = MagicList[i];
+                    if (item != null && item.TheMagic != null)
+                    {
+                        count++;
+                        data.Sections.AddSection(i.ToString());
+                        var section = data[i.ToString()];
+                        section.AddKey("IniFile", item.TheMagic.FileName);
+                        section.AddKey("Level", item.Level.ToString());
+                        section.AddKey("Exp", item.Exp.ToString());
+                    }
+                }
+                data["Head"].AddKey("Count", count.ToString());
+                //Write to file
+                File.WriteAllText(filePath, data.ToString(), Globals.SimpleChineseEncoding);
+            }
+            catch (Exception exception)
+            {
+                Log.LogFileSaveError("Magic list", filePath, exception);
+            }
         }
 
         public static bool IndexInRange(int index)

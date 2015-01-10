@@ -23,6 +23,11 @@ namespace Engine.Storage
             get { return @"save\game\" + "partner" + Globals.PlayerIndex + ".ini"; }
         }
 
+        public static string PartnerFileName
+        {
+            get { return "partner" + Globals.PlayerIndex + ".ini"; }
+        }
+
         public static string MagicListFilePath
         {
             get { return @"save\game\" + "Magic" + Globals.PlayerIndex + ".ini"; }
@@ -63,7 +68,7 @@ namespace Engine.Storage
             }
         }
 
-        public static void MoveAllFilesToDirectory(string directory, string targetDirectory)
+        public static void CopyAllFilesToDirectory(string directory, string targetDirectory)
         {
             var files = new DirectoryInfo(directory).GetFiles();
             foreach (var file in files)
@@ -76,7 +81,18 @@ namespace Engine.Storage
         public static void ClearGameAndCopySaveToGame(int saveIndex)
         {
             DeletAllFiles(SaveGameDirectory);
-            MoveAllFilesToDirectory(SaveRpgDirectory + saveIndex, SaveGameDirectory);
+            CopyAllFilesToDirectory(SaveRpgDirectory + saveIndex, SaveGameDirectory);
+        }
+
+        /// <summary>
+        /// Copy all files in game dir to save dir of saveIndex.
+        /// </summary>
+        /// <param name="saveIndex">Save index</param>
+        public static void CopyGameToSave(int saveIndex)
+        {
+            var path = SaveRpgDirectory + saveIndex;
+            DeletAllFiles(path);
+            CopyAllFilesToDirectory(SaveGameDirectory, path);
         }
     }
 }

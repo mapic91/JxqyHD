@@ -1701,7 +1701,7 @@ namespace Engine.Script
         public static void LimitMana(List<string> parameters)
         {
             if (IsPlayerNull()) return;
-            Globals.ThePlayer.IsManaLimited = (int.Parse(parameters[0]) != 0);
+            Globals.ThePlayer.ManaLimit = (int.Parse(parameters[0]) != 0);
         }
 
         public static void NpcAttack(List<string> parameters, object belongObject)

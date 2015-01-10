@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Engine.Gui;
 using Engine.Script;
 using Engine.Weather;
 using IniParser;
@@ -27,6 +28,10 @@ namespace Engine.Storage
                 "{0:yyyy} 年{0:MM} 月{0:dd} 日 {0:HH} 时{0:mm} 分{0:ss} 秒", 
                 DateTime.Now));
 
+            //Save npc obj
+            NpcManager.SaveNpc();
+            ObjManager.Save();
+
             //Option
             data.Sections.AddSection("Option");
             var option = data["Option"];
@@ -45,6 +50,54 @@ namespace Engine.Storage
 
             //Wirte to file
             File.WriteAllText(StorageBase.GameIniFilePath, data.ToString(), Globals.SimpleChineseEncoding);
+        }
+
+        private static void SavePlayer()
+        {
+            var data = new IniData();
+            data.Sections.AddSection("Init");
+            Globals.ThePlayer.Save(data["Init"]);
+            File.WriteAllText(StorageBase.PlayerFilePath, data.ToString(), Globals.SimpleChineseEncoding);
+        }
+
+        private static void SavePartner()
+        {
+            NpcManager.SavePartner(StorageBase.PartnerFileName);
+        }
+
+        private static void SaveMagicGoodMemoList()
+        {
+            GuiManager.Save(StorageBase.MagicListFilePath,
+                StorageBase.GoodsListFilePath,
+                StorageBase.MemoListIniFilePath);
+        }
+
+        private static void SaveTraps()
+        {
+            Globals.TheMap.SaveTrap(StorageBase.TrapsFilePath);
+        }
+
+        /// <summary>
+        /// Save game to "save/game" directory.
+        /// </summary>
+        public static void SaveGame()
+        {
+            StorageBase.DeletAllFiles(StorageBase.SaveGameDirectory);
+            SaveGameFile();
+            SaveMagicGoodMemoList();
+            SavePlayer();
+            SavePartner();
+            SaveTraps();
+        }
+
+        /// <summary>
+        /// Save game to 0-7
+        /// </summary>
+        /// <param name="index">Save index</param>
+        public static void SaveGame(int index)
+        {
+            SaveGame();
+            StorageBase.CopyGameToSave(index);
         }
     }
 }

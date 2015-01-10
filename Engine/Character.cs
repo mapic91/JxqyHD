@@ -84,6 +84,8 @@ namespace Engine
 
         protected virtual bool MagicFromCache { get { return true; } }
 
+        protected string LevelIniFile { set; get; }
+
         #region Public properties
 
         public LinkedList<MagicSprite> MagicSpritesInEffect = new LinkedList<MagicSprite>();
@@ -561,7 +563,7 @@ namespace Engine
             }
         }
 
-        private void AssignToValue(KeyData keyData)
+        protected virtual void AssignToValue(KeyData keyData)
         {
             try
             {
@@ -589,6 +591,7 @@ namespace Engine
                         Defend = int.Parse(keyData.Value);
                         break;
                     case "LevelIni":
+                        LevelIniFile = keyData.Value;
                         info.SetValue(this, Utils.GetLevelLists(@"ini\level\" + keyData.Value), null);
                         break;
                     case "FlyIni":
@@ -617,7 +620,6 @@ namespace Engine
                 //Do nothing
                 return;
             }
-
         }
 
         private void EndInteract()
@@ -847,6 +849,14 @@ namespace Engine
             if (!string.IsNullOrEmpty(value))
             {
                 keyDataCollection.AddKey(key, value);
+            }
+        }
+
+        protected void AddKey(KeyDataCollection keyDataCollection, string key, bool value)
+        {
+            if (value)
+            {
+                keyDataCollection.AddKey(key, "1");
             }
         }
 

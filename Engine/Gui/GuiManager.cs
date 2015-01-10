@@ -118,6 +118,13 @@ namespace Engine.Gui
             MemoListManager.LoadList(memoListPath);
         }
 
+        public static void Save(string magicListPath, string goodsListPath, string memoListPath)
+        {
+            MagicListManager.SaveList(magicListPath);
+            GoodsListManager.SaveList(goodsListPath);
+            MemoListManager.SaveList(memoListPath);
+        }
+
         public static void PlayInterfaceShowMissSound(bool isShow)
         {
             if (isShow) _interfaceMiss.Play();

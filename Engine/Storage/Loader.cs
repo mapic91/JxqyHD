@@ -76,13 +76,13 @@ namespace Engine.Storage
             }
         }
 
-        private static void LoadParter()
+        private static void LoadPartner()
         {
             NpcManager.LoadPartner(StorageBase.PartnerFilePath);
         }
 
         /// <summary>
-        /// GuiManager must started first
+        /// GuiManager must start first
         /// </summary>
         private static void LoadMagicGoodMemoList()
         {
@@ -111,7 +111,7 @@ namespace Engine.Storage
             LoadGameFile();
             LoadMagicGoodMemoList();
             LoadPlayer();
-            LoadParter();
+            LoadPartner();
             LoadTraps();
             GameState.State = GameState.StateType.Playing;
         }
@@ -119,7 +119,7 @@ namespace Engine.Storage
         /// <summary>
         /// Load game form 0-7
         /// </summary>
-        /// <param name="index">Save index</param>
+        /// <param name="index">Load index</param>
         public static void LoadGame(int index)
         {
             StorageBase.ClearGameAndCopySaveToGame(index);

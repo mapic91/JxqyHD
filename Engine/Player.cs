@@ -5,6 +5,7 @@ using System.Text;
 using Engine.Gui;
 using Engine.ListManager;
 using Engine.Script;
+using IniParser.Model;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -36,7 +37,7 @@ namespace Engine
         /// <summary>
         /// Can't use mana
         /// </summary>
-        public bool IsManaLimited { set; get; }
+        public bool ManaLimit { set; get; }
         public bool CanInput
         {
             get { return !Globals.IsInputDisabled && MouseInBound(); }
@@ -192,7 +193,7 @@ namespace Engine
 
         protected override bool CanUseMagic()
         {
-            if (Mana < MagicUse.ManaCost || IsManaLimited)
+            if (Mana < MagicUse.ManaCost || ManaLimit)
             {
                 GuiManager.ShowMessage("没有足够的内力使用这种武功");
                 return false;
@@ -238,6 +239,37 @@ namespace Engine
         protected override void CheckMapTrap()
         {
             Globals.TheMap.RunTileTrapScript(TilePosition);
+        }
+
+        protected override void AssignToValue(KeyData keyData)
+        {
+            base.AssignToValue(keyData);
+            try
+            {
+                switch (keyData.KeyName)
+                {
+                    case "Money":
+                        Money = int.Parse(keyData.Value);
+                        break;
+                    case "ManaLimit":
+                        ManaLimit = int.Parse(keyData.Value) != 0;
+                        break;
+                }
+            }
+            catch (Exception)
+            {
+                //do nothing
+                return;
+            }
+        }
+
+        #region Public method
+        public override void Save(KeyDataCollection keyDataCollection)
+        {
+            base.Save(keyDataCollection);
+            AddKey(keyDataCollection, "Money", Money);
+            AddKey(keyDataCollection, "LevelIni", LevelIniFile);
+            AddKey(keyDataCollection, "ManaLimit", ManaLimit);
         }
 
         public override void SetMagicFile(string fileName)
@@ -427,6 +459,7 @@ namespace Engine
             //Reset parter position relate to player position
             ResetPartnerPosition();
         }
+        #endregion Public method
 
         public override void Update(GameTime gameTime)
         {
