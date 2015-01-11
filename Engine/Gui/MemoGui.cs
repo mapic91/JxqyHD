@@ -7,7 +7,7 @@ using Texture = Engine.Gui.Base.Texture;
 
 namespace Engine.Gui
 {
-    public class MemoGui : GuiItem
+    public sealed class MemoGui : GuiItem
     {
         private ScrollBar _scrollBar;
         private TextGui _text;

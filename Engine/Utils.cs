@@ -68,6 +68,21 @@ namespace Engine
             }
         }
 
+        static public Texture2D LoadTexture2DFromFile(string filePath)
+        {
+            try
+            {
+                using (var stream = new FileStream(filePath, FileMode.Open))
+                {
+                    return Texture2D.FromStream(Globals.TheGame.GraphicsDevice, stream);
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
         static public Asf GetAsf(string basePath, string fileName)
         {
             if (string.IsNullOrEmpty(fileName)) return null;

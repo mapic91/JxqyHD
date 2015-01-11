@@ -99,5 +99,17 @@ namespace Engine.Gui.Base
                      Color.White);
             }
         }
+
+        public void Draw(SpriteBatch spriteBatch, Vector2 position, int width, int height)
+        {
+            if (_texture != null)
+            {
+                var texture = _texture.GetFrame(CurrentFrameIndex);
+                if (texture == null) return;
+                spriteBatch.Draw(texture, 
+                    new Rectangle((int)position.X, (int)position.Y, width, height), 
+                    Color.White);
+            }
+        }
     }
 }

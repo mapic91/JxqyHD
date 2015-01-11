@@ -78,6 +78,8 @@
     <Compile Include="GameState.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="Good.cs" />
+    <Compile Include="Gui\Base\Bmp.cs" />
+    <Compile Include="Gui\Base\ListItem.cs" />
     <Compile Include="Gui\BottomGui.cs" />
     <Compile Include="Gui\BuyGui.cs" />
     <Compile Include="Gui\ColumnGui.cs" />
@@ -86,6 +88,7 @@
     <Compile Include="Gui\DragDropItem.cs" />
     <Compile Include="Gui\EquipGui.cs" />
     <Compile Include="Gui\GoodsGui.cs" />
+    <Compile Include="Gui\SaveLoadGui.cs" />
     <Compile Include="Gui\TimerGui.cs" />
     <Compile Include="Gui\TitleGui.cs" />
     <Compile Include="ListManager\GoodsListManager.cs" />
