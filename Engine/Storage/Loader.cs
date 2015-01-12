@@ -122,6 +122,7 @@ namespace Engine.Storage
         /// <param name="index">Load index</param>
         public static void LoadGame(int index)
         {
+            if (!StorageBase.IsIndexInRange(index)) return;
             StorageBase.ClearGameAndCopySaveToGame(index);
             LoadGame();
         }

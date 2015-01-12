@@ -10,6 +10,7 @@ namespace Engine.Gui.Base
         private Color _textColor = Color.Black;
         private Color _seclectedTextColor = Color.Black;
         private TextGui[] _items;
+        private SoundEffect _itemClickSound;
 
         public ListTextItem(
             GuiItem parent,
@@ -23,12 +24,14 @@ namespace Engine.Gui.Base
             int extraLineSpace,
             int itemHeight,
             Color textColor,
-            Color selectedTextColor
+            Color selectedTextColor,
+            SoundEffect itemClickSound
             )
             : base(parent, position, width, height, baseTexture)
         {
             _textColor = textColor;
             _seclectedTextColor = selectedTextColor;
+            _itemClickSound = itemClickSound;
 
             //Create items
             _items = new TextGui[itemCount];
@@ -44,18 +47,24 @@ namespace Engine.Gui.Base
                     itemText[i],
                     textColor);
 
-                int i1 = i;
+                int index = i;
                 _items[i].Click += (arg1, arg2) =>
                 {
                     //Handle item click event
-                    OnItemClick(new ListItemClickEvent(i1));
+                    OnItemClick(new ListItemClickEvent(index));
+                    if (_itemClickSound != null)
+                    {
+                        _itemClickSound.Play();
+                    }
+
+                    SelectionIndex = index;
 
                     //Item selection change, change item text color.
                     foreach (var item in _items)
                     {
                         item.SetDrawColor(_textColor);
                     }
-                    _items[i1].SetDrawColor(_seclectedTextColor);
+                    _items[index].SetDrawColor(_seclectedTextColor);
                 };
             }
         }

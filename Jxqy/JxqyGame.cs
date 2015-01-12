@@ -5,7 +5,6 @@ using Engine.Benchmark;
 using Engine.Gui;
 using Engine.ListManager;
 using Engine.Script;
-using Engine.Storage;
 using Engine.Weather;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -30,7 +29,17 @@ namespace Jxqy
         PictureBox _pictureBox;
         Control _gameForm;
 
+        public bool IsInEditMode { private set; get; }
         public bool IsPaused { get; set; }
+
+        /// <summary>
+        /// Indicates weather game window is lost focus.
+        /// Is game is run in edit mode, the value is always flase.
+        /// </summary>
+        public bool IsFocusLost
+        {
+            get { return (!IsInEditMode && !IsActive); }
+        }
 
         public JxqyGame()
         {
@@ -44,6 +53,7 @@ namespace Jxqy
         public JxqyGame(IntPtr drawSurface, Form parentForm, PictureBox surfacePictureBox)
             : this()
         {
+            IsInEditMode = true;
             _drawSurface = drawSurface;
             _parentForm = parentForm;
             _pictureBox = surfacePictureBox;
@@ -213,7 +223,11 @@ namespace Jxqy
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if(IsPaused) return;
+            if (IsPaused || IsFocusLost)
+            {
+                base.Update(gameTime);
+                return;
+            }
 
             var mouseState = Mouse.GetState();
             var keyboardState = Keyboard.GetState();
@@ -302,6 +316,12 @@ namespace Jxqy
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            if (IsPaused || IsFocusLost)
+            {
+                base.Draw(gameTime);
+                return;
+            }
+
             //Update fps marker
             Fps.Update(gameTime);
 

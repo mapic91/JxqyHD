@@ -11,6 +11,14 @@ namespace Engine.Gui.Base
         public event Action<object, ListItemClickEvent> ItemClick;
         #endregion Event
 
+        private int _selectionIndex = -1;
+
+        public int SelectionIndex
+        {
+            protected set { _selectionIndex = value; }
+            get { return _selectionIndex; }
+        }
+
         public ListItem() { }
 
         public ListItem(

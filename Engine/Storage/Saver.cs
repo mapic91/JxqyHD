@@ -95,6 +95,7 @@ namespace Engine.Storage
         /// <param name="index">Save index</param>
         public static void SaveGame(int index)
         {
+            if(!StorageBase.IsIndexInRange(index)) return;
             SaveGame();
             StorageBase.CopyGameToSave(index);
         }

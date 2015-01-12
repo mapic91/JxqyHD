@@ -1,5 +1,7 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.IO;
+using IniParser;
 using Microsoft.Xna.Framework;
 
 namespace Engine.Storage
@@ -7,11 +9,13 @@ namespace Engine.Storage
     public static class StorageBase
     {
         public const string GameIniFilePath = @"save\game\Game.ini";
+        public const string GameIniFileName = "Game.ini";
         public const string MemoListIniFilePath = @"save\game\memo.ini";
         public const string TrapsFilePath = @"save\game\Traps.ini";
         public const string SaveGameDirectory = @"save\game";
         public const string SaveRpgDirectory = @"save\rpg";
-        public const string SaveShotDirectory = @"save\Shot";
+        public const int SaveIndexBegin = 0;
+        public const int SaveIndexEnd = 7;
 
         public static string PlayerFilePath
         {
@@ -36,6 +40,11 @@ namespace Engine.Storage
         public static string GoodsListFilePath
         {
             get {return @"save\game\" + "Goods" + Globals.PlayerIndex + ".ini";}
+        }
+
+        public static bool IsIndexInRange(int index)
+        {
+            return (index >= SaveIndexBegin && index <= SaveIndexEnd);
         }
 
         public static Color GetColorFromString(string str)
@@ -93,6 +102,45 @@ namespace Engine.Storage
             var path = SaveRpgDirectory + saveIndex;
             DeletAllFiles(path);
             CopyAllFilesToDirectory(SaveGameDirectory, path);
+        }
+
+        public static string GetSaveTime(int saveIndex)
+        {
+            var path = SaveRpgDirectory + saveIndex;
+            path = Path.Combine(path, GameIniFileName);
+            var time = "";
+            if (File.Exists(path))
+            {
+                try
+                {
+                    var parser = new FileIniDataParser();
+                    var data = parser.ReadFile(path, Globals.SimpleChineseEncoding);
+                    time = data["State"]["Time"];
+                }
+                catch (Exception exception)
+                {
+                    Log.LogFileLoadError("Get save time", path, exception);
+                }
+            }
+            return time;
+        }
+
+        public static string GetSaveSnapShotFilePath(int saveIndex)
+        {
+            return @"save\Shot\" + "rpg" + saveIndex + ".png";
+        }
+
+        /// <summary>
+        /// Test whether load game at index is ok.
+        /// </summary>
+        /// <param name="saveIndex">Index to load</param>
+        /// <returns>True is can load.Otherwise false.</returns>
+        public static bool CanLoad(int saveIndex)
+        {
+            if (!IsIndexInRange(saveIndex)) return false;
+             var path = SaveRpgDirectory + saveIndex;
+            path = Path.Combine(path, GameIniFileName);
+            return File.Exists(path);
         }
     }
 }
