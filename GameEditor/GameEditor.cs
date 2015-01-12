@@ -15,7 +15,7 @@ namespace GameEditor
 {
     public partial class GameEditor : Form
     {
-        public Game TheGame;
+        public JxqyGame TheJxqyGame;
         public GameEditor()
         {
             InitializeComponent();
@@ -24,19 +24,19 @@ namespace GameEditor
 
         private void GameEditor_FormClosed(object sender, FormClosedEventArgs e)
         {
-            TheGame.Exit();
+            TheJxqyGame.Exit();
         }
 
         private void GameEditor_Activated(object sender, EventArgs e)
         {
-            if(TheGame == null) return;
-            TheGame.IsPaused = false;
+            if(TheJxqyGame == null) return;
+            TheJxqyGame.IsPaused = false;
         }
 
         private void GameEditor_Deactivate(object sender, EventArgs e)
         {
-            if (TheGame == null) return;
-            TheGame.IsPaused = true;
+            if (TheJxqyGame == null) return;
+            TheJxqyGame.IsPaused = true;
         }
 
         private void DrawSurface_MouseEnter(object sender, EventArgs e)

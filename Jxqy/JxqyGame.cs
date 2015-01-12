@@ -17,7 +17,7 @@ namespace Jxqy
     /// <summary>
     /// This is the main type for your game
     /// </summary>
-    public class Game : Microsoft.Xna.Framework.Game
+    public class JxqyGame : Microsoft.Xna.Framework.Game
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
@@ -32,7 +32,7 @@ namespace Jxqy
 
         public bool IsPaused { get; set; }
 
-        public Game()
+        public JxqyGame()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -41,7 +41,7 @@ namespace Jxqy
             GameState.State = GameState.StateType.Start;
         }
 
-        public Game(IntPtr drawSurface, Form parentForm, PictureBox surfacePictureBox)
+        public JxqyGame(IntPtr drawSurface, Form parentForm, PictureBox surfacePictureBox)
             : this()
         {
             _drawSurface = drawSurface;
@@ -56,7 +56,7 @@ namespace Jxqy
             _pictureBox.SizeChanged += pictureBox_SizeChanged;
         }
 
-        public void SetDrawSizeToDrawSurfaceSize()
+        public void AdjustDrawSizeToDrawSurfaceSize()
         {
             if (_parentForm.WindowState != FormWindowState.Minimized)
             {
@@ -76,7 +76,7 @@ namespace Jxqy
 
         private void pictureBox_SizeChanged(object sender, EventArgs e)
         {
-            SetDrawSizeToDrawSurfaceSize();
+            AdjustDrawSizeToDrawSurfaceSize();
         }
 
         private void gameForm_VisibleChanged(object sender, EventArgs e)
@@ -170,7 +170,7 @@ namespace Jxqy
             if (_parentForm != null)
             {
                 //Make draw size correct
-                SetDrawSizeToDrawSurfaceSize();
+                AdjustDrawSizeToDrawSurfaceSize();
             }
 
             base.Initialize();

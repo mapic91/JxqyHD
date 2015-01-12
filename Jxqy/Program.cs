@@ -10,9 +10,9 @@ namespace Jxqy
         /// </summary>
         static void Main(string[] args)
         {
-            using (Game game = new Game())
+            using (var jxqyGame = new JxqyGame())
             {
-                game.Run();
+                jxqyGame.Run();
             }
         }
     }

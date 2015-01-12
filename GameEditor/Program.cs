@@ -16,7 +16,7 @@ namespace GameEditor
             Application.EnableVisualStyles();
             var form = new GameEditor();
             form.Show();
-            form.TheGame = new Game(
+            form.TheJxqyGame = new JxqyGame(
                 form.DrawSurface.Handle,
                 form,
                 form.DrawSurface);
@@ -25,7 +25,7 @@ namespace GameEditor
             Globals.TheMessageSender.OnFunctionCall += form.FunctionRunStateAppendLine;
             Globals.TheMessageSender.OnScriptFileChange += form.SetScriptFileContent;
 
-            form.TheGame.Run();
+            form.TheJxqyGame.Run();
         }
     }
 #endif
