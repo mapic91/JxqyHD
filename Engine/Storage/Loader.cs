@@ -113,7 +113,7 @@ namespace Engine.Storage
             LoadPlayer();
             LoadPartner();
             LoadTraps();
-            //Let player in view center
+
             Globals.TheCarmera.CenterPlayerInCamera();
             //Clear fade out, fade in.
             //Because when player died, FadeOut() script function will be called
