@@ -310,6 +310,15 @@ namespace Engine.Script
         }
         #endregion Private
 
+        public static void Init()
+        {
+            IsInFadeIn = false;
+            IsInFadeOut = false;
+            IsInTalk = false;
+            _sleepingMilliseconds = 0;
+            _isTimeScriptSet = false;
+        }
+
         #region Update Draw
         public static void Update(GameTime gameTime)
         {

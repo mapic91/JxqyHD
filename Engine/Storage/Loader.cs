@@ -115,11 +115,7 @@ namespace Engine.Storage
             LoadTraps();
 
             Globals.TheCarmera.CenterPlayerInCamera();
-            //Clear fade out, fade in.
-            //Because when player died, FadeOut() script function will be called
-            ScriptExecuter.IsInFadeOut = false;
-            ScriptExecuter.IsInFadeIn = false;
-            //Change to playing game state
+            ScriptExecuter.Init();
             GameState.State = GameState.StateType.Playing;
         }
 
