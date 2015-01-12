@@ -3,7 +3,6 @@ using System.IO;
 using Engine.Gui;
 using Engine.Script;
 using Engine.Weather;
-using IniParser;
 using IniParser.Model;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;

@@ -5,9 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using Engine.Gui;
-using Engine.Storage;
-using Microsoft.Xna.Framework.GamerServices;
 
 namespace Engine.Script
 {
