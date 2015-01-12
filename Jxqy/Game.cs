@@ -214,6 +214,7 @@ namespace Jxqy
         protected override void Update(GameTime gameTime)
         {
             if(IsPaused) return;
+
             var mouseState = Mouse.GetState();
             var keyboardState = Keyboard.GetState();
 

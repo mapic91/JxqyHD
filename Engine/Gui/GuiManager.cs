@@ -23,6 +23,7 @@ namespace Engine.Gui
         private static MouseState _lastMouseState;
 
         public static TitleGui TitleInterface;
+        public static SaveLoadGui SaveLoadInterface;
         public static MagicGui MagicInterface;
         public static XiuLianGui XiuLianInterface;
         public static GoodsGui GoodsInterface;
@@ -53,6 +54,9 @@ namespace Engine.Gui
 
             TitleInterface = new TitleGui();
             _allGuiItems.AddLast(TitleInterface);
+
+            SaveLoadInterface = new SaveLoadGui();
+            _allGuiItems.AddLast(SaveLoadInterface);
 
             TopInterface = new TopGui();
             _allGuiItems.AddLast(TopInterface);
@@ -272,6 +276,22 @@ namespace Engine.Gui
             TitleInterface.IsShow = isShow;
         }
 
+        private static void ShowSaveLoad(bool isShow, bool canSave)
+        {
+            SaveLoadInterface.IsShow = isShow;
+            SaveLoadInterface.CanSave = canSave;
+        }
+
+        public static void ShowSaveLoad(bool isShow = true)
+        {
+            ShowSaveLoad(isShow, true);
+        }
+
+        public static void ShowLoad(bool isShow = true)
+        {
+            ShowSaveLoad(isShow, false);
+        }
+
         public static void ShowMessage(string message)
         {
             MessageInterface.ShowMessage(message);
@@ -389,7 +409,17 @@ namespace Engine.Gui
             }
             else IsMouseStateEated = false;
 
-            if (TitleInterface.IsShow)
+            if (SaveLoadInterface.IsShow)
+            {
+                //Temporaty enable input
+                Globals.EnableInputTemporary();
+
+                SaveLoadInterface.Update(gameTime);
+
+                //Restore input
+                Globals.RestoreInputDisableState();
+            }
+            else if (TitleInterface.IsShow)
             {
                 TitleInterface.Update(gameTime);
             }
@@ -480,7 +510,11 @@ namespace Engine.Gui
 
         public static void Draw(SpriteBatch spriteBatch)
         {
-            if (TitleInterface.IsShow)
+            if (SaveLoadInterface.IsShow)
+            {
+                SaveLoadInterface.Draw(spriteBatch);
+            }
+            else if (TitleInterface.IsShow)
             {
                 TitleInterface.Draw(spriteBatch);
             }

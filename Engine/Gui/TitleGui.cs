@@ -84,6 +84,7 @@ namespace Engine.Gui
             _loadButton.Click += (arg1, arg2) =>
             {
                 IsShow = false;
+                GuiManager.ShowLoad();
             };
             _teamButton.Click += (arg1, arg2) =>
             {
