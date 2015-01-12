@@ -48,7 +48,7 @@ namespace Engine
         }
         #endregion
 
-        public static Game TheGame;
+        public static JxqyGame TheGame;
         public static readonly Carmera TheCarmera = new Carmera();
         public static readonly Map TheMap = new Map();
         public static Player ThePlayer;

@@ -59,7 +59,7 @@ namespace Engine.Storage
             try
             {
                 Globals.ThePlayer = new Player(path);
-                Globals.TheCarmera.PlayerToCenter();
+                Globals.TheCarmera.CenterPlayerInCamera();
                 GoodsListManager.ApplyEquipSpecialEffectFromList(Globals.ThePlayer);
             }
             catch (Exception exception)
@@ -113,6 +113,13 @@ namespace Engine.Storage
             LoadPlayer();
             LoadPartner();
             LoadTraps();
+            //Let player in view center
+            Globals.TheCarmera.CenterPlayerInCamera();
+            //Clear fade out, fade in.
+            //Because when player died, FadeOut() script function will be called
+            ScriptExecuter.IsInFadeOut = false;
+            ScriptExecuter.IsInFadeIn = false;
+            //Change to playing game state
             GameState.State = GameState.StateType.Playing;
         }
 

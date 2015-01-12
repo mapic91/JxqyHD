@@ -1584,7 +1584,7 @@ namespace Engine.Script
         {
             if (Globals.TheCarmera != null)
             {
-                Globals.TheCarmera.PlayerToCenter();
+                Globals.TheCarmera.CenterPlayerInCamera();
             }
         }
 

@@ -92,6 +92,7 @@
     <Compile Include="Gui\SaveLoadGui.cs" />
     <Compile Include="Gui\TimerGui.cs" />
     <Compile Include="Gui\TitleGui.cs" />
+    <Compile Include="JxqyGame.cs" />
     <Compile Include="ListManager\GoodsListManager.cs" />
     <Compile Include="Gui\Base\GuiItem.cs" />
     <Compile Include="Gui\GuiManager.cs" />

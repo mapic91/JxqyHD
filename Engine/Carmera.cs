@@ -214,11 +214,13 @@ namespace Engine
             UpdatePlayerView();
         }
 
-        public void PlayerToCenter()
+        public void CenterPlayerInCamera()
         {
             if (Globals.ThePlayer == null) return;
             CarmeraBeginPositionInWorld = Globals.ThePlayer.PositionInWorld -
                                           GetHalfViewSize();
+            Globals.TheMap.ViewBeginX = ViewBeginX;
+            Globals.TheMap.ViewBeginY = ViewBeginY;
         }
 
         /// <summary>

@@ -455,7 +455,7 @@ namespace Engine
         public override void SetPosition(Vector2 tilePosition)
         {
             base.SetPosition(tilePosition);
-            Globals.TheCarmera.PlayerToCenter();
+            Globals.TheCarmera.CenterPlayerInCamera();
             //Reset parter position relate to player position
             ResetPartnerPosition();
         }

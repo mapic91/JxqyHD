@@ -1,7 +1,5 @@
-using System;
 using System.Windows.Forms;
 using Engine;
-using Jxqy;
 
 namespace GameEditor
 {

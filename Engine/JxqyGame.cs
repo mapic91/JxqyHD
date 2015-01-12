@@ -1,6 +1,5 @@
 using System;
 using System.Windows.Forms;
-using Engine;
 using Engine.Benchmark;
 using Engine.Gui;
 using Engine.ListManager;
@@ -11,7 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
 
-namespace Jxqy
+namespace Engine
 {
     /// <summary>
     /// This is the main type for your game
