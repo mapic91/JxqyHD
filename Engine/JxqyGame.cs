@@ -389,7 +389,7 @@ namespace Engine
         /// <summary>
         /// Take snapshot.
         /// </summary>
-        /// <returns>Snapshot texture.</returns>
+        /// <returns>Texture of snapshot be taken.</returns>
         public Texture2D TakeSnapShot()
         {
             Draw(new GameTime());
