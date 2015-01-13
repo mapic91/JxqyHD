@@ -17,6 +17,7 @@ namespace Engine.Gui
         private TextGui _saveTime;
         private Bmp _saveSnapshot;
 
+        public Texture2D Snapshot;
         public bool CanSave { set; get; }
 
         public SaveLoadGui()

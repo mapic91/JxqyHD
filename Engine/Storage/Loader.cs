@@ -117,6 +117,7 @@ namespace Engine.Storage
             Globals.TheCarmera.CenterPlayerInCamera();
             ScriptExecuter.Init();
             GameState.State = GameState.StateType.Playing;
+            Globals.TheGame.IsGamePlayPaused = false;
         }
 
         /// <summary>

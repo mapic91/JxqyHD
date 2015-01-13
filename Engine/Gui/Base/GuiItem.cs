@@ -140,8 +140,7 @@ namespace Engine.Gui.Base
                     {
                         MouseEnter(this, new MouseEvent(position, screenPosition));
                     }
-                }
-                    
+                } 
 
                 if (lastPosition == position && !_isStayOver)
                 {
@@ -156,9 +155,6 @@ namespace Engine.Gui.Base
                     }
                 }
 
-                InRange = true;
-                IsMouveOver = true;
-
                 if (mouseState.LeftButton == ButtonState.Pressed &&
                 _lastMouseState.LeftButton == ButtonState.Released)
                 {
@@ -170,12 +166,17 @@ namespace Engine.Gui.Base
                         MouseLeftDown(this, new MouseLeftDownEvent(position, screenPosition));
                     }
 
+                    if (ClickedSound != null) ClickedSound.Play();
+                }
+
+                if (mouseState.LeftButton == ButtonState.Released &&
+                    _lastMouseState.LeftButton == ButtonState.Pressed &&
+                    IsClicked)
+                {
                     if (Click != null)
                     {
                         Click(this, new MouseLeftClickEvent(position, screenPosition));
                     }
-
-                    if (ClickedSound != null) ClickedSound.Play();
                 }
 
                 if (mouseState.RightButton == ButtonState.Pressed &&
@@ -192,6 +193,9 @@ namespace Engine.Gui.Base
                         RightClick(this, new MouseRightClickEvent(position, screenPosition));
                     }
                 }
+
+                InRange = true;
+                IsMouveOver = true;
             }
             else
             {

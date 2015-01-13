@@ -21,6 +21,7 @@ namespace Engine.Gui
 
         public static TitleGui TitleInterface;
         public static SaveLoadGui SaveLoadInterface;
+        public static SystemGui SystemInterface;
         public static MagicGui MagicInterface;
         public static XiuLianGui XiuLianInterface;
         public static GoodsGui GoodsInterface;
@@ -42,9 +43,12 @@ namespace Engine.Gui
         public static DragDropItem DragDropSourceItem;
         public static Texture DragDropSourceTexture;
         public static bool IsDropped;
+        public static bool IsShow;
 
         public static void Starting()
         {
+            IsShow = true;
+
             _dropSound = Utils.GetSoundEffect("界-拖放.wav");
             _interfaceShow = Utils.GetSoundEffect("界-弹出菜单.wav");
             _interfaceMiss = Utils.GetSoundEffect("界-缩回菜单.wav");
@@ -54,6 +58,9 @@ namespace Engine.Gui
 
             SaveLoadInterface = new SaveLoadGui();
             _allGuiItems.AddLast(SaveLoadInterface);
+
+            SystemInterface = new SystemGui();
+            _allGuiItems.AddLast(SystemInterface);
 
             TopInterface = new TopGui();
             _allGuiItems.AddLast(TopInterface);
@@ -273,10 +280,25 @@ namespace Engine.Gui
             TitleInterface.IsShow = isShow;
         }
 
+        public static void ShowSystem(bool isShow = true)
+        {
+            SystemInterface.IsShow = isShow;
+            Globals.TheGame.IsGamePlayPaused = isShow;
+        }
+
         private static void ShowSaveLoad(bool isShow, bool canSave)
         {
             SaveLoadInterface.IsShow = isShow;
             SaveLoadInterface.CanSave = canSave;
+            if (canSave)
+            {
+                var show = IsShow;
+                //Hide GUI when take snapshot
+                IsShow = false;
+                SaveLoadInterface.Snapshot = Globals.TheGame.TakeSnapShot();
+                //Restore
+                IsShow = show;
+            }
         }
 
         public static void ShowSaveLoad(bool isShow = true)
@@ -410,15 +432,21 @@ namespace Engine.Gui
             {
                 //Temporaty enable input
                 Globals.EnableInputTemporary();
-
                 SaveLoadInterface.Update(gameTime);
-
                 //Restore input
                 Globals.RestoreInputDisableState();
             }
             else if (TitleInterface.IsShow)
             {
                 TitleInterface.Update(gameTime);
+            }
+            else if (SystemInterface.IsShow)
+            {
+                //Temporaty enable input
+                Globals.EnableInputTemporary();
+                SystemInterface.Update(gameTime);
+                //Restore input
+                Globals.RestoreInputDisableState();
             }
             else if (DialogInterface.IsShow)
             {
@@ -507,6 +535,8 @@ namespace Engine.Gui
 
         public static void Draw(SpriteBatch spriteBatch)
         {
+            if(!IsShow) return;
+
             if (SaveLoadInterface.IsShow)
             {
                 SaveLoadInterface.Draw(spriteBatch);
@@ -532,6 +562,8 @@ namespace Engine.Gui
 
                 MessageInterface.Draw(spriteBatch);
                 DialogInterface.Draw(spriteBatch);
+
+                SystemInterface.Draw(spriteBatch);
             }
 
             MouseInterface.Draw(spriteBatch);

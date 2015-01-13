@@ -25,7 +25,7 @@ namespace Engine.Gui
             _buttons[3].Click += (arg1, arg2) => GuiManager.ToggleGoodsGuiShow();
             _buttons[4].Click += (arg1, arg2) => GuiManager.ToggleMagicGuiShow();
             _buttons[5].Click += (arg1, arg2) => GuiManager.ToggleMemoGuiShow();
-            _buttons[6].Click += (arg1, arg2) =>
+            _buttons[6].Click += (arg1, arg2) => GuiManager.ShowSystem();
             {
 
             };

@@ -32,6 +32,7 @@ namespace Engine
 
         public bool IsInEditMode { private set; get; }
         public bool IsPaused { get; set; }
+        public bool IsGamePlayPaused { get; set; }
 
         /// <summary>
         /// Indicates weather game window is lost focus.
@@ -45,6 +46,7 @@ namespace Engine
         public JxqyGame()
         {
             _graphics = new GraphicsDeviceManager(this);
+            _graphics.GraphicsProfile = GraphicsProfile.HiDef;
             Content.RootDirectory = "Content";
             IsMouseVisible = false;
             _graphics.IsFullScreen = false;
@@ -270,9 +272,10 @@ namespace Engine
                         GameState.State = GameState.StateType.Title;
                         break;
                     case GameState.StateType.Title:
-                        GuiManager.Update(gameTime);
                         break;
                     case GameState.StateType.Playing:
+                        if(IsGamePlayPaused) break;
+
                         if (Globals.IsInSuperMagicMode)
                         {
                             Globals.SuperModeMagicSprite.Update(gameTime);
@@ -283,7 +286,6 @@ namespace Engine
                             }
                             break;//Just update super magic
                         }
-                        GuiManager.Update(gameTime);
                         //Player
                         Globals.ThePlayer.Update(gameTime);
                         //Magic list
@@ -300,6 +302,9 @@ namespace Engine
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
+
+                //Update GUI
+                GuiManager.Update(gameTime);
             }
 
             //Update script after GuiManager, because script executing rely GUI state.
@@ -396,7 +401,7 @@ namespace Engine
  
             var w = GraphicsDevice.PresentationParameters.BackBufferWidth;
             var h = GraphicsDevice.PresentationParameters.BackBufferHeight;
-            var data = new Color[w*h];
+            var data = new byte[w*h*4];
             GraphicsDevice.GetBackBufferData(data);
             var texture = new Texture2D(GraphicsDevice, w, h);
             texture.SetData(data);

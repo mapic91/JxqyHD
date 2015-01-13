@@ -90,6 +90,7 @@
     <Compile Include="Gui\EquipGui.cs" />
     <Compile Include="Gui\GoodsGui.cs" />
     <Compile Include="Gui\SaveLoadGui.cs" />
+    <Compile Include="Gui\SystemGui.cs" />
     <Compile Include="Gui\TimerGui.cs" />
     <Compile Include="Gui\TitleGui.cs" />
     <Compile Include="JxqyGame.cs" />
