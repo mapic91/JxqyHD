@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using Engine.Gui;
 using Engine.ListManager;
@@ -61,13 +59,10 @@ namespace Engine.Script
             string scriptFileNameWithQuotes,
             object belongObject,
             out Character target,
-            out ScriptParser script)
+            out string script)
         {
             GetTarget(nameWithQuotes, belongObject, out target);
-            var scriptFileName = Utils.RemoveStringQuotes(scriptFileNameWithQuotes);
-            script = null;
-            if (!string.IsNullOrEmpty(scriptFileName))
-                script = new ScriptParser(Utils.GetScriptFilePath(scriptFileName), target);
+            script = Utils.RemoveStringQuotes(scriptFileNameWithQuotes);
         }
 
         private static Character GetPlayerOrNpc(string name)
@@ -612,7 +607,7 @@ namespace Engine.Script
         public static void SetNpcScript(List<string> parameters, object belongObject)
         {
             Character target;
-            ScriptParser script;
+            string script;
             GetTargetAndScript(parameters[0],
                 parameters[1],
                 belongObject,
@@ -627,7 +622,7 @@ namespace Engine.Script
         public static void SetNpcDeathScript(List<string> parameters, object belongObject)
         {
             Character target;
-            ScriptParser script;
+            string script;
             GetTargetAndScript(parameters[0],
                 parameters[1],
                 belongObject,

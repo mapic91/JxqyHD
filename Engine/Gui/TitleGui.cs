@@ -11,7 +11,7 @@ using Texture = Engine.Gui.Base.Texture;
 
 namespace Engine.Gui
 {
-    public class TitleGui : GuiItem
+    public sealed class TitleGui : GuiItem
     {
         private readonly GuiItem _initButton;
         private readonly GuiItem _loadButton;
@@ -20,6 +20,7 @@ namespace Engine.Gui
         private readonly GuiItem[] _guiItems;
         public TitleGui()
         {
+            IsShow = false;
             BaseTexture = new Texture(new Asf(
                 Utils.LoadTexture2D(@"ui\title\title")));
             Width = BaseTexture.Width;

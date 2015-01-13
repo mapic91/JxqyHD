@@ -114,6 +114,11 @@ namespace Engine
             }
         }
 
+        static public void ClearAsfCache()
+        {
+            AsfFiles.Clear();
+        }
+
         static public Asf GetCharacterAsf(string fileName)
         {
             return GetAsf(ResFile.GetAsfFilePathBase(fileName, ResType.Npc),

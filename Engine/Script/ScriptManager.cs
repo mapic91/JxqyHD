@@ -14,11 +14,6 @@ namespace Engine.Script
         {
             if (scriptParser != null)
             {
-                if (!Globals.CacheScriptFile)
-                {
-                    scriptParser = new ScriptParser(scriptParser.FilePath,
-                        scriptParser.BelongObject);
-                }
                 scriptParser.Begin();
                 _list.AddLast(scriptParser);
             }

@@ -95,7 +95,15 @@ namespace Engine
         private void gameForm_VisibleChanged(object sender, EventArgs e)
         {
             if (_gameForm.Visible)
+            {
                 _gameForm.Visible = false;
+
+                //Didn't no why, below solved fps slow than normal
+                _parentForm.Visible = false;
+                _parentForm.WindowState = FormWindowState.Minimized;
+                _parentForm.WindowState = FormWindowState.Normal;
+                _parentForm.Visible = true;
+            }
         }
 
         private void graphics_PreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
@@ -264,6 +272,9 @@ namespace Engine
             }
             else
             {
+                //Update GUI first, GUI will decide whether user input be intercepted or pass through
+                GuiManager.Update(gameTime);
+
                 switch (GameState.State)
                 {
                     case GameState.StateType.Start:
@@ -302,9 +313,6 @@ namespace Engine
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
-
-                //Update GUI
-                GuiManager.Update(gameTime);
             }
 
             //Update script after GuiManager, because script executing rely GUI state.

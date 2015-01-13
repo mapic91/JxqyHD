@@ -663,6 +663,8 @@ namespace Engine
         public void LoadMap(byte[] buf)
         {
             Free();
+            //Clear asf cache, because normaly npcs objs will be cleared after map load.
+            Utils.ClearAsfCache();
             var offset = 0;
             try
             {

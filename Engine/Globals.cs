@@ -68,7 +68,6 @@ namespace Engine
         public static bool IsFullScreen = true;
         public static bool IsLogOn;
         public static bool ShowScriptWindow;
-        public static bool CacheScriptFile = true;
 
         public static bool IsInputDisabled;
         public static bool IsWaterEffectEnabled;
@@ -93,8 +92,6 @@ namespace Engine
                     IsLogOn = (value == 1);
                 if (int.TryParse(setting["ShowScriptWindow"], out value))
                     ShowScriptWindow = (value == 1);
-                if (int.TryParse(setting["CacheScriptFile"], out value))
-                    CacheScriptFile = (value == 1);
             }
             catch (Exception)
             {

@@ -48,8 +48,10 @@ namespace Engine
         private Obj _bodyIni;
         private Magic _flyIni;
         private Magic _flyIni2;
-        private ScriptParser _scriptFile;
-        private ScriptParser _deathScript;
+        private string _scriptFile;
+        private string _deathScript;
+        private ScriptParser _currentRunInteractScript;
+        private ScriptParser _currentRunDeathScript;
         private int _expBonus;
         private string _fixedPos;
         private int _idle;
@@ -107,11 +109,11 @@ namespace Engine
         {
             get
             {
-                if (DeathScript == null)
+                if (_currentRunDeathScript == null)
                 {
                     return true;
                 }
-                return DeathScript.IsEnd;
+                return _currentRunDeathScript.IsEnd;
             }
         }
 
@@ -391,13 +393,13 @@ namespace Engine
             set { _flyIni2 = value; }
         }
 
-        public ScriptParser ScriptFile
+        public string ScriptFile
         {
             get { return _scriptFile; }
             set { _scriptFile = value; }
         }
 
-        public ScriptParser DeathScript
+        public string DeathScript
         {
             get { return _deathScript; }
             set { _deathScript = value; }
@@ -572,14 +574,9 @@ namespace Engine
                 {
                     case "FixedPos":
                     case "Name":
-                        info.SetValue(this, keyData.Value, null);
-                        break;
                     case "ScriptFile":
                     case "DeathScript":
-                        if (!string.IsNullOrEmpty(keyData.Value))
-                            info.SetValue(this,
-                                new ScriptParser(Utils.GetScriptFilePath(keyData.Value), this),
-                                null);
+                        info.SetValue(this, keyData.Value, null);
                         break;
                     case "NpcIni":
                         SetNpcIni(keyData.Value);
@@ -945,11 +942,11 @@ namespace Engine
             }
             if (_scriptFile != null)
             {
-                AddKey(keyDataCollection, "ScriptFile", _scriptFile.FileName);
+                AddKey(keyDataCollection, "ScriptFile", _scriptFile);
             }
             if (_deathScript != null)
             {
-                AddKey(keyDataCollection, "DeathScript", _deathScript.FileName);
+                AddKey(keyDataCollection, "DeathScript", _deathScript);
             }
         }
 
@@ -1271,7 +1268,7 @@ namespace Engine
         {
             if (State == (int)CharacterState.Death) return;
             IsDeathInvoked = true;
-            ScriptManager.RunScript(DeathScript);
+            _currentRunDeathScript = ScriptManager.RunScript(Utils.GetScriptParser(DeathScript, this));
             StateInitialize();
             if (NpcIni.ContainsKey((int)CharacterState.Death))
             {
@@ -1538,21 +1535,20 @@ namespace Engine
 
         public void StartInteract(Character from)
         {
-            if (from != null && ScriptFile != null)
+            if (from != null && !string.IsNullOrEmpty(ScriptFile))
             {
                 _isInInteract = true;
                 _directionBeforInteract = CurrentDirection;
                 SetDirection(from.PositionInWorld - PositionInWorld);
-                //In case of reload script file from file, assign ScriptFile back
-                ScriptFile = ScriptManager.RunScript(ScriptFile);
+                _currentRunInteractScript = ScriptManager.RunScript(Utils.GetScriptParser(ScriptFile, this));
             }
         }
 
         public bool IsInteractEnd()
         {
-            if (ScriptFile != null)
+            if (_currentRunInteractScript != null)
             {
-                return ScriptFile.IsEnd;
+                return _currentRunInteractScript.IsEnd;
             }
             return true;
         }

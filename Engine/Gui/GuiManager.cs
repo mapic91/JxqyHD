@@ -258,7 +258,7 @@ namespace Engine.Gui
             }
         }
 
-        public static void AllPanelsShow(bool show = true)
+        public static void ShowAllPanels(bool show = true)
         {
             foreach (var panel in _panels)
             {
@@ -284,6 +284,10 @@ namespace Engine.Gui
 
         public static void ShowSystem(bool isShow = true)
         {
+            if (isShow)
+            {
+                ShowAllPanels(false);
+            }
             SystemInterface.IsShow = isShow;
             Globals.TheGame.IsGamePlayPaused = isShow;
         }
@@ -320,13 +324,13 @@ namespace Engine.Gui
 
         public static void ShowDialog(string text, int portraitIndex = -1)
         {
-            AllPanelsShow(false);
+            ShowAllPanels(false);
             DialogInterface.ShowText(text, portraitIndex);
         }
 
         public static void Selection(string message, string selectA, string selectionB)
         {
-            AllPanelsShow(false);
+            ShowAllPanels(false);
             DialogInterface.Select(message, selectA, selectionB);
         }
 
@@ -365,7 +369,7 @@ namespace Engine.Gui
 
         public static void BuyGoods(string listFileName)
         {
-            AllPanelsShow(false);
+            ShowAllPanels(false);
             BuyInterface.BeginBuy(listFileName);
             GoodsInterface.IsShow = true;
         }
@@ -483,7 +487,7 @@ namespace Engine.Gui
                 if (keyboardState.IsKeyDown(Keys.Escape) &&
                     _lastKeyboardState.IsKeyUp(Keys.Escape))
                 {
-                    if (HasPanelsShow()) AllPanelsShow(false);
+                    if (HasPanelsShow()) ShowAllPanels(false);
                 }
 
                 if (BuyInterface.IsShow)
