@@ -81,7 +81,6 @@ namespace Engine.Storage
         /// </summary>
         public static void SaveGame()
         {
-            StorageBase.DeletAllFiles(StorageBase.SaveGameDirectory);
             SaveGameFile();
             SaveMagicGoodMemoList();
             SavePlayer();

@@ -58,9 +58,11 @@ namespace Engine.Gui
 
             SaveLoadInterface = new SaveLoadGui();
             _allGuiItems.AddLast(SaveLoadInterface);
+            _panels.AddLast(SaveLoadInterface);
 
             SystemInterface = new SystemGui();
             _allGuiItems.AddLast(SystemInterface);
+            _panels.AddLast(SystemInterface);
 
             TopInterface = new TopGui();
             _allGuiItems.AddLast(TopInterface);

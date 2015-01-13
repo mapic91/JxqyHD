@@ -118,6 +118,7 @@ namespace Engine.Storage
             ScriptExecuter.Init();
             GameState.State = GameState.StateType.Playing;
             Globals.TheGame.IsGamePlayPaused = false;
+            GuiManager.AllPanelsShow(false);
         }
 
         /// <summary>

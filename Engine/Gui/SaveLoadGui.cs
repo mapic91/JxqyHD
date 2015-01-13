@@ -20,6 +20,22 @@ namespace Engine.Gui
         public Texture2D Snapshot;
         public bool CanSave { set; get; }
 
+        public override bool IsShow
+        {
+            get
+            {
+                return base.IsShow;
+            }
+            set
+            {
+                base.IsShow = value;
+                if (value && _list.SelectionIndex != -1)
+                {
+                    ShowSaveIndex(_list.SelectionIndex + 1);
+                }
+            } 
+        }
+
         public SaveLoadGui()
         {
             IsShow = false;
@@ -109,20 +125,28 @@ namespace Engine.Gui
             RegisterEvent();
         }
 
+        private void ShowSaveIndex(int index)
+        {
+            _saveTime.Text = StorageBase.GetSaveTime(index);
+            _saveSnapshot.BmpFilePath = StorageBase.GetSaveSnapShotFilePath(index);
+        }
+
         private void RegisterEvent()
         {
             //List event
-            _list.ItemClick += (arg1, arg2) =>
-            {
-                var index = arg2.ItemIndex;
-                _saveTime.Text = StorageBase.GetSaveTime(index + 1);
-                _saveSnapshot.BmpFilePath = StorageBase.GetSaveSnapShotFilePath(index + 1);
-            };
+            _list.ItemClick += (arg1, arg2) => ShowSaveIndex(arg2.ItemIndex + 1);
 
             //Button event
             _saveButton.Click += (arg1, arg2) =>
             {
-
+                if (_list.SelectionIndex != -1)
+                {
+                    IsShow = false;
+                    GuiManager.ShowSystem(false);
+                    var index = _list.SelectionIndex + 1;
+                    StorageBase.SaveSaveSnapShot(index, Snapshot);
+                    Saver.SaveGame(index);
+                }
             };
             _loadButton.Click += (arg1, arg2) =>
             {

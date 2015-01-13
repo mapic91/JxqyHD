@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using IniParser;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Engine.Storage
 {
@@ -59,7 +60,7 @@ namespace Engine.Storage
 
         public static string GetStringFromColor(Color color)
         {
-            return string.Format("{0:2X}{1:2X}{2:2X}00", color.B, color.G, color.R);
+            return string.Format("{0:X2}{1:X2}{2:X2}00", color.B, color.G, color.R);
         }
 
         public static void DeletAllFiles(string path)
@@ -128,6 +129,28 @@ namespace Engine.Storage
         public static string GetSaveSnapShotFilePath(int saveIndex)
         {
             return @"save\Shot\" + "rpg" + saveIndex + ".png";
+        }
+
+        /// <summary>
+        /// Save snapshot to save dir.
+        /// </summary>
+        /// <param name="saveIndex">Index of save.</param>
+        /// <param name="texture2D">Snapshot texture to save.</param>
+        public static void SaveSaveSnapShot(int saveIndex, Texture2D texture2D)
+        {
+            if(texture2D == null) return;
+            var path = GetSaveSnapShotFilePath(saveIndex);
+            try
+            {
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    texture2D.SaveAsPng(stream, texture2D.Width, texture2D.Height);
+                }
+            }
+            catch (Exception exception)
+            {
+                Log.LogFileSaveError("Snapshot", path, exception);
+            }
         }
 
         /// <summary>
