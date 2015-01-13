@@ -23,6 +23,8 @@ namespace Engine
         private Texture2D _waterfallTexture;
         private RenderTarget2D _renderTarget;
 
+        private readonly Color BackgroundColor = Color.Black;
+
         IntPtr _drawSurface;
         Form _parentForm;
         PictureBox _pictureBox;
@@ -324,7 +326,7 @@ namespace Engine
             //Update fps marker
             Fps.Update(gameTime);
 
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(BackgroundColor);
             _spriteBatch.Begin(SpriteSortMode.Deferred, null);
             if (ScriptExecuter.IsInPlayingMovie)//Movie
             {
@@ -339,33 +341,10 @@ namespace Engine
                     case GameState.StateType.Title:
                         break;
                     case GameState.StateType.Playing:
-                        if (Globals.IsWaterEffectEnabled)
-                        {
-                            WaterEffectBegin();
-                        }
-                        //Map npcs objs magic sprite
-                        Globals.TheMap.Draw(_spriteBatch);
-                        //Player
-                        Globals.ThePlayer.Draw(_spriteBatch);
-                        //Weather
-                        WeatherManager.Draw(_spriteBatch);
-                        //Super magic
-                        if (Globals.IsInSuperMagicMode)
-                        {
-                            Globals.SuperModeMagicSprite.Draw(_spriteBatch);
-                        }
-                        if (Globals.IsWaterEffectEnabled)
-                        {
-                            WaterEffectEnd(gameTime);
-                        }
+                        DrawGamePlay(gameTime);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
-                }
-                //Fade in, fade out
-                if (ScriptExecuter.IsInFadeIn || ScriptExecuter.IsInFadeOut)
-                {
-                    ScriptExecuter.DrawFade(_spriteBatch);
                 }
                 //GUI
                 GuiManager.Draw(_spriteBatch);
@@ -373,6 +352,78 @@ namespace Engine
             _spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        /// <summary>
+        /// Draw map npc obj magic etc.
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        public void DrawGamePlay(GameTime gameTime)
+        {
+            if (Globals.IsWaterEffectEnabled)
+            {
+                WaterEffectBegin();
+            }
+            //Map npcs objs magic sprite
+            Globals.TheMap.Draw(_spriteBatch);
+            //Player
+            Globals.ThePlayer.Draw(_spriteBatch);
+            //Weather
+            WeatherManager.Draw(_spriteBatch);
+            //Super magic
+            if (Globals.IsInSuperMagicMode)
+            {
+                Globals.SuperModeMagicSprite.Draw(_spriteBatch);
+            }
+            if (Globals.IsWaterEffectEnabled)
+            {
+                WaterEffectEnd(gameTime);
+            }
+            //Fade in, fade out
+            if (ScriptExecuter.IsInFadeIn || ScriptExecuter.IsInFadeOut)
+            {
+                ScriptExecuter.DrawFade(_spriteBatch);
+            }
+        }
+
+        /// <summary>
+        /// All: whole game screen
+        /// Play: No gui, viedo when game state is in playing mode. 
+        /// </summary>
+        public enum SnapShotType
+        {
+            All,
+            Play
+        }
+        /// <summary>
+        /// Take game snapshot.
+        /// </summary>
+        /// <returns>Game snapshot texture.</returns>
+        public Texture2D TakeGameSnapShot(SnapShotType type = SnapShotType.Play)
+        {
+            if (GameState.State != GameState.StateType.Playing)
+            {
+                return null;
+            }
+            switch (type)
+            {
+                case SnapShotType.All:
+                    Draw(new GameTime());
+                    break;
+                case SnapShotType.Play:
+                    GraphicsDevice.Clear(BackgroundColor);
+                    DrawGamePlay(new GameTime());
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("type");
+            }
+            var w = GraphicsDevice.PresentationParameters.BackBufferWidth;
+            var h = GraphicsDevice.PresentationParameters.BackBufferHeight;
+            var data = new Color[w*h];
+            GraphicsDevice.GetBackBufferData(data);
+            var texture = new Texture2D(GraphicsDevice, w, h);
+            texture.SetData(data);
+            return texture;
         }
     }
 }
