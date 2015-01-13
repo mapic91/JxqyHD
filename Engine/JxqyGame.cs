@@ -387,36 +387,13 @@ namespace Engine
         }
 
         /// <summary>
-        /// All: whole game screen
-        /// Play: No gui, viedo when game state is in playing mode. 
+        /// Take snapshot.
         /// </summary>
-        public enum SnapShotType
+        /// <returns>Snapshot texture.</returns>
+        public Texture2D TakeSnapShot()
         {
-            All,
-            Play
-        }
-        /// <summary>
-        /// Take game snapshot.
-        /// </summary>
-        /// <returns>Game snapshot texture.</returns>
-        public Texture2D TakeGameSnapShot(SnapShotType type = SnapShotType.Play)
-        {
-            if (GameState.State != GameState.StateType.Playing)
-            {
-                return null;
-            }
-            switch (type)
-            {
-                case SnapShotType.All:
-                    Draw(new GameTime());
-                    break;
-                case SnapShotType.Play:
-                    GraphicsDevice.Clear(BackgroundColor);
-                    DrawGamePlay(new GameTime());
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException("type");
-            }
+            Draw(new GameTime());
+ 
             var w = GraphicsDevice.PresentationParameters.BackBufferWidth;
             var h = GraphicsDevice.PresentationParameters.BackBufferHeight;
             var data = new Color[w*h];
