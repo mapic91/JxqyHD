@@ -111,6 +111,8 @@ namespace Engine.Storage
             LoadGameFile();
             LoadMagicGoodMemoList();
             LoadPlayer();
+            //Update magic GUI after player loaded to apply xiulian magic to player
+            GuiManager.UpdateMagicView();
             LoadPartner();
             LoadTraps();
 

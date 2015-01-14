@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using IniParser.Model;
+﻿using IniParser.Model;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Engine
 {
@@ -16,10 +11,18 @@ namespace Engine
         {
             get
             {
-                if (base.PathFinder == 1)
+                if (Kind == (int)CharacterType.Flyer)
+                {
+                    return Engine.PathFinder.PathType.PathStraightLine;
+                }
+                else if (base.PathFinder == 1)
+                {
                     return Engine.PathFinder.PathType.PerfectMaxNpcTry;
+                }
                 else
+                {
                     return Engine.PathFinder.PathType.PathOneStep;
+                }
             }
         }
 
@@ -75,6 +78,8 @@ namespace Engine
 
         public override bool HasObstacle(Vector2 tilePosition)
         {
+            if (Kind == (int) CharacterType.Flyer) return false;
+
             return (NpcManager.IsObstacle(tilePosition) ||
                     ObjManager.IsObstacle(tilePosition) ||
                     Globals.ThePlayer.TilePosition == tilePosition);

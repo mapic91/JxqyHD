@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using Engine.Script;
 using IniParser;
@@ -462,8 +461,8 @@ namespace Engine
             if (string.IsNullOrEmpty(text) || charCount < 1) return lines;
             while (text.Length > charCount)
             {
-                lines.Add(text.Substring(0, 10));
-                text = text.Substring(10);
+                lines.Add(text.Substring(0, charCount));
+                text = text.Substring(charCount);
             }
             lines.Add(text);
             return lines;

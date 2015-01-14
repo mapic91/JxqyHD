@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net.Mime;
-using System.Text;
 using Engine.Script;
 using IniParser.Model;
 using Microsoft.Xna.Framework;
@@ -24,7 +21,7 @@ namespace Engine
         private int _lum;
         private StateMapList _objFile;
         private string _objFileName;
-        private ScriptParser _scriptFile;
+        private string _scriptFile;
         private SoundEffect _wavFile;
         private string _wavFileName;
         private int _offX;
@@ -84,7 +81,7 @@ namespace Engine
             protected set { _objFile = value; }
         }
 
-        public ScriptParser ScriptFile
+        public string ScriptFile
         {
             get { return _scriptFile; }
             set { _scriptFile = value; }
@@ -125,7 +122,12 @@ namespace Engine
 
         public bool IsInteractive
         {
-            get { return ScriptFile != null; }
+            get { return HasInteractScript; }
+        }
+
+        public bool HasInteractScript
+        {
+            get { return !string.IsNullOrEmpty(ScriptFile); }
         }
 
         public bool IsTrap
@@ -290,7 +292,7 @@ namespace Engine
             AddKey(keyDataCollection, "OffY", _offY);
             if (_scriptFile != null)
             {
-                AddKey(keyDataCollection, "ScriptFile", _scriptFile.FileName);
+                AddKey(keyDataCollection, "ScriptFile", _scriptFile);
             }
             if (_wavFile != null)
             {
@@ -300,7 +302,7 @@ namespace Engine
 
         public void StartInteract()
         {
-            ScriptManager.RunScript(ScriptFile);
+            ScriptManager.RunScript(Utils.GetScriptParser(ScriptFile, this));
         }
     }
 }

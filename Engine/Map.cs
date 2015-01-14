@@ -749,6 +749,8 @@ namespace Engine
                 }
             }
 
+            DrawLayer(spriteBatch, 2);
+
             //Draw fly npc
             foreach (var npc in npcs)
             {
@@ -757,8 +759,6 @@ namespace Engine
                     npc.Draw(spriteBatch);
                 }
             }
-
-            DrawLayer(spriteBatch, 2);
         }
     }
 }

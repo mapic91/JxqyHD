@@ -593,14 +593,11 @@ namespace Engine.Script
             var name = Utils.RemoveStringQuotes(parameters[0]);
             var scriptFileName = Utils.RemoveStringQuotes(parameters[1]);
             var target = belongObject as Obj;
-            ScriptParser script = null;
             if (!string.IsNullOrEmpty(name))
                 target = ObjManager.GetObj(name);
-            if (!string.IsNullOrEmpty(scriptFileName))
-                script = new ScriptParser(Utils.GetScriptFilePath(scriptFileName), target);
             if (target != null)
             {
-                target.ScriptFile = script;
+                target.ScriptFile = scriptFileName;
             }
         }
 

@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using Engine.Benchmark;
 using Microsoft.Xna.Framework;
 
@@ -18,7 +15,8 @@ namespace Engine
         {
             PathOneStep,
             PerfectMaxNpcTry,
-            PerfectMaxPlayerTry
+            PerfectMaxPlayerTry,
+            PathStraightLine
         }
 
         private static LinkedList<Vector2> GetPath(Dictionary<Vector2, Vector2> cameFrom, Vector2 startTile,
@@ -50,6 +48,8 @@ namespace Engine
                     return FindPathPerfect(finder, startTile, endTile, 100);
                 case PathType.PerfectMaxPlayerTry:
                     return FindPathPerfect(finder, startTile, endTile, 2000);
+                case PathType.PathStraightLine:
+                    return GetLinePath(startTile, endTile);
             }
             return null;
         }
@@ -126,6 +126,26 @@ namespace Engine
                 }
             }
             return GetPath(cameFrom, startTile, endTile);
+        }
+
+        public static LinkedList<Vector2> GetLinePath(Vector2 startTile, Vector2 endTile)
+        {
+            if (startTile == endTile) return null;
+
+            var path = new LinkedList<Vector2>();
+            var frontier = new C5.IntervalHeap<Node>();
+            frontier.Add(new Node(startTile, 0f));
+            while (!frontier.IsEmpty)
+            {
+                var current = frontier.DeleteMin().Location;
+                path.AddLast(Map.ToPixelPosition(current));
+                if (current == endTile) break;
+                foreach (var neighbor in FindAllNeighbors(current))
+                {
+                    frontier.Add(new Node(neighbor, GetCost(neighbor, endTile)));
+                }
+            }
+            return path;
         }
 
         public static int GetTileDistance(Vector2 startTile, Vector2 endTile)

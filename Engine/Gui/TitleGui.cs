@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using Engine.Gui.Base;
+﻿using Engine.Gui.Base;
 using Engine.Script;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

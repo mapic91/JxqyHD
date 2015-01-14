@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Engine.Gui;
 using Engine.ListManager;
-using Engine.Script;
 using IniParser.Model;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -575,13 +571,13 @@ namespace Engine
                             Attacking(Globals.OutEdgeNpc.TilePosition, isRun);
                         }
                         else if (Globals.OutEdgeNpc != null &&
-                            Globals.OutEdgeNpc.ScriptFile != null)
+                            Globals.OutEdgeNpc.HasInteractScript)
                         {
                             if (_lastMouseState.LeftButton == ButtonState.Released)
                                 InteractWith(Globals.OutEdgeNpc, isRun);
                         }
                         else if (Globals.OutEdgeObj != null &&
-                                 Globals.OutEdgeObj.ScriptFile != null)
+                                 Globals.OutEdgeObj.HasInteractScript)
                         {
                             if (_lastMouseState.LeftButton == ButtonState.Released)
                                 InteractWith(Globals.OutEdgeObj, isRun);

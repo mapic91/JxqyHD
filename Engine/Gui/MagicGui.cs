@@ -1,5 +1,4 @@
-﻿using System;
-using Engine.Gui.Base;
+﻿using Engine.Gui.Base;
 using Engine.ListManager;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

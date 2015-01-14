@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
+using System.Globalization;
 using Engine.Script;
 using IniParser;
 using IniParser.Model;
@@ -81,6 +78,9 @@ namespace Engine
         private bool _isInInteract;
         private int _directionBeforInteract;
         private int _specialActionLastDirection; //Direction before play special action
+        private List<Vector2> _fixedPosTilePositionList;
+        private float _fixedPosDistanceToMove;
+        private Vector2 _fixedPosMoveDestinationPixelPostion = Vector2.Zero;
         protected Magic MagicUse;
         #endregion Field
 
@@ -399,6 +399,11 @@ namespace Engine
             set { _scriptFile = value; }
         }
 
+        public bool HasInteractScript
+        {
+            get { return !string.IsNullOrEmpty(ScriptFile); }
+        }
+
         public string DeathScript
         {
             get { return _deathScript; }
@@ -414,8 +419,14 @@ namespace Engine
         public string FixedPos
         {
             get { return _fixedPos; }
-            set { _fixedPos = value; }
+            set
+            {
+                _fixedPos = value;
+                _fixedPosTilePositionList = ToFixedPosTilePositionList(value);
+            }
         }
+
+        public int NextFixedPosStep { set; get; }
 
         public int Idle
         {
@@ -527,7 +538,7 @@ namespace Engine
 
         public bool IsInteractive
         {
-            get { return (ScriptFile != null || IsEnemy || IsFighterFriend); }
+            get { return (HasInteractScript || IsEnemy || IsFighterFriend); }
         }
 
         #endregion Character Type and Relation
@@ -619,6 +630,40 @@ namespace Engine
             }
         }
 
+        /// <summary>
+        /// Convert FixedPos string to path list
+        /// FixedPos string pattern xx000000yy000000xx000000yy000000
+        /// xx,yy is Hex string.
+        /// xx - tile postion x, yy - tile postion y
+        /// exemple: "0B0000001C0000000E000000170000000000000000000000"
+        /// </summary>
+        /// <param name="fixPos">FixedPos string</param>
+        /// <returns>Converted path</returns>
+        private List<Vector2> ToFixedPosTilePositionList(string fixPos)
+        {
+            var steps = Utils.SpliteStringInCharCount(fixPos, 8);
+            var count = steps.Count;
+            if (count < 4) return null; //Step less than 2
+            if (count % 2 != 0) count--;//Not even, decrease one
+            try
+            {
+                var path = new List<Vector2>();
+                for (var i = 0; i < count; i += 2)
+                {
+                    var x = int.Parse(steps[i].Substring(0, 2), NumberStyles.HexNumber);
+                    var y = int.Parse(steps[i + 1].Substring(0, 2), NumberStyles.HexNumber);
+                    if (x == 0 && y == 0) break;
+                    path.Add(new Vector2(x, y));
+                }
+                return path;
+            }
+            catch (Exception)
+            {
+                //FixedPos format error
+                return null;
+            }
+        }
+
         private void EndInteract()
         {
             _isInInteract = false;
@@ -638,7 +683,10 @@ namespace Engine
             var tileFrom = Map.ToTilePosition(from);
             var tileTo = Map.ToTilePosition(to);
             var direction = to - from;
-            direction.Normalize();
+            if (direction != Vector2.Zero)
+            {
+                direction.Normalize();
+            }
             var distance = Vector2.Distance(from, to);
             //Sotre value in case of cleared in below code
             var interactTarget = _interactiveTarget;
@@ -799,9 +847,35 @@ namespace Engine
                 FollowTargetLost();
             }
         }
+
+        private void UpdateMoveAlongFixedPath()
+        {
+            if (_fixedPosTilePositionList != null &&
+                _fixedPosTilePositionList.Count > 1 &&
+                Kind == (int)CharacterType.Flyer)
+            {
+                var count = _fixedPosTilePositionList.Count;
+                if (IsStanding())
+                {
+                    if (NextFixedPosStep >= count - 1)
+                    {
+                        NextFixedPosStep = 0;
+                    }
+                    else
+                    {
+                        NextFixedPosStep++;
+                    }
+                    _fixedPosMoveDestinationPixelPostion = Map.ToPixelPosition(_fixedPosTilePositionList[NextFixedPosStep]);
+                    _fixedPosDistanceToMove = Vector2.Distance(PositionInWorld, _fixedPosMoveDestinationPixelPostion);
+                    MovedDistance = 0f;
+                    SetState(CharacterState.Walk);
+                }
+            }
+        }
         #endregion Private method
 
         #region Protected method
+
         protected virtual void FollowTargetFinded(bool attackCanReach)
         {
             WalkTo(FollowTarget.TilePosition);
@@ -926,6 +1000,7 @@ namespace Engine
             AddKey(keyDataCollection, "ManaMax", _manaMax);
             AddKey(keyDataCollection, "ExpBonus", _expBonus);
             AddKey(keyDataCollection, "FixedPos", _fixedPos);
+            AddKey(keyDataCollection, "NextFixedPosStep", NextFixedPosStep);
             AddKey(keyDataCollection, "Idle", _idle);
             AddKey(keyDataCollection, "NpcIni", _npcIniFileName);
             if (_bodyIni != null)
@@ -1106,7 +1181,7 @@ namespace Engine
         }
 
         /// <summary>
-        /// Goto direction steps.
+        /// Walk steps in direction.
         /// </summary>
         /// <param name="direction">Direction 0-7</param>
         /// <param name="moveStep">Steps to move</param>
@@ -1140,6 +1215,10 @@ namespace Engine
             _leftStepToMove--;
         }
 
+        /// <summary>
+        /// Walk to destination tile position.
+        /// </summary>
+        /// <param name="destinationTilePosition">Destination tile positon</param>
         public virtual void WalkTo(Vector2 destinationTilePosition)
         {
             if (PerformActionOk() &&
@@ -1888,13 +1967,28 @@ namespace Engine
 
             //Check follow target 
             UpdateFollow();
+            //Check FixedPos move path and update
+            UpdateMoveAlongFixedPath();
 
             switch ((CharacterState)State)
             {
                 case CharacterState.Walk:
                 case CharacterState.FightWalk:
                     {
-                        MoveAlongPath((float)elapsedGameTime.TotalSeconds, WalkSpeed);
+                        if (_fixedPosMoveDestinationPixelPostion != Vector2.Zero)
+                        {
+                            MoveTo(_fixedPosMoveDestinationPixelPostion - PositionInWorld,
+                                (float)elapsedGameTime.TotalSeconds * WalkSpeed * 2);
+                            if (MovedDistance >= _fixedPosDistanceToMove)
+                            {
+                                StandingImmediately();
+                                _fixedPosMoveDestinationPixelPostion = Vector2.Zero;
+                            }
+                        }
+                        else
+                        {
+                            MoveAlongPath((float)elapsedGameTime.TotalSeconds, WalkSpeed);
+                        }
                         SoundManager.Apply3D(_sound,
                                     PositionInWorld - Globals.ListenerPosition);
                         Update(gameTime, WalkSpeed);
