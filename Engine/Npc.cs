@@ -15,7 +15,7 @@ namespace Engine
                 {
                     return Engine.PathFinder.PathType.PathStraightLine;
                 }
-                else if (base.PathFinder == 1)
+                else if (base.PathFinder == 1 || IsPartner)
                 {
                     return Engine.PathFinder.PathType.PerfectMaxNpcTry;
                 }
@@ -29,6 +29,7 @@ namespace Engine
         public static bool IsAIDisabled { protected set; get; }
         #endregion
 
+        #region Ctor
         public Npc() { }
 
         public Npc(string filePath)
@@ -46,6 +47,15 @@ namespace Engine
             if (LevelIni == null)
             {
                 LevelIni = Utils.GetLevelLists(@"ini\level\level-npc.ini");
+            }
+        }
+        #endregion Ctor
+
+        private void MoveToPlayer()
+        {
+            if (!Globals.ThePlayer.IsStanding())
+            {
+                MoveTo(Globals.ThePlayer.TilePosition);
             }
         }
 
@@ -147,12 +157,12 @@ namespace Engine
                         if (FollowTarget == null && IsPartner)
                         {
                             //Can't find enemy, move to player
-                            MoveTo(Globals.ThePlayer.TilePosition);
+                            MoveToPlayer();
                         }
                     }
                     else if (IsPartner)
                     {
-                        MoveTo(Globals.ThePlayer.TilePosition);
+                        MoveToPlayer();
                     }
                 }
             }

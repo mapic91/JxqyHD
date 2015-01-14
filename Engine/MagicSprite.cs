@@ -53,7 +53,7 @@ namespace Engine
 
         #endregion Public properties
 
-        #region Ctr
+        #region Ctor
         public MagicSprite() : base() { }
 
         public MagicSprite(Magic belongMagic, Character belongCharacter, Vector2 positionInWorld, float velocity,
@@ -92,7 +92,7 @@ namespace Engine
             _destroyOnEnd = destroyOnEnd;
             Begin();
         }
-        #endregion Ctr
+        #endregion Ctor
 
         private void CharacterHited(Character character)
         {
