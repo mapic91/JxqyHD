@@ -84,9 +84,11 @@ namespace Engine
         protected Magic MagicUse;
         #endregion Field
 
+        #region Protected properties
         protected virtual bool MagicFromCache { get { return true; } }
 
         protected string LevelIniFile { set; get; }
+        #endregion Protected properties
 
         #region Public properties
 
@@ -574,61 +576,7 @@ namespace Engine
             {
                 FlyIni2 = FlyIni2.GetLevel(AttackLevel);
             }
-        }
-
-        protected virtual void AssignToValue(KeyData keyData)
-        {
-            try
-            {
-                var info = this.GetType().GetProperty(keyData.KeyName);
-                switch (keyData.KeyName)
-                {
-                    case "FixedPos":
-                    case "Name":
-                    case "ScriptFile":
-                    case "DeathScript":
-                        info.SetValue(this, keyData.Value, null);
-                        break;
-                    case "NpcIni":
-                        SetNpcIni(keyData.Value);
-                        break;
-                    case "BodyIni":
-                        info.SetValue(this, new Obj(@"ini\obj\" + keyData.Value), null);
-                        break;
-                    case "Defence":
-                        Defend = int.Parse(keyData.Value);
-                        break;
-                    case "LevelIni":
-                        LevelIniFile = keyData.Value;
-                        info.SetValue(this, Utils.GetLevelLists(@"ini\level\" + keyData.Value), null);
-                        break;
-                    case "FlyIni":
-                    case "FlyIni2":
-                        info.SetValue(this, Utils.GetMagic(keyData.Value, MagicFromCache), null);
-                        break;
-                    case "Life":
-                        _life = int.Parse(keyData.Value);
-                        break;
-                    case "Thew":
-                        _thew = int.Parse(keyData.Value);
-                        break;
-                    case "Mana":
-                        _mana = int.Parse(keyData.Value);
-                        break;
-                    default:
-                        {
-                            var integerValue = int.Parse(keyData.Value);
-                            info.SetValue(this, integerValue, null);
-                            break;
-                        }
-                }
-            }
-            catch (Exception)
-            {
-                //Do nothing
-                return;
-            }
-        }
+        }        
 
         /// <summary>
         /// Convert FixedPos string to path list
@@ -668,6 +616,28 @@ namespace Engine
         {
             _isInInteract = false;
             SetDirection(_directionBeforInteract);
+        }
+
+        private void CheckStepMove()
+        {
+            if (!_isInStepMove) return;
+            if (_leftStepToMove == 0)
+            {
+                StandingImmediately();
+                _isInStepMove = false;
+                return;
+            }
+            var destinationTilePosition = Engine.PathFinder.FindNeighborInDirection(
+                TilePosition,
+                _stepMoveDirection);
+            WalkTo(destinationTilePosition);
+            if (Path == null ||
+                HasObstacle(destinationTilePosition))//Unable to move
+            {
+                _isInStepMove = false;
+                return;
+            }
+            _leftStepToMove--;
         }
 
         private void MoveAlongPath(float elapsedSeconds, int speedFold)
@@ -876,6 +846,60 @@ namespace Engine
 
         #region Protected method
 
+        protected virtual void AssignToValue(KeyData keyData)
+        {
+            try
+            {
+                var info = this.GetType().GetProperty(keyData.KeyName);
+                switch (keyData.KeyName)
+                {
+                    case "FixedPos":
+                    case "Name":
+                    case "ScriptFile":
+                    case "DeathScript":
+                        info.SetValue(this, keyData.Value, null);
+                        break;
+                    case "NpcIni":
+                        SetNpcIni(keyData.Value);
+                        break;
+                    case "BodyIni":
+                        info.SetValue(this, new Obj(@"ini\obj\" + keyData.Value), null);
+                        break;
+                    case "Defence":
+                        Defend = int.Parse(keyData.Value);
+                        break;
+                    case "LevelIni":
+                        LevelIniFile = keyData.Value;
+                        info.SetValue(this, Utils.GetLevelLists(@"ini\level\" + keyData.Value), null);
+                        break;
+                    case "FlyIni":
+                    case "FlyIni2":
+                        info.SetValue(this, Utils.GetMagic(keyData.Value, MagicFromCache), null);
+                        break;
+                    case "Life":
+                        _life = int.Parse(keyData.Value);
+                        break;
+                    case "Thew":
+                        _thew = int.Parse(keyData.Value);
+                        break;
+                    case "Mana":
+                        _mana = int.Parse(keyData.Value);
+                        break;
+                    default:
+                        {
+                            var integerValue = int.Parse(keyData.Value);
+                            info.SetValue(this, integerValue, null);
+                            break;
+                        }
+                }
+            }
+            catch (Exception)
+            {
+                //Do nothing
+                return;
+            }
+        }
+
         protected virtual void FollowTargetFinded(bool attackCanReach)
         {
             WalkTo(FollowTarget.TilePosition);
@@ -885,8 +909,6 @@ namespace Engine
         {
             //Do nothing
         }
-
-        public abstract bool HasObstacle(Vector2 tilePosition);
 
         protected virtual void CheckMapTrap() { }
 
@@ -940,6 +962,11 @@ namespace Engine
         }
         #endregion Protected method
 
+        #region Public method
+        public abstract bool HasObstacle(Vector2 tilePosition);
+        #endregion Public method
+
+        #region Save load method
         public bool Load(string filePath)
         {
             try
@@ -1025,82 +1052,7 @@ namespace Engine
             }
         }
 
-        /// <summary>
-        /// Set character state.Set texture and play sound.
-        /// </summary>
-        /// <param name="state">State to set</param>
-        /// <param name="setIfStateSame">If true renew state if current state is same as the set state</param>
-        public void SetState(CharacterState state, bool setIfStateSame = false)
-        {
-            if ((State != (int)state || setIfStateSame) &&
-                NpcIni.ContainsKey((int)state))
-            {
-                if (_sound != null)
-                {
-                    _sound.Stop(true);
-                    _sound = null;
-                }
-
-                var image = NpcIni[(int)state].Image;
-                var sound = NpcIni[(int)state].Sound;
-                Texture = image;
-                if (sound != null)
-                {
-                    switch (state)
-                    {
-                        case CharacterState.Walk:
-                        case CharacterState.FightWalk:
-                        case CharacterState.Run:
-                        case CharacterState.FightRun:
-                            {
-                                _sound = sound.CreateInstance();
-                                _sound.IsLooped = true;
-                                SoundManager.Apply3D(_sound,
-                                    PositionInWorld - Globals.ListenerPosition);
-                                _sound.Play();
-                            }
-                            break;
-                        case CharacterState.Magic:
-                        case CharacterState.Attack:
-                        case CharacterState.Attack1:
-                        case CharacterState.Attack2:
-                            {
-                                //do nothing
-                            }
-                            break;
-                        default:
-                            PlaySoundEffect(sound);
-                            break;
-                    }
-                }
-                State = (int)state;
-            }
-        }
-
-        /// <summary>
-        /// Clear frozen, poison, petrifaction
-        /// </summary>
-        public void ToNormalState()
-        {
-            ClearFrozen();
-            ClearPoison();
-            ClearPetrifaction();
-        }
-
-        public void ClearFrozen()
-        {
-            _frozenSeconds = 0;
-        }
-
-        public void ClearPoison()
-        {
-            _poisonSeconds = 0;
-        }
-
-        public void ClearPetrifaction()
-        {
-            _petrifiedSeconds = 0;
-        }
+        #endregion Save load method
 
         #region Perform action
         public void StandingImmediately()
@@ -1191,28 +1143,6 @@ namespace Engine
             _leftStepToMove = moveStep;
             _stepMoveDirection = direction;
             CheckStepMove();
-        }
-
-        private void CheckStepMove()
-        {
-            if (!_isInStepMove) return;
-            if (_leftStepToMove == 0)
-            {
-                StandingImmediately();
-                _isInStepMove = false;
-                return;
-            }
-            var destinationTilePosition = Engine.PathFinder.FindNeighborInDirection(
-                TilePosition,
-                _stepMoveDirection);
-            WalkTo(destinationTilePosition);
-            if (Path == null ||
-                HasObstacle(destinationTilePosition))//Unable to move
-            {
-                _isInStepMove = false;
-                return;
-            }
-            _leftStepToMove--;
         }
 
         /// <summary>
@@ -1634,6 +1564,85 @@ namespace Engine
 
         #endregion Perform action
 
+        #region Character state set and get method
+
+        /// <summary>
+        /// Set character state.Change texture and play sound.
+        /// </summary>
+        /// <param name="state">State to set</param>
+        /// <param name="setIfStateSame">If true renew state if current state is same as the setting state</param>
+        public void SetState(CharacterState state, bool setIfStateSame = false)
+        {
+            if ((State != (int)state || setIfStateSame) &&
+                NpcIni.ContainsKey((int)state))
+            {
+                if (_sound != null)
+                {
+                    _sound.Stop(true);
+                    _sound = null;
+                }
+
+                var image = NpcIni[(int)state].Image;
+                var sound = NpcIni[(int)state].Sound;
+                Texture = image;
+                if (sound != null)
+                {
+                    switch (state)
+                    {
+                        case CharacterState.Walk:
+                        case CharacterState.FightWalk:
+                        case CharacterState.Run:
+                        case CharacterState.FightRun:
+                            {
+                                _sound = sound.CreateInstance();
+                                _sound.IsLooped = true;
+                                SoundManager.Apply3D(_sound,
+                                    PositionInWorld - Globals.ListenerPosition);
+                                _sound.Play();
+                            }
+                            break;
+                        case CharacterState.Magic:
+                        case CharacterState.Attack:
+                        case CharacterState.Attack1:
+                        case CharacterState.Attack2:
+                            {
+                                //do nothing
+                            }
+                            break;
+                        default:
+                            PlaySoundEffect(sound);
+                            break;
+                    }
+                }
+                State = (int)state;
+            }
+        }
+
+        /// <summary>
+        /// Clear frozen, poison, petrifaction
+        /// </summary>
+        public void ToNormalState()
+        {
+            ClearFrozen();
+            ClearPoison();
+            ClearPetrifaction();
+        }
+
+        public void ClearFrozen()
+        {
+            _frozenSeconds = 0;
+        }
+
+        public void ClearPoison()
+        {
+            _poisonSeconds = 0;
+        }
+
+        public void ClearPetrifaction()
+        {
+            _petrifiedSeconds = 0;
+        }
+
         public static float GetTrueDistance(Vector2 distance)
         {
             var unit = Utils.GetDirection8(Utils.GetDirectionIndex(distance, 8));
@@ -1916,6 +1925,7 @@ namespace Engine
             Texture = Utils.GetCharacterAsf(asfFileName);
             PlayCurrentDirOnce();
         }
+        #endregion Character state set and get method
 
         #region Update Draw
         public override void Update(GameTime gameTime)
