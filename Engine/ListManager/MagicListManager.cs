@@ -191,7 +191,6 @@ namespace Engine.ListManager
                             magic = magic.GetLevel(level);
                             info.TheMagic = magic;
                             info.Exp = magic.LevelupExp;
-                            info.Level = level;
                             return;
                         }
                     }
@@ -202,7 +201,12 @@ namespace Engine.ListManager
         public class MagicItemInfo
         {
             public Magic TheMagic { set; get; }
-            public int Level { set; get; }
+
+            public int Level
+            {
+                get { return TheMagic == null ? 1 : TheMagic.CurrentLevel; }
+            }
+
             public int Exp { set; get; }
 
             public MagicItemInfo(string iniFile, int level, int exp)
@@ -213,7 +217,6 @@ namespace Engine.ListManager
                     TheMagic = magic.GetLevel(level);
                     TheMagic.ItemInfo = this;
                 }
-                Level = level;
                 Exp = exp;
             }
         }

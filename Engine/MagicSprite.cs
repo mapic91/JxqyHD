@@ -103,6 +103,7 @@ namespace Engine
         {
             if (character == null) return;
 
+            //Hit ratio
             var targetEvade = character.Evade;
             var belongCharacterEvade = BelongCharacter.Evade;
             const float maxOffset = 100f;
@@ -153,7 +154,7 @@ namespace Engine
                 if(character.Life > 0)
                 {
                     if (Globals.TheRandom.Next(4) == 0
-                        && BelongMagic.SpecialKind != 3)//Can't hurted when going to be petrified 
+                        && BelongMagic.SpecialKind != 3)//Can't hurted when been petrified 
                         character.Hurting();
                 }
             }
@@ -174,6 +175,7 @@ namespace Engine
                     break;
             }
 
+            //Additional attack effect when player equip special equipment
             switch (BelongMagic.AdditionalEffect)
             {
                 case Magic.AddonEffect.Frozen:
@@ -188,6 +190,16 @@ namespace Engine
                     if(!character.IsPetrified)
                         character.PetrifiedSeconds = BelongCharacter.Level / 10 + 1;
                     break;
+            }
+
+            if (BelongCharacter.IsPlayer)
+            {
+                var player = BelongCharacter as Player;
+                if (player != null)
+                {
+                    player.AddMagicExp(BelongMagic.ItemInfo, 
+                        Utils.GetMagicExp(character.Level));
+                }
             }
 
             Destroy();

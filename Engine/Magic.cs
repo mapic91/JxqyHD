@@ -334,7 +334,10 @@ namespace Engine
         {
             if (_level == null ||
                 !_level.ContainsKey(level)) return this;
-            return _level[level];
+            var magic = _level[level];
+            //Assign item info to level magic
+            magic.ItemInfo = ItemInfo;
+            return magic;
         }
 
         public enum AddonEffect

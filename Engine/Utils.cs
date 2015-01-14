@@ -510,5 +510,16 @@ namespace Engine
             if (npcLevel > 15) npcLevel = 15;
             return _levelExp[npcLevel];
         }
+
+        public static int GetMagicExp(int hitedCharacterLevel)
+        {
+            var exp = Math.Pow(hitedCharacterLevel,
+                1.0 + 0.343*hitedCharacterLevel/100.0);
+            if (exp < 3)
+            {
+                exp = 3;
+            }
+            return (int) exp;
+        }
     }
 }

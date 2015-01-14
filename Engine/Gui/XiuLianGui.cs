@@ -84,6 +84,7 @@ namespace Engine.Gui
         public void UpdateItem()
         {
             var info =  MagicListManager.GetItemInfo(ItemIndex);
+            Globals.ThePlayer.XiuLianMagic = info;
             if (info != null)
             {
                 _levelText.Text = info.Level + "/10";
@@ -106,6 +107,7 @@ namespace Engine.Gui
         {
             if(!IsShow) return;
             base.Update(gameTime);
+            UpdateItem();
             _infoItem.Update(gameTime);
             _levelText.Update(gameTime);
             _expText.Update(gameTime);

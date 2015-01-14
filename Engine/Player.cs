@@ -29,6 +29,7 @@ namespace Engine
         private float _standingMilliseconds;
 
         private MagicListManager.MagicItemInfo _currentMagicInUse;
+        private MagicListManager.MagicItemInfo _xiuLianMagic;
 
         #region Public properties
 
@@ -50,6 +51,30 @@ namespace Engine
             {
                 if (value != null && value.TheMagic != null)
                     _currentMagicInUse = value;
+            }
+        }
+
+        public MagicListManager.MagicItemInfo XiuLianMagic
+        {
+            get { return _xiuLianMagic; }
+            set
+            {
+                if (value != null &&
+                    value.TheMagic != null &&
+                    CurrentMagicInUse != null &&
+                    CurrentMagicInUse.TheMagic != null &&
+                    value.TheMagic.Name == CurrentMagicInUse.TheMagic.Name)
+                {
+                    //Can't use magic when magic is in xiulian
+                    _currentMagicInUse = null;
+                }
+                
+                if (value != null && value.TheMagic == null)
+                {
+                    //No magic
+                    value = null;
+                }
+                _xiuLianMagic = value;
             }
         }
 
@@ -436,6 +461,34 @@ namespace Engine
             {
                 ToLevel(Exp);
                 GuiManager.ShowMessage(Name + "的等级提升了");
+            }
+        }
+
+        public void AddMagicExp(MagicListManager.MagicItemInfo info, int amount)
+        {
+            if (info == null)
+            {
+                //info is null, maybe attack magic(FlyIni,FlyIni2), add exp to current use magic
+                info = CurrentMagicInUse;
+            }
+            if (info == null ||
+                info.TheMagic == null ||
+                info.TheMagic.LevelupExp == 0 //Max level
+                )
+            {
+                return;
+            }
+            info.Exp += amount;
+            var levelupExp = info.TheMagic.LevelupExp;
+            if (info.Exp >= levelupExp)
+            {
+                info.TheMagic = info.TheMagic.GetLevel(info.TheMagic.CurrentLevel+1);
+                if (info.TheMagic.LevelupExp == 0)
+                {
+                    //Magic is max level, make exp equal max exp
+                    info.Exp = levelupExp;
+                }
+                GuiManager.ShowMessage("武功 " + info.TheMagic.Name + " 升级了");
             }
         }
 
