@@ -167,6 +167,9 @@ namespace Engine
                 }
             }
 
+            //Check FixedPos move path and update
+            UpdateMoveAlongFixedPath();
+
             base.Update(gameTime);
         }
     }

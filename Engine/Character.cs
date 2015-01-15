@@ -818,7 +818,7 @@ namespace Engine
             }
         }
 
-        private void UpdateMoveAlongFixedPath()
+        protected void UpdateMoveAlongFixedPath()
         {
             if (_fixedPosTilePositionList != null &&
                 _fixedPosTilePositionList.Count > 1 &&
@@ -1986,8 +1986,6 @@ namespace Engine
 
             //Check follow target 
             UpdateFollow();
-            //Check FixedPos move path and update
-            UpdateMoveAlongFixedPath();
 
             switch ((CharacterState)State)
             {
