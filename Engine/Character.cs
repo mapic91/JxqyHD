@@ -797,39 +797,6 @@ namespace Engine
         }
 
         /// <summary>
-        /// Check wheather follow target is findable.Is no follow target do nothing.
-        /// Dirived class can override <see cref="FollowTargetFound"/> <see cref="FollowTargetLost"/> method to change character behaviour.
-        /// </summary>
-        private void UpdateFollow()
-        {
-            if (FollowTarget == null) return;
-            var targetTilePosition = FollowTarget.TilePosition;
-
-            int tileDistance;
-            var attackCanReach = Engine.PathFinder.CanMagicReach(TilePosition, targetTilePosition, out tileDistance);
-
-            if ((attackCanReach && tileDistance <= VisionRadius) || //target in view range
-                (IsFollowTargetFound && tileDistance <= VisionRadius) //target already find and not lost
-                )
-            {
-                IsFollowTargetFound = true;
-            }
-            else
-            {
-                IsFollowTargetFound = false;
-            }
-
-            if (IsFollowTargetFound)
-            {
-                FollowTargetFound(attackCanReach);
-            }
-            else
-            {
-                FollowTargetLost();
-            }
-        }
-
-        /// <summary>
         /// Tell character to move along the fixed path provided.
         /// </summary>
         /// <param name="tilePositionList">Path to move along.</param>
@@ -925,6 +892,39 @@ namespace Engine
             {
                 //Do nothing
                 return;
+            }
+        }
+
+        /// <summary>
+        /// Check wheather follow target is findable.Is no follow target do nothing.
+        /// Dirived class can override <see cref="FollowTargetFound"/> <see cref="FollowTargetLost"/> method to change character behaviour.
+        /// </summary>
+        protected void PerformeFollow()
+        {
+            if (FollowTarget == null) return;
+            var targetTilePosition = FollowTarget.TilePosition;
+
+            int tileDistance;
+            var attackCanReach = Engine.PathFinder.CanMagicReach(TilePosition, targetTilePosition, out tileDistance);
+
+            if ((attackCanReach && tileDistance <= VisionRadius) || //target in view range
+                (IsFollowTargetFound && tileDistance <= VisionRadius) //target already find and not lost
+                )
+            {
+                IsFollowTargetFound = true;
+            }
+            else
+            {
+                IsFollowTargetFound = false;
+            }
+
+            if (IsFollowTargetFound)
+            {
+                FollowTargetFound(attackCanReach);
+            }
+            else
+            {
+                FollowTargetLost();
             }
         }
 
@@ -2012,9 +2012,6 @@ namespace Engine
                 FrozenSeconds -= (float)elapsedGameTime.TotalSeconds;
                 elapsedGameTime = new TimeSpan(elapsedGameTime.Ticks / 2);
             }
-
-            //Check follow target 
-            UpdateFollow();
 
             switch ((CharacterState)State)
             {

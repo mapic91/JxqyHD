@@ -22,6 +22,7 @@ namespace Engine
                 }
                 return _actionPathTilePositionList;
             }
+            set { _actionPathTilePositionList = value; }
         }
 
         #region public properties
@@ -69,6 +70,7 @@ namespace Engine
         }
         #endregion Ctor
 
+        #region Private method
         private void MoveToPlayer()
         {
             if (!Globals.ThePlayer.IsStanding())
@@ -76,6 +78,78 @@ namespace Engine
                 MoveTo(Globals.ThePlayer.TilePosition);
             }
         }
+
+        private void RandWalk(List<Vector2> tilePositionList, int randMaxValue, bool isFlyer)
+        {
+            if (tilePositionList == null ||
+                tilePositionList.Count < 2 ||
+                !IsStanding()) return;
+            if (Globals.TheRandom.Next(0, randMaxValue) == 0)
+            {
+                var tilePosition = tilePositionList[Globals.TheRandom.Next(0, tilePositionList.Count)];
+                MoveTo(tilePosition, isFlyer);
+            }
+        }
+
+        private void LoopWalk(List<Vector2> tilePositionList, ref int currentPathIndex, bool isFlyer)
+        {
+            if (tilePositionList == null ||
+                tilePositionList.Count < 2) return;
+            if (IsStanding())
+            {
+                currentPathIndex++;
+                if (currentPathIndex > tilePositionList.Count - 1)
+                {
+                    currentPathIndex = 0;
+                }
+                MoveTo(tilePositionList[currentPathIndex], isFlyer);
+            }
+        }
+
+        private void MoveTo(Vector2 tilePosition, bool isFlyer)
+        {
+            if (isFlyer)
+            {
+                //Flyer can move in straight line use fixed path move style.
+                FixedPathMoveToDestination(tilePosition);
+            }
+            else
+            {
+                //Find path and walk to destionation.
+                WalkTo(tilePosition);
+            }
+        }
+
+        /// <summary>
+        /// Get rand path, path first step is current character tile position.
+        /// </summary>
+        /// <param name="count">Path step count.</param>
+        /// <param name="checkObstacle">If true, tile position is obstacle for character is no added to path.</param>
+        /// <returns>The rand path.</returns>
+        private List<Vector2> GetRandTilePath(int count, bool checkObstacle)
+        {
+            var path = new List<Vector2>() { TilePosition };
+
+            int maxTry = count * 3;//For performace, otherwise method may run forever.
+            const int maxOffset = 15;
+
+            for (var i = 1; i < count; i++)
+            {
+                Vector2 tilePosition;
+                do
+                {
+                    if (--maxTry < 0) return path;
+
+                    tilePosition = Globals.TheMap.GetRandPositon(TilePosition, maxOffset);
+                } while (tilePosition == Vector2.Zero ||
+                    (checkObstacle && Globals.TheMap.IsObstacleForCharacter(tilePosition)));
+                path.Add(tilePosition);
+            }
+
+            return path;
+        }
+
+        #endregion Private method
 
         /// <summary>
         /// Walk or run to destination.
@@ -182,8 +256,19 @@ namespace Engine
                 }
             }
 
-            //Follow target not found, do something else.
-            if (FollowTarget == null)
+            //Follow target
+            PerformeFollow();
+
+            if (IsFollowTargetFound)
+            {
+                //Character find follow target, character may move away far away from the initial base tile position.
+                //Assing ActionPathTilePositionList to null made it regenerating new path use new base tile postion when getted.
+                ActionPathTilePositionList = null;
+            }
+
+            ////Follow target not found, do something else.
+            if (FollowTarget == null || 
+                !IsFollowTargetFound)
             {
                 if (Kind == (int)CharacterType.Flyer &&
                     !string.IsNullOrEmpty(FixedPos) &&
@@ -227,76 +312,6 @@ namespace Engine
             }
 
             base.Update(gameTime);
-        }
-
-        private void RandWalk(List<Vector2> tilePositionList, int randMaxValue, bool isFlyer)
-        {
-            if (tilePositionList == null ||
-                tilePositionList.Count < 2 ||
-                !IsStanding()) return;
-            if (Globals.TheRandom.Next(0, randMaxValue) == 0)
-            {
-                var tilePosition = tilePositionList[Globals.TheRandom.Next(0, tilePositionList.Count)];
-                MoveTo(tilePosition, isFlyer);
-            }
-        }
-
-        private void LoopWalk(List<Vector2> tilePositionList, ref int currentPathIndex, bool isFlyer)
-        {
-            if (tilePositionList == null ||
-                tilePositionList.Count < 2) return;
-            if (IsStanding())
-            {
-                currentPathIndex++;
-                if (currentPathIndex > tilePositionList.Count - 1)
-                {
-                    currentPathIndex = 0;
-                }
-                MoveTo(tilePositionList[currentPathIndex], isFlyer);
-            }
-        }
-
-        private void MoveTo(Vector2 tilePosition, bool isFlyer)
-        {
-            if (isFlyer)
-            {
-                //Flyer can move in straight line use fixed path move style.
-                FixedPathMoveToDestination(tilePosition);
-            }
-            else
-            {
-                //Find path and walk to destionation.
-                WalkTo(tilePosition);
-            }
-        }
-
-        /// <summary>
-        /// Get rand path, path first step is current character tile position.
-        /// </summary>
-        /// <param name="count">Path step count.</param>
-        /// <param name="checkObstacle">If true, tile position is obstacle for character is no added to path.</param>
-        /// <returns>The rand path.</returns>
-        private List<Vector2> GetRandTilePath(int count, bool checkObstacle)
-        {
-            var path = new List<Vector2>() { TilePosition };
-
-            int maxTry = count * 3;//For performace, otherwise method may run forever.
-            const int maxOffset = 15;
-
-            for (var i = 1; i < count; i++)
-            {
-                Vector2 tilePosition;
-                do
-                {
-                    if (--maxTry < 0) return path;
-
-                    tilePosition = Globals.TheMap.GetRandPositon(TilePosition, maxOffset);
-                } while (tilePosition == Vector2.Zero ||
-                    (checkObstacle && Globals.TheMap.IsObstacleForCharacter(tilePosition)));
-                path.Add(tilePosition);
-            }
-
-            return path;
         }
     }
 }
