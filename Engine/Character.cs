@@ -78,10 +78,11 @@ namespace Engine
         private bool _isInInteract;
         private int _directionBeforInteract;
         private int _specialActionLastDirection; //Direction before play special action
-        private List<Vector2> _fixedPosTilePositionList;
         private float _fixedPosDistanceToMove;
         private Vector2 _fixedPosMoveDestinationPixelPostion = Vector2.Zero;
+        protected List<Vector2> FixedPosTilePositionList;
         protected Magic MagicUse;
+
         #endregion Field
 
         #region Protected properties
@@ -104,7 +105,7 @@ namespace Engine
         public bool IsJumpDisabled { protected set; get; }
         public bool IsRunDisabled { protected set; get; }
         public Character FollowTarget { protected set; get; }
-        public bool IsFollowTargetFinded { protected set; get; }
+        public bool IsFollowTargetFound { protected set; get; }
         public bool IsInSpecialAction { protected set; get; }
 
         public bool IsDeathScriptEnd
@@ -424,7 +425,7 @@ namespace Engine
             set
             {
                 _fixedPos = value;
-                _fixedPosTilePositionList = ToFixedPosTilePositionList(value);
+                FixedPosTilePositionList = ToFixedPosTilePositionList(value);
             }
         }
 
@@ -787,7 +788,8 @@ namespace Engine
         }
 
         /// <summary>
-        /// Check follow target and perform follow
+        /// Check wheather follow target is findable.Is no follow target do nothing.
+        /// Dirived class can override <see cref="FollowTargetFound"/> <see cref="FollowTargetLost"/> method to change character behaviour.
         /// </summary>
         private void UpdateFollow()
         {
@@ -798,19 +800,19 @@ namespace Engine
             var attackCanReach = Engine.PathFinder.CanMagicReach(TilePosition, targetTilePosition, out tileDistance);
 
             if ((attackCanReach && tileDistance <= VisionRadius) || //target in view range
-                (IsFollowTargetFinded && tileDistance <= VisionRadius) //target already find and not lost
+                (IsFollowTargetFound && tileDistance <= VisionRadius) //target already find and not lost
                 )
             {
-                IsFollowTargetFinded = true;
+                IsFollowTargetFound = true;
             }
             else
             {
-                IsFollowTargetFinded = false;
+                IsFollowTargetFound = false;
             }
 
-            if (IsFollowTargetFinded)
+            if (IsFollowTargetFound)
             {
-                FollowTargetFinded(attackCanReach);
+                FollowTargetFound(attackCanReach);
             }
             else
             {
@@ -818,13 +820,17 @@ namespace Engine
             }
         }
 
-        protected void UpdateMoveAlongFixedPath()
+        /// <summary>
+        /// Tell character to move along the fixed path provided.
+        /// </summary>
+        /// <para name="tilePositionList">Path to move along.</para>
+        /// <returns>True if character can move along the path.Oherwise false.</returns>
+        protected bool MoveAlongFixedPath(List<Vector2> tilePositionList)
         {
-            if (_fixedPosTilePositionList != null &&
-                _fixedPosTilePositionList.Count > 1 &&
-                Kind == (int)CharacterType.Flyer)
+            if (tilePositionList != null &&
+                tilePositionList.Count > 1)
             {
-                var count = _fixedPosTilePositionList.Count;
+                var count = tilePositionList.Count;
                 if (IsStanding())
                 {
                     if (NextFixedPosStep >= count - 1)
@@ -835,12 +841,15 @@ namespace Engine
                     {
                         NextFixedPosStep++;
                     }
-                    _fixedPosMoveDestinationPixelPostion = Map.ToPixelPosition(_fixedPosTilePositionList[NextFixedPosStep]);
+                    _fixedPosMoveDestinationPixelPostion = Map.ToPixelPosition(tilePositionList[NextFixedPosStep]);
                     _fixedPosDistanceToMove = Vector2.Distance(PositionInWorld, _fixedPosMoveDestinationPixelPostion);
                     MovedDistance = 0f;
                     SetState(CharacterState.Walk);
                 }
+
+                return true;
             }
+            return false;
         }
         #endregion Private method
 
@@ -900,7 +909,7 @@ namespace Engine
             }
         }
 
-        protected virtual void FollowTargetFinded(bool attackCanReach)
+        protected virtual void FollowTargetFound(bool attackCanReach)
         {
             WalkTo(FollowTarget.TilePosition);
         }
@@ -1896,7 +1905,7 @@ namespace Engine
             foreach (var character in characters)
             {
                 if (character.FollowTarget != null &&
-                    character.IsFollowTargetFinded &&
+                    character.IsFollowTargetFound &&
                     Vector2.Distance(character.PositionInWorld, character.FollowTarget.PositionInWorld) <
                     Vector2.Distance(character.PositionInWorld, target.PositionInWorld))
                 {
@@ -1923,7 +1932,7 @@ namespace Engine
         public void Follow(Character target)
         {
             FollowTarget = target;
-            IsFollowTargetFinded = true;
+            IsFollowTargetFound = true;
         }
 
         public void SetSpecialAction(string asfFileName)

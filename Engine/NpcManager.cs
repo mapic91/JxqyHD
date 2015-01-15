@@ -492,5 +492,19 @@ namespace Engine
             foreach (var npc in _list)
                 npc.Draw(spriteBatch);
         }
+
+        /// <summary>
+        /// All fighters cancle attack to attacking target.
+        /// </summary>
+        public static void CancleFighterAttacking()
+        {
+            foreach (var npc in _list)
+            {
+                if (npc.IsFighter)
+                {
+                    npc.CancleAttackTarget();
+                }
+            }
+        }
     }
 }

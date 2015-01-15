@@ -88,7 +88,7 @@ namespace Engine
 
         public override bool HasObstacle(Vector2 tilePosition)
         {
-            if (Kind == (int) CharacterType.Flyer) return false;
+            if (Kind == (int)CharacterType.Flyer) return false;
 
             return (NpcManager.IsObstacle(tilePosition) ||
                     ObjManager.IsObstacle(tilePosition) ||
@@ -101,7 +101,7 @@ namespace Engine
                 PositionInWorld - Globals.ListenerPosition);
         }
 
-        protected override void FollowTargetFinded(bool attackCanReach)
+        protected override void FollowTargetFound(bool attackCanReach)
         {
             if (IsAIDisabled)
             {
@@ -127,6 +127,8 @@ namespace Engine
         public static void DisableAI()
         {
             IsAIDisabled = true;
+            //Cancle attack
+            NpcManager.CancleFighterAttacking();
         }
 
         public static void EnableAI()
@@ -136,39 +138,45 @@ namespace Engine
 
         public override void Update(GameTime gameTime)
         {
-            if (IsAIDisabled)
+            if (!IsFollowTargetFound || // Not find target.
+                FollowTarget == null || // Follow target not assign.
+                FollowTarget.IsDeathInvoked || //Follow target is death.
+                IsAIDisabled) //Npc AI is disabled.
             {
-                //do nothing
-            }
-            else
-            {
-                if (!IsFollowTargetFinded ||
-                    FollowTarget == null ||
-                    FollowTarget.IsDeathInvoked)
+                if (IsEnemy)
                 {
-                    if (IsEnemy)
+                    FollowTarget = IsAIDisabled ? null : NpcManager.GetClosedPlayerOrFighterFriend(PositionInWorld);
+                }
+                else if (IsFighterFriend)
+                {
+                    FollowTarget = IsAIDisabled ? null : NpcManager.GetClosedEnemy(PositionInWorld);
+                    //Fighter friend may be parter
+                    if (FollowTarget == null && IsPartner)
                     {
-                        FollowTarget = NpcManager.GetClosedPlayerOrFighterFriend(PositionInWorld);
-                    }
-                    else if (IsFighterFriend)
-                    {
-                        FollowTarget = NpcManager.GetClosedEnemy(PositionInWorld);
-                        //Fighter friend may be parter
-                        if (FollowTarget == null && IsPartner)
-                        {
-                            //Can't find enemy, move to player
-                            MoveToPlayer();
-                        }
-                    }
-                    else if (IsPartner)
-                    {
+                        //Can't find enemy, move to player
                         MoveToPlayer();
                     }
                 }
+                else if (IsPartner)
+                {
+                    MoveToPlayer();
+                }
             }
 
-            //Check FixedPos move path and update
-            UpdateMoveAlongFixedPath();
+            if (FollowTarget == null)
+            {
+                if (Kind == (int)CharacterType.Flyer &&
+                    !string.IsNullOrEmpty(FixedPos) &&
+                    MoveAlongFixedPath(FixedPosTilePositionList))
+                {
+                    //FixedPos setted and flyer can move along it.
+                    //Do nothing.
+                }
+                else
+                {
+
+                }
+            }
 
             base.Update(gameTime);
         }
