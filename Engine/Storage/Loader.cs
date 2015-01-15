@@ -51,7 +51,9 @@ namespace Engine.Storage
         }
 
         /// <summary>
-        /// Goods list must load first
+        /// Goods and magic list must load first.
+        /// Player using goods list to apply equip special effect.
+        /// Player using magic list to load current use magic.
         /// </summary>
         private static void LoadPlayer()
         {
@@ -111,8 +113,10 @@ namespace Engine.Storage
             LoadGameFile();
             LoadMagicGoodMemoList();
             LoadPlayer();
-            //Update magic GUI after player loaded to apply xiulian magic to player
-            GuiManager.UpdateMagicView();
+            //Apply xiulian magic to player
+            Globals.ThePlayer.XiuLianMagic = MagicListManager.GetItemInfo(
+                MagicListManager.XiuLianIndex);
+
             LoadPartner();
             LoadTraps();
 

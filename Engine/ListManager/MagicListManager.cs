@@ -10,6 +10,7 @@ namespace Engine.ListManager
     public static class MagicListManager
     {
         private const int MaxMagic = 49;
+        private const int MagicListIndexBegin = 1;
         private const int StoreListStart = 1;
         private const int StoreListEnd = 36;
         private static readonly MagicItemInfo[] MagicList = new MagicItemInfo[MaxMagic + 1];
@@ -79,7 +80,7 @@ namespace Engine.ListManager
 
         public static bool IndexInRange(int index)
         {
-            return (index > 0 && index <= MaxMagic);
+            return (index >= MagicListIndexBegin && index <= MaxMagic);
         }
 
         public static bool IndexInBottomRange(int index)
@@ -183,6 +184,26 @@ namespace Engine.ListManager
         public static MagicItemInfo GetItemInfo(int index)
         {
             return IndexInRange(index) ? MagicList[index] : null;
+        }
+
+        /// <summary>
+        /// Get index of info in list.
+        /// </summary>
+        /// <param name="info">Magic item info to find.</param>
+        /// <returns>Item index.Return 0 if not found.</returns>
+        public static int GetItemIndex(MagicItemInfo info)
+        {
+            if (info != null)
+            {
+                for (int i = MagicListIndexBegin; i <= MaxMagic; i++)
+                {
+                    if (info == MagicList[i])
+                    {
+                        return i;
+                    }
+                }
+            }
+            return 0;
         }
 
         public static bool AddMagicToList(string fileName, out int index, out Magic outMagic)

@@ -35,6 +35,21 @@ namespace Engine
         /// Can't use mana
         /// </summary>
         public bool ManaLimit { set; get; }
+        /// <summary>
+        /// Current use magic index in magic list
+        /// </summary>
+        public int CurrentUseMagicIndex 
+        {
+            set
+            {
+                CurrentMagicInUse = MagicListManager.GetItemInfo(value);
+                
+            }
+            get
+            {
+                return MagicListManager.GetItemIndex(CurrentMagicInUse);
+            }
+        }
         public bool CanInput
         {
             get { return !Globals.IsInputDisabled && MouseInBound(); }
@@ -212,16 +227,18 @@ namespace Engine
 
         protected override bool CanUseMagic()
         {
+            if (MagicUse == null)
+            {
+                return false;
+            }
             if (Mana < MagicUse.ManaCost || ManaLimit)
             {
                 GuiManager.ShowMessage("没有足够的内力使用这种武功");
                 return false;
             }
-            else
-            {
-                Mana -= MagicUse.ManaCost;
-                return true;
-            }
+
+            Mana -= MagicUse.ManaCost;
+            return true;
         }
 
         protected override bool CanRunning()
@@ -302,6 +319,7 @@ namespace Engine
         {
             base.Save(keyDataCollection);
             AddKey(keyDataCollection, "Money", Money);
+            AddKey(keyDataCollection, "CurrentUseMagicIndex", CurrentUseMagicIndex);
             AddKey(keyDataCollection, "LevelIni", LevelIniFile);
             AddKey(keyDataCollection, "ManaLimit", ManaLimit);
         }
