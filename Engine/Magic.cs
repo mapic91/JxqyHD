@@ -38,11 +38,23 @@ namespace Engine
         private int _manaCost;
         private int _levelupExp;
         private bool _isOk;
+        private MagicListManager.MagicItemInfo _iteminfo;
 
         #region Public properties
         public AddonEffect AdditionalEffect { set; get; }
 
-        public MagicListManager.MagicItemInfo ItemInfo { set; get; }
+        public MagicListManager.MagicItemInfo ItemInfo
+        {
+            set
+            {
+                _iteminfo = value;
+                if (_attackFile != null)
+                {
+                    _attackFile.ItemInfo = value;
+                }
+            }
+            get { return _iteminfo; }
+        }
 
         public string FileName { private set; get; }
 

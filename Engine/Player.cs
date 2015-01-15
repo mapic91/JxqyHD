@@ -182,6 +182,8 @@ namespace Engine
             }
         }
 
+        #region Protected method
+
         protected override bool MagicFromCache
         {
             get { return false; }
@@ -283,6 +285,21 @@ namespace Engine
                 return;
             }
         }
+
+        protected override void OnAttacking(Vector2 attackDestinationPixelPosition)
+        {
+            if (XiuLianMagic != null && 
+                XiuLianMagic.TheMagic != null &&
+                XiuLianMagic.TheMagic.AttackFile != null)
+            {
+                MagicManager.UseMagic(this, 
+                    XiuLianMagic.TheMagic.AttackFile,
+                    PositionInWorld,
+                    attackDestinationPixelPosition);
+            }
+        }
+
+        #endregion Protected method
 
         #region Public method
         public override void Save(KeyDataCollection keyDataCollection)

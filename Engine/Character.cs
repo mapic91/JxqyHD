@@ -960,6 +960,15 @@ namespace Engine
         {
             SetState((CharacterState)State, true);
         }
+
+        /// <summary>
+        /// Override this to do something when attacking(use magic FlyIni FlyIni2).
+        /// </summary>
+        /// <param name="attackDestinationPixelPosition">Attacking destination</param>
+        protected virtual void OnAttacking(Vector2 attackDestinationPixelPosition)
+        {
+            //Do nothing here
+        }
         #endregion Protected method
 
         #region Public method
@@ -2038,6 +2047,10 @@ namespace Engine
                             magic,
                             PositionInWorld,
                             _attackDestination);
+
+                        //Do somethig when attacking
+                        OnAttacking(_attackDestination);
+
                         StandingImmediately();
                     }
                     else base.Update(gameTime);

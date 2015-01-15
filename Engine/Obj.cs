@@ -222,13 +222,8 @@ namespace Engine
                 switch (nameValue[0])
                 {
                     case "ObjName":
-                        info.SetValue(this, nameValue[1], null);
-                        break;
                     case "ScriptFile":
-                        if (!string.IsNullOrEmpty(nameValue[1]))
-                            info.SetValue(this,
-                                new ScriptParser(Utils.GetScriptFilePath(nameValue[1]), this),
-                                null);
+                        info.SetValue(this, nameValue[1], null);
                         break;
                     case "WavFile":
                         SetWaveFile(nameValue[1]);
