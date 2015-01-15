@@ -296,6 +296,11 @@ namespace Engine
                     y < _mapRowCounts);
         }
 
+        private bool IsTileInMapRange(Vector2 tilePosition)
+        {
+            return IsTileInMapRange((int) tilePosition.X, (int) tilePosition.Y);
+        }
+
         private bool IsTileInMapViewRange(int col, int row)
         {
             return (col < MapColumnCounts - 1 &&
@@ -693,6 +698,26 @@ namespace Engine
                 _mapRowCounts =
                 _mapPixelWidth =
                 _mapPixelHeight = 0;
+        }
+
+        /// <summary>
+        /// Get rand position in map.
+        /// </summary>
+        /// <param name="tilePostion">Base tile positon.</param>
+        /// <param name="max">Max x,y offset to the base tile posiont.</param>
+        /// <returns>The rand tile positon.<see cref="Vector2.Zero"/> if can't find the tile in map range.</returns>
+        public Vector2 GetRandPositon(Vector2 tilePostion, int max)
+        {
+            var randPosition = Vector2.Zero;
+            var maxtry = 10;
+            do
+            {
+                maxtry--;
+                randPosition.X = tilePostion.X + Globals.TheRandom.Next(0, max);
+                randPosition.Y = tilePostion.Y + Globals.TheRandom.Next(0, max);
+            } while (!IsTileInMapRange(randPosition) || maxtry < 0);
+
+            return maxtry< 0 ? Vector2.Zero : randPosition;
         }
 
         public void Update(GameTime gameTime)

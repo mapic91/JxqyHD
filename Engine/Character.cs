@@ -78,9 +78,14 @@ namespace Engine
         private bool _isInInteract;
         private int _directionBeforInteract;
         private int _specialActionLastDirection; //Direction before play special action
-        private float _fixedPosDistanceToMove;
-        private Vector2 _fixedPosMoveDestinationPixelPostion = Vector2.Zero;
-        protected List<Vector2> FixedPosTilePositionList;
+        private float _fixedPathDistanceToMove;
+        private Vector2 _fixedPathMoveDestinationPixelPostion = Vector2.Zero;
+        /// <summary>
+        /// List of the fixed path tile position.
+        /// When load <see cref="FixedPos"/>, <see cref="FixedPos"/> is converted to list and stored on this value.
+        /// </summary>
+        protected List<Vector2> FixedPathTilePositionList;
+        protected int _currentFixedPosIndex;
         protected Magic MagicUse;
 
         #endregion Field
@@ -425,11 +430,15 @@ namespace Engine
             set
             {
                 _fixedPos = value;
-                FixedPosTilePositionList = ToFixedPosTilePositionList(value);
+                FixedPathTilePositionList = ToFixedPosTilePositionList(value);
             }
         }
 
-        public int NextFixedPosStep { set; get; }
+        public int CurrentFixedPosIndex
+        {
+            get { return _currentFixedPosIndex; }
+            set { _currentFixedPosIndex = value; }
+        }
 
         public int Idle
         {
@@ -823,9 +832,10 @@ namespace Engine
         /// <summary>
         /// Tell character to move along the fixed path provided.
         /// </summary>
-        /// <para name="tilePositionList">Path to move along.</para>
+        /// <param name="tilePositionList">Path to move along.</param>
+        /// <param name="currentStepIndex">Current index in path list.</param>
         /// <returns>True if character can move along the path.Oherwise false.</returns>
-        protected bool MoveAlongFixedPath(List<Vector2> tilePositionList)
+        protected bool MoveAlongFixedPath(List<Vector2> tilePositionList, ref int currentStepIndex)
         {
             if (tilePositionList != null &&
                 tilePositionList.Count > 1)
@@ -833,23 +843,32 @@ namespace Engine
                 var count = tilePositionList.Count;
                 if (IsStanding())
                 {
-                    if (NextFixedPosStep >= count - 1)
+                    if (currentStepIndex >= count - 1)
                     {
-                        NextFixedPosStep = 0;
+                        currentStepIndex = 0;
                     }
                     else
                     {
-                        NextFixedPosStep++;
+                        currentStepIndex++;
                     }
-                    _fixedPosMoveDestinationPixelPostion = Map.ToPixelPosition(tilePositionList[NextFixedPosStep]);
-                    _fixedPosDistanceToMove = Vector2.Distance(PositionInWorld, _fixedPosMoveDestinationPixelPostion);
-                    MovedDistance = 0f;
-                    SetState(CharacterState.Walk);
+                    FixedPathMoveToDestination(tilePositionList[currentStepIndex]);
                 }
 
                 return true;
             }
             return false;
+        }
+
+        /// <summary>
+        /// Move to destination in fixed path move style.
+        /// </summary>
+        /// <param name="destinationTilePosition">Move destination tile position.</param>
+        protected void FixedPathMoveToDestination(Vector2 destinationTilePosition)
+        {
+            _fixedPathMoveDestinationPixelPostion = Map.ToPixelPosition(destinationTilePosition);
+            _fixedPathDistanceToMove = Vector2.Distance(PositionInWorld, _fixedPathMoveDestinationPixelPostion);
+            MovedDistance = 0f;
+            SetState(CharacterState.Walk);
         }
         #endregion Private method
 
@@ -1045,7 +1064,7 @@ namespace Engine
             AddKey(keyDataCollection, "ManaMax", _manaMax);
             AddKey(keyDataCollection, "ExpBonus", _expBonus);
             AddKey(keyDataCollection, "FixedPos", _fixedPos);
-            AddKey(keyDataCollection, "NextFixedPosStep", NextFixedPosStep);
+            AddKey(keyDataCollection, "CurrentFixedPosIndex", CurrentFixedPosIndex);
             AddKey(keyDataCollection, "Idle", _idle);
             AddKey(keyDataCollection, "NpcIni", _npcIniFileName);
             if (_bodyIni != null)
@@ -1109,7 +1128,8 @@ namespace Engine
                 State == (int)CharacterState.Hurt ||
                 State == (int)CharacterState.Death ||
                 State == (int)CharacterState.FightJump ||
-                IsPetrified) return false;
+                IsPetrified ||
+                _isInInteract) return false;
             return true;
         }
 
@@ -2001,14 +2021,14 @@ namespace Engine
                 case CharacterState.Walk:
                 case CharacterState.FightWalk:
                     {
-                        if (_fixedPosMoveDestinationPixelPostion != Vector2.Zero)
+                        if (_fixedPathMoveDestinationPixelPostion != Vector2.Zero)
                         {
-                            MoveTo(_fixedPosMoveDestinationPixelPostion - PositionInWorld,
+                            MoveTo(_fixedPathMoveDestinationPixelPostion - PositionInWorld,
                                 (float)elapsedGameTime.TotalSeconds * WalkSpeed * 2);
-                            if (MovedDistance >= _fixedPosDistanceToMove)
+                            if (MovedDistance >= _fixedPathDistanceToMove)
                             {
                                 StandingImmediately();
-                                _fixedPosMoveDestinationPixelPostion = Vector2.Zero;
+                                _fixedPathMoveDestinationPixelPostion = Vector2.Zero;
                             }
                         }
                         else
@@ -2145,6 +2165,13 @@ namespace Engine
             Friend,
             Enemy,
             Neutral
+        }
+
+        public enum ActionType
+        {
+            Stand,
+            RandWalk,
+            LoopWalk
         }
         #endregion Type
     }
