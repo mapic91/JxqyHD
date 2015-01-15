@@ -15,6 +15,8 @@ namespace Engine.ListManager
         private static readonly MagicItemInfo[] MagicList = new MagicItemInfo[MaxMagic + 1];
 
         public const int XiuLianIndex = 49;
+        public const int BottomMagicIndexStart = 40;
+        public const int BottomMagicIndexEnd = 44;
         public static void LoadList(string filePath)
         {
             RenewList();
@@ -80,6 +82,16 @@ namespace Engine.ListManager
             return (index > 0 && index <= MaxMagic);
         }
 
+        public static bool IndexInBottomRange(int index)
+        {
+            return (index >= BottomMagicIndexStart && index <= BottomMagicIndexEnd);
+        }
+
+        public static bool IndexInXiuLianIndex(int index)
+        {
+            return index == XiuLianIndex;
+        }
+
         public static void RenewList()
         {
             for (var i = 1; i <= MaxMagic; i++)
@@ -97,6 +109,37 @@ namespace Engine.ListManager
                 var temp = MagicList[index1];
                 MagicList[index1] = MagicList[index2];
                 MagicList[index2] = temp;
+
+                if (Globals.ThePlayer != null)
+                {
+                    //Current magic in use
+                    var info = Globals.ThePlayer.CurrentMagicInUse;
+                    if (info != null)
+                    {
+                        var inbottom1 = IndexInBottomRange(index1);
+                        var inbottom2 = IndexInBottomRange(index2);
+                        if (inbottom1 != inbottom2)
+                        {
+                            if (info == MagicList[index1] ||
+                                info == MagicList[index2])
+                            {
+                                //Bottom magic item exchange out, player can't use this magic anymore.
+                                Globals.ThePlayer.CurrentMagicInUse = null;
+                            }
+                            
+                        }
+                    }
+
+                    //XiuLian magic
+                    if (IndexInXiuLianIndex(index1))
+                    {
+                        Globals.ThePlayer.XiuLianMagic = MagicList[index1];
+                    }
+                    if (IndexInXiuLianIndex(index2))
+                    {
+                        Globals.ThePlayer.XiuLianMagic = MagicList[index2];
+                    }
+                }
             }
         }
 

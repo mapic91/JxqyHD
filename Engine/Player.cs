@@ -46,7 +46,13 @@ namespace Engine
             set
             {
                 if (value != null && value.TheMagic != null)
+                {
                     _currentMagicInUse = value;
+                }
+                else
+                {
+                    _currentMagicInUse = null;
+                }
             }
         }
 
@@ -55,16 +61,6 @@ namespace Engine
             get { return _xiuLianMagic; }
             set
             {
-                if (value != null &&
-                    value.TheMagic != null &&
-                    CurrentMagicInUse != null &&
-                    CurrentMagicInUse.TheMagic != null &&
-                    value.TheMagic.Name == CurrentMagicInUse.TheMagic.Name)
-                {
-                    //Can't use magic when magic is in xiulian
-                    _currentMagicInUse = null;
-                }
-                
                 if (value != null && value.TheMagic == null)
                 {
                     //No magic

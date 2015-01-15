@@ -227,7 +227,9 @@ namespace Engine
 
         public void Begin()
         {
+            //Start play FlyingImage
             ResetPlay();
+
             if (Velocity != 0)//Move 30
             {
                 var second = 30f / Velocity;
@@ -275,10 +277,13 @@ namespace Engine
                     Texture = BelongMagic.VanishImage;
                     PlayFrames(FrameCountsPerDirection);
                 }
+                else
+                {
+                    _isDestroyed = true;
+                }
                 SoundManager.Play3DSoundOnece(BelongMagic.VanishSound,
                 PositionInWorld - Globals.ListenerPosition);
             }
-
         }
 
         public void SetPath(LinkedList<Vector2> paths)
@@ -286,6 +291,9 @@ namespace Engine
             _paths = paths;
         }
 
+        /// <summary>
+        /// Stop play than play from begin.
+        /// </summary>
         public void ResetPlay()
         {
             var framesToPlay = BelongMagic.LifeFrame;

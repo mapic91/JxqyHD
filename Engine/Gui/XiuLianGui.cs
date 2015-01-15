@@ -84,10 +84,6 @@ namespace Engine.Gui
         public void UpdateItem()
         {
             var info =  MagicListManager.GetItemInfo(ItemIndex);
-            if (Globals.ThePlayer != null)
-            {
-                Globals.ThePlayer.XiuLianMagic = info;
-            }
             if (info != null)
             {
                 _levelText.Text = info.Level + "/10";

@@ -21,9 +21,6 @@ namespace Engine.Gui
                 MagicListManager.ExchangeListItem(data.Index, sourceData.Index);
                 item.BaseTexture = MagicListManager.GetTexture(data.Index);
                 sourceItem.BaseTexture = MagicListManager.GetTexture(sourceData.Index);
-                if(data.Index == MagicListManager.XiuLianIndex || 
-                    sourceData.Index == MagicListManager.XiuLianIndex)
-                    GuiManager.XiuLianInterface.UpdateItem();
             }
         }
 
