@@ -261,8 +261,10 @@ namespace Engine
 
             if (IsFollowTargetFound)
             {
-                //Character find follow target, character may move away far away from the initial base tile position.
-                //Assing ActionPathTilePositionList to null made it regenerating new path use new base tile postion when getted.
+                //Character found follow target and move to follow target.
+                //This may cause character move far away from the initial base tile position.
+                //Assing ActionPathTilePositionList value to null,
+                //when get next time, new path is generated use new base tile postion.
                 ActionPathTilePositionList = null;
             }
 
