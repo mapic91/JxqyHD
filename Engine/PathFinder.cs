@@ -152,46 +152,78 @@ namespace Engine
         {
             if (startTile == endTile) return 0;
 
-            var frontier = new C5.IntervalHeap<Node>();
-            frontier.Add(new Node(startTile, 0f));
-            var count = -1;
-            while (!frontier.IsEmpty)
+            var startX = (int) startTile.X;
+            var startY = (int) startTile.Y;
+            var endX = (int) endTile.X;
+            var endY = (int) endTile.Y;
+
+            if (endY%2 != startY%2)
             {
-                var current = frontier.DeleteMin().Location;
-                count++;
-                if (current == endTile) return count;
-                foreach (var neighbor in FindAllNeighbors(current))
+                //Start tile and end tile is not both at even row or odd row.
+                //Move start tile position to make it at even row or odd row which is same as the end tile row.
+
+                //Change row
+                startY += ((endY < startY) ? 1 : -1);
+
+                //Add some adjust to start tile column value
+                if (endY%2 == 0)
                 {
-                    frontier.Add(new Node(neighbor, GetCost(neighbor, endTile)));
+                    startX += ((endX > startX) ? 1 : 0);
+                }
+                else
+                {
+                    startX += ((endX < startX) ? -1 : 0);
                 }
             }
-            return count;
+
+            var offX = Math.Abs(startX - endX);
+            var offY = Math.Abs(startY - endY)/2;
+
+
+            return offX + offY;
         }
 
-        //lineLength: the tile distance from startTile to endTile
-        public static bool CanMagicReach(Vector2 startTile, Vector2 endTile, out int lineLength)
+        /// <summary>
+        /// Test whether can view target within vision radius.
+        /// </summary>
+        /// <param name="startTile">Viewer tile position.</param>
+        /// <param name="endTile">Target tile position.</param>
+        /// <param name="visionRadius">Viewr vision radius</param>
+        /// <returns>True if can view target without map obstacle.Otherwise false.</returns>
+        public static bool CanViewTarget(Vector2 startTile, Vector2 endTile, int visionRadius)
         {
-            var finded = true;
+            const int maxVisionRadious = 80;
+            if (visionRadius > maxVisionRadious)
+            {
+                //Vision radius is too big, for performace reason return false.
+                return false;
+            }
+
             if (startTile != endTile)
             {
+                if (Globals.TheMap.IsObstacleForMagic(endTile)) return false;
+
                 var path = new LinkedList<Vector2>();
                 var frontier = new C5.IntervalHeap<Node>();
                 frontier.Add(new Node(startTile, 0f));
                 while (!frontier.IsEmpty)
                 {
                     var current = frontier.DeleteMin().Location;
-                    if (Globals.TheMap.IsObstacle(current)) finded = false;
+                    if (current == endTile) return true;
+
+                    if (Globals.TheMap.IsObstacle(current) || visionRadius < 0) return false;
+
                     path.AddLast(current);
-                    if (current == endTile) break;
                     foreach (var neighbor in FindAllNeighbors(current))
                     {
                         frontier.Add(new Node(neighbor, GetCost(neighbor, endTile)));
                     }
+                    visionRadius--;
                 }
-                lineLength = path.Count - 1;
+                return false;
             }
-            else lineLength = 0;
-            return finded;
+            
+            return true;
         }
 
         //Returned path is in pixel position

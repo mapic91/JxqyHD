@@ -209,7 +209,10 @@ namespace Engine
             var partners = GetAllPartner();
             foreach (var partner in partners)
             {
-                partner.MoveTo(destinationTilePosition);
+                if (partner.IsStanding())
+                {
+                    partner.MoveTo(destinationTilePosition);
+                }
             }
         }
 

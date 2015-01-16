@@ -159,6 +159,12 @@ namespace Engine
         /// <param name="destinationTilePosition">Destination tile position</param>
         public void MoveTo(Vector2 destinationTilePosition)
         {
+            if (Globals.TheMap.IsObstacleForCharacter(destinationTilePosition))
+            {
+                //Destination is obstacle, can't move to destination, do nothing.
+                return;
+            }
+
             var distance = Engine.PathFinder.GetTileDistance(TilePosition,
                 destinationTilePosition);
             if (distance > 5)

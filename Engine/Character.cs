@@ -625,7 +625,12 @@ namespace Engine
         private void EndInteract()
         {
             _isInInteract = false;
-            SetDirection(_directionBeforInteract);
+            if (IsStanding())
+            {
+                //Character may moved when in interacting.
+                //Only set back direction when standing.
+                SetDirection(_directionBeforInteract);
+            }
         }
 
         private void CheckStepMove()
@@ -904,14 +909,16 @@ namespace Engine
             if (FollowTarget == null) return;
             var targetTilePosition = FollowTarget.TilePosition;
 
-            int tileDistance;
-            var attackCanReach = Engine.PathFinder.CanMagicReach(TilePosition, targetTilePosition, out tileDistance);
+            var tileDistance = Engine.PathFinder.GetTileDistance(TilePosition, targetTilePosition);
 
-            if ((attackCanReach && tileDistance <= VisionRadius) || //target in view range
-                (IsFollowTargetFound && tileDistance <= VisionRadius) //target already find and not lost
-                )
+            var canSeeTarget = false;
+
+            if (tileDistance <= VisionRadius) //Target in view range
             {
-                IsFollowTargetFound = true;
+                canSeeTarget = Engine.PathFinder.CanViewTarget(TilePosition, targetTilePosition, VisionRadius);
+
+                IsFollowTargetFound = (IsFollowTargetFound || //Target already found and within vision radius
+                                       canSeeTarget); //Character can see target
             }
             else
             {
@@ -920,7 +927,7 @@ namespace Engine
 
             if (IsFollowTargetFound)
             {
-                FollowTargetFound(attackCanReach);
+                FollowTargetFound(canSeeTarget);
             }
             else
             {
@@ -1368,14 +1375,17 @@ namespace Engine
         {
             if (DestinationAttackTilePosition != Vector2.Zero)
             {
-                int tileDistance;
-                var attackCanReach = Engine.PathFinder.CanMagicReach(TilePosition, DestinationAttackTilePosition,
-                    out tileDistance);
+                int tileDistance = Engine.PathFinder.GetTileDistance(TilePosition, DestinationAttackTilePosition);
+               
                 if (tileDistance == AttackRadius)
                 {
-                    if (attackCanReach) return true;
-                    else
-                        MoveToTarget(DestinationAttackTilePosition);
+                    var canSeeTarget = Engine.PathFinder.CanViewTarget(TilePosition, 
+                        DestinationAttackTilePosition,
+                        AttackRadius);
+
+                    if (canSeeTarget) return true;
+
+                    MoveToTarget(DestinationAttackTilePosition);
                 }
                 if (tileDistance > AttackRadius)
                 {
