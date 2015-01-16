@@ -45,7 +45,7 @@ Lum
 Action
 0	站立
 1	走动（随机）
-2	走动（循环）  
+2	走动（循环） (当设置了FixedPos有效，其它无效) 
  
 WalkSpeed
 行走速度
