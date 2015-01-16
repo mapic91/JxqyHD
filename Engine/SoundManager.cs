@@ -26,6 +26,11 @@ namespace Engine
             instance.Play();
         }
 
+        /// <summary>
+        /// Apply 3D effect to sound effect instance.
+        /// </summary>
+        /// <param name="soundEffectInstance">The sound effect instance.</param>
+        /// <param name="direction">The directon and distance from listenr to sound instance.</param>
         public static void Apply3D(SoundEffectInstance soundEffectInstance, Vector2 direction)
         {
             if (soundEffectInstance == null) return;

@@ -17,7 +17,7 @@ namespace Engine
                 if (_actionPathTilePositionList == null)
                 {
                     _actionPathTilePositionList = GetRandTilePath(8, 
-                        Kind != (int)CharacterType.Flyer);
+                        Kind != (int)CharacterKind.Flyer);
                 }
                 return _actionPathTilePositionList;
             }
@@ -29,7 +29,7 @@ namespace Engine
         {
             get
             {
-                if (Kind == (int)CharacterType.Flyer)
+                if (Kind == (int)CharacterKind.Flyer)
                 {
                     return Engine.PathFinder.PathType.PathStraightLine;
                 }
@@ -116,7 +116,7 @@ namespace Engine
 
         public override bool HasObstacle(Vector2 tilePosition)
         {
-            if (Kind == (int)CharacterType.Flyer) return false;
+            if (Kind == (int)CharacterKind.Flyer) return false;
 
             return (NpcManager.IsObstacle(tilePosition) ||
                     ObjManager.IsObstacle(tilePosition) ||
@@ -208,7 +208,7 @@ namespace Engine
             if (FollowTarget == null || 
                 !IsFollowTargetFound)
             {
-                var isFlyer = Kind == (int) CharacterType.Flyer;
+                var isFlyer = Kind == (int) CharacterKind.Flyer;
                 const int randWalkPosibility = 400;
                 const int flyerRandWalkPosibility = 20;
 
@@ -223,13 +223,13 @@ namespace Engine
                 }
                 else
                 {
-                    switch ((CharacterType)Kind)
+                    switch ((CharacterKind)Kind)
                     {
-                        case CharacterType.Normal:
-                        case CharacterType.Fighter:
-                        case CharacterType.GroundAnimal:
-                        case CharacterType.Eventer:
-                        case CharacterType.Flyer:
+                        case CharacterKind.Normal:
+                        case CharacterKind.Fighter:
+                        case CharacterKind.GroundAnimal:
+                        case CharacterKind.Eventer:
+                        case CharacterKind.Flyer:
                             {
                                 switch ((ActionType)Action)
                                 {
@@ -241,7 +241,7 @@ namespace Engine
                                 }
                             }
                             break;
-                        case CharacterType.AfraidPlayerAnimal:
+                        case CharacterKind.AfraidPlayerAnimal:
                             break;
                     }
                 }

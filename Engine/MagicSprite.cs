@@ -98,6 +98,40 @@ namespace Engine
         {
             if (character == null) return;
 
+            //Apply magic special effect
+            switch (BelongMagic.SpecialKind)
+            {
+                case 1:
+                    if (!character.IsFrozened)
+                        character.FrozenSeconds = BelongMagic.CurrentLevel + 1;
+                    break;
+                case 2:
+                    if (!character.IsPoisoned)
+                        character.PoisonSeconds = BelongMagic.CurrentLevel + 1;
+                    break;
+                case 3:
+                    if (!character.IsPetrified)
+                        character.PetrifiedSeconds = BelongMagic.CurrentLevel + 1;
+                    break;
+            }
+
+            //Additional attack effect added to magic when player equip special equipment
+            switch (BelongMagic.AdditionalEffect)
+            {
+                case Magic.AddonEffect.Frozen:
+                    if (!character.IsFrozened)
+                        character.FrozenSeconds = BelongCharacter.Level / 10 + 1;
+                    break;
+                case Magic.AddonEffect.Poision:
+                    if (!character.IsPoisoned)
+                        character.PoisonSeconds = BelongCharacter.Level / 10 + 1;
+                    break;
+                case Magic.AddonEffect.Petrified:
+                    if (!character.IsPetrified)
+                        character.PetrifiedSeconds = BelongCharacter.Level / 10 + 1;
+                    break;
+            }
+
             //Hit ratio
             var targetEvade = character.Evade;
             var belongCharacterEvade = BelongCharacter.Evade;
@@ -119,6 +153,7 @@ namespace Engine
 
             if (Globals.TheRandom.Next(101) <= (int)(hitRatio * 100f))
             {
+                //Character hurted by magic
                 const int minimalEffect = 5;
                 var effect = minimalEffect;
                 var amount = BelongMagic.Effect == 0 ? BelongCharacter.Attack : BelongMagic.Effect;
@@ -145,46 +180,7 @@ namespace Engine
                             break;
                     }
                 }
-                character.AddLife(-effect);
-                if(character.Life > 0)
-                {
-                    if (Globals.TheRandom.Next(4) == 0
-                        && BelongMagic.SpecialKind != 3)//Can't hurted when been petrified 
-                        character.Hurting();
-                }
-            }
-
-            switch (BelongMagic.SpecialKind)
-            {
-                case 1:
-                    if(!character.IsFrozened)
-                        character.FrozenSeconds = BelongMagic.CurrentLevel + 1;
-                    break;
-                case 2:
-                    if(!character.IsPoisoned)
-                        character.PoisonSeconds = BelongMagic.CurrentLevel + 1;
-                    break;
-                case 3:
-                    if(!character.IsPetrified)
-                        character.PetrifiedSeconds = BelongMagic.CurrentLevel + 1;
-                    break;
-            }
-
-            //Additional attack effect when player equip special equipment
-            switch (BelongMagic.AdditionalEffect)
-            {
-                case Magic.AddonEffect.Frozen:
-                    if(!character.IsFrozened)
-                        character.FrozenSeconds = BelongCharacter.Level/10 + 1;
-                    break;
-                case Magic.AddonEffect.Poision:
-                    if(!character.IsPoisoned)
-                        character.PoisonSeconds = BelongCharacter.Level / 10 + 1;
-                    break;
-                case Magic.AddonEffect.Petrified:
-                    if(!character.IsPetrified)
-                        character.PetrifiedSeconds = BelongCharacter.Level / 10 + 1;
-                    break;
+                character.DecreaseLifeAddHurt(effect);
             }
 
             if (BelongCharacter.IsPlayer)

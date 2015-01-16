@@ -69,6 +69,11 @@ namespace Engine
             }
         }
 
+        public int FrameBegin
+        {
+            get { return _frameBegin; }
+        }
+
         public int Interval
         {
             get

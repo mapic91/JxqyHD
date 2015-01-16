@@ -541,7 +541,7 @@ namespace Engine
 
         public bool IsFighter
         {
-            get { return Kind == (int)CharacterType.Fighter; }
+            get { return Kind == (int)CharacterKind.Fighter; }
         }
 
         public bool IsPartner
@@ -1344,8 +1344,20 @@ namespace Engine
             }
         }
 
+        /// <summary>
+        /// Character is hurting.
+        /// Depending on posibility, character may or may not change to hurting state.
+        /// When character is in pertrified state, hurting is ignored.
+        /// </summary>
         public void Hurting()
         {
+            const int maxRandValue = 4;
+            if (Globals.TheRandom.Next(maxRandValue) != 0 ||
+                IsPetrified) //Can't hurted when been petrified 
+            {
+                return;
+            }
+
             if (State != (int)CharacterState.Death &&
                 State != (int)CharacterState.Hurt &&
                 !IsPetrified)
@@ -1743,10 +1755,30 @@ namespace Engine
             return distance.Length();
         }
 
+        /// <summary>
+        /// Add amount of life.Amount can be negative.
+        /// If list is less than 0.Character is death and <see cref="Death"/> is invoked.
+        /// </summary>
+        /// <param name="amount">Amount to add.If amount is nagetive, life is decreased.</param>
         public void AddLife(int amount)
         {
             Life += amount;
             if (Life <= 0) Death();
+        }
+
+        /// <summary>
+        /// Decrease amount of life.If life is greater than 0, <see cref="Hurting"/> is invoked.
+        /// Amount must be positive, oherwise no effect.
+        /// </summary>
+        /// <param name="amount">Amount must be positive, oherwise no effect.</param>
+        public void DecreaseLifeAddHurt(int amount)
+        {
+            if(amount <= 0) return;
+            AddLife(-amount);
+            if (Life > 0)
+            {
+                Hurting();
+            }
         }
 
         public void AddMana(int amount)
@@ -2200,7 +2232,7 @@ namespace Engine
         #endregion Update Draw
 
         #region Type
-        public enum CharacterType
+        public enum CharacterKind
         {
             Normal,
             Fighter,

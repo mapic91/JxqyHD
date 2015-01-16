@@ -183,7 +183,7 @@ namespace Engine
             for (var node = _list.First; node != null;)
             {
                 var next = node.Next;
-                if (node.Value.Kind == (int) Character.CharacterType.Follower)
+                if (node.Value.Kind == (int) Character.CharacterKind.Follower)
                 {
                     DeleteNpc(node);
                 }
@@ -196,7 +196,7 @@ namespace Engine
             var list = new List<Npc>();
             foreach (var npc in _list)
             {
-                if (npc.Kind == (int) Character.CharacterType.Follower)
+                if (npc.Kind == (int) Character.CharacterKind.Follower)
                 {
                     list.Add(npc);
                 }

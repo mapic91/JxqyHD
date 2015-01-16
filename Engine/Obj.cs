@@ -22,7 +22,8 @@ namespace Engine
         private StateMapList _objFile;
         private string _objFileName;
         private string _scriptFile;
-        private SoundEffect _wavFile;
+        private SoundEffect _wavFileSoundEffect;
+        private SoundEffectInstance _soundInstance;
         private string _wavFileName;
         private int _offX;
         private int _offY;
@@ -87,10 +88,22 @@ namespace Engine
             set { _scriptFile = value; }
         }
 
-        public SoundEffect WavFile
+        public string WavFile
         {
-            get { return _wavFile; }
-            protected set { _wavFile = value; }
+            get { return _wavFileName; }
+            protected set
+            {
+                _wavFileName = value;
+                _wavFileSoundEffect = Utils.GetSoundEffect(value);
+                if (_wavFileSoundEffect != null)
+                {
+                    _soundInstance = _wavFileSoundEffect.CreateInstance();
+                }
+                else
+                {
+                    _soundInstance = null;
+                }
+            }
         }
 
         public int OffX
@@ -109,15 +122,23 @@ namespace Engine
         {
             get
             {
-                if (Kind == 0 || Kind == 1 || Kind == 5)
+                if (Kind == (int) ObjKind.Dynamic || 
+                    Kind == (int) ObjKind.Static || 
+                    Kind == (int) ObjKind.Door)
+                {
                     return true;
+                }
                 return false;
             }
         }
 
         public bool IsAutoPlay
         {
-            get { return (Kind == 0 || Kind == 6); }
+            get 
+            { 
+                return (Kind == (int)ObjKind.Dynamic || 
+                        Kind == (int)ObjKind.Trap); 
+            }
         }
 
         public bool IsInteractive
@@ -141,6 +162,7 @@ namespace Engine
         }
         #endregion
 
+        #region Ctor
         public Obj() { }
 
         public Obj(string filePath)
@@ -154,6 +176,38 @@ namespace Engine
                 FileName = filePath;
             }
             Load(filePath);
+        }
+        #endregion Ctor
+
+        /// <summary>
+        /// Apply 3D effect to suound
+        /// </summary>
+        private void UpdateSound()
+        {
+            if (_soundInstance != null)
+            {
+                SoundManager.Apply3D(_soundInstance,
+                    PositionInWorld - Globals.ListenerPosition);
+            }
+        }
+
+        private void PlaySound()
+        {
+            if (_soundInstance != null)
+            {
+                _soundInstance.Play();
+            }
+        }
+
+        private void PlayRandSound()
+        {
+            if (_soundInstance == null) return;
+
+            const int maxRandValue = 200;
+            if (Globals.TheRandom.Next(0, maxRandValue) == 0)
+            {
+                PlaySound();
+            }
         }
 
         protected void AddKey(KeyDataCollection keyDataCollection, string key, int value)
@@ -200,8 +254,7 @@ namespace Engine
 
         public void SetWaveFile(string fileName)
         {
-            _wavFileName = fileName;
-            _wavFile = Utils.GetSoundEffect(fileName);
+            WavFile = fileName;
         }
 
         public void InitializeFigure()
@@ -211,7 +264,7 @@ namespace Engine
                 Texture = ObjFile[(int)ObjState.Common].Image;
             }
             CurrentDirection = Dir;
-            CurrentFrameIndex = Frame;
+            CurrentFrameIndex += Frame;
         }
 
         private void AssignToValue(string[] nameValue)
@@ -223,10 +276,8 @@ namespace Engine
                 {
                     case "ObjName":
                     case "ScriptFile":
-                        info.SetValue(this, nameValue[1], null);
-                        break;
                     case "WavFile":
-                        SetWaveFile(nameValue[1]);
+                        info.SetValue(this, nameValue[1], null);
                         break;
                     case "ObjFile":
                         SetObjFile(nameValue[1]);
@@ -259,18 +310,6 @@ namespace Engine
             OffY = (int)offSet.Y;
         }
 
-        public override void Update(GameTime gameTime)
-        {
-            if ((Texture.FrameCounts > 1 && IsAutoPlay) ||
-                IsInPlaying)
-                base.Update(gameTime);
-        }
-
-        public void Draw(SpriteBatch spriteBatch)
-        {
-            Draw(spriteBatch, OffX, OffY);
-        }
-
         public void Save(KeyDataCollection keyDataCollection)
         {
             keyDataCollection.AddKey("ObjName", _objName);
@@ -279,7 +318,7 @@ namespace Engine
             keyDataCollection.AddKey("MapX", MapX.ToString());
             keyDataCollection.AddKey("MapY", MapY.ToString());
             AddKey(keyDataCollection, "Damage", _damage);
-            AddKey(keyDataCollection, "Frame", _frame);
+            AddKey(keyDataCollection, "Frame", CurrentFrameIndex - FrameBegin);
             AddKey(keyDataCollection, "Height", _height);
             AddKey(keyDataCollection, "Lum", _lum);
             AddKey(keyDataCollection, "ObjFile", _objFileName);
@@ -289,7 +328,7 @@ namespace Engine
             {
                 AddKey(keyDataCollection, "ScriptFile", _scriptFile);
             }
-            if (_wavFile != null)
+            if (_wavFileSoundEffect != null)
             {
                 AddKey(keyDataCollection, "WavFile", _wavFileName);
             }
@@ -299,5 +338,62 @@ namespace Engine
         {
             ScriptManager.RunScript(Utils.GetScriptParser(ScriptFile, this));
         }
+
+        public override void Update(GameTime gameTime)
+        {
+            if ((Texture.FrameCounts > 1 && IsAutoPlay) ||
+                IsInPlaying)
+                base.Update(gameTime);
+
+            switch ((ObjKind)Kind)
+            {
+                case ObjKind.LoopingSound:
+                    UpdateSound();
+                    PlaySound();
+                    break;
+                case ObjKind.RandSound:
+                    UpdateSound();
+                    PlayRandSound();
+                    break;
+                case ObjKind.Trap:
+                    if (Damage > 0 && 
+                        CurrentFrameIndex == FrameBegin)//Hurting fighter character at frame begin
+                    {
+                        //Npcs
+                        var npcs = NpcManager.NpcList;
+                        foreach (var npc in npcs)
+                        {
+                            if (npc.IsFighter && npc.MapX == MapX && npc.MapY == MapY)
+                            {
+                                npc.DecreaseLifeAddHurt(Damage);
+                            }
+                        }
+                        //Player
+                        if (Globals.ThePlayer.MapX == MapX && Globals.ThePlayer.MapY == MapY)
+                        {
+                            Globals.ThePlayer.DecreaseLifeAddHurt(Damage);
+                        }
+                    }
+                    break;
+            }
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            Draw(spriteBatch, OffX, OffY);
+        }
+
+        #region Enum type
+        public enum ObjKind
+        {
+            Dynamic,
+            Static,
+            Body,
+            LoopingSound,
+            RandSound,
+            Door,
+            Trap
+        }
+        #endregion Enum type
     }
 }
