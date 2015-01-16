@@ -23,6 +23,10 @@ namespace Engine
         private Texture2D _waterfallTexture;
         private RenderTarget2D _renderTarget;
 
+        private double _totalInactivedSeconds;
+        private const double MaxInactivedSeconds = 5.0;
+        private bool _isInactivedReachMaxInterval;
+
         private readonly Color BackgroundColor = Color.Black;
 
         IntPtr _drawSurface;
@@ -40,7 +44,7 @@ namespace Engine
         /// </summary>
         public bool IsFocusLost
         {
-            get { return (!IsInEditMode && !IsActive); }
+            get { return (!IsInEditMode && _isInactivedReachMaxInterval); }
         }
 
         public JxqyGame()
@@ -85,6 +89,24 @@ namespace Engine
                     _pictureBox.Height;
                 _graphics.ApplyChanges();
             }
+        }
+
+        /// <summary>
+        /// If game window inactived total times is exceed max interval, pause the game.
+        /// </summary>
+        /// <param name="gameTime"></param>
+        private void UpdateGameActiveState(GameTime gameTime)
+        {
+            if (!IsActive)
+            {
+                _totalInactivedSeconds += gameTime.ElapsedGameTime.TotalSeconds;
+            }
+            else
+            {
+                _totalInactivedSeconds = 0.0;
+            }
+
+            _isInactivedReachMaxInterval = (_totalInactivedSeconds >= MaxInactivedSeconds);
         }
 
         private void pictureBox_SizeChanged(object sender, EventArgs e)
@@ -234,9 +256,12 @@ namespace Engine
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            UpdateGameActiveState(gameTime);
+
             if (IsPaused || IsFocusLost)
             {
                 base.Update(gameTime);
+                SuppressDraw();
                 return;
             }
 
@@ -330,13 +355,7 @@ namespace Engine
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            if (IsPaused || IsFocusLost)
-            {
-                base.Draw(gameTime);
-                return;
-            }
-
-            //Update fps marker
+            //Update fps measurer
             Fps.Update(gameTime);
 
             GraphicsDevice.Clear(BackgroundColor);

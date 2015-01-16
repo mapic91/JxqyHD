@@ -40,6 +40,16 @@ namespace Engine
             MediaPlayer.Stop();
         }
 
+        public static void Pause()
+        {
+            MediaPlayer.Pause();
+        }
+
+        public static void Resume()
+        {
+            MediaPlayer.Resume();
+        }
+
         public static void SetVolume(float volume)
         {
             MediaPlayer.Volume = volume;
