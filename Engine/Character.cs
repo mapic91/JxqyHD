@@ -63,6 +63,7 @@ namespace Engine
         private Vector2 _destinationAttackPositionInWorld = Vector2.Zero;
         private LinkedList<Vector2> _path;
         private object _interactiveTarget;
+        private bool _isInInteract;
         private bool _isRunToTarget;
         private bool _isDeath;
         private float _poisonedMilliSeconds;
@@ -75,11 +76,11 @@ namespace Engine
         private bool _isInStepMove;
         private int _stepMoveDirection;
         private int _leftStepToMove;
-        private bool _isInInteract;
         private int _directionBeforInteract;
         private int _specialActionLastDirection; //Direction before play special action
         private float _fixedPathDistanceToMove;
         private Vector2 _fixedPathMoveDestinationPixelPostion = Vector2.Zero;
+
         /// <summary>
         /// List of the fixed path tile position.
         /// When load <see cref="FixedPos"/>, <see cref="FixedPos"/> is converted to list and stored on this value.
@@ -805,7 +806,8 @@ namespace Engine
         {
             if (tilePositionList == null ||
                 tilePositionList.Count < 2 ||
-                !IsStanding()) return;
+                !IsStanding() ||
+                _isInInteract) return;
             if (Globals.TheRandom.Next(0, randMaxValue) == 0)
             {
                 var tilePosition = tilePositionList[Globals.TheRandom.Next(0, tilePositionList.Count)];
@@ -816,7 +818,8 @@ namespace Engine
         protected void LoopWalk(List<Vector2> tilePositionList, int randMaxValue, ref int currentPathIndex, bool isFlyer)
         {
             if (tilePositionList == null ||
-                tilePositionList.Count < 2) return;
+                tilePositionList.Count < 2 ||
+                _isInInteract) return;
 
             if (IsStanding() &&
                 Globals.TheRandom.Next(0, randMaxValue) == 0)
