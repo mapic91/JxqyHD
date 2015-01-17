@@ -243,8 +243,7 @@ namespace Engine
                             break;
                         case CharacterKind.AfraidPlayerAnimal:
                             {
-                                const int minTileDistance = 2;
-                                KeepMinTileDistance(Globals.ThePlayer.TilePosition, minTileDistance);
+                                KeepMinTileDistance(Globals.ThePlayer.TilePosition, VisionRadius);
                             }
                             break;
                     }

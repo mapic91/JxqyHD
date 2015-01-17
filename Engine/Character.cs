@@ -842,7 +842,7 @@ namespace Engine
 
             var tileDistance = Engine.PathFinder.GetTileDistance(TilePosition, targetTilePosition);
 
-            if (tileDistance < minTileDistance)
+            if (tileDistance < minTileDistance && IsStanding())
             {
                 MoveAwayTarget(Map.ToPixelPosition(targetTilePosition), false);
             }
