@@ -19,7 +19,6 @@ namespace Engine
         private bool _isPlayingCurrentDirOnce;
         private bool _isPlayingCurrentDirOnceFromBack;
         private int _leftFrameToPlay;
-        private int _playToFrame;
         private float _movedDistance;
         private bool _isTilePositionNew;
         private static Color _drawColor = Color.White;
@@ -256,7 +255,7 @@ namespace Engine
                 _isPlayingCurrentDirOnceFromBack ||
                 IsFrameAtEnd()) return;
             _isPlayingCurrentDirOnce = true;
-            _playToFrame = _frameEnd;
+            PlayFrames(_frameEnd - _frameBegin + 1);
         }
 
         public void PlayCurrentDirOnceReverse()
@@ -265,7 +264,7 @@ namespace Engine
                 _isPlayingCurrentDirOnceFromBack ||
                 IsFrameAtBegin()) return;
             _isPlayingCurrentDirOnceFromBack = true;
-            _playToFrame = _frameBegin;
+            PlayFrames(_frameEnd - _frameBegin + 1);
         }
 
         public void EndPlayCurrentDirOnce()
@@ -340,18 +339,20 @@ namespace Engine
                     CurrentFrameIndex++;
                 }
                 FrameAdvanceCount = 1;
+
+                if (_leftFrameToPlay > 0)
+                {
+                    _leftFrameToPlay--;
+                }
+
                 if (_isPlayingCurrentDirOnce ||
                     _isPlayingCurrentDirOnceFromBack)
                 {
-                    if (_playToFrame == CurrentFrameIndex)
+                    if (_leftFrameToPlay <= 0)
                     {
                         _isPlayingCurrentDirOnce = false;
                         _isPlayingCurrentDirOnceFromBack = false;
                     }
-                }
-                if (_leftFrameToPlay > 0)
-                {
-                    _leftFrameToPlay--;
                 }
             }
         }
