@@ -16,7 +16,7 @@ namespace Engine
             {
                 if (_actionPathTilePositionList == null)
                 {
-                    _actionPathTilePositionList = GetRandTilePath(8, 
+                    _actionPathTilePositionList = GetRandTilePath(8,
                         Kind != (int)CharacterKind.Flyer);
                 }
                 return _actionPathTilePositionList;
@@ -205,10 +205,10 @@ namespace Engine
             }
 
             ////Follow target not found, do something else.
-            if (FollowTarget == null || 
+            if (FollowTarget == null ||
                 !IsFollowTargetFound)
             {
-                var isFlyer = Kind == (int) CharacterKind.Flyer;
+                var isFlyer = Kind == (int)CharacterKind.Flyer;
                 const int randWalkPosibility = 400;
                 const int flyerRandWalkPosibility = 20;
 
@@ -218,7 +218,7 @@ namespace Engine
                     //Loop walk along FixedPos
                     LoopWalk(FixedPathTilePositionList,
                         isFlyer ? flyerRandWalkPosibility : randWalkPosibility,
-                        ref _currentFixedPosIndex, 
+                        ref _currentFixedPosIndex,
                         isFlyer);
                 }
                 else
@@ -242,6 +242,10 @@ namespace Engine
                             }
                             break;
                         case CharacterKind.AfraidPlayerAnimal:
+                            {
+                                const int minTileDistance = 2;
+                                KeepMinTileDistance(Globals.ThePlayer.TilePosition, minTileDistance);
+                            }
                             break;
                     }
                 }

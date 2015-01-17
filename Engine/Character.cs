@@ -833,6 +833,21 @@ namespace Engine
             }
         }
 
+        protected void KeepMinTileDistance(Vector2 targetTilePosition, int minTileDistance)
+        {
+            if (_isInInteract) // In interacting can't moving
+            {
+                return;
+            }
+
+            var tileDistance = Engine.PathFinder.GetTileDistance(TilePosition, targetTilePosition);
+
+            if (tileDistance < minTileDistance)
+            {
+                MoveAwayTarget(Map.ToPixelPosition(targetTilePosition), false);
+            }
+        }
+
         protected void MoveTo(Vector2 tilePosition, bool isFlyer)
         {
             if (isFlyer)
@@ -1442,31 +1457,38 @@ namespace Engine
 
                     if (canSeeTarget) return true;
 
-                    MoveToTarget(DestinationAttackTilePosition);
+                    MoveToTarget(DestinationAttackTilePosition, _isRunToTarget);
                 }
                 if (tileDistance > AttackRadius)
                 {
-                    MoveToTarget(DestinationAttackTilePosition);
+                    MoveToTarget(DestinationAttackTilePosition, _isRunToTarget);
                 }
                 else
                 {
-                    var neighbor = Engine.PathFinder.FindNeighborInDirection(TilePosition,
-                        PositionInWorld - DestinationAttackPositionInWorld);
-
-                    if (HasObstacle(neighbor)) return true;
-
-                    Path = Engine.PathFinder.FindPath(this, TilePosition, neighbor, PathType);
-                    if (Path == null) return true;
-
-                    MoveToTarget(neighbor);
+                    //Actack distance too small, move away target
+                    if (!MoveAwayTarget(DestinationAttackPositionInWorld, _isRunToTarget)) return true;
                 }
             }
             return false;
         }
 
-        private void MoveToTarget(Vector2 destinationTilePosition)
+        protected bool MoveAwayTarget(Vector2 targetPositionInWorld, bool isRun)
         {
-            if (_isRunToTarget)
+            var neighbor = Engine.PathFinder.FindNeighborInDirection(TilePosition,
+                        PositionInWorld - targetPositionInWorld);
+
+            if (HasObstacle(neighbor)) return false;
+
+            Path = Engine.PathFinder.FindPath(this, TilePosition, neighbor, PathType);
+            if (Path == null) return false;
+
+            MoveToTarget(neighbor, isRun);
+            return true;
+        }
+
+        private void MoveToTarget(Vector2 destinationTilePosition, bool isRun)
+        {
+            if (isRun)
                 RunToAndKeepingTarget(destinationTilePosition);
             else
                 WalkToAndKeepingTarget(destinationTilePosition);
@@ -1622,7 +1644,7 @@ namespace Engine
             }
             else
             {
-                MoveToTarget(DestinationMoveTilePosition);
+                MoveToTarget(DestinationMoveTilePosition, _isRunToTarget);
                 return false;
             }
         }
