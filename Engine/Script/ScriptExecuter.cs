@@ -1785,5 +1785,18 @@ namespace Engine.Script
             GuiManager.ShowTitle();
             GameState.State = GameState.StateType.Title;
         }
+
+        public static void GetPartnerIdx(List<string> parameters)
+        {
+            var variable = parameters[0];
+            var partners = NpcManager.GetAllPartner();
+            var value = 0;
+            if (partners.Count > 0)
+            {
+                value = PartnerList.GetIndex(partners[0].Name);
+            }
+
+            Variables[variable] = value;
+        }
     }
 }

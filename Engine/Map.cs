@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Engine.Script;
 using IniParser;
 using IniParser.Model;
@@ -42,8 +43,9 @@ namespace Engine
         private readonly bool[] _isLayerDraw = new bool[3] { true, true, true };
         private static Color _drawColor = Color.White;
 
+        //traps
         private readonly Dictionary<string, Dictionary<int, string>> _traps = new Dictionary<string, Dictionary<int, string>>();
-        private ScriptParser _currentScriptInRunning;
+        private readonly List<int> _ingnoredTrapsIndex = new List<int>(); 
 
         private int _viewBeginX;
         private int _viewBeginY;
@@ -447,22 +449,24 @@ namespace Engine
         /// </summary>
         /// <param name="col">Column</param>
         /// <param name="row">Row</param>
+        /// <param name="trapIndex">[out]The trap's index in map.</param>
         /// <returns></returns>
-        public ScriptParser GetTileTrapScriptParser(int col, int row)
+        public ScriptParser GetTileTrapScriptParser(int col, int row, out int trapIndex)
         {
-            var index = GetTileTrapIndex(col, row);
-            if (index == 0) return null;
-            return GetMapTrap(index);
+            trapIndex = GetTileTrapIndex(col, row);
+            if (trapIndex == 0) return null;
+            return GetMapTrap(trapIndex);
         }
 
         /// <summary>
         /// Get current map tile trap  script.Return null if no trap
         /// </summary>
         /// <param name="tilePosition">Tile column row positon</param>
+        /// <param name="trapIndex">[out]The trap's index in map.</param>
         /// <returns></returns>
-        public ScriptParser GetTileTrapScriptParser(Vector2 tilePosition)
+        public ScriptParser GetTileTrapScriptParser(Vector2 tilePosition, out int trapIndex)
         {
-            return GetTileTrapScriptParser((int)tilePosition.X, (int)tilePosition.Y);
+            return GetTileTrapScriptParser((int)tilePosition.X, (int)tilePosition.Y, out trapIndex);
         }
 
         public void DrawTile(SpriteBatch spriteBatch, Texture2D texture, Vector2 tilePos, float depth)
@@ -489,6 +493,9 @@ namespace Engine
         /// <param name="filePath">File path</param>
         public void LoadTrap(string filePath)
         {
+            //Clear ingnored traps list
+            _ingnoredTrapsIndex.Clear();
+
             _traps.Clear();
             try
             {
@@ -545,6 +552,13 @@ namespace Engine
         /// <param name="trapFileName">Trap file name</param>
         public void SetMapTrap(int index, string trapFileName, string mapName = null)
         {
+            if (string.IsNullOrEmpty(mapName) ||
+                mapName == _mapFileNameWithoutExtension)
+            {
+                //Remove index in ingnored traps list activating tarp on this index.
+                _ingnoredTrapsIndex.Remove(index);
+            }
+
             if (string.IsNullOrEmpty(mapName))
                 mapName = _mapFileNameWithoutExtension;
             if (string.IsNullOrEmpty(mapName)) return;//no map name
@@ -594,21 +608,18 @@ namespace Engine
         /// <param name="tilePosition"></param>
         public void RunTileTrapScript(Vector2 tilePosition)
         {
-            var script = GetTileTrapScriptParser(tilePosition);
+            int index;
+            var script = GetTileTrapScriptParser(tilePosition, out index);
             if (script != null)
             {
-                if (_currentScriptInRunning != null &&
-                    _currentScriptInRunning.FilePath == script.FilePath)
-                    return; //Can't continue run same script
-                else
+                if (_ingnoredTrapsIndex.Any(i => index == i))
                 {
-                    _currentScriptInRunning = script;
-                    ScriptManager.RunScript(_currentScriptInRunning);
+                    //Script is ignored, don't run it.
+                    return;
                 }
-            }
-            else
-            {
-                _currentScriptInRunning = null;
+                ScriptManager.RunScript(script);
+                //Script is run, add to ignore list
+                _ingnoredTrapsIndex.Add(index);
             }
         }
         #endregion Trap
@@ -667,6 +678,9 @@ namespace Engine
 
         public void LoadMap(byte[] buf)
         {
+            //Clear ingnored traps list
+            _ingnoredTrapsIndex.Clear();
+
             Free();
             //Clear asf cache, because normaly npcs objs will be cleared after map load.
             Utils.ClearAsfCache();

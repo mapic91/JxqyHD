@@ -694,6 +694,9 @@ namespace Engine.Script
                         case "ReturnToTitle":
                             ScriptExecuter.ReturnToTitle();
                             break;
+                        case "GetPartnerIdx":
+                            ScriptExecuter.GetPartnerIdx(parameters);
+                            break;
                         default:
                             throw new Exception("无此函数");
                     }

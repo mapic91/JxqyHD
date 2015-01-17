@@ -234,6 +234,9 @@ namespace Engine
             Globals.FontSize10 = Content.Load<SpriteFont>(@"font\GB2312_ASCII_ÃÔÄã¼òÏ¸Ô²_10");
             Globals.FontSize12 = Content.Load<SpriteFont>(@"font\GB2312_ASCII_ÃÔÄã¼òÏ¸Ô²_12");
 
+            //Load partner name list
+            PartnerList.Load();
+
             //Start gui
             GuiManager.Starting();
         }
