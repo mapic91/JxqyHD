@@ -466,6 +466,8 @@ namespace Engine
                 if (npc.IsEnemy)
                 {
                     npc.Death();
+                    Globals.ThePlayer.AddExp(
+                        Utils.GetCharacterDeathExp(Globals.ThePlayer, npc));
                 }
             }
         }

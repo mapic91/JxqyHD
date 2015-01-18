@@ -207,11 +207,13 @@ namespace Engine
                 {
                     target.NotifyEnemyAndAllNeighbor(BelongCharacter);
                     //Hited character death
-                    if (!isInDeath && target.IsInDeathing && 
+                    if (!isInDeath && //Alive before hited
+                        target.IsInDeathing && //Death after hited
                         (BelongCharacter.IsPlayer ||
                         BelongCharacter.IsPartner))
                     {
-                        Globals.ThePlayer.AddExp(Utils.GetNpcDeathExp(target.Level));
+                        Globals.ThePlayer.AddExp(
+                            Utils.GetCharacterDeathExp(Globals.ThePlayer, target));
                     }
                 }
             }
