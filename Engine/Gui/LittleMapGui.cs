@@ -21,8 +21,10 @@ namespace Engine.Gui
         private LineText _mapName;
         private int _viewBeginX;
         private int _viewBeginY;
-        private const int ViewWidth = 310;
-        private const int ViewHeight = 230;
+        private const int ViewWidth = 320;
+        private const int ViewHeight = 240;
+        private const int MapViewDrawBeginX = 160;
+        private const int MapViewDrawBeginY = 120;
         const int Ratio = 4;
         private Dictionary<string, string> _showNameDictionary;
         private Texture _player;
@@ -38,8 +40,16 @@ namespace Engine.Gui
                 base.IsShow = value;
                 if (value)
                 {
-                    _viewBeginX = Globals.TheMap.ViewBeginX / Ratio;
-                    _viewBeginY = Globals.TheMap.ViewBeginY / Ratio;
+                    var texture = Globals.TheMap.LittelMapTexture;
+                    if (texture == null)
+                    {
+                        //Little map texture not exist, can't show little map.
+                        base.IsShow = false;
+                        return;
+                    }
+
+                    ViewBeginX = Globals.TheMap.ViewBeginX / Ratio;
+                    ViewBeginY = Globals.TheMap.ViewBeginY / Ratio;
                 }
             }
         }
@@ -48,8 +58,8 @@ namespace Engine.Gui
         {
             get
             {
-                return new Rectangle((int)ScreenPosition.X + 165,
-                    (int)ScreenPosition.Y + 125,
+                return new Rectangle((int)ScreenPosition.X + MapViewDrawBeginX,
+                    (int)ScreenPosition.Y + MapViewDrawBeginY,
                     ViewWidth,
                     ViewHeight);
             }
@@ -66,6 +76,52 @@ namespace Engine.Gui
             }
         }
 
+        public int ViewBeginY
+        {
+            get { return _viewBeginY; }
+            set
+            {
+                var texture = Globals.TheMap.LittelMapTexture;
+                if (texture == null)
+                {
+                    return;
+                }
+
+                _viewBeginY = value;
+                if (_viewBeginY + ViewHeight > texture.Height)
+                {
+                    _viewBeginY = texture.Height - ViewHeight;
+                }
+                if (_viewBeginY < 0)
+                {
+                    _viewBeginY = 0;
+                }
+            }
+        }
+
+        public int ViewBeginX
+        {
+            get { return _viewBeginX; }
+            set
+            {
+                var texture = Globals.TheMap.LittelMapTexture;
+                if (texture == null)
+                {
+                    return;
+                }
+
+                _viewBeginX = value;
+                if (_viewBeginX + ViewWidth > texture.Width)
+                {
+                    _viewBeginX = texture.Width - ViewWidth;
+                }
+                if (_viewBeginX < 0)
+                {
+                    _viewBeginX = 0;
+                }
+            }
+        }
+
         public LittleMapGui()
         {
             IsShow = false;
@@ -76,8 +132,18 @@ namespace Engine.Gui
                 (Globals.WindowWidth - Width) / 2f,
                 0f);
             LoadItems();
+            RegisterHadler();
             LoadNameList();
             LoadTexture();
+        }
+
+        private void RegisterHadler()
+        {
+            _leftButton.MouseLeftClicking += (arg1, arg2) => ViewBeginX -= 32/Ratio;
+            _rightButton.MouseLeftClicking += (arg1, arg2) => ViewBeginX += 32/Ratio;
+            _upButton.MouseLeftClicking += (arg1, arg2) => ViewBeginY -= 16/Ratio;
+            _downButton.MouseLeftClicking += (arg1, arg2) => ViewBeginY += 16/Ratio;
+            _closeButton.Click += (arg1, arg2) => IsShow = false;
         }
 
         private void LoadTexture()
@@ -263,6 +329,7 @@ namespace Engine.Gui
         public override void Draw(SpriteBatch spriteBatch)
         {
             if (!IsShow) return;
+            DrawMapView(spriteBatch);
             base.Draw(spriteBatch);
             _leftButton.Draw(spriteBatch);
             _rightButton.Draw(spriteBatch);
@@ -270,7 +337,6 @@ namespace Engine.Gui
             _downButton.Draw(spriteBatch);
             _closeButton.Draw(spriteBatch);
             _mapName.Draw(spriteBatch);
-            DrawMapView(spriteBatch);
         }
     }
 }

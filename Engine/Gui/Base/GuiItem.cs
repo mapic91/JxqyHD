@@ -20,6 +20,7 @@ namespace Engine.Gui.Base
         public event Action<object, MouseMoveEvent> MouseMove;
         public event Action<object, MouseLeftDownEvent> MouseLeftDown;
         public event Action<object, MouseLeftUpEvent> MouseLeftUp;
+        public event Action<object, MouseLeftClickingEvent> MouseLeftClicking;
         public event Action<object, MouseRightDownEvent> MouseRightDown;
         public event Action<object, MouseRightUpEvent> MouseRightUp;
         public event Action<object, MouseLeftClickEvent> Click;
@@ -246,6 +247,14 @@ namespace Engine.Gui.Base
                 }
             }
 
+            if (IsClicked)
+            {
+                if (MouseLeftClicking != null)
+                {
+                    MouseLeftClicking(this, new MouseLeftClickingEvent(position, screenPosition));
+                }
+            }
+
             if (IsClicked || IsRightClicked)
                 GuiManager.IsMouseStateEated = true;
 
@@ -342,6 +351,14 @@ namespace Engine.Gui.Base
         public class MouseLeftClickEvent : MouseEvent
         {
             public MouseLeftClickEvent(Vector2 mousePosition, Vector2 mouseScreenPosition)
+                : base(mousePosition, mouseScreenPosition)
+            {
+            }
+        }
+
+        public class MouseLeftClickingEvent : MouseEvent
+        {
+            public MouseLeftClickingEvent(Vector2 mousePosition, Vector2 mouseScreenPosition)
                 : base(mousePosition, mouseScreenPosition)
             {
             }
