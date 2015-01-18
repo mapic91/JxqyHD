@@ -80,6 +80,7 @@
     <Compile Include="Good.cs" />
     <Compile Include="GoodDrop.cs" />
     <Compile Include="Gui\Base\Bmp.cs" />
+    <Compile Include="Gui\Base\LineText.cs" />
     <Compile Include="Gui\Base\ListItem.cs" />
     <Compile Include="Gui\Base\ListTextItem.cs" />
     <Compile Include="Gui\BottomGui.cs" />
@@ -90,6 +91,7 @@
     <Compile Include="Gui\DragDropItem.cs" />
     <Compile Include="Gui\EquipGui.cs" />
     <Compile Include="Gui\GoodsGui.cs" />
+    <Compile Include="Gui\LittleMapGui.cs" />
     <Compile Include="Gui\SaveLoadGui.cs" />
     <Compile Include="Gui\SystemGui.cs" />
     <Compile Include="Gui\TimerGui.cs" />

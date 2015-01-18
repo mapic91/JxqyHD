@@ -33,6 +33,7 @@ namespace Engine.Gui
         public static TopGui TopInterface;
         public static BuyGui BuyInterface;
         public static TimerGui TimerInterface;
+        public static LittleMapGui LittleMapInterface;
 
         public static ToolTipGui ToolTipInterface;
         public static MessageGui MessageInterface;
@@ -91,6 +92,9 @@ namespace Engine.Gui
 
             TimerInterface = new TimerGui();
             _allGuiItems.AddLast(TimerInterface);
+
+            LittleMapInterface = new LittleMapGui();
+            _allGuiItems.AddLast(LittleMapInterface);
 
             MemoInterface = new MemoGui();
             _allGuiItems.AddLast(MemoInterface);
@@ -454,6 +458,19 @@ namespace Engine.Gui
                 //Restore input
                 Globals.RestoreInputDisableState();
             }
+            else if (LittleMapInterface.IsShow)
+            {
+                //Temporaty enable input
+                Globals.EnableInputTemporary();
+                LittleMapInterface.Update(gameTime);
+                //Restore input
+                Globals.RestoreInputDisableState();
+                if (keyboardState.IsKeyDown(Keys.Tab) &&
+                    _lastKeyboardState.IsKeyUp(Keys.Tab))
+                {
+                    LittleMapInterface.IsShow = false;
+                }
+            }
             else if (DialogInterface.IsShow)
             {
                 //Temporaty enable input
@@ -473,7 +490,7 @@ namespace Engine.Gui
                 {
                     DialogInterface.Update(gameTime);
                     if (mouseState.LeftButton == ButtonState.Pressed &&
-                    _lastMouseState.LeftButton == ButtonState.Released)
+                        _lastMouseState.LeftButton == ButtonState.Released)
                     {
                         if (!DialogInterface.NextPage())
                             DialogInterface.IsShow = false;
@@ -505,6 +522,12 @@ namespace Engine.Gui
                 }
                 else
                 {
+                    if (keyboardState.IsKeyDown(Keys.Tab) &&
+                        _lastKeyboardState.IsKeyUp(Keys.Tab))
+                    {
+                        LittleMapInterface.IsShow = true;
+                    }
+
                     TopInterface.Update(gameTime);
                     BottomInterface.Update(gameTime);
                     MagicInterface.Update(gameTime);
@@ -570,6 +593,8 @@ namespace Engine.Gui
                 DialogInterface.Draw(spriteBatch);
 
                 SystemInterface.Draw(spriteBatch);
+
+                LittleMapInterface.Draw(spriteBatch);
             }
 
             MouseInterface.Draw(spriteBatch);

@@ -62,6 +62,8 @@ namespace Engine
 
         public static int MapTime;
 
+        public Texture2D LittelMapTexture { set; get; }
+
         public int ViewHeight
         {
             get { return _viewHeight; }
@@ -674,9 +676,10 @@ namespace Engine
             Globals.TheCarmera.WorldWidth = MapPixelWidth;
             Globals.TheCarmera.WorldHeight = MapPixelHeight;
             _mapFileNameWithoutExtension = Path.GetFileNameWithoutExtension(path);
+            LittelMapTexture = Utils.LoadTexture2DFromFile(@"map\bmp\" + _mapFileNameWithoutExtension + ".bmp");
         }
 
-        public void LoadMap(byte[] buf)
+        private void LoadMap(byte[] buf)
         {
             //Clear ingnored traps list
             _ingnoredTrapsIndex.Clear();
