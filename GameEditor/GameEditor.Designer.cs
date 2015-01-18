@@ -42,6 +42,7 @@
             this._fileText = new System.Windows.Forms.TextBox();
             this._scriptFilePath = new System.Windows.Forms.Button();
             this.TheToolTip = new System.Windows.Forms.ToolTip(this.components);
+            this._allEnemyDie = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -70,7 +71,8 @@
             this.CheatMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this._fullLifeThewMana,
             this._levelUp,
-            this._addMoney1000});
+            this._addMoney1000,
+            this._allEnemyDie});
             this.CheatMenu.Name = "CheatMenu";
             this.CheatMenu.Size = new System.Drawing.Size(45, 20);
             this.CheatMenu.Text = "作弊";
@@ -79,7 +81,7 @@
             // 
             this._fullLifeThewMana.Name = "_fullLifeThewMana";
             this._fullLifeThewMana.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
-            this._fullLifeThewMana.Size = new System.Drawing.Size(181, 22);
+            this._fullLifeThewMana.Size = new System.Drawing.Size(194, 22);
             this._fullLifeThewMana.Text = "生体内全满";
             this._fullLifeThewMana.Click += new System.EventHandler(this._fullLifeThewMana_Click);
             // 
@@ -87,7 +89,7 @@
             // 
             this._levelUp.Name = "_levelUp";
             this._levelUp.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.L)));
-            this._levelUp.Size = new System.Drawing.Size(181, 22);
+            this._levelUp.Size = new System.Drawing.Size(194, 22);
             this._levelUp.Text = "升一级";
             this._levelUp.Click += new System.EventHandler(this._levelUp_Click);
             // 
@@ -95,7 +97,7 @@
             // 
             this._addMoney1000.Name = "_addMoney1000";
             this._addMoney1000.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.M)));
-            this._addMoney1000.Size = new System.Drawing.Size(181, 22);
+            this._addMoney1000.Size = new System.Drawing.Size(194, 22);
             this._addMoney1000.Text = "加钱1000";
             this._addMoney1000.Click += new System.EventHandler(this._addMoney1000_Click);
             // 
@@ -196,6 +198,14 @@
             this._scriptFilePath.UseVisualStyleBackColor = true;
             this._scriptFilePath.Click += new System.EventHandler(this._scriptFilePath_Click);
             // 
+            // _allEnemyDie
+            // 
+            this._allEnemyDie.Name = "_allEnemyDie";
+            this._allEnemyDie.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D)));
+            this._allEnemyDie.Size = new System.Drawing.Size(194, 22);
+            this._allEnemyDie.Text = "所有敌人死亡";
+            this._allEnemyDie.Click += new System.EventHandler(this._allEnemyDie_Click);
+            // 
             // GameEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -246,5 +256,6 @@
         private System.Windows.Forms.ToolStripMenuItem _fullLifeThewMana;
         private System.Windows.Forms.ToolStripMenuItem _levelUp;
         private System.Windows.Forms.ToolStripMenuItem _addMoney1000;
+        private System.Windows.Forms.ToolStripMenuItem _allEnemyDie;
     }
 }

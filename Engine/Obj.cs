@@ -132,12 +132,21 @@ namespace Engine
             }
         }
 
+        public bool IsDrop
+        {
+            get
+            {
+                return Kind == (int) ObjKind.Drop;
+            }
+        }
+
         public bool IsAutoPlay
         {
             get 
             { 
                 return (Kind == (int)ObjKind.Dynamic || 
-                        Kind == (int)ObjKind.Trap); 
+                        Kind == (int)ObjKind.Trap ||
+                        Kind == (int)ObjKind.Drop); 
             }
         }
 
@@ -167,14 +176,6 @@ namespace Engine
 
         public Obj(string filePath)
         {
-            try
-            {
-                FileName = Path.GetFileName(filePath);
-            }
-            catch (Exception)
-            {
-                FileName = filePath;
-            }
             Load(filePath);
         }
         #endregion Ctor
@@ -224,6 +225,15 @@ namespace Engine
         {
             try
             {
+                FileName = Path.GetFileName(filePath);
+            }
+            catch (Exception)
+            {
+                FileName = filePath;
+            }
+
+            try
+            {
                 var lines = File.ReadAllLines(filePath, Globals.SimpleChineseEncoding);
                 return Load(lines);
             }
@@ -259,7 +269,7 @@ namespace Engine
 
         public void InitializeFigure()
         {
-            if (ObjFile.ContainsKey((int)ObjState.Common))
+            if (ObjFile != null && ObjFile.ContainsKey((int)ObjState.Common))
             {
                 Texture = ObjFile[(int)ObjState.Common].Image;
             }
@@ -392,7 +402,8 @@ namespace Engine
             LoopingSound,
             RandSound,
             Door,
-            Trap
+            Trap,
+            Drop
         }
         #endregion Enum type
     }

@@ -73,6 +73,11 @@ namespace Engine
             get { return _frameBegin; }
         }
 
+        public int FrameEnd
+        {
+            get { return _frameEnd; }
+        }
+
         public int Interval
         {
             get
@@ -270,6 +275,7 @@ namespace Engine
         public void EndPlayCurrentDirOnce()
         {
             _isPlayingCurrentDirOnce = false;
+            _leftFrameToPlay = 0;
         }
 
         public bool IsPlayCurrentDirOnceEnd()

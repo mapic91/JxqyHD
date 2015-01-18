@@ -118,5 +118,10 @@ namespace GameEditor
         {
             e.Handled = false;
         }
+
+        private void _allEnemyDie_Click(object sender, EventArgs e)
+        {
+            NpcManager.AllEnemyDie();
+        }
     }
 }

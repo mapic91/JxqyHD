@@ -78,6 +78,7 @@
     <Compile Include="GameState.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="Good.cs" />
+    <Compile Include="GoodDrop.cs" />
     <Compile Include="Gui\Base\Bmp.cs" />
     <Compile Include="Gui\Base\ListItem.cs" />
     <Compile Include="Gui\Base\ListTextItem.cs" />

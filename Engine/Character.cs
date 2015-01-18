@@ -89,6 +89,8 @@ namespace Engine
         protected int _currentFixedPosIndex;
         protected Magic MagicUse;
 
+        protected bool IsSitted;
+
         #endregion Field
 
         #region Protected properties
@@ -388,6 +390,16 @@ namespace Engine
         {
             get { return _bodyIni; }
             set { _bodyIni = value; }
+        }
+
+        public bool IsBodyIniOk
+        {
+            get
+            {
+                return (BodyIni != null &&
+                        BodyIni.ObjFile != null &&
+                        BodyIni.ObjFile.Count > 0);
+            }
         }
 
         public Magic FlyIni
@@ -923,7 +935,10 @@ namespace Engine
                         SetNpcIni(keyData.Value);
                         break;
                     case "BodyIni":
-                        info.SetValue(this, new Obj(@"ini\obj\" + keyData.Value), null);
+                        if (!string.IsNullOrEmpty(keyData.Value))
+                        {
+                            info.SetValue(this, new Obj(@"ini\obj\" + keyData.Value), null);
+                        }
                         break;
                     case "Defence":
                         Defend = int.Parse(keyData.Value);
@@ -1087,6 +1102,10 @@ namespace Engine
 
         public bool Load(KeyDataCollection keyDataCollection)
         {
+            if (_npcIni != null)
+            {
+                _npcIni.Clear();
+            }
             foreach (var keyData in keyDataCollection)
             {
                 AssignToValue(keyData);
@@ -1136,7 +1155,9 @@ namespace Engine
             AddKey(keyDataCollection, "NpcIni", _npcIniFileName);
             if (_bodyIni != null)
             {
-                AddKey(keyDataCollection, "BodyIni", _bodyIni.FileName);
+                AddKey(keyDataCollection, 
+                    "BodyIni", 
+                    _bodyIni == null ? string.Empty : _bodyIni.FileName);
             }
             if (_flyIni != null)
             {
@@ -1206,6 +1227,7 @@ namespace Engine
             DestinationMoveTilePosition = Vector2.Zero;
             Path = null;
             CancleAttackTarget();
+            IsSitted = false;
             if (_isInInteract)
             {
                 //End interact in case of action to perform direction not correct
@@ -1339,7 +1361,7 @@ namespace Engine
                 if (NpcIni.ContainsKey((int)CharacterState.Sit))
                 {
                     SetState(CharacterState.Sit);
-                    PlayCurrentDirOnce();
+                    PlayFrames(FrameEnd - FrameBegin);
                 }
             }
         }
@@ -2161,12 +2183,13 @@ namespace Engine
                 case CharacterState.Stand:
                 case CharacterState.Stand1:
                 case CharacterState.Hurt:
+                    base.Update(gameTime);
                     if (IsPlayCurrentDirOnceEnd()) StandingImmediately();
-                    else base.Update(gameTime);
                     break;
                 case CharacterState.Attack:
                 case CharacterState.Attack1:
                 case CharacterState.Attack2:
+                    base.Update(gameTime);
                     if (IsPlayCurrentDirOnceEnd())
                     {
                         if (NpcIni.ContainsKey(State))
@@ -2186,9 +2209,9 @@ namespace Engine
 
                         StandingImmediately();
                     }
-                    else base.Update(gameTime);
                     break;
                 case CharacterState.Magic:
+                    base.Update(gameTime);
                     if (IsPlayCurrentDirOnceEnd())
                     {
                         if (NpcIni.ContainsKey((int)CharacterState.Magic))
@@ -2199,17 +2222,17 @@ namespace Engine
                             MagicManager.UseMagic(this, MagicUse, PositionInWorld, _magicDestination);
                         StandingImmediately();
                     }
-                    else base.Update(gameTime);
                     break;
                 case CharacterState.Sit:
-                    if (!IsPlayCurrentDirOnceEnd()) base.Update(gameTime);
+                    if (!IsSitted) base.Update(gameTime);
+                    if (!IsInPlaying) IsSitted = true;
                     break;
                 case CharacterState.Death:
+                    base.Update(gameTime);
                     if (IsPlayCurrentDirOnceEnd())
                     {
                         IsDeath = true;
                     }
-                    else base.Update(gameTime);
                     break;
                 default:
                     base.Update(gameTime);

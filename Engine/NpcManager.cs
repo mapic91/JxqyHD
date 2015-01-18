@@ -459,6 +459,17 @@ namespace Engine
             }
         }
 
+        public static void AllEnemyDie()
+        {
+            foreach (var npc in _list)
+            {
+                if (npc.IsEnemy)
+                {
+                    npc.Death();
+                }
+            }
+        }
+
         public static void SaveNpc(string fileName = null)
         {
             Save(fileName);
@@ -478,12 +489,14 @@ namespace Engine
                 npc.Update(gameTime);
                 if (npc.IsDeath && npc.IsDeathScriptEnd)
                 {
-                    if (npc.BodyIni != null && !npc.IsNodAddBody)
+                    if (npc.IsBodyIniOk &&
+                        !npc.IsNodAddBody)
                     {
                         npc.BodyIni.PositionInWorld = npc.PositionInWorld;
                         npc.BodyIni.CurrentDirection = npc.CurrentDirection;
                         ObjManager.AddObj(npc.BodyIni);
                     }
+                    ObjManager.AddObj(GoodDrop.GetDropObj(npc));
                     DeleteNpc(node);
                 }
                 node = next;
