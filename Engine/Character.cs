@@ -1079,6 +1079,14 @@ namespace Engine
         {
             //Do nothing here
         }
+
+        /// <summary>
+        /// Add extra behaviour when character begin sit down
+        /// </summary>
+        protected virtual void OnSitDown()
+        {
+            //do nothing
+        }
         #endregion Protected method
 
         #region Public method
@@ -1363,6 +1371,7 @@ namespace Engine
                     SetState(CharacterState.Sit);
                     PlayFrames(FrameEnd - FrameBegin);
                 }
+                OnSitDown();
             }
         }
 

@@ -23,6 +23,7 @@ namespace Engine
         private const float ThewRestorePercent = 0.03f;
         private const float ManaRestorePercent = 0.02f;
         private float _standingMilliseconds;
+        private float _sittedMilliseconds;
 
         private MagicListManager.MagicItemInfo _currentMagicInUse;
         private MagicListManager.MagicItemInfo _xiuLianMagic;
@@ -310,6 +311,11 @@ namespace Engine
                     PositionInWorld,
                     attackDestinationPixelPosition);
             }
+        }
+
+        protected override void OnSitDown()
+        {
+            _sittedMilliseconds = 0;
         }
 
         #endregion Protected method
@@ -649,15 +655,14 @@ namespace Engine
 
                     }
                 }
-            }
 
-            if (keyboardState.IsKeyDown(Keys.V) &&
+                if (keyboardState.IsKeyDown(Keys.V) &&
                 _lastKeyboardState.IsKeyUp(Keys.V) &&
-                !IsPetrified &&
-                CanInput)
-            {
-                if (IsSitting()) StandingImmediately();
-                else Sitdown();
+                !IsPetrified)
+                {
+                    if (IsSitting()) StandingImmediately();
+                    else Sitdown();
+                }
             }
 
             if ((IsStanding() || IsWalking()) && BodyFunctionWell)
@@ -673,6 +678,27 @@ namespace Engine
                 }
             }
             else _standingMilliseconds = 0f;
+
+            if (IsSitted)
+            {
+                int changeManaAmount = ManaMax/100;
+                if (changeManaAmount == 0) changeManaAmount = 1;
+                if (Mana < ManaMax && Thew > changeManaAmount)
+                {
+                    _sittedMilliseconds += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                    const float changeManaIntervel = 150f;
+                    if (_sittedMilliseconds >= changeManaIntervel)
+                    {
+                        _sittedMilliseconds -= changeManaIntervel;
+                        Thew -= changeManaAmount;
+                        Mana += changeManaAmount;
+                    }
+                }
+                else
+                {
+                    StandingImmediately();
+                }
+            }
 
             _lastMouseState = mouseState;
             _lastKeyboardState = keyboardState;
