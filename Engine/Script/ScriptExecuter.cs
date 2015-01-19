@@ -584,7 +584,7 @@ namespace Engine.Script
             }
             if (target != null)
             {
-                target.PlayCurrentDirOnceReverse();
+                target.CloseBox();
             }
         }
 

@@ -116,7 +116,7 @@ namespace Engine.Storage
             //Clear
             MagicManager.Clear();
             NpcManager.ClearAllNpc();
-            ObjManager.ClearAllObj();
+            ObjManager.ClearAllObjAndFileName();
             Globals.TheMap.Free();
 
             LoadGameFile();

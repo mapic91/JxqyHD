@@ -79,7 +79,7 @@ namespace Engine.Gui
                 null);
             _selectA.MouseEnter += (arg1, arg2) => _selectA.SetDrawColor(Color.Red * 0.8f);
             _selectA.MouseLeave += (arg1, arg2) => _selectA.SetDrawColor(Color.Blue * 0.8f);
-            _selectA.Click += (arg1, arg2) =>
+            _selectA.MouseLeftDown += (arg1, arg2) =>
             {
                 if (IsInSelecting)
                 {
@@ -89,7 +89,7 @@ namespace Engine.Gui
             };
             _selectB.MouseEnter += (arg1, arg2) => _selectB.SetDrawColor(Color.Red * 0.8f);
             _selectB.MouseLeave += (arg1, arg2) => _selectB.SetDrawColor(Color.Blue * 0.8f);
-            _selectB.Click += (arg1, arg2) =>
+            _selectB.MouseLeftDown += (arg1, arg2) =>
             {
                 if (IsInSelecting)
                 {

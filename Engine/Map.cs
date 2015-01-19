@@ -716,7 +716,7 @@ namespace Engine
             Globals.TheCarmera.WorldWidth = MapPixelWidth;
             Globals.TheCarmera.WorldHeight = MapPixelHeight;
             _mapFileNameWithoutExtension = Path.GetFileNameWithoutExtension(path);
-            LittelMapTexture = Utils.LoadTexture2DFromFile(@"map\bmp\" + _mapFileNameWithoutExtension + ".png");
+            LittelMapTexture = Utils.LoadTexture2DFromFile(@"map\littlemap\" + _mapFileNameWithoutExtension + ".png");
         }
 
         private void LoadMap(byte[] buf)

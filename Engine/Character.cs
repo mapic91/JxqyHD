@@ -1522,7 +1522,7 @@ namespace Engine
                 else
                 {
                     //Actack distance too small, move away target
-                    if (!MoveAwayTarget(DestinationAttackPositionInWorld, 
+                    if (!MoveAwayTarget(DestinationAttackPositionInWorld,
                         AttackRadius - tileDistance,
                         _isRunToTarget)) return true;
                 }
@@ -1534,14 +1534,12 @@ namespace Engine
         {
             if (awayTileDistance < 1) return false;
 
-            var neighbor = TilePosition;
-            for (var i = 0; i < awayTileDistance; i++)
-            {
-                neighbor = Engine.PathFinder.FindNeighborInDirection(neighbor,
-                    PositionInWorld - targetPositionInWorld);
-            }
+            var neighbor = Engine.PathFinder.FindDistanceTileInDirection(
+                TilePosition,
+                PositionInWorld - targetPositionInWorld,
+                awayTileDistance);
 
-            if (HasObstacle(neighbor)) return false; 
+            if (HasObstacle(neighbor)) return false;
 
             MoveToTarget(neighbor, isRun);
             if (Path == null)
@@ -1639,30 +1637,35 @@ namespace Engine
                 {
                     return;
                 }
-                DestinationMoveTilePosition = destinationTilePositon;
+                var destinationPositionInWorld = Map.ToPixelPosition(destinationTilePositon);
+
+                DestinationMoveTilePosition = Engine.PathFinder.FindDistanceTileInDirection(
+                    destinationTilePositon,
+                    destinationPositionInWorld - PositionInWorld,
+                    interactDistance);
                 //if can't reach destination tile positon, find neighbor tile
-                if (Globals.TheMap.IsObstacleForCharacter(destinationTilePositon))
+                if (Globals.TheMap.IsObstacleForCharacter(DestinationMoveTilePosition))
                 {
-                    //find directional neighbor
-                    var neighbor = Engine.PathFinder.FindNeighborInDirection(destinationTilePositon,
-                    destinationTilePositon - PositionInWorld);
-                    //if can't find  or neighbor is obstacle, try other neighbor
-                    if (neighbor == Vector2.Zero ||
-                        Globals.TheMap.IsObstacleForCharacter(neighbor))
+                    //Try all 8 direction
+                    var directionList = Utils.GetDirection8List();
+                    var isFinded = false;
+                    foreach (var dir in directionList)
                     {
-                        var neighbors = Engine.PathFinder.FindNeighbors(destinationTilePositon);
-                        foreach (var tile in neighbors)
+                        DestinationMoveTilePosition = Engine.PathFinder.FindDistanceTileInDirection(
+                            destinationTilePositon,
+                            dir,
+                            interactDistance);
+                        if (!Globals.TheMap.IsObstacleForCharacter(DestinationMoveTilePosition))
                         {
-                            if (!Globals.TheMap.IsObstacleForCharacter(tile))
-                            {
-                                DestinationMoveTilePosition = tile;
-                                break;
-                            }
+                            isFinded = true;
+                            break;
                         }
                     }
-                    else
+                    if (!isFinded)
                     {
-                        DestinationMoveTilePosition = neighbor;
+                        //Not find, can't move to target, do nothing.
+                        _interactiveTarget = null;
+                        return;
                     }
                 }
 

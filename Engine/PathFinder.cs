@@ -319,6 +319,30 @@ namespace Engine
         }
 
         /// <summary>
+        /// Find tile in direction with tile distance from begin tile.
+        /// </summary>
+        /// <param name="tilePosition">Begin tile positon.</param>
+        /// <param name="direction">Vector direction</param>
+        /// <param name="tileDistance">Tile distance from begin tile.</param>
+        /// <returns></returns>
+        public static Vector2 FindDistanceTileInDirection(Vector2 tilePosition, Vector2 direction, int tileDistance)
+        {
+            if (direction == Vector2.Zero || tileDistance < 1)
+            {
+                return tilePosition;
+            }
+
+            var neighbor = tilePosition;
+            for (var i = 0; i < tileDistance; i++)
+            {
+                neighbor = FindNeighborInDirection(neighbor,
+                    direction);
+            }
+
+            return neighbor;
+        }
+
+        /// <summary>
         /// Find neighbor in direction(0-7)
         /// </summary>
         /// <param name="tilePosition">Tile position to find</param>

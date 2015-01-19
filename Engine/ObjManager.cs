@@ -59,6 +59,7 @@ namespace Engine
         public static bool Load(string fileName)
         {
             if (string.IsNullOrEmpty(fileName)) return false;
+            ClearAllObjAndFileName();
             try
             {
                 _fileName = fileName;
@@ -73,10 +74,8 @@ namespace Engine
             return true;
         }
 
-        public static bool Load(string[] lines)
+        private static bool Load(string[] lines)
         {
-            ClearAllObj();
-
             var count = lines.Count();
             for (var i = 0; i < count; )
             {
@@ -127,7 +126,7 @@ namespace Engine
             _objListChanged = true;
         }
 
-        public static void ClearAllObj()
+        public static void ClearAllObjAndFileName()
         {
             _fileName = string.Empty;
             _list.Clear();

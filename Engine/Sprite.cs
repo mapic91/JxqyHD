@@ -16,8 +16,7 @@ namespace Engine
         private int _elapsedMilliSecond;
         private int _currentDirection;
         private Asf _texture = new Asf();
-        private bool _isPlayingCurrentDirOnce;
-        private bool _isPlayingCurrentDirOnceFromBack;
+        private bool _isPlayReverse;
         private int _leftFrameToPlay;
         private float _movedDistance;
         private bool _isTilePositionNew;
@@ -49,9 +48,7 @@ namespace Engine
 
         public bool IsInPlaying
         {
-            get { return _isPlayingCurrentDirOnce || 
-                _isPlayingCurrentDirOnceFromBack ||
-                (_leftFrameToPlay > 0); }
+            get { return (_leftFrameToPlay > 0); }
         }
 
         public Asf Texture
@@ -249,38 +246,33 @@ namespace Engine
         /// Play frames count than stop
         /// </summary>
         /// <param name="count">Frame count</param>
-        public void PlayFrames(int count)
+        /// <param name="reverse">Play from current index to front.Otherwise to back.</param>
+        public void PlayFrames(int count, bool reverse = false)
         {
             _leftFrameToPlay = count;
+            _isPlayReverse = reverse;
         }
 
         public void PlayCurrentDirOnce()
         {
-            if (_isPlayingCurrentDirOnce ||
-                _isPlayingCurrentDirOnceFromBack ||
-                IsFrameAtEnd()) return;
-            _isPlayingCurrentDirOnce = true;
-            PlayFrames(_frameEnd - _frameBegin + 1);
+            if (IsInPlaying) return;
+            PlayFrames(_frameEnd - CurrentFrameIndex + 1);
         }
 
         public void PlayCurrentDirOnceReverse()
         {
-            if (_isPlayingCurrentDirOnce ||
-                _isPlayingCurrentDirOnceFromBack ||
-                IsFrameAtBegin()) return;
-            _isPlayingCurrentDirOnceFromBack = true;
-            PlayFrames(_frameEnd - _frameBegin + 1);
+            if (IsInPlaying) return;
+            PlayFrames(_currentFrameIndex - _frameBegin + 1, true);
         }
 
         public void EndPlayCurrentDirOnce()
         {
-            _isPlayingCurrentDirOnce = false;
             _leftFrameToPlay = 0;
         }
 
         public bool IsPlayCurrentDirOnceEnd()
         {
-            return !_isPlayingCurrentDirOnce;
+            return !IsInPlaying;
         }
 
         public bool IsFrameAtBegin()
@@ -336,7 +328,7 @@ namespace Engine
             if (_elapsedMilliSecond > Texture.Interval)
             {
                 _elapsedMilliSecond -= Texture.Interval;
-                if (_isPlayingCurrentDirOnceFromBack)
+                if (IsInPlaying && _isPlayReverse)
                 {
                     CurrentFrameIndex--;
                 }
@@ -349,16 +341,6 @@ namespace Engine
                 if (_leftFrameToPlay > 0)
                 {
                     _leftFrameToPlay--;
-                }
-
-                if (_isPlayingCurrentDirOnce ||
-                    _isPlayingCurrentDirOnceFromBack)
-                {
-                    if (_leftFrameToPlay <= 0)
-                    {
-                        _isPlayingCurrentDirOnce = false;
-                        _isPlayingCurrentDirOnceFromBack = false;
-                    }
                 }
             }
         }

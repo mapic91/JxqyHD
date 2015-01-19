@@ -307,7 +307,12 @@ namespace Engine
 
         public void OpenBox()
         {
-            PlayCurrentDirOnce();
+            PlayFrames(FrameEnd - CurrentFrameIndex);
+        }
+
+        public void CloseBox()
+        {
+            PlayFrames(CurrentFrameIndex - FrameBegin, true);
         }
 
         /// <summary>
