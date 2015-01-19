@@ -432,13 +432,15 @@ namespace Engine.Gui
         #region Handle key press
         private static bool IsEscKeyPressed(KeyboardState keyboardState)
         {
-            return (keyboardState.IsKeyDown(Keys.Escape) &&
+            return (!Globals.IsInputDisabled &&
+                    keyboardState.IsKeyDown(Keys.Escape) &&
                     Globals.TheGame.LastKeyboardState.IsKeyUp(Keys.Escape));
         }
 
         private static bool IsShowLittleMapKeyPressed(KeyboardState keyboardState)
         {
-            return (keyboardState.IsKeyDown(Keys.Tab) &&
+            return (!Globals.IsInputDisabled &&
+                    keyboardState.IsKeyDown(Keys.Tab) &&
                     Globals.TheGame.LastKeyboardState.IsKeyUp(Keys.Tab));
         }
         #endregion Handle key press
