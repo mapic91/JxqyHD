@@ -141,7 +141,7 @@ namespace Engine.Gui
 
             RegisterEvent();
 
-            SetSaveIndex(Globals.SaveLoadSelectionIndex);
+            SetSaveLoadIndex(Globals.SaveLoadSelectionIndex);
 
             IsShow = false;
         }
@@ -154,7 +154,8 @@ namespace Engine.Gui
             //Button event
             _saveButton.Click += (arg1, arg2) =>
             {
-                if (_list.SelectionIndex != -1)
+                if (_list.SelectionIndex != -1 &&
+                    SaveLoadIndexInRange(_list.SelectionIndex + 1))
                 {
                     if (!Globals.TheGame.IsSafe())
                     {
@@ -171,7 +172,8 @@ namespace Engine.Gui
             };
             _loadButton.Click += (arg1, arg2) =>
             {
-                if (_list.SelectionIndex != -1)
+                if (_list.SelectionIndex != -1 &&
+                    SaveLoadIndexInRange(_list.SelectionIndex + 1))
                 {
                     var index = _list.SelectionIndex + 1;
                     if (StorageBase.CanLoad(index))
@@ -190,20 +192,22 @@ namespace Engine.Gui
 
         private void ShowSaveIndex(int index)
         {
+            if(!SaveLoadIndexInRange(index))return;
             _saveTime.Text = StorageBase.GetSaveTime(index);
             _saveSnapshot.BmpFilePath = StorageBase.GetSaveSnapShotFilePath(index);
+            Globals.SaveLoadSelectionIndex = index;
         }
 
-        public void SetSaveIndex(int index)
+        private bool SaveLoadIndexInRange(int index)
         {
-            if(index < IndexBegin || index > IndexEnd) return;
+            return !(index < IndexBegin || index > IndexEnd);
+        }
+
+        public void SetSaveLoadIndex(int index)
+        {
+            if(!SaveLoadIndexInRange(index)) return;
             _list.SetSelectionIndex(index - 1);
             ShowSaveIndex(index);
-        }
-
-        public int GetSaveIndex()
-        {
-            return _list.SelectionIndex + 1;
         }
 
         public override void Update(GameTime gameTime)

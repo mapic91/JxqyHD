@@ -188,11 +188,10 @@ namespace Engine
         /// </summary>
         protected override void Initialize()
         {
-            Globals.Initialize();
+            Globals.LoadSetting();
             Globals.TheGame = this;
             TalkTextList.Initialize();
             Log.Initialize();
-            Log.LogOn = Globals.IsLogOn;
 
             Log.LogMessageToFile("Game is running...");
 
@@ -474,7 +473,7 @@ namespace Engine
 
         public void ExitGame()
         {
-            Globals.Save();
+            Globals.SaveSetting();
             Exit();
         }
     }

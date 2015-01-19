@@ -69,10 +69,9 @@ namespace Engine
 
         public const string GameIniFilePath = "Jxqy.ini";
         public const string SettingSectionName = "Setting";
-        public static int WindowWidth = 1366;
-        public static int WindowHeight = 768;
+        public static int WindowWidth = 800;
+        public static int WindowHeight = 600;
         public static bool IsFullScreen = true;
-        public static bool IsLogOn;
         public static int SaveLoadSelectionIndex;
 
         public static bool IsInputDisabled;
@@ -80,22 +79,24 @@ namespace Engine
 
         public static readonly MessageDelegater TheMessageSender = new MessageDelegater();
 
-        public static void Initialize()
+        public static void LoadSetting()
         {
             try
             {
+                var mode = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode;
+                WindowWidth = mode.Width;
+                WindowHeight = mode.Height;
+
                 var parser = new FileIniDataParser();
                 var data = parser.ReadFile(GameIniFilePath, LocalEncoding);
                 var setting = data[SettingSectionName];
                 int value;
                 if (int.TryParse(setting["FullScreen"], out value))
-                    IsFullScreen = (value == 1);
+                    IsFullScreen = (value != 0);
                 if (int.TryParse(setting["Width"], out value))
                     WindowWidth = value;
                 if (int.TryParse(setting["Height"], out value))
                     WindowHeight = value;
-                if (int.TryParse(setting["Log"], out value))
-                    IsLogOn = (value == 1);
                 if (int.TryParse(setting["SaveLoadSelectionIndex"], out value))
                     SaveLoadSelectionIndex = value;
             }
@@ -105,7 +106,23 @@ namespace Engine
             }
         }
 
-        public static void Save()
+        public static void SaveSetting()
+        {
+            SaveSetting(false);
+        }
+
+        public static void SaveAllSetting()
+        {
+            SaveSetting(true);
+        }
+
+        /// <summary>
+        /// Save game settings to ini file.
+        /// Because in edit mode game resolution may change, so normaly game resolution is not saved to ini file,
+        /// When change game settings, set saveResolution to true, to apply all settings chaging to ini file.
+        /// </summary>
+        /// <param name="saveResolution">Don't save game resolution to file if false.</param>
+        private static void SaveSetting(bool saveResolution)
         {
             try
             {
@@ -126,7 +143,12 @@ namespace Engine
                 }
 
                 section["FullScreen"] = IsFullScreen ? "1" : "0";
-                section["SaveLoadSelectionIndex"] = GuiManager.SaveLoadInterface.GetSaveIndex().ToString();
+                section["SaveLoadSelectionIndex"] = SaveLoadSelectionIndex.ToString();
+                if (saveResolution)
+                {
+                    section["Width"] = WindowWidth.ToString();
+                    section["Height"] = WindowHeight.ToString();
+                }
                 File.WriteAllText(GameIniFilePath, data.ToString(), LocalEncoding);
             }
             catch (Exception exception)
