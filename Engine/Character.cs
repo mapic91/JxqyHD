@@ -865,7 +865,7 @@ namespace Engine
 
             if (tileDistance < minTileDistance && IsStanding())
             {
-                MoveAwayTarget(Map.ToPixelPosition(targetTilePosition), false);
+                MoveAwayTarget(Map.ToPixelPosition(targetTilePosition), minTileDistance - tileDistance, false);
             }
         }
 
@@ -1522,23 +1522,33 @@ namespace Engine
                 else
                 {
                     //Actack distance too small, move away target
-                    if (!MoveAwayTarget(DestinationAttackPositionInWorld, _isRunToTarget)) return true;
+                    if (!MoveAwayTarget(DestinationAttackPositionInWorld, 
+                        AttackRadius - tileDistance,
+                        _isRunToTarget)) return true;
                 }
             }
             return false;
         }
 
-        protected bool MoveAwayTarget(Vector2 targetPositionInWorld, bool isRun)
+        protected bool MoveAwayTarget(Vector2 targetPositionInWorld, int awayTileDistance, bool isRun)
         {
-            var neighbor = Engine.PathFinder.FindNeighborInDirection(TilePosition,
-                        PositionInWorld - targetPositionInWorld);
+            if (awayTileDistance < 1) return false;
 
-            if (HasObstacle(neighbor)) return false;
+            var neighbor = TilePosition;
+            for (var i = 0; i < awayTileDistance; i++)
+            {
+                neighbor = Engine.PathFinder.FindNeighborInDirection(neighbor,
+                    PositionInWorld - targetPositionInWorld);
+            }
 
-            Path = Engine.PathFinder.FindPath(this, TilePosition, neighbor, PathType);
-            if (Path == null) return false;
+            if (HasObstacle(neighbor)) return false; 
 
             MoveToTarget(neighbor, isRun);
+            if (Path == null)
+            {
+                //Can't find path.
+                return false;
+            }
             return true;
         }
 
