@@ -17,6 +17,8 @@ namespace Engine.Gui
         private TextGui _saveTime;
         private Bmp _saveSnapshot;
         private LineText _message;
+        private const int IndexBegin = 1;
+        private const int IndexEnd = 7;
 
         public Texture2D Snapshot;
         public bool CanSave { set; get; }
@@ -139,13 +141,9 @@ namespace Engine.Gui
 
             RegisterEvent();
 
-            IsShow = false;
-        }
+            SetSaveIndex(Globals.SaveLoadSelectionIndex);
 
-        private void ShowSaveIndex(int index)
-        {
-            _saveTime.Text = StorageBase.GetSaveTime(index);
-            _saveSnapshot.BmpFilePath = StorageBase.GetSaveSnapShotFilePath(index);
+            IsShow = false;
         }
 
         private void RegisterEvent()
@@ -188,6 +186,24 @@ namespace Engine.Gui
                 IsShow = false;
                 GuiManager.ShowSaveLoad(false);
             };
+        }
+
+        private void ShowSaveIndex(int index)
+        {
+            _saveTime.Text = StorageBase.GetSaveTime(index);
+            _saveSnapshot.BmpFilePath = StorageBase.GetSaveSnapShotFilePath(index);
+        }
+
+        public void SetSaveIndex(int index)
+        {
+            if(index < IndexBegin || index > IndexEnd) return;
+            _list.SetSelectionIndex(index - 1);
+            ShowSaveIndex(index);
+        }
+
+        public int GetSaveIndex()
+        {
+            return _list.SelectionIndex + 1;
         }
 
         public override void Update(GameTime gameTime)

@@ -711,7 +711,7 @@ namespace Engine.Script
                 }
                 message += "\n" + exception.Message + "\n" + Log.GetLastLine(exception);
                 Log.LogMessageToFile(message);
-                if (Globals.ShowScriptWindow)
+                if (Globals.TheGame.IsInEditMode)
                 {
                     MessageBox.Show(message);
                 }

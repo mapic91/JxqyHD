@@ -80,13 +80,13 @@ namespace Engine
             {
                 _graphics.PreferredBackBufferWidth = _pictureBox.Width;
                 _graphics.PreferredBackBufferHeight = _pictureBox.Height;
-                Globals.WindowWidth = 
-                    Globals.TheCarmera.ViewWidth = 
-                    Globals.TheMap.ViewWidth = 
+                Globals.WindowWidth =
+                    Globals.TheCarmera.ViewWidth =
+                    Globals.TheMap.ViewWidth =
                     _pictureBox.Width;
-                Globals.WindowHeight = 
-                    Globals.TheCarmera.ViewHeight = 
-                    Globals.TheMap.ViewHeight = 
+                Globals.WindowHeight =
+                    Globals.TheCarmera.ViewHeight =
+                    Globals.TheMap.ViewHeight =
                     _pictureBox.Height;
                 _graphics.ApplyChanges();
             }
@@ -279,16 +279,21 @@ namespace Engine
                     _lastKeyboardState.IsKeyUp(Keys.Enter))
                 {
                     _graphics.ToggleFullScreen();
+                    Globals.IsFullScreen = !Globals.IsFullScreen;
                 }
             }
 
             //Map layer draw toggle
-            if (keyboardState.IsKeyDown(Keys.D1) && _lastKeyboardState.IsKeyUp(Keys.D1))
-                Globals.TheMap.SwitchLayerDraw(0);
-            if (keyboardState.IsKeyDown(Keys.D2) && _lastKeyboardState.IsKeyUp(Keys.D2))
-                Globals.TheMap.SwitchLayerDraw(1);
-            if (keyboardState.IsKeyDown(Keys.D3) && _lastKeyboardState.IsKeyUp(Keys.D3))
-                Globals.TheMap.SwitchLayerDraw(2);
+            if (IsInEditMode)
+            {
+                if (keyboardState.IsKeyDown(Keys.D1) && _lastKeyboardState.IsKeyUp(Keys.D1))
+                    Globals.TheMap.SwitchLayerDraw(0);
+                if (keyboardState.IsKeyDown(Keys.D2) && _lastKeyboardState.IsKeyUp(Keys.D2))
+                    Globals.TheMap.SwitchLayerDraw(1);
+                if (keyboardState.IsKeyDown(Keys.D3) && _lastKeyboardState.IsKeyUp(Keys.D3))
+                    Globals.TheMap.SwitchLayerDraw(2);
+            }
+
 
             if (ScriptExecuter.IsInPlayingMovie)
             {
@@ -314,7 +319,7 @@ namespace Engine
                     case GameState.StateType.Title:
                         break;
                     case GameState.StateType.Playing:
-                        if(IsGamePlayPaused) break;
+                        if (IsGamePlayPaused) break;
 
                         if (Globals.IsInSuperMagicMode)
                         {
@@ -429,10 +434,10 @@ namespace Engine
         public Texture2D TakeSnapShot()
         {
             Draw(new GameTime());
- 
+
             var w = GraphicsDevice.PresentationParameters.BackBufferWidth;
             var h = GraphicsDevice.PresentationParameters.BackBufferHeight;
-            var data = new byte[w*h*4];
+            var data = new byte[w * h * 4];
             GraphicsDevice.GetBackBufferData(data);
             var texture = new Texture2D(GraphicsDevice, w, h);
             texture.SetData(data);
@@ -446,7 +451,7 @@ namespace Engine
         public bool IsSafe()
         {
             var npcs = NpcManager.NpcList;
-            if (npcs.Any(npc => npc.IsEnemy && 
+            if (npcs.Any(npc => npc.IsEnemy &&
                 npc.IsFollowTargetFound &&
                 npc.FollowTarget != null &&
                 (npc.FollowTarget.IsPlayer || npc.FollowTarget.IsPartner)))
@@ -465,6 +470,12 @@ namespace Engine
             }
 
             return true;
+        }
+
+        public void ExitGame()
+        {
+            Globals.Save();
+            Exit();
         }
     }
 }

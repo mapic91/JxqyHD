@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Linq;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -56,16 +57,22 @@ namespace Engine.Gui.Base
                         _itemClickSound.Play();
                     }
 
-                    SelectionIndex = index;
-
-                    //Item selection change, change item text color.
-                    foreach (var item in _items)
-                    {
-                        item.SetDrawColor(_textColor);
-                    }
-                    _items[index].SetDrawColor(_seclectedTextColor);
+                    SetSelectionIndex(index);
                 };
             }
+        }
+
+        public void SetSelectionIndex(int index)
+        {
+            if (index >= _items.Count()) return;
+
+            SelectionIndex = index;
+            //Item selection change, change item text color.
+            foreach (var item in _items)
+            {
+                item.SetDrawColor(_textColor);
+            }
+            _items[index].SetDrawColor(_seclectedTextColor);
         }
 
         public override void Update(GameTime gameTime)

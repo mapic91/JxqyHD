@@ -88,7 +88,7 @@ namespace Engine.Gui
                 IsShow = false;
                 ScriptManager.RunScript(Utils.GetScriptParser("team.txt"));
             };
-            _exitButton.Click += (arg1, grg2) => Globals.TheGame.Exit();
+            _exitButton.Click += (arg1, grg2) => Globals.TheGame.ExitGame();
         }
 
         public override void Update(GameTime gameTime)

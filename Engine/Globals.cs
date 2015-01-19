@@ -1,7 +1,11 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 using System.Text;
+using Engine.Gui;
 using Engine.Message;
 using IniParser;
+using IniParser.Model;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -63,24 +67,26 @@ namespace Engine
         public static SpriteFont FontSize12;
         #endregion
 
+        public const string GameIniFilePath = "Jxqy.ini";
         public static int WindowWidth = 1366;
         public static int WindowHeight = 768;
         public static bool IsFullScreen = true;
         public static bool IsLogOn;
-        public static bool ShowScriptWindow;
+        public static int SaveLoadSelectionIndex;
 
         public static bool IsInputDisabled;
         public static bool IsWaterEffectEnabled;
 
         public static readonly MessageDelegater TheMessageSender = new MessageDelegater();
 
+        private const string SettingSectionName = "Setting";
         public static void Initialize()
         {
             try
             {
                 var parser = new FileIniDataParser();
-                var data = parser.ReadFile("Jxqy.ini");
-                var setting = data["Setting"];
+                var data = parser.ReadFile(GameIniFilePath, SimpleChineseEncoding);
+                var setting = data[SettingSectionName];
                 int value;
                 if (int.TryParse(setting["FullScreen"], out value))
                     IsFullScreen = (value == 1);
@@ -90,12 +96,37 @@ namespace Engine
                     WindowHeight = value;
                 if (int.TryParse(setting["Log"], out value))
                     IsLogOn = (value == 1);
-                if (int.TryParse(setting["ShowScriptWindow"], out value))
-                    ShowScriptWindow = (value == 1);
+                if (int.TryParse(setting["SaveLoadSelectionIndex"], out value))
+                    SaveLoadSelectionIndex = value;
             }
             catch (Exception)
             {
                 //no setting file, do nothing
+            }
+        }
+
+        public static void Save()
+        {
+            try
+            {
+                IniData data;
+                if (!File.Exists(GameIniFilePath))
+                {
+                    data = new IniData();
+                    data.Sections.AddSection(SettingSectionName);
+                }
+                else
+                {
+                    data = new FileIniDataParser().ReadFile(GameIniFilePath, SimpleChineseEncoding);
+                }
+                var section = data[SettingSectionName];
+                section["FullScreen"] = IsFullScreen ? "1" : "0";
+                section["SaveLoadSelectionIndex"] = GuiManager.SaveLoadInterface.GetSaveIndex().ToString();
+                File.WriteAllText(GameIniFilePath, data.ToString(), SimpleChineseEncoding);
+            }
+            catch (Exception exception)
+            {
+                Log.LogFileSaveError("Game setting file", GameIniFilePath, exception);
             }
         }
 
