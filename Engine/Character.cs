@@ -1215,7 +1215,7 @@ namespace Engine
         #region Perform action
         public void StandingImmediately()
         {
-            StateInitialize();
+            StateInitialize(false);
             if (_isInFighting && NpcIni.ContainsKey((int)CharacterState.FightStand)) SetState(CharacterState.FightStand);
             else
             {
@@ -1254,14 +1254,18 @@ namespace Engine
             return true;
         }
 
-        public void StateInitialize()
+        /// <summary>
+        /// Before set character state initialize character state. 
+        /// </summary>
+        /// <param name="endInteract">Is true end interact if character is in interacting.</param>
+        public void StateInitialize(bool endInteract = true)
         {
             EndPlayCurrentDirOnce();
             DestinationMoveTilePosition = Vector2.Zero;
             Path = null;
             CancleAttackTarget();
             IsSitted = false;
-            if (_isInInteract)
+            if (_isInInteract && endInteract)
             {
                 //End interact in case of action to perform direction not correct
                 EndInteract();
