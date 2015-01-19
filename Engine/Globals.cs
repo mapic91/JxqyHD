@@ -72,7 +72,6 @@ namespace Engine
         public const string SettingSectionName = "Setting";
         public static int WindowWidth = 800;
         public static int WindowHeight = 600;
-        public static int GameSpeed = 1;
         public static bool IsFullScreen = true;
         public static int SaveLoadSelectionIndex;
 
@@ -101,8 +100,6 @@ namespace Engine
                     WindowHeight = value;
                 if (int.TryParse(setting["SaveLoadSelectionIndex"], out value))
                     SaveLoadSelectionIndex = value;
-                if (int.TryParse(setting["GameSpeed"], out value) && value > 0)
-                    GameSpeed = value;
 
                 float fv;
                 if (float.TryParse(setting["SoundEffectVolume"], out fv))
@@ -161,7 +158,6 @@ namespace Engine
                     section["Height"] = WindowHeight.ToString();
                     section["SoundEffectVolume"] = SoundEffect.MasterVolume.ToString();
                     section["MusicVolume"] = BackgroundMusic.GetVolume().ToString();
-                    section["GameSpeed"] = GameSpeed.ToString();
                 }
                 File.WriteAllText(GameIniFilePath, data.ToString(), LocalEncoding);
             }

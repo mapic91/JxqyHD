@@ -336,9 +336,6 @@ namespace Engine
                     Globals.TheMap.SwitchLayerDraw(2);
             }
 
-            var speedUpGameTime = Globals.GameSpeed > 1
-                ? GetFold(gameTime, Globals.GameSpeed)
-                : gameTime;
             if (ScriptExecuter.IsInPlayingMovie)
             {
                 //Stop movie when Esc key pressed
@@ -364,7 +361,7 @@ namespace Engine
                         break;
                     case GameState.StateType.Playing:
                         if (IsGamePlayPaused) break;
-                        UpdatePlaying(speedUpGameTime);
+                        UpdatePlaying(gameTime);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -372,7 +369,7 @@ namespace Engine
             }
 
             //Update script after GuiManager, because script executing rely GUI state.
-            ScriptManager.Update(speedUpGameTime);
+            ScriptManager.Update(gameTime);
 
             LastKeyboardState = Keyboard.GetState();
             LastMouseState = mouseState;

@@ -36,16 +36,12 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
             this._soundEffectVolume = new System.Windows.Forms.TrackBar();
             this._musicVolume = new System.Windows.Forms.TrackBar();
-            this._gameSpeed = new System.Windows.Forms.TrackBar();
             this._textSoundEffectVolume = new System.Windows.Forms.Label();
             this._textMusicVolume = new System.Windows.Forms.Label();
-            this._textGameSpeed = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this._soundEffectVolume)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this._musicVolume)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this._gameSpeed)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -67,7 +63,7 @@
             // 
             // _saveButton
             // 
-            this._saveButton.Location = new System.Drawing.Point(61, 254);
+            this._saveButton.Location = new System.Drawing.Point(61, 210);
             this._saveButton.Name = "_saveButton";
             this._saveButton.Size = new System.Drawing.Size(75, 23);
             this._saveButton.TabIndex = 2;
@@ -77,7 +73,7 @@
             // 
             // _beginGameButton
             // 
-            this._beginGameButton.Location = new System.Drawing.Point(261, 254);
+            this._beginGameButton.Location = new System.Drawing.Point(261, 210);
             this._beginGameButton.Name = "_beginGameButton";
             this._beginGameButton.Size = new System.Drawing.Size(75, 23);
             this._beginGameButton.TabIndex = 3;
@@ -121,15 +117,6 @@
             this.label4.TabIndex = 7;
             this.label4.Text = "音乐音量：";
             // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(36, 190);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(67, 13);
-            this.label5.TabIndex = 8;
-            this.label5.Text = "运行速度：";
-            // 
             // _soundEffectVolume
             // 
             this._soundEffectVolume.Location = new System.Drawing.Point(109, 108);
@@ -147,17 +134,6 @@
             this._musicVolume.Size = new System.Drawing.Size(227, 45);
             this._musicVolume.TabIndex = 10;
             this._musicVolume.Scroll += new System.EventHandler(this._musicVolume_Scroll);
-            // 
-            // _gameSpeed
-            // 
-            this._gameSpeed.Location = new System.Drawing.Point(109, 190);
-            this._gameSpeed.Maximum = 5;
-            this._gameSpeed.Minimum = 1;
-            this._gameSpeed.Name = "_gameSpeed";
-            this._gameSpeed.Size = new System.Drawing.Size(227, 45);
-            this._gameSpeed.TabIndex = 11;
-            this._gameSpeed.Value = 1;
-            this._gameSpeed.Scroll += new System.EventHandler(this._gameSpeed_Scroll);
             // 
             // _textSoundEffectVolume
             // 
@@ -177,27 +153,15 @@
             this._textMusicVolume.TabIndex = 16;
             this._textMusicVolume.Text = "100%";
             // 
-            // _textGameSpeed
-            // 
-            this._textGameSpeed.AutoSize = true;
-            this._textGameSpeed.Location = new System.Drawing.Point(342, 190);
-            this._textGameSpeed.Name = "_textGameSpeed";
-            this._textGameSpeed.Size = new System.Drawing.Size(25, 13);
-            this._textGameSpeed.TabIndex = 17;
-            this._textGameSpeed.Text = "1倍";
-            // 
             // Setting
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(410, 305);
-            this.Controls.Add(this._textGameSpeed);
+            this.ClientSize = new System.Drawing.Size(410, 252);
             this.Controls.Add(this._textMusicVolume);
             this.Controls.Add(this._textSoundEffectVolume);
-            this.Controls.Add(this._gameSpeed);
             this.Controls.Add(this._musicVolume);
             this.Controls.Add(this._soundEffectVolume);
-            this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -210,7 +174,6 @@
             this.Text = "游戏设置";
             ((System.ComponentModel.ISupportInitialize)(this._soundEffectVolume)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this._musicVolume)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this._gameSpeed)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -226,12 +189,9 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TrackBar _soundEffectVolume;
         private System.Windows.Forms.TrackBar _musicVolume;
-        private System.Windows.Forms.TrackBar _gameSpeed;
         private System.Windows.Forms.Label _textSoundEffectVolume;
         private System.Windows.Forms.Label _textMusicVolume;
-        private System.Windows.Forms.Label _textGameSpeed;
     }
 }

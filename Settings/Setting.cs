@@ -37,7 +37,6 @@ namespace Settings
 
             _soundEffectVolume.Value = (int)(SoundEffect.MasterVolume*100);
             _musicVolume.Value = (int) (BackgroundMusic.GetVolume()*100);
-            _gameSpeed.Value = Globals.GameSpeed;
             UpdateLabelText();
         }
 
@@ -50,7 +49,6 @@ namespace Settings
             Globals.IsFullScreen = !_windowMode.Checked;
             SoundEffect.MasterVolume = _soundEffectVolume.Value/100f;
             BackgroundMusic.SetVolume(_musicVolume.Value/100f);
-            Globals.GameSpeed = _gameSpeed.Value;
 
             Globals.SaveAllSetting();
         }
@@ -80,7 +78,6 @@ namespace Settings
         {
             _textSoundEffectVolume.Text = _soundEffectVolume.Value + "%";
             _textMusicVolume.Text = _musicVolume.Value + "%";
-            _textGameSpeed.Text = _gameSpeed.Value + "倍";
         }
     }
 }
