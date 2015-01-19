@@ -161,7 +161,7 @@ namespace Engine.Gui
             try
             {
                 _showNameDictionary = new Dictionary<string, string>();
-                var data = new FileIniDataParser().ReadFile(filePath, Globals.SimpleChineseEncoding);
+                var data = new FileIniDataParser().ReadFile(filePath, Globals.LocalEncoding);
                 var section = Utils.GetFirstSection(data);
                 foreach (var keyData in section)
                 {

@@ -14,7 +14,7 @@ namespace Engine
     //Must load GlobalData when game is initialize
     public static class Globals
     {
-        public static readonly Encoding SimpleChineseEncoding = Encoding.GetEncoding(936);
+        public static readonly Encoding LocalEncoding = Encoding.GetEncoding(936);
         public const int BaseSpeed = 100;
         public const int MagicBasespeed = 100;
         public const float SoundMaxDistance = 1000f;
@@ -68,6 +68,7 @@ namespace Engine
         #endregion
 
         public const string GameIniFilePath = "Jxqy.ini";
+        public const string SettingSectionName = "Setting";
         public static int WindowWidth = 1366;
         public static int WindowHeight = 768;
         public static bool IsFullScreen = true;
@@ -79,13 +80,12 @@ namespace Engine
 
         public static readonly MessageDelegater TheMessageSender = new MessageDelegater();
 
-        private const string SettingSectionName = "Setting";
         public static void Initialize()
         {
             try
             {
                 var parser = new FileIniDataParser();
-                var data = parser.ReadFile(GameIniFilePath, SimpleChineseEncoding);
+                var data = parser.ReadFile(GameIniFilePath, LocalEncoding);
                 var setting = data[SettingSectionName];
                 int value;
                 if (int.TryParse(setting["FullScreen"], out value))
@@ -113,16 +113,21 @@ namespace Engine
                 if (!File.Exists(GameIniFilePath))
                 {
                     data = new IniData();
-                    data.Sections.AddSection(SettingSectionName);
                 }
                 else
                 {
-                    data = new FileIniDataParser().ReadFile(GameIniFilePath, SimpleChineseEncoding);
+                    data = new FileIniDataParser().ReadFile(GameIniFilePath, LocalEncoding);
                 }
                 var section = data[SettingSectionName];
+                if (section == null)
+                {
+                    data.Sections.AddSection(SettingSectionName);
+                    section = data[SettingSectionName];
+                }
+
                 section["FullScreen"] = IsFullScreen ? "1" : "0";
                 section["SaveLoadSelectionIndex"] = GuiManager.SaveLoadInterface.GetSaveIndex().ToString();
-                File.WriteAllText(GameIniFilePath, data.ToString(), SimpleChineseEncoding);
+                File.WriteAllText(GameIniFilePath, data.ToString(), LocalEncoding);
             }
             catch (Exception exception)
             {

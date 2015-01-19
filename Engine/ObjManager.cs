@@ -63,7 +63,7 @@ namespace Engine
             {
                 _fileName = fileName;
                 var filePath = Utils.GetNpcObjFilePath(fileName);
-                var lines = File.ReadAllLines(filePath, Globals.SimpleChineseEncoding);
+                var lines = File.ReadAllLines(filePath, Globals.LocalEncoding);
                 Load(lines);
             }
             catch (Exception)
@@ -244,7 +244,7 @@ namespace Engine
                     var obj = node.Value;
                     obj.Save(data[sectionName]);
                 }
-                File.WriteAllText(path, data.ToString(), Globals.SimpleChineseEncoding);
+                File.WriteAllText(path, data.ToString(), Globals.LocalEncoding);
             }
             catch (Exception exception)
             {

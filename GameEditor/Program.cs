@@ -12,6 +12,7 @@ namespace GameEditor
         static void Main(string[] args)
         {
             Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
             var form = new GameEditor();
             form.Show();
             form.TheJxqyGame = new JxqyGame(

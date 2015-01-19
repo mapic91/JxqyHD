@@ -25,7 +25,7 @@ namespace Engine.Gui
             try
             {
                 var parser = new FileIniDataParser();
-                var data = parser.ReadFile(path, Globals.SimpleChineseEncoding);
+                var data = parser.ReadFile(path, Globals.LocalEncoding);
                 foreach (var item in data["PORTRAIT"])
                 {
                     _portraitList[int.Parse(item.KeyName)] = new Texture(Utils.GetAsf(@"asf\portrait\", item.Value));

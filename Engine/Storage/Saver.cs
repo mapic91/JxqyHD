@@ -48,7 +48,7 @@ namespace Engine.Storage
             ScriptExecuter.SaveVariables(data["Var"]);
 
             //Wirte to file
-            File.WriteAllText(StorageBase.GameIniFilePath, data.ToString(), Globals.SimpleChineseEncoding);
+            File.WriteAllText(StorageBase.GameIniFilePath, data.ToString(), Globals.LocalEncoding);
         }
 
         private static void SavePlayer()
@@ -56,7 +56,7 @@ namespace Engine.Storage
             var data = new IniData();
             data.Sections.AddSection("Init");
             Globals.ThePlayer.Save(data["Init"]);
-            File.WriteAllText(StorageBase.PlayerFilePath, data.ToString(), Globals.SimpleChineseEncoding);
+            File.WriteAllText(StorageBase.PlayerFilePath, data.ToString(), Globals.LocalEncoding);
         }
 
         private static void SavePartner()

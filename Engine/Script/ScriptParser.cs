@@ -127,7 +127,7 @@ namespace Engine.Script
             try
             {
                 FileName = Path.GetFileName(filePath);
-                IsOk = ReadFromLines(File.ReadAllLines(filePath, Globals.SimpleChineseEncoding));
+                IsOk = ReadFromLines(File.ReadAllLines(filePath, Globals.LocalEncoding));
             }
             catch (Exception exception)
             {

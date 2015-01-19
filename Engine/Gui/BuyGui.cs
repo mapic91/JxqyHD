@@ -72,7 +72,7 @@ namespace Engine.Gui
             {
                 _goods.Clear();
                 var parser = new FileIniDataParser();
-                var data =parser.ReadFile(path, Globals.SimpleChineseEncoding);
+                var data =parser.ReadFile(path, Globals.LocalEncoding);
                 var count = int.Parse(data["Header"]["Count"]);
                 const string basePath = @"ini\goods\";
                 for (var i = 1; i <= count; i++)

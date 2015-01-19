@@ -95,7 +95,7 @@ namespace Engine
                     count++;
                 }
                 data["Head"].AddKey("Count", count.ToString());
-                File.WriteAllText(path, data.ToString(), Globals.SimpleChineseEncoding);
+                File.WriteAllText(path, data.ToString(), Globals.LocalEncoding);
             }
             catch (Exception exception)
             {

@@ -116,7 +116,7 @@ namespace Engine.Storage
                 try
                 {
                     var parser = new FileIniDataParser();
-                    var data = parser.ReadFile(path, Globals.SimpleChineseEncoding);
+                    var data = parser.ReadFile(path, Globals.LocalEncoding);
                     time = data["State"]["Time"];
                 }
                 catch (Exception exception)

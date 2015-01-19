@@ -17,7 +17,7 @@ namespace Engine.ListManager
             try
             {
                 var parser = new FileIniDataParser();
-                var data = parser.ReadFile(filePath, Globals.SimpleChineseEncoding);
+                var data = parser.ReadFile(filePath, Globals.LocalEncoding);
                 var section = data["Memo"];
                 var count = int.Parse(section["Count"]);
                 for (var i = 0; i < count; i++)
@@ -48,7 +48,7 @@ namespace Engine.ListManager
                     i++;
                 }
                 //Write to file
-                File.WriteAllText(filePath, data.ToString(), Globals.SimpleChineseEncoding);
+                File.WriteAllText(filePath, data.ToString(), Globals.LocalEncoding);
             }
             catch (Exception exception)
             {

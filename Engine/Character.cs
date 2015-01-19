@@ -1111,7 +1111,7 @@ namespace Engine
         {
             try
             {
-                var data = new FileIniDataParser().ReadFile(filePath, Globals.SimpleChineseEncoding);
+                var data = new FileIniDataParser().ReadFile(filePath, Globals.LocalEncoding);
                 return Load(Utils.GetFirstSection(data));
             }
             catch (Exception exception)

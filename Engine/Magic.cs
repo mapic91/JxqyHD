@@ -274,7 +274,7 @@ namespace Engine
             try
             {
                 FileName = Path.GetFileName(filePath);
-                return Load(File.ReadAllLines(filePath, Globals.SimpleChineseEncoding),
+                return Load(File.ReadAllLines(filePath, Globals.LocalEncoding),
                     noLevel, noAttackFile);
             }
             catch (Exception ecxeption)

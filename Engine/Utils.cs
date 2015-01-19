@@ -235,7 +235,7 @@ namespace Engine
 
             try
             {
-                var lines = File.ReadAllLines(filePath, Globals.SimpleChineseEncoding);
+                var lines = File.ReadAllLines(filePath, Globals.LocalEncoding);
                 var counts = lines.Length;
                 for (var i = 0; i < counts; )
                 {
@@ -482,7 +482,7 @@ namespace Engine
         public static List<KeyDataCollection> GetAllKeyDataCollection(string filePath, string sectionNameBegin)
         {
             var list = new List<KeyDataCollection>();
-            var data = new FileIniDataParser().ReadFile(filePath, Globals.SimpleChineseEncoding);
+            var data = new FileIniDataParser().ReadFile(filePath, Globals.LocalEncoding);
             var count = int.Parse(data["Head"]["Count"]);
             for (var i = 0; i < count; i++)
             {

@@ -234,7 +234,7 @@ namespace Engine
 
             try
             {
-                var lines = File.ReadAllLines(filePath, Globals.SimpleChineseEncoding);
+                var lines = File.ReadAllLines(filePath, Globals.LocalEncoding);
                 return Load(lines);
             }
             catch (Exception exception)

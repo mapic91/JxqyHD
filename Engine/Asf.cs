@@ -68,7 +68,7 @@ namespace Engine
 
         protected override bool LoadHead(byte[] buf, ref int offset)
         {
-            var headinfo = Globals.SimpleChineseEncoding.GetString(buf, 0, "ASF 1.0".Length);
+            var headinfo = Globals.LocalEncoding.GetString(buf, 0, "ASF 1.0".Length);
             if (!headinfo.Equals("ASF 1.0")) return false;
             offset += 16;
 
