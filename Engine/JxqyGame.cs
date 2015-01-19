@@ -180,6 +180,39 @@ namespace Engine
 
             return new Vector2(x, y);
         }
+
+        private GameTime GetFold(GameTime gameTime, int fold)
+        {
+            return new GameTime(
+                    new TimeSpan(gameTime.TotalGameTime.Ticks * fold),
+                    new TimeSpan(gameTime.ElapsedGameTime.Ticks * fold));
+        }
+
+        private void UpdatePlaying(GameTime gameTime)
+        {
+            if (Globals.IsInSuperMagicMode)
+            {
+                Globals.SuperModeMagicSprite.Update(gameTime);
+                if (Globals.SuperModeMagicSprite.IsDestroyed)
+                {
+                    Globals.IsInSuperMagicMode = false;
+                    Globals.SuperModeMagicSprite = null;
+                }
+                return;//Just update super magic
+            }
+            //Player
+            Globals.ThePlayer.Update(gameTime);
+            //Magic list
+            MagicManager.Update(gameTime);
+            //Npc list
+            NpcManager.Update(gameTime);
+            //Obj list
+            ObjManager.Update(gameTime);
+            //Map
+            Globals.TheMap.Update(gameTime);
+            //Weather
+            WeatherManager.Update(gameTime);
+        }
         #endregion Utils
 
         /// <summary>
@@ -197,7 +230,16 @@ namespace Engine
 
             Log.LogMessageToFile("Game is running...");
 
-            _graphics.IsFullScreen = Globals.IsFullScreen;
+            if (IsInEditMode)
+            {
+                //Can't full screen in edit mode
+                _graphics.IsFullScreen = false;
+            }
+            else
+            {
+                _graphics.IsFullScreen = Globals.IsFullScreen;
+            }
+
             _graphics.PreferredBackBufferWidth = Globals.WindowWidth;
             _graphics.PreferredBackBufferHeight = Globals.WindowHeight;
             _graphics.ApplyChanges();
@@ -272,7 +314,8 @@ namespace Engine
             var keyboardState = Keyboard.GetState();
 
             //Fullscreen toggle
-            if (keyboardState.IsKeyDown(Keys.LeftAlt) || keyboardState.IsKeyDown(Keys.RightAlt))
+            if (!IsInEditMode &&
+                (keyboardState.IsKeyDown(Keys.LeftAlt) || keyboardState.IsKeyDown(Keys.RightAlt)))
             {
                 if (keyboardState.IsKeyDown(Keys.Enter) &&
                     LastKeyboardState.IsKeyUp(Keys.Enter))
@@ -293,7 +336,9 @@ namespace Engine
                     Globals.TheMap.SwitchLayerDraw(2);
             }
 
-
+            var speedUpGameTime = Globals.GameSpeed > 1
+                ? GetFold(gameTime, Globals.GameSpeed)
+                : gameTime;
             if (ScriptExecuter.IsInPlayingMovie)
             {
                 //Stop movie when Esc key pressed
@@ -319,29 +364,7 @@ namespace Engine
                         break;
                     case GameState.StateType.Playing:
                         if (IsGamePlayPaused) break;
-
-                        if (Globals.IsInSuperMagicMode)
-                        {
-                            Globals.SuperModeMagicSprite.Update(gameTime);
-                            if (Globals.SuperModeMagicSprite.IsDestroyed)
-                            {
-                                Globals.IsInSuperMagicMode = false;
-                                Globals.SuperModeMagicSprite = null;
-                            }
-                            break;//Just update super magic
-                        }
-                        //Player
-                        Globals.ThePlayer.Update(gameTime);
-                        //Magic list
-                        MagicManager.Update(gameTime);
-                        //Npc list
-                        NpcManager.Update(gameTime);
-                        //Obj list
-                        ObjManager.Update(gameTime);
-                        //Map
-                        Globals.TheMap.Update(gameTime);
-                        //Weather
-                        WeatherManager.Update(gameTime);
+                        UpdatePlaying(speedUpGameTime);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -349,7 +372,7 @@ namespace Engine
             }
 
             //Update script after GuiManager, because script executing rely GUI state.
-            ScriptManager.Update(gameTime);
+            ScriptManager.Update(speedUpGameTime);
 
             LastKeyboardState = Keyboard.GetState();
             LastMouseState = mouseState;

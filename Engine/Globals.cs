@@ -7,6 +7,7 @@ using Engine.Message;
 using IniParser;
 using IniParser.Model;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Engine
@@ -71,6 +72,7 @@ namespace Engine
         public const string SettingSectionName = "Setting";
         public static int WindowWidth = 800;
         public static int WindowHeight = 600;
+        public static int GameSpeed = 1;
         public static bool IsFullScreen = true;
         public static int SaveLoadSelectionIndex;
 
@@ -99,6 +101,14 @@ namespace Engine
                     WindowHeight = value;
                 if (int.TryParse(setting["SaveLoadSelectionIndex"], out value))
                     SaveLoadSelectionIndex = value;
+                if (int.TryParse(setting["GameSpeed"], out value) && value > 0)
+                    GameSpeed = value;
+
+                float fv;
+                if (float.TryParse(setting["SoundEffectVolume"], out fv))
+                    SoundEffect.MasterVolume = fv;
+                if(float.TryParse(setting["MusicVolume"], out fv))
+                    BackgroundMusic.SetVolume(fv);
             }
             catch (Exception)
             {
@@ -118,11 +128,12 @@ namespace Engine
 
         /// <summary>
         /// Save game settings to ini file.
-        /// Because in edit mode game resolution may change, so normaly game resolution is not saved to ini file,
-        /// When change game settings, set saveResolution to true, to apply all settings chaging to ini file.
+        /// Because some settings was not needed to save when playing game.
+        /// Set isAll to flase will only save update require settings when playing game.
+        /// Set isAll to thre if is in setting game settings.
         /// </summary>
-        /// <param name="saveResolution">Don't save game resolution to file if false.</param>
-        private static void SaveSetting(bool saveResolution)
+        /// <param name="isAll">Save all settings to file if true.</param>
+        private static void SaveSetting(bool isAll)
         {
             try
             {
@@ -144,10 +155,13 @@ namespace Engine
 
                 section["FullScreen"] = IsFullScreen ? "1" : "0";
                 section["SaveLoadSelectionIndex"] = SaveLoadSelectionIndex.ToString();
-                if (saveResolution)
+                if (isAll)
                 {
                     section["Width"] = WindowWidth.ToString();
                     section["Height"] = WindowHeight.ToString();
+                    section["SoundEffectVolume"] = SoundEffect.MasterVolume.ToString();
+                    section["MusicVolume"] = BackgroundMusic.GetVolume().ToString();
+                    section["GameSpeed"] = GameSpeed.ToString();
                 }
                 File.WriteAllText(GameIniFilePath, data.ToString(), LocalEncoding);
             }

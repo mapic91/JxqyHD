@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using Engine;
 using IniParser;
 using IniParser.Model;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Settings
@@ -33,6 +34,11 @@ namespace Settings
                     _resolutionList.SelectedIndex = i;
                 }
             }
+
+            _soundEffectVolume.Value = (int)(SoundEffect.MasterVolume*100);
+            _musicVolume.Value = (int) (BackgroundMusic.GetVolume()*100);
+            _gameSpeed.Value = Globals.GameSpeed;
+            UpdateLabelText();
         }
 
         private void _saveButton_Click(object sender, EventArgs e)
@@ -42,6 +48,9 @@ namespace Settings
             Globals.WindowWidth =  mode.Width;
             Globals.WindowHeight = mode.Height;
             Globals.IsFullScreen = !_windowMode.Checked;
+            SoundEffect.MasterVolume = _soundEffectVolume.Value/100f;
+            BackgroundMusic.SetVolume(_musicVolume.Value/100f);
+            Globals.GameSpeed = _gameSpeed.Value;
 
             Globals.SaveAllSetting();
         }
@@ -50,6 +59,28 @@ namespace Settings
         {
             Process.Start("Jxqy.exe");
             Close();
+        }
+
+        private void _soundEffectVolume_Scroll(object sender, EventArgs e)
+        {
+            UpdateLabelText();
+        }
+
+        private void _musicVolume_Scroll(object sender, EventArgs e)
+        {
+            UpdateLabelText();
+        }
+
+        private void _gameSpeed_Scroll(object sender, EventArgs e)
+        {
+            UpdateLabelText();
+        }
+
+        private void UpdateLabelText()
+        {
+            _textSoundEffectVolume.Text = _soundEffectVolume.Value + "%";
+            _textMusicVolume.Text = _musicVolume.Value + "%";
+            _textGameSpeed.Text = _gameSpeed.Value + "倍";
         }
     }
 }

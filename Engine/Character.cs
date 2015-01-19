@@ -599,7 +599,7 @@ namespace Engine
             {
                 FlyIni2 = FlyIni2.GetLevel(AttackLevel);
             }
-        }        
+        }
 
         /// <summary>
         /// Convert FixedPos string to path list
@@ -712,10 +712,19 @@ namespace Engine
             if (TilePosition != tileFrom &&
                 TilePosition != tileTo) // neither in from nor in to, correcting path
             {
-                var correctDistance = distance / 2 + 1f; // half plus one
-                PositionInWorld = from + direction * correctDistance;
-                MovedDistance = correctDistance;
-                var pos = TilePosition;
+                if (MovedDistance >= distance)
+                {
+                    MovedDistance = distance;
+                    PositionInWorld = to;
+                }
+                else
+                {
+                    var correctDistance = distance / 2 + 1f; // half plus one
+                    PositionInWorld = from + direction * correctDistance;
+                    MovedDistance = correctDistance;
+                    var pos = TilePosition;
+                }
+
             }
 
             if (MovedDistance >= distance)
@@ -1179,8 +1188,8 @@ namespace Engine
             AddKey(keyDataCollection, "FrozenSeconds", FrozenSeconds);
             if (_bodyIni != null)
             {
-                AddKey(keyDataCollection, 
-                    "BodyIni", 
+                AddKey(keyDataCollection,
+                    "BodyIni",
                     _bodyIni == null ? string.Empty : _bodyIni.FileName);
             }
             if (_flyIni != null)
@@ -1495,10 +1504,10 @@ namespace Engine
             if (DestinationAttackTilePosition != Vector2.Zero)
             {
                 int tileDistance = Engine.PathFinder.GetTileDistance(TilePosition, DestinationAttackTilePosition);
-               
+
                 if (tileDistance == AttackRadius)
                 {
-                    var canSeeTarget = Engine.PathFinder.CanViewTarget(TilePosition, 
+                    var canSeeTarget = Engine.PathFinder.CanViewTarget(TilePosition,
                         DestinationAttackTilePosition,
                         AttackRadius);
 
@@ -1842,7 +1851,7 @@ namespace Engine
         /// <param name="amount">Amount must be positive, oherwise no effect.</param>
         public void DecreaseLifeAddHurt(int amount)
         {
-            if(amount <= 0) return;
+            if (amount <= 0) return;
             AddLife(-amount);
             if (Life > 0)
             {

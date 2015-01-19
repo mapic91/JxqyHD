@@ -34,8 +34,6 @@ namespace Engine.Storage
             //Option
             data.Sections.AddSection("Option");
             var option = data["Option"];
-            option.AddKey("MuiscVolume", ((int)(100 - MediaPlayer.Volume*100)).ToString());
-            option.AddKey("SoundVolume", ((int)(100 - SoundEffect.MasterVolume*100)).ToString());
             option.AddKey("MapTime", Map.MapTime.ToString());
             option.AddKey("SnowShow", (WeatherManager.IsSnowing ? 1 : 0).ToString());
             option.AddKey("RainFile", WeatherManager.IsRaining ? WeatherManager.RainFileName : "");

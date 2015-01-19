@@ -28,8 +28,6 @@ namespace Engine.Storage
 
                 //option
                 var option = data["Option"];
-                MediaPlayer.Volume = (100 - int.Parse(option["MuiscVolume"]))/100f;
-                SoundEffect.MasterVolume = (100 - int.Parse(option["SoundVolume"]))/100f;
                 Map.MapTime = int.Parse(option["MapTime"]);
                 WeatherManager.ShowSnow(int.Parse(option["SnowShow"]) != 0);
                 if (!string.IsNullOrEmpty(option["RainFile"]))

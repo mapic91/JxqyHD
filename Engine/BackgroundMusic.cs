@@ -54,5 +54,10 @@ namespace Engine
         {
             MediaPlayer.Volume = volume;
         }
+
+        public static float GetVolume()
+        {
+            return MediaPlayer.Volume;
+        }
     }
 }
