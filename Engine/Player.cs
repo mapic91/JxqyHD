@@ -183,17 +183,6 @@ namespace Engine
             return region.Contains(mouseState.X, mouseState.Y);
         }
 
-        private void ResetPartnerPosition()
-        {
-            var partners = NpcManager.GetAllPartner();
-            if(partners.Count == 0) return;
-            var neighbors = Engine.PathFinder.FindAllNeighbors(TilePosition);
-            foreach (var partner in partners)
-            {
-                partner.SetPosition(neighbors[0]);
-            }
-        }
-
         #region Protected method
 
         protected override bool MagicFromCache
@@ -350,6 +339,17 @@ namespace Engine
             if (Path == null)
             {
                 NpcManager.PartnersMoveTo(destinationTilePosition);
+            }
+        }
+
+        public void ResetPartnerPosition()
+        {
+            var partners = NpcManager.GetAllPartner();
+            if (partners.Count == 0) return;
+            var neighbors = Engine.PathFinder.FindAllNeighbors(TilePosition);
+            foreach (var partner in partners)
+            {
+                partner.SetPosition(neighbors[0]);
             }
         }
 

@@ -446,7 +446,10 @@ namespace Engine
         public bool IsSafe()
         {
             var npcs = NpcManager.NpcList;
-            if (npcs.Any(npc => npc.IsEnemy && npc.IsFollowTargetFound))
+            if (npcs.Any(npc => npc.IsEnemy && 
+                npc.IsFollowTargetFound &&
+                npc.FollowTarget != null &&
+                (npc.FollowTarget.IsPlayer || npc.FollowTarget.IsPartner)))
             {
                 return false;
             }

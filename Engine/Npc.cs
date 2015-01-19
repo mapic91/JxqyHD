@@ -75,7 +75,7 @@ namespace Engine
         {
             if (!Globals.ThePlayer.IsStanding())
             {
-                MoveTo(Globals.ThePlayer.TilePosition);
+                PartnerMoveTo(Globals.ThePlayer.TilePosition);
             }
         }
 
@@ -87,7 +87,7 @@ namespace Engine
         /// If distance greater than 2, and is running, run to destination, else walk to destination.
         /// </summary>
         /// <param name="destinationTilePosition">Destination tile position</param>
-        public void MoveTo(Vector2 destinationTilePosition)
+        public void PartnerMoveTo(Vector2 destinationTilePosition)
         {
             if (Globals.TheMap.IsObstacleForCharacter(destinationTilePosition))
             {
@@ -97,7 +97,11 @@ namespace Engine
 
             var distance = Engine.PathFinder.GetTileDistance(TilePosition,
                 destinationTilePosition);
-            if (distance > 5)
+            if (distance > 20)
+            {
+                Globals.ThePlayer.ResetPartnerPosition();
+            }
+            else if (distance > 5)
             {
                 RunTo(destinationTilePosition);
             }

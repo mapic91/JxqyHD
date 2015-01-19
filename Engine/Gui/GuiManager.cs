@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Engine.Gui.Base;
 using Engine.ListManager;
+using Engine.Script;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -298,9 +299,10 @@ namespace Engine.Gui
 
         private static void ShowSaveLoad(bool isShow, bool canSave)
         {
+
             SaveLoadInterface.IsShow = isShow;
             SaveLoadInterface.CanSave = canSave;
-            if (canSave)
+            if (isShow && canSave)
             {
                 var show = IsShow;
                 //Hide GUI when take snapshot
@@ -308,6 +310,19 @@ namespace Engine.Gui
                 SaveLoadInterface.Snapshot = Globals.TheGame.TakeSnapShot();
                 //Restore
                 IsShow = show;
+            }
+
+            if (!isShow)
+            {
+                switch (GameState.State)
+                {
+                    case GameState.StateType.Title:
+                        ScriptExecuter.ReturnToTitle();
+                        break;
+                    case GameState.StateType.Playing:
+                        Globals.IsInputDisabled = false;
+                        break;
+                }
             }
         }
 
@@ -416,6 +431,20 @@ namespace Engine.Gui
 
         #endregion Functionail method
 
+        #region Handle key press
+        private static bool IsEscKeyPressed(KeyboardState keyboardState)
+        {
+            return (keyboardState.IsKeyDown(Keys.Escape) &&
+                    _lastKeyboardState.IsKeyUp(Keys.Escape));
+        }
+
+        private static bool IsShowLittleMapKeyPressed(KeyboardState keyboardState)
+        {
+            return (keyboardState.IsKeyDown(Keys.Tab) &&
+                    _lastKeyboardState.IsKeyUp(Keys.Tab));
+        }
+        #endregion Handle key press
+
         public static void Update(GameTime gameTime)
         {
             var keyboardState = Keyboard.GetState();
@@ -457,6 +486,11 @@ namespace Engine.Gui
                 SystemInterface.Update(gameTime);
                 //Restore input
                 Globals.RestoreInputDisableState();
+
+                if (IsEscKeyPressed(keyboardState))
+                {
+                    ShowSystem(false);
+                }
             }
             else if (LittleMapInterface.IsShow)
             {
@@ -465,8 +499,8 @@ namespace Engine.Gui
                 LittleMapInterface.Update(gameTime);
                 //Restore input
                 Globals.RestoreInputDisableState();
-                if (keyboardState.IsKeyDown(Keys.Tab) &&
-                    _lastKeyboardState.IsKeyUp(Keys.Tab))
+                if (IsShowLittleMapKeyPressed(keyboardState) ||
+                    IsEscKeyPressed(keyboardState))
                 {
                     LittleMapInterface.IsShow = false;
                 }
@@ -501,8 +535,7 @@ namespace Engine.Gui
             }
             else
             {
-                if (keyboardState.IsKeyDown(Keys.Escape) &&
-                    _lastKeyboardState.IsKeyUp(Keys.Escape))
+                if (IsEscKeyPressed(keyboardState))
                 {
                     if (HasPanelsShow()) ShowAllPanels(false);
                 }
@@ -519,13 +552,22 @@ namespace Engine.Gui
 
                     //Restore input
                     Globals.RestoreInputDisableState();
+
+                    if (IsEscKeyPressed(keyboardState))
+                    {
+                        EndBuyGoods();
+                    }
                 }
                 else
                 {
-                    if (keyboardState.IsKeyDown(Keys.Tab) &&
-                        _lastKeyboardState.IsKeyUp(Keys.Tab))
+                    if (IsShowLittleMapKeyPressed(keyboardState))
                     {
+                        ShowAllPanels(false);
                         LittleMapInterface.IsShow = true;
+                    }
+                    else if (IsEscKeyPressed(keyboardState))
+                    {
+                        ShowSystem();
                     }
 
                     TopInterface.Update(gameTime);
@@ -539,7 +581,11 @@ namespace Engine.Gui
                     ToolTipInterface.Update(gameTime);
                 }
 
-                TimerInterface.Update(gameTime);
+                if (!Globals.TheGame.IsGamePlayPaused)
+                {
+                    TimerInterface.Update(gameTime);
+                }
+
                 MessageInterface.Update(gameTime);
 
                 if (IsDropped)

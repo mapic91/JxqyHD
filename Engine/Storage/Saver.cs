@@ -76,6 +76,11 @@ namespace Engine.Storage
             Globals.TheMap.SaveTrap(StorageBase.TrapsFilePath);
         }
 
+        private static void SaveTrapIgnoreList()
+        {
+            Globals.TheMap.SaveTrapIndexIgnoreList(StorageBase.TrapIndexIgnoreListFilePath);
+        }
+
         /// <summary>
         /// Save game to "save/game" directory.
         /// </summary>
@@ -86,6 +91,7 @@ namespace Engine.Storage
             SavePlayer();
             SavePartner();
             SaveTraps();
+            SaveTrapIgnoreList();
         }
 
         /// <summary>

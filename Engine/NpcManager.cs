@@ -211,7 +211,7 @@ namespace Engine
             {
                 if (partner.IsStanding())
                 {
-                    partner.MoveTo(destinationTilePosition);
+                    partner.PartnerMoveTo(destinationTilePosition);
                 }
             }
         }

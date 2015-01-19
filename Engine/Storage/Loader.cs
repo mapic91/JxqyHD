@@ -104,6 +104,11 @@ namespace Engine.Storage
             Globals.TheMap.LoadTrap(StorageBase.TrapsFilePath);
         }
 
+        private static void LoadTrapIgnoreList()
+        {
+            Globals.TheMap.LoadTrapIndexIgnoreList(StorageBase.TrapIndexIgnoreListFilePath);
+        }
+
         /// <summary>
         /// Load game from "save/game" directory
         /// GuiManager must started first
@@ -125,6 +130,7 @@ namespace Engine.Storage
 
             LoadPartner();
             LoadTraps();
+            LoadTrapIgnoreList();
 
             Globals.TheCarmera.CenterPlayerInCamera();
             ScriptExecuter.Init();

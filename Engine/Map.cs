@@ -546,6 +546,46 @@ namespace Engine
             }
         }
 
+        public void LoadTrapIndexIgnoreList(string filePath)
+        {
+            _ingnoredTrapsIndex.Clear();
+            try
+            {
+                if(!File.Exists(filePath)) return;
+                var data = new FileIniDataParser().ReadFile(filePath, Globals.SimpleChineseEncoding);
+                var section = Utils.GetFirstSection(data);
+                foreach (var keyData in section)
+                {
+                    _ingnoredTrapsIndex.Add(int.Parse(keyData.Value));
+                }
+            }
+            catch (Exception exception)
+            {
+                Log.LogFileLoadError("Trap index ignore list", filePath, exception);
+            }
+        }
+
+        public void SaveTrapIndexIgnoreList(string filePath)
+        {
+            try
+            {
+                var data = new IniData();
+                data.Sections.AddSection("Init");
+                var section = data["Init"];
+                var count = _ingnoredTrapsIndex.Count;
+                for (var i = 0; i < count; i++)
+                {
+                    section.AddKey(i.ToString(), _ingnoredTrapsIndex[i].ToString());
+                }
+
+                File.WriteAllText(filePath, data.ToString(), Globals.SimpleChineseEncoding);
+            }
+            catch (Exception exception)
+            {
+                Log.LogFileSaveError("Trap index ignore list", filePath, exception);
+            }
+        }
+
         /// <summary>
         /// Set map trap
         /// </summary>

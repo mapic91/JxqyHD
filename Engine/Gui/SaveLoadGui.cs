@@ -186,15 +186,7 @@ namespace Engine.Gui
             _exitButton.Click += (arg1, arg2) =>
             {
                 IsShow = false;
-                switch (GameState.State)
-                {
-                    case GameState.StateType.Title:
-                        ScriptExecuter.ReturnToTitle();
-                        break;
-                    case GameState.StateType.Playing:
-                        Globals.IsInputDisabled = false;
-                        break;
-                }
+                GuiManager.ShowSaveLoad(false);
             };
         }
 

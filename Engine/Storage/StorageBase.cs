@@ -13,6 +13,7 @@ namespace Engine.Storage
         public const string GameIniFileName = "Game.ini";
         public const string MemoListIniFilePath = @"save\game\memo.ini";
         public const string TrapsFilePath = @"save\game\Traps.ini";
+        public const string TrapIndexIgnoreListFilePath = @"save\game\TrapIndexIgnore.ini";
         public const string SaveGameDirectory = @"save\game";
         public const string SaveRpgDirectory = @"save\rpg";
         public const int SaveIndexBegin = 0;
