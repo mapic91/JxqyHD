@@ -1645,7 +1645,7 @@ namespace Engine
 
                 DestinationMoveTilePosition = Engine.PathFinder.FindDistanceTileInDirection(
                     destinationTilePositon,
-                    destinationPositionInWorld - PositionInWorld,
+                    PositionInWorld - destinationPositionInWorld,
                     interactDistance);
                 //if can't reach destination tile positon, find neighbor tile
                 if (Globals.TheMap.IsObstacleForCharacter(DestinationMoveTilePosition))

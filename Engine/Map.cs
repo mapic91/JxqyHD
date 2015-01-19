@@ -659,7 +659,12 @@ namespace Engine
                     //Script is ignored, don't run it.
                     return;
                 }
+
+                //Player standing when run map trap script
+                Globals.ThePlayer.StandingImmediately();
+
                 ScriptManager.RunScript(script);
+
                 //Script is run, add to ignore list
                 _ingnoredTrapsIndex.Add(index);
             }

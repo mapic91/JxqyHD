@@ -472,13 +472,12 @@ namespace Engine.Gui
                 //Temporaty enable input
                 Globals.EnableInputTemporary();
                 SaveLoadInterface.Update(gameTime);
-                //Restore input
-                Globals.RestoreInputDisableState();
-
                 if (IsEscKeyPressed(keyboardState))
                 {
                     ShowSaveLoad(false);
                 }
+                //Restore input
+                Globals.RestoreInputDisableState();
             }
             else if (TitleInterface.IsShow)
             {
@@ -489,26 +488,25 @@ namespace Engine.Gui
                 //Temporaty enable input
                 Globals.EnableInputTemporary();
                 SystemInterface.Update(gameTime);
-                //Restore input
-                Globals.RestoreInputDisableState();
-
                 if (IsEscKeyPressed(keyboardState))
                 {
                     ShowSystem(false);
                 }
+                //Restore input
+                Globals.RestoreInputDisableState();
             }
             else if (LittleMapInterface.IsShow)
             {
                 //Temporaty enable input
                 Globals.EnableInputTemporary();
                 LittleMapInterface.Update(gameTime);
-                //Restore input
-                Globals.RestoreInputDisableState();
                 if (IsShowLittleMapKeyPressed(keyboardState) ||
                     IsEscKeyPressed(keyboardState))
                 {
                     LittleMapInterface.IsShow = false;
                 }
+                //Restore input
+                Globals.RestoreInputDisableState();
             }
             else if (DialogInterface.IsShow)
             {
@@ -550,13 +548,12 @@ namespace Engine.Gui
                     BottomInterface.Update(gameTime);
                     IsMouseStateEated = true;
 
-                    //Restore input
-                    Globals.RestoreInputDisableState();
-
                     if (IsEscKeyPressed(keyboardState))
                     {
                         EndBuyGoods();
                     }
+                    //Restore input
+                    Globals.RestoreInputDisableState();
                 }
                 else
                 {

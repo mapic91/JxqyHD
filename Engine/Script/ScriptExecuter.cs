@@ -117,12 +117,6 @@ namespace Engine.Script
             return Globals.ThePlayer == null;
         }
 
-        private static void PlayerStandingImmediately()
-        {
-            if(IsPlayerNull()) return;
-            Globals.ThePlayer.StandingImmediately();
-        }
-
         /// <summary>
         /// Used for type: name,x, y or x,y
         /// </summary>
@@ -394,8 +388,6 @@ namespace Engine.Script
 
         public static void Say(List<string> parameters)
         {
-            //Stand when say
-            Globals.ThePlayer.StandingImmediately();
             Globals.IsInputDisabled = true;
             switch (parameters.Count)
             {
@@ -700,7 +692,6 @@ namespace Engine.Script
         public static void LoadMap(List<string> parameters)
         {
             WeatherManager.StopRain();
-            Globals.ThePlayer.StandingImmediately();
             Globals.TheMap.LoadMap(Utils.RemoveStringQuotes(parameters[0]));
         }
 
@@ -815,9 +806,6 @@ namespace Engine.Script
 
         public static void Talk(List<string> parameters)
         {
-            //Stand when talk
-            Globals.ThePlayer.StandingImmediately();
-
             IsInTalk = true;
             _talkStartIndex = int.Parse(parameters[0]);
             _talkEndIndex = int.Parse(parameters[1]);
@@ -993,9 +981,6 @@ namespace Engine.Script
 
         public static void Choose(List<string> parameters)
         {
-            //Stand when choose
-            Globals.ThePlayer.StandingImmediately();
-
             GuiManager.Selection(Utils.RemoveStringQuotes(parameters[0]),
                 Utils.RemoveStringQuotes(parameters[1]),
                 Utils.RemoveStringQuotes(parameters[2]));
@@ -1003,9 +988,6 @@ namespace Engine.Script
 
         public static void Select(List<string> parameters)
         {
-            //Stand when select
-            Globals.ThePlayer.StandingImmediately();
-
             GuiManager.Selection(TalkTextList.GetTextDetail(int.Parse(parameters[0])).Text,
                 TalkTextList.GetTextDetail(int.Parse(parameters[1])).Text,
                 TalkTextList.GetTextDetail(int.Parse(parameters[2])).Text);
@@ -1519,7 +1501,6 @@ namespace Engine.Script
                 _npcGotoCharacter = target;
                 Globals.IsInputDisabled = true;
                 target.WalkTo(destination);
-                PlayerStandingImmediately();
             }
         }
 
