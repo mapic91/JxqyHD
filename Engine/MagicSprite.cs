@@ -156,7 +156,14 @@ namespace Engine
                 //Character hurted by magic
                 const int minimalEffect = 5;
                 var effect = minimalEffect;
-                var amount = BelongMagic.Effect == 0 ? BelongCharacter.Attack : BelongMagic.Effect;
+
+                //If magic effect not set(equal 0) use belong character attack value as amount.
+                //Because npc just can use FlyIni FlyIni2, 
+                //so if belong character is a npc not a player use character attack value as amount also.
+                var amount = (BelongMagic.Effect == 0 || !BelongCharacter.IsPlayer) ? 
+                    BelongCharacter.Attack : 
+                    BelongMagic.Effect;
+
                 var offset = amount - character.Defend;
                 if (offset > minimalEffect) effect = offset;
                 foreach (var magicSprite in character.MagicSpritesInEffect)
