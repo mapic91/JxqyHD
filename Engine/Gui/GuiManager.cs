@@ -17,7 +17,6 @@ namespace Engine.Gui
         private static SoundEffect _interfaceMiss;
         private static LinkedList<GuiItem> _allGuiItems = new LinkedList<GuiItem>();
         private static LinkedList<GuiItem> _panels = new LinkedList<GuiItem>();
-        private static KeyboardState _lastKeyboardState;
         private static MouseState _lastMouseState;
 
         public static TitleGui TitleInterface;
@@ -60,7 +59,6 @@ namespace Engine.Gui
 
             SaveLoadInterface = new SaveLoadGui();
             _allGuiItems.AddLast(SaveLoadInterface);
-            _panels.AddLast(SaveLoadInterface);
 
             SystemInterface = new SystemGui();
             _allGuiItems.AddLast(SystemInterface);
@@ -142,13 +140,14 @@ namespace Engine.Gui
 
         public static void PlayInterfaceShowMissSound(bool isShow)
         {
-            if (isShow) _interfaceMiss.Play();
-            else _interfaceShow.Play();
+            if (isShow) _interfaceShow.Play();
+            else _interfaceMiss.Play();
+             
         }
 
         public static void ToggleMagicGuiShow()
         {
-            PlayInterfaceShowMissSound(MagicInterface.IsShow);
+            PlayInterfaceShowMissSound(!MagicInterface.IsShow);
             if (MagicInterface.IsShow)
                 MagicInterface.IsShow = false;
             else
@@ -161,7 +160,7 @@ namespace Engine.Gui
 
         public static void ToggleGoodsGuiShow()
         {
-            PlayInterfaceShowMissSound(GoodsInterface.IsShow);
+            PlayInterfaceShowMissSound(!GoodsInterface.IsShow);
             if (GoodsInterface.IsShow)
                 GoodsInterface.IsShow = false;
             else
@@ -174,7 +173,7 @@ namespace Engine.Gui
 
         public static void ToggleMemoGuiShow()
         {
-            PlayInterfaceShowMissSound(MemoInterface.IsShow);
+            PlayInterfaceShowMissSound(!MemoInterface.IsShow);
             if (MemoInterface.IsShow)
                 MemoInterface.IsShow = false;
             else
@@ -187,7 +186,7 @@ namespace Engine.Gui
 
         public static void ToggleXiuLianGuiShow()
         {
-            PlayInterfaceShowMissSound(XiuLianInterface.IsShow);
+            PlayInterfaceShowMissSound(!XiuLianInterface.IsShow);
             if (XiuLianInterface.IsShow)
                 XiuLianInterface.IsShow = false;
             else
@@ -200,7 +199,7 @@ namespace Engine.Gui
 
         public static void ToggleStateGuiShow()
         {
-            PlayInterfaceShowMissSound(StateInterface.IsShow);
+            PlayInterfaceShowMissSound(!StateInterface.IsShow);
             if (StateInterface.IsShow)
                 StateInterface.IsShow = false;
             else
@@ -213,7 +212,7 @@ namespace Engine.Gui
 
         public static void ToggleEquipGuiShow()
         {
-            PlayInterfaceShowMissSound(StateInterface.IsShow);
+            PlayInterfaceShowMissSound(!EquipInterface.IsShow);
             if (EquipInterface.IsShow)
                 EquipInterface.IsShow = false;
             else
@@ -289,6 +288,7 @@ namespace Engine.Gui
 
         public static void ShowSystem(bool isShow = true)
         {
+            PlayInterfaceShowMissSound(isShow);
             if (isShow)
             {
                 ShowAllPanels(false);
@@ -299,7 +299,6 @@ namespace Engine.Gui
 
         private static void ShowSaveLoad(bool isShow, bool canSave)
         {
-
             SaveLoadInterface.IsShow = isShow;
             SaveLoadInterface.CanSave = canSave;
             if (isShow && canSave)
@@ -320,7 +319,6 @@ namespace Engine.Gui
                         ScriptExecuter.ReturnToTitle();
                         break;
                     case GameState.StateType.Playing:
-                        Globals.IsInputDisabled = false;
                         break;
                 }
             }
@@ -435,13 +433,13 @@ namespace Engine.Gui
         private static bool IsEscKeyPressed(KeyboardState keyboardState)
         {
             return (keyboardState.IsKeyDown(Keys.Escape) &&
-                    _lastKeyboardState.IsKeyUp(Keys.Escape));
+                    Globals.TheGame.LastKeyboardState.IsKeyUp(Keys.Escape));
         }
 
         private static bool IsShowLittleMapKeyPressed(KeyboardState keyboardState)
         {
             return (keyboardState.IsKeyDown(Keys.Tab) &&
-                    _lastKeyboardState.IsKeyUp(Keys.Tab));
+                    Globals.TheGame.LastKeyboardState.IsKeyUp(Keys.Tab));
         }
         #endregion Handle key press
 
@@ -474,6 +472,11 @@ namespace Engine.Gui
                 SaveLoadInterface.Update(gameTime);
                 //Restore input
                 Globals.RestoreInputDisableState();
+
+                if (IsEscKeyPressed(keyboardState))
+                {
+                    ShowSaveLoad(false);
+                }
             }
             else if (TitleInterface.IsShow)
             {
@@ -535,11 +538,6 @@ namespace Engine.Gui
             }
             else
             {
-                if (IsEscKeyPressed(keyboardState))
-                {
-                    if (HasPanelsShow()) ShowAllPanels(false);
-                }
-
                 if (BuyInterface.IsShow)
                 {
                     //Temporaty enable input
@@ -567,7 +565,14 @@ namespace Engine.Gui
                     }
                     else if (IsEscKeyPressed(keyboardState))
                     {
-                        ShowSystem();
+                        if (HasPanelsShow())
+                        {
+                            ShowAllPanels(false);
+                        }
+                        else
+                        {
+                            ShowSystem();
+                        }
                     }
 
                     TopInterface.Update(gameTime);
@@ -604,7 +609,6 @@ namespace Engine.Gui
                     DragDropSourceTexture = null;
                 }
             }
-            _lastKeyboardState = keyboardState;
             _lastMouseState = mouseState;
         }
 

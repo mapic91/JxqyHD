@@ -38,6 +38,8 @@ namespace Engine
         public bool IsInEditMode { private set; get; }
         public bool IsPaused { get; set; }
         public bool IsGamePlayPaused { get; set; }
+        public KeyboardState LastKeyboardState { private set; get; }
+        public MouseState LastMouseState { private set; get; }
 
         /// <summary>
         /// Indicates weather game window is lost focus.
@@ -250,8 +252,6 @@ namespace Engine
             // TODO: Unload any non ContentManager content here
         }
 
-        private KeyboardState _lastKeyboardState;
-        private MouseState _lastMouseState;
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -275,7 +275,7 @@ namespace Engine
             if (keyboardState.IsKeyDown(Keys.LeftAlt) || keyboardState.IsKeyDown(Keys.RightAlt))
             {
                 if (keyboardState.IsKeyDown(Keys.Enter) &&
-                    _lastKeyboardState.IsKeyUp(Keys.Enter))
+                    LastKeyboardState.IsKeyUp(Keys.Enter))
                 {
                     _graphics.ToggleFullScreen();
                     Globals.IsFullScreen = !Globals.IsFullScreen;
@@ -285,11 +285,11 @@ namespace Engine
             //Map layer draw toggle
             if (IsInEditMode)
             {
-                if (keyboardState.IsKeyDown(Keys.D1) && _lastKeyboardState.IsKeyUp(Keys.D1))
+                if (keyboardState.IsKeyDown(Keys.D1) && LastKeyboardState.IsKeyUp(Keys.D1))
                     Globals.TheMap.SwitchLayerDraw(0);
-                if (keyboardState.IsKeyDown(Keys.D2) && _lastKeyboardState.IsKeyUp(Keys.D2))
+                if (keyboardState.IsKeyDown(Keys.D2) && LastKeyboardState.IsKeyUp(Keys.D2))
                     Globals.TheMap.SwitchLayerDraw(1);
-                if (keyboardState.IsKeyDown(Keys.D3) && _lastKeyboardState.IsKeyUp(Keys.D3))
+                if (keyboardState.IsKeyDown(Keys.D3) && LastKeyboardState.IsKeyUp(Keys.D3))
                     Globals.TheMap.SwitchLayerDraw(2);
             }
 
@@ -298,7 +298,7 @@ namespace Engine
             {
                 //Stop movie when Esc key pressed
                 if (keyboardState.IsKeyDown(Keys.Escape) &&
-                    _lastKeyboardState.IsKeyUp(Keys.Escape))
+                    LastKeyboardState.IsKeyUp(Keys.Escape))
                 {
                     ScriptExecuter.StopMovie();
                 }
@@ -351,8 +351,8 @@ namespace Engine
             //Update script after GuiManager, because script executing rely GUI state.
             ScriptManager.Update(gameTime);
 
-            _lastKeyboardState = keyboardState;
-            _lastMouseState = mouseState;
+            LastKeyboardState = Keyboard.GetState();
+            LastMouseState = mouseState;
 
             base.Update(gameTime);
         }
