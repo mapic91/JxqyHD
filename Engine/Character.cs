@@ -466,7 +466,7 @@ namespace Engine
 
         public bool IsPlayer
         {
-            get { return (Kind == 2 || Kind == 3); }
+            get { return (Kind == (int)CharacterKind.Player); }
         }
 
         public Vector2 DestinationMovePositionInWorld
@@ -960,6 +960,11 @@ namespace Engine
                     case "Mana":
                         _mana = int.Parse(keyData.Value);
                         break;
+                    case "PoisonSeconds":
+                    case "PetrifiedSeconds":
+                    case "FrozenSeconds":
+                        info.SetValue(this, float.Parse(keyData.Value), null);
+                        break;
                     default:
                         {
                             var integerValue = int.Parse(keyData.Value);
@@ -1037,6 +1042,14 @@ namespace Engine
         protected virtual bool CanJump()
         {
             return !IsJumpDisabled;
+        }
+
+        protected void AddKey(KeyDataCollection keyDataCollection, string key, float value)
+        {
+            if (value > 0)
+            {
+                keyDataCollection.AddKey(key, value.ToString());
+            }
         }
 
         protected void AddKey(KeyDataCollection keyDataCollection, string key, int value)
@@ -1161,6 +1174,9 @@ namespace Engine
             AddKey(keyDataCollection, "CurrentFixedPosIndex", CurrentFixedPosIndex);
             AddKey(keyDataCollection, "Idle", _idle);
             AddKey(keyDataCollection, "NpcIni", _npcIniFileName);
+            AddKey(keyDataCollection, "PoisonSeconds", PoisonSeconds);
+            AddKey(keyDataCollection, "PetrifiedSeconds", PetrifiedSeconds);
+            AddKey(keyDataCollection, "FrozenSeconds", FrozenSeconds);
             if (_bodyIni != null)
             {
                 AddKey(keyDataCollection, 

@@ -15,7 +15,6 @@ namespace Engine.Gui
         private readonly GuiItem[] _guiItems;
         public TitleGui()
         {
-            IsShow = false;
             BaseTexture = new Texture(new Asf(
                 Utils.LoadTexture2D(@"ui\title\title")));
             Width = BaseTexture.Width;
@@ -68,6 +67,8 @@ namespace Engine.Gui
                 _exitButton
             };
             RegisterEvent();
+
+            IsShow = false;
         }
 
         private void RegisterEvent()

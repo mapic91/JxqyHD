@@ -14,7 +14,6 @@ namespace Engine.Gui
 
         public MemoGui()
         {
-            IsShow = false;
             BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\", "panel4.asf"));
             Width = BaseTexture.Width;
             Height = BaseTexture.Height;
@@ -53,6 +52,8 @@ namespace Engine.Gui
                 1,
                 0);
             _scrollBar.Scrolled += (arg1, arg2) => SetTextShow(arg2.Value);
+
+            IsShow = false;
         }
 
         public void UpdateTextShow()

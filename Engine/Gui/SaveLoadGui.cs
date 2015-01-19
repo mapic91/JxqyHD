@@ -16,6 +16,7 @@ namespace Engine.Gui
         private GuiItem _exitButton;
         private TextGui _saveTime;
         private Bmp _saveSnapshot;
+        private LineText _message;
 
         public Texture2D Snapshot;
         public bool CanSave { set; get; }
@@ -33,12 +34,16 @@ namespace Engine.Gui
                 {
                     ShowSaveIndex(_list.SelectionIndex + 1);
                 }
+                if (!value)
+                {
+                    //Clear message.
+                    _message.Text = string.Empty;
+                }
             } 
         }
 
         public SaveLoadGui()
         {
-            IsShow = false;
             BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\saveload", "panel.asf"));
             Width = BaseTexture.Width;
             Height = BaseTexture.Height;
@@ -122,7 +127,19 @@ namespace Engine.Gui
                 "",
                 new Color(182, 219, 189) * 0.7f);
 
+            //Message
+            _message = new LineText(this,
+                new Vector2(0, 440),
+                BaseTexture.Width,
+                40,
+                LineText.Align.Center, 
+                string.Empty,
+                Color.Gold * 0.8f,
+                Globals.FontSize12);
+
             RegisterEvent();
+
+            IsShow = false;
         }
 
         private void ShowSaveIndex(int index)
@@ -141,6 +158,12 @@ namespace Engine.Gui
             {
                 if (_list.SelectionIndex != -1)
                 {
+                    if (!Globals.TheGame.IsSafe())
+                    {
+                        _message.Text = "战斗中不能存档，找个安全的地方存档吧。";
+                        return;
+                    }
+
                     IsShow = false;
                     GuiManager.ShowSystem(false);
                     var index = _list.SelectionIndex + 1;
@@ -200,6 +223,7 @@ namespace Engine.Gui
             _saveButton.Draw(spriteBatch);
             _exitButton.Draw(spriteBatch);
             _saveTime.Draw(spriteBatch);
+            _message.Draw(spriteBatch);
         }
     }
 }

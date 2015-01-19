@@ -124,7 +124,6 @@ namespace Engine.Gui
 
         public LittleMapGui()
         {
-            IsShow = false;
             BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\littlemap\", "panel.asf"));
             Width = BaseTexture.Width;
             Height = BaseTexture.Height;
@@ -135,6 +134,8 @@ namespace Engine.Gui
             RegisterHadler();
             LoadNameList();
             LoadTexture();
+
+            IsShow = false;
         }
 
         private void RegisterHadler()
@@ -290,7 +291,9 @@ namespace Engine.Gui
                 {
                     _player.Draw(spriteBatch, drawPositon);
                 }
-                else
+                else if(character.Kind == (int)Character.CharacterKind.Normal ||
+                    character.Kind == (int)Character.CharacterKind.Fighter ||
+                    character.Kind == (int)Character.CharacterKind.Eventer)
                 {
                     _neutral.Draw(spriteBatch, drawPositon);
                 }

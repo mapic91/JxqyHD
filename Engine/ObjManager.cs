@@ -129,6 +129,7 @@ namespace Engine
 
         public static void ClearAllObj()
         {
+            _fileName = string.Empty;
             _list.Clear();
             _objListChanged = true;
         }

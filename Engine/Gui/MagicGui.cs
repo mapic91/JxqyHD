@@ -6,7 +6,7 @@ using Texture = Engine.Gui.Base.Texture;
 
 namespace Engine.Gui
 {
-    public class MagicGui : GuiItem
+    public sealed class MagicGui : GuiItem
     {
         private ListView _listView;
 
@@ -43,7 +43,6 @@ namespace Engine.Gui
 
         public MagicGui()
         {
-            IsShow = false;
             var baseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\", "panel2.asf"));
             var position = new Vector2(
                 Globals.WindowWidth / 2f,
@@ -66,6 +65,8 @@ namespace Engine.Gui
             _listView.RegisterItemDropHandler(DropHandler);
             _listView.RegisterItemMouseStayOverHandler(MouseStayOverHandler);
             _listView.RegisterItemMouseLeaveHandler(MouseLeaveHandler);
+
+            IsShow = false;
         }
 
         public void UpdateItems()

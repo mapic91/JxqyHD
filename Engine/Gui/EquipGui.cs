@@ -6,7 +6,7 @@ using Texture = Engine.Gui.Base.Texture;
 
 namespace Engine.Gui
 {
-    public class EquipGui : GuiItem
+    public sealed class EquipGui : GuiItem
     {
         private bool _isFemale;
         private DragDropItem[] _items = new DragDropItem[7];
@@ -33,7 +33,6 @@ namespace Engine.Gui
 
         public EquipGui()
         {
-            IsShow = false;
             BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\", "panel7.asf"));
             Width = BaseTexture.Width;
             Height = BaseTexture.Height;
@@ -85,6 +84,8 @@ namespace Engine.Gui
                 null,
                 new GoodsGui.GoodItemData(207));
             RegisterEventHandler();
+
+            IsShow = false;
         }
 
         private void RegisterEventHandler()

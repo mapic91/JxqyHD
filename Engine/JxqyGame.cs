@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Windows.Forms;
 using Engine.Benchmark;
 using Engine.Gui;
@@ -436,6 +437,31 @@ namespace Engine
             var texture = new Texture2D(GraphicsDevice, w, h);
             texture.SetData(data);
             return texture;
+        }
+
+        /// <summary>
+        /// Not safe if player is followed by enemy or existing enemy magic.
+        /// </summary>
+        /// <returns>True if safe.Otherwise false.</returns>
+        public bool IsSafe()
+        {
+            var npcs = NpcManager.NpcList;
+            if (npcs.Any(npc => npc.IsEnemy && npc.IsFollowTargetFound))
+            {
+                return false;
+            }
+            var magics = MagicManager.MagicSpritesList;
+            if (magics.Any(magicSprite => magicSprite.BelongCharacter.IsEnemy))
+            {
+                return false;
+            }
+            var workList = MagicManager.WorkList;
+            if (workList.Any(workItem => workItem.TheSprite.BelongCharacter.IsEnemy))
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

@@ -16,7 +16,6 @@ namespace Engine.Gui
 
         public BuyGui()
         {
-            IsShow = false;
             var baseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\", "panel8.asf"));
             var position = new Vector2(
                 Globals.WindowWidth/2f - baseTexture.Width,
@@ -62,6 +61,8 @@ namespace Engine.Gui
                 }
             });
             _closeButton.Click += (arg1, arg2) => GuiManager.EndBuyGoods();
+
+            IsShow = false;
         }
 
         public void BeginBuy(string listFileName)

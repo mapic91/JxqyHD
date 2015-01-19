@@ -110,6 +110,12 @@ namespace Engine.Storage
         /// </summary>
         public static void LoadGame()
         {
+            //Clear
+            MagicManager.Clear();
+            NpcManager.ClearAllNpc();
+            ObjManager.ClearAllObj();
+            Globals.TheMap.Free();
+
             LoadGameFile();
             LoadMagicGoodMemoList();
             LoadPlayer();

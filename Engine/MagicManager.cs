@@ -13,6 +13,16 @@ namespace Engine
         private static Rectangle _lastViewRegion;
         private static bool _listChanged = true;
 
+        public static LinkedList<MagicSprite> MagicSpritesList
+        {
+            get { return _magicSprites; }
+        }
+
+        public static LinkedList<WorkItem> WorkList
+        {
+            get { return _workList; }
+        }
+
         public static List<MagicSprite> MagicSpritesInView
         {
             get
@@ -636,6 +646,15 @@ namespace Engine
         }
 
         /// <summary>
+        /// Clear all magic sprite.
+        /// </summary>
+        public static void Clear()
+        {
+            _magicSprites.Clear();
+            _workList.Clear();
+        }
+
+        /// <summary>
         /// Use magic.
         /// </summary>
         /// <param name="user">The magic user.</param>
@@ -754,7 +773,7 @@ namespace Engine
             }
         }
 
-        class WorkItem
+        public class WorkItem
         {
             public float LeftMilliseconds;
             public MagicSprite TheSprite;

@@ -299,6 +299,7 @@ namespace Engine
 
         public static void ClearAllNpc()
         {
+            _fileName = string.Empty;
             _list.Clear();
             _npcListChanged = true;
         }

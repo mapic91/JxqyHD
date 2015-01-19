@@ -13,7 +13,6 @@ namespace Engine.Gui
         private bool _isHide;
         public TimerGui()
         {
-            IsShow = false;
             BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\timer\", "window.asf"));
             Width = BaseTexture.Width;
             Height = BaseTexture.Height;
@@ -27,6 +26,8 @@ namespace Engine.Gui
                 0,
                 "",
                 Color.Red*0.8f);
+
+            IsShow = false;
         }
 
         private void UpdateText()

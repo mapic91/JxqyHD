@@ -22,7 +22,6 @@ namespace Engine.Gui
 
         public MessageGui()
         {
-            IsShow = false;
             BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\message\", "msgbox.asf"));
             Width = BaseTexture.Width;
             Height = BaseTexture.Height;
@@ -37,6 +36,8 @@ namespace Engine.Gui
                 1,
                 "",
                 new Color(155, 34, 22) * 0.8f);
+
+            IsShow = false;
         }
 
         public void ShowMessage(string message)

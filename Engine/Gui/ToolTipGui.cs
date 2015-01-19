@@ -5,7 +5,7 @@ using Texture = Engine.Gui.Base.Texture;
 
 namespace Engine.Gui
 {
-    public class ToolTipGui : GuiItem
+    public sealed class ToolTipGui : GuiItem
     {
         private GuiItem _image;
         private TextGui _name, _costOrLevel, _goodEffect, _magicIntro, _goodIntro;
@@ -13,7 +13,6 @@ namespace Engine.Gui
 
         public ToolTipGui()
         {
-            IsShow = false;
             BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\", "tipbox.asf"));
             Width = BaseTexture.Width;
             Height = BaseTexture.Height;
@@ -76,6 +75,8 @@ namespace Engine.Gui
             _items[3] = _goodEffect;
             _items[4] = _goodIntro;
             _items[5] = _magicIntro;
+
+            IsShow = false;
         }
 
         public void Clear()

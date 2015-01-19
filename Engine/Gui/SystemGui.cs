@@ -15,7 +15,6 @@ namespace Engine.Gui
 
         public SystemGui()
         {
-            IsShow = false;
             BaseTexture = new Texture(Utils.GetAsf(
                 @"asf\ui\common", "panel.asf"));
             Width = BaseTexture.Width;
@@ -68,6 +67,8 @@ namespace Engine.Gui
                 clickedSound);
 
             RegisterEvent();
+
+            IsShow = false;
         }
 
         private void RegisterEvent()

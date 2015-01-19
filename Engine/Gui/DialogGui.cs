@@ -39,7 +39,6 @@ namespace Engine.Gui
 
         public DialogGui()
         {
-            IsShow = false;
             LoadPortrait();
             BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\dialog\", "panel.asf"));
             Width = BaseTexture.Width;
@@ -98,6 +97,8 @@ namespace Engine.Gui
                     Selection = 1;
                 }
             };
+
+            IsShow = false;
         }
 
         public void ShowText(string text, int portraitIndex = -1)

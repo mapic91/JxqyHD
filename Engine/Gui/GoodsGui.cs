@@ -6,7 +6,7 @@ using Texture = Engine.Gui.Base.Texture;
 
 namespace Engine.Gui
 {
-    public class GoodsGui : GuiItem
+    public sealed class GoodsGui : GuiItem
     {
         private ListView _listView;
         private TextGui _money;
@@ -103,7 +103,6 @@ namespace Engine.Gui
 
         public GoodsGui()
         {
-            IsShow = false;
             var baseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\", "panel3.asf"));
             var position = new Vector2(
                 Globals.WindowWidth / 2f,
@@ -136,6 +135,8 @@ namespace Engine.Gui
                 0,
                 "",
                 Color.White*0.8f);
+
+            IsShow = false;
         }
 
         public bool IsItemShow(int listIndex, out int index)
