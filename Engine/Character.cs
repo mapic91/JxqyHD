@@ -829,7 +829,7 @@ namespace Engine
         {
             if (tilePositionList == null ||
                 tilePositionList.Count < 2 ||
-                (isFlyer && !IsStanding()) ||
+                !IsStanding() ||
                 _isInInteract) return;
             if (Globals.TheRandom.Next(0, randMaxValue) == 0)
             {
