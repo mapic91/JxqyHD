@@ -895,7 +895,7 @@ namespace Engine
             var path = new List<Vector2>() { TilePosition };
 
             int maxTry = count * 3;//For performace, otherwise method may run forever.
-            const int maxOffset = 15;
+            const int maxOffset = 5;
 
             for (var i = 1; i < count; i++)
             {

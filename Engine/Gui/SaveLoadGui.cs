@@ -168,11 +168,12 @@ namespace Engine.Gui
                         return;
                     }
 
-                    IsShow = false;
-                    GuiManager.ShowSystem(false);
                     var index = _list.SelectionIndex + 1;
                     StorageBase.SaveSaveSnapShot(index, Snapshot);
                     Saver.SaveGame(index);
+
+                    IsShow = false;
+                    GuiManager.ShowSystem(false);
                 }
             };
             _loadButton.Click += (arg1, arg2) =>
