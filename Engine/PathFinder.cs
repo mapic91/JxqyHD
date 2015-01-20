@@ -49,7 +49,7 @@ namespace Engine
                 case PathType.PerfectMaxPlayerTry:
                     return FindPathPerfect(finder, startTile, endTile, 2000);
                 case PathType.PathStraightLine:
-                    return GetLinePath(startTile, endTile);
+                    return GetLinePath(startTile, endTile, 100);
             }
             return null;
         }
@@ -72,9 +72,9 @@ namespace Engine
             while (!frontier.IsEmpty)
             {
                 current = frontier.DeleteMin().Location;
+                if (current == endTile) break;
                 if (finder.HasObstacle(current) && current != startTile) continue;
                 if (step++ > stepCount) break;
-                if (current == endTile) break;
                 foreach (var neighbor in FindNeighbors(current))
                 {
                     if (!cameFrom.ContainsKey(neighbor))
@@ -128,7 +128,14 @@ namespace Engine
             return GetPath(cameFrom, startTile, endTile);
         }
 
-        public static LinkedList<Vector2> GetLinePath(Vector2 startTile, Vector2 endTile)
+        /// <summary>
+        /// Get line path without care obstacle.
+        /// </summary>
+        /// <param name="startTile">Start tile positon</param>
+        /// <param name="endTile">End tile positon</param>
+        /// <param name="maxTry">Max strep</param>
+        /// <returns>Path positition in world list.</returns>
+        public static LinkedList<Vector2> GetLinePath(Vector2 startTile, Vector2 endTile, int maxTry)
         {
             if (startTile == endTile) return null;
 
@@ -137,6 +144,7 @@ namespace Engine
             frontier.Add(new Node(startTile, 0f));
             while (!frontier.IsEmpty)
             {
+                if(maxTry-- < 0) break;
                 var current = frontier.DeleteMin().Location;
                 path.AddLast(Map.ToPixelPosition(current));
                 if (current == endTile) break;

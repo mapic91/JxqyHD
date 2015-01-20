@@ -10,6 +10,8 @@ namespace Engine
         private int[] _dataoffset;
         private int[] _datalength;
         private bool _allCached;
+
+        public static Asf Empty = new Asf();
         private void CheckALlFrameCached()
         {
             for (var i = 0; i < FrameCounts; i++)

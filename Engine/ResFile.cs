@@ -24,8 +24,7 @@ namespace Engine
                     if (state != -1)
                     {
                         var stateInfo = GetStateInfo(lines[i++], lines[i++], type);
-                        if(stateInfo.Image != null || stateInfo.Sound != null)
-                            info[state] = stateInfo;
+                        info[state] = stateInfo;
                     }
                 }
             }

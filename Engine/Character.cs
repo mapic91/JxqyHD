@@ -1088,7 +1088,7 @@ namespace Engine
         /// <summary>
         /// Set state to current state
         /// </summary>
-        protected void ResetState()
+        protected void EndSpecialAction()
         {
             SetState((CharacterState)State, true);
         }
@@ -1771,7 +1771,8 @@ namespace Engine
         /// </summary>
         /// <param name="state">State to set</param>
         /// <param name="setIfStateSame">If true renew state if current state is same as the setting state</param>
-        public void SetState(CharacterState state, bool setIfStateSame = false)
+        /// <param name="setNullTexturn">Set texture to null is state not exist.Otherwise do nothing.</param>
+        public void SetState(CharacterState state, bool setIfStateSame = false, bool setNullTexturn = false)
         {
             if ((State != (int)state || setIfStateSame) &&
                 NpcIni.ContainsKey((int)state))
@@ -1815,6 +1816,13 @@ namespace Engine
                     }
                 }
                 State = (int)state;
+            }
+            else
+            {
+                if (setNullTexturn)
+                {
+                    Texture = null;
+                }
             }
         }
 
@@ -2156,7 +2164,7 @@ namespace Engine
                 if (IsPlayCurrentDirOnceEnd())
                 {
                     IsInSpecialAction = false;
-                    ResetState();
+                    EndSpecialAction();
                     //Restore direction
                     SetDirectionValue(_specialActionLastDirection);
                 }

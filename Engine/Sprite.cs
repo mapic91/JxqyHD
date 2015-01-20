@@ -15,7 +15,7 @@ namespace Engine
         private int _frameEnd;
         private int _elapsedMilliSecond;
         private int _currentDirection;
-        private Asf _texture = new Asf();
+        private Asf _texture = Asf.Empty;
         private bool _isPlayReverse;
         private int _leftFrameToPlay;
         private float _movedDistance;
@@ -57,7 +57,7 @@ namespace Engine
             set
             {
                 if (value == null)
-                    _texture = new Asf();
+                    _texture = Asf.Empty;
                 else _texture = value;
                 _elapsedMilliSecond = 0;
                 CurrentDirection = CurrentDirection;
