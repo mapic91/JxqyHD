@@ -828,7 +828,7 @@ namespace Engine
         {
             if (tilePositionList == null ||
                 tilePositionList.Count < 2 ||
-                !IsStanding() ||
+                (isFlyer && !IsStanding()) ||
                 _isInInteract) return;
             if (Globals.TheRandom.Next(0, randMaxValue) == 0)
             {
@@ -888,14 +888,18 @@ namespace Engine
         /// Get rand path, path first step is current character tile position.
         /// </summary>
         /// <param name="count">Path step count.</param>
-        /// <param name="checkObstacle">If true, tile position is obstacle for character is no added to path.</param>
+        /// <param name="isFlyer">If false, tile position is obstacle for character is no added to path.</param>
         /// <returns>The rand path.</returns>
-        protected List<Vector2> GetRandTilePath(int count, bool checkObstacle)
+        protected List<Vector2> GetRandTilePath(int count, bool isFlyer)
         {
             var path = new List<Vector2>() { TilePosition };
 
-            int maxTry = count * 3;//For performace, otherwise method may run forever.
-            const int maxOffset = 5;
+            var maxTry = count * 3;//For performace, otherwise method may run forever.
+            var maxOffset = 5;
+            if (isFlyer)
+            {
+                maxOffset = 15;
+            }
 
             for (var i = 1; i < count; i++)
             {
@@ -906,7 +910,12 @@ namespace Engine
 
                     tilePosition = Globals.TheMap.GetRandPositon(TilePosition, maxOffset);
                 } while (tilePosition == Vector2.Zero ||
-                    (checkObstacle && Globals.TheMap.IsObstacleForCharacter(tilePosition)));
+                    (!isFlyer && Engine.PathFinder.HasMapObstacalInTilePositionList(
+                    Engine.PathFinder.GetLinePath(
+                    TilePosition, 
+                    tilePosition, 
+                    maxOffset*2, 
+                    true))) );
                 path.Add(tilePosition);
             }
 

@@ -130,8 +130,9 @@ namespace Engine
         /// <param name="startTile">Start tile positon</param>
         /// <param name="endTile">End tile positon</param>
         /// <param name="maxTry">Max strep</param>
+        /// <param name="tilePositon">If true, path position in path list is tile position.Otherwise is postion in world.</param>
         /// <returns>Path positition in world list.</returns>
-        public static LinkedList<Vector2> GetLinePath(Vector2 startTile, Vector2 endTile, int maxTry)
+        public static LinkedList<Vector2> GetLinePath(Vector2 startTile, Vector2 endTile, int maxTry, bool tilePositon = false)
         {
             if (startTile == endTile) return null;
 
@@ -142,7 +143,7 @@ namespace Engine
             {
                 if(maxTry-- < 0) break;
                 var current = frontier.DeleteMin().Location;
-                path.AddLast(Map.ToPixelPosition(current));
+                path.AddLast(tilePositon? current : Map.ToPixelPosition(current));
                 if (current == endTile) break;
                 foreach (var neighbor in FindAllNeighbors(current))
                 {
@@ -150,6 +151,19 @@ namespace Engine
                 }
             }
             return path;
+        }
+
+        public static bool HasMapObstacalInTilePositionList(LinkedList<Vector2> tilePositionList)
+        {
+            if (tilePositionList == null) return true;
+            foreach (var tilePostion in tilePositionList)
+            {
+                if (Globals.TheMap.IsObstacleForCharacter(tilePostion))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public static int GetTileDistance(Vector2 startTile, Vector2 endTile)

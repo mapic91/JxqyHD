@@ -16,8 +16,8 @@ namespace Engine
             {
                 if (_actionPathTilePositionList == null)
                 {
-                    _actionPathTilePositionList = GetRandTilePath(8,
-                        Kind != (int)CharacterKind.Flyer);
+                    _actionPathTilePositionList = GetRandTilePath(8, 
+                        Kind == (int) CharacterKind.Flyer);
                 }
                 return _actionPathTilePositionList;
             }
