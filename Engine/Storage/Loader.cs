@@ -34,7 +34,7 @@ namespace Engine.Storage
                 {
                     WeatherManager.BeginRain(option["RainFile"]);
                 }
-                Globals.IsWaterEffectEnabled = 
+                Globals.IsWaterEffectEnabled =
                     int.Parse(option["Water"]) != 0;
                 Map.DrawColor = StorageBase.GetColorFromString(option["MpcStyle"]);
                 Sprite.DrawColor = StorageBase.GetColorFromString(option["AsfStyle"]);
@@ -66,14 +66,9 @@ namespace Engine.Storage
             {
                 Log.LogFileLoadError("Player", path, exception);
             }
-            if (Globals.PlayerIndex == 0)
-            {
-                GuiManager.StateInterface.IsFemale = false;
-            }
-            else
-            {
-                GuiManager.StateInterface.IsFemale = true;
-            }
+            var isFemale = Globals.PlayerIndex != 0;
+            GuiManager.StateInterface.IsFemale =
+                GuiManager.EquipInterface.IsFemale = isFemale;
         }
 
         private static void LoadPartner()
