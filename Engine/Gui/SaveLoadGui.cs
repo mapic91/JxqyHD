@@ -40,6 +40,11 @@ namespace Engine.Gui
                 {
                     //Clear message.
                     _message.Text = string.Empty;
+                    if (Snapshot != null)
+                    {
+                        Snapshot.Dispose();
+                        Snapshot = null;
+                    }
                 }
             } 
         }

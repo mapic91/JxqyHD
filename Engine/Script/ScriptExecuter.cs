@@ -17,9 +17,7 @@ namespace Engine.Script
     {
         private static readonly Dictionary<string, int> Variables = new Dictionary<string, int>();
         private static float _fadeTransparence;
-        private static int _talkStartIndex;
-        private static int _talkEndIndex;
-        private static int _talkCurrentIndex;
+        private static LinkedList<TalkTextDetail> _talkList; 
         private static float _sleepingMilliseconds;
         private static Color _videoDrawColor;
         private static Video _video;
@@ -95,20 +93,6 @@ namespace Engine.Script
             if (!string.IsNullOrEmpty(name))
             {
                 target = GetPlayerOrNpc(name);
-            }
-        }
-
-        private static void GetNextTalkTextDeatil(out TalkTextDetail detail)
-        {
-            detail = null;
-            for (; _talkCurrentIndex <= _talkEndIndex; _talkCurrentIndex++)
-            {
-                detail = TalkTextList.GetTextDetail(_talkCurrentIndex);
-                if (detail != null)
-                {
-                    _talkCurrentIndex++; // Finded, move to next index
-                    break;
-                }
             }
         }
 
@@ -325,16 +309,26 @@ namespace Engine.Script
             {
                 if (GuiManager.IsDialogEnd())
                 {
-                    TalkTextDetail detail;
-                    GetNextTalkTextDeatil(out detail);
-                    if (detail != null)
-                    {
-                        GuiManager.ShowDialog(detail.Text, detail.PortraitIndex);
-                    }
-                    else
+                    if (_talkList == null)
                     {
                         IsInTalk = false;
                     }
+                    else
+                    {
+                        _talkList.RemoveFirst();
+                        if (_talkList.Count > 0)
+                        {
+                            var detail = _talkList.First.Value;
+                            if (detail != null)
+                            {
+                                GuiManager.ShowDialog(detail.Text, detail.PortraitIndex);
+                            }
+                        }
+                        else
+                        {
+                            IsInTalk = false;
+                        }
+                    }           
                 }
             }
 
@@ -807,13 +801,12 @@ namespace Engine.Script
         public static void Talk(List<string> parameters)
         {
             IsInTalk = true;
-            _talkStartIndex = int.Parse(parameters[0]);
-            _talkEndIndex = int.Parse(parameters[1]);
-            _talkCurrentIndex = _talkStartIndex;
-            TalkTextDetail detail;
-            GetNextTalkTextDeatil(out detail);
-            if (detail != null)
+            _talkList = TalkTextList.GetTextDetails(int.Parse(parameters[0]),
+                int.Parse(parameters[1]));
+            
+            if (_talkList != null && _talkList.Count > 0)
             {
+                var detail = _talkList.First.Value;
                 GuiManager.ShowDialog(detail.Text, detail.PortraitIndex);
             }
             else
