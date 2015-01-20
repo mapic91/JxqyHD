@@ -372,6 +372,15 @@ namespace Engine.Gui
             UpdateMemoView();
         }
 
+        /// <summary>
+        /// Use good at bottom gui.
+        /// </summary>
+        /// <param name="index">0-2</param>
+        public static void UsingBottomGood(int index)
+        {
+            GoodsListManager.UsingGood(index + GoodsListManager.BottomGoodsIndexBegin);
+        }
+
         public static void DeleteGood(string fileName)
         {
             GoodsListManager.DeleteGood(fileName);
@@ -425,6 +434,16 @@ namespace Engine.Gui
         public static bool IsTimerStarted()
         {
             return TimerInterface.IsShow;
+        }
+
+        /// <summary>
+        /// Get magic item info at bottom gui.
+        /// </summary>
+        /// <param name="index">0-4</param>
+        /// <returns>Magic item info.Return null if not found.</returns>
+        public static MagicListManager.MagicItemInfo GetBottomMagicItemInfo(int index)
+        {
+            return MagicListManager.GetItemInfo(index + MagicListManager.BottomMagicIndexStart);
         }
 
         #endregion Functionail method

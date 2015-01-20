@@ -110,7 +110,7 @@ namespace Engine.ListManager
 
         public static void ApplyEquipSpecialEffectFromList(Player player)
         {
-            if(player == null) return;
+            if (player == null) return;
             for (var i = EquipIndexBegin; i <= EquipIndexEnd; i++)
             {
                 player.Equiping(Get(i), null, true);
@@ -231,7 +231,7 @@ namespace Engine.ListManager
             var i = ListIndexBegin;
             for (; i <= ListIndexEnd; i++)
             {
-                if(GoodsList[i] != null && 
+                if (GoodsList[i] != null &&
                     GoodsList[i].TheGood != null &&
                     Utils.EqualNoCase(GoodsList[i].TheGood.FileName, fileName))
                     break;
@@ -248,7 +248,7 @@ namespace Engine.ListManager
                 //if goods is unequiped
                 if (i >= EquipIndexBegin && i <= EquipIndexEnd && GoodsList[i] == null)
                 {
-                    if(Globals.ThePlayer != null)
+                    if (Globals.ThePlayer != null)
                         Globals.ThePlayer.UnEquiping(good);
                 }
             }
@@ -269,7 +269,7 @@ namespace Engine.ListManager
                 equip = Get(index1);
                 currentEquip = Get(index2);
             }
-            else if(IsInEquipRange(index2))
+            else if (IsInEquipRange(index2))
             {
                 equip = Get(index2);
                 currentEquip = Get(index1);
@@ -293,27 +293,49 @@ namespace Engine.ListManager
 
         public static void UsingGood(int goodIndex)
         {
+            if (IsInEquipRange(goodIndex))
+            {
+                //Can't use equiped good.
+                return;
+            }
+
             var info = GetItemInfo(goodIndex);
             if (info == null) return;
             var good = info.TheGood;
             if (good != null)
             {
-                if (good.Kind == Good.GoodKind.Drug)
+                switch (good.Kind)
                 {
-                    if (Globals.ThePlayer.UseDrug(good))
-                    {
-                        
-                        if (info.Count == 1)
-                            GoodsList[goodIndex] = null;
-                        else
-                            info.Count -= 1;
-                    }
+                    case Good.GoodKind.Drug:
+                        {
+                            if (Globals.ThePlayer.UseDrug(good))
+                            {
+
+                                if (info.Count == 1)
+                                    GoodsList[goodIndex] = null;
+                                else
+                                    info.Count -= 1;
+                            }
+                            var sound = Utils.GetSoundEffect("界-使用物品.wav");
+                            if (sound != null)
+                            {
+                                sound.Play();
+                            }
+                        }
+                        break;
+                    case Good.GoodKind.Equipment:
+                        GuiManager.EquipInterface.EquipGood(goodIndex);
+                        break;
+                    case Good.GoodKind.Event:
+                        {
+                            ScriptManager.RunScript(Utils.GetScriptParser(
+                                good.FileName, good, null, Utils.ScriptCategory.Good));
+                        }
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
-                else if (good.Kind == Good.GoodKind.Event)
-                {
-                    ScriptManager.RunScript(Utils.GetScriptParser(
-                        good.FileName, good, null, Utils.ScriptCategory.Good));
-                }
+
                 GuiManager.UpdateGoodItemView(goodIndex);
             }
         }

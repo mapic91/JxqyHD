@@ -72,16 +72,7 @@ namespace Engine.Gui
             }
             else
             {
-                switch (good.Kind)
-                {
-                    case Good.GoodKind.Drug:
-                    case Good.GoodKind.Event:
-                        GoodsListManager.UsingGood(data.Index);
-                        break;
-                    case Good.GoodKind.Equipment:
-                        GuiManager.EquipInterface.EquipGood(data.Index);
-                        break;
-                }
+                GoodsListManager.UsingGood(data.Index);
             }
         }
 

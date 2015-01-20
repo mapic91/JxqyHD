@@ -29,6 +29,8 @@ namespace Engine
         private MagicListManager.MagicItemInfo _currentMagicInUse;
         private MagicListManager.MagicItemInfo _xiuLianMagic;
 
+        private bool _isUseMagicByKeyborad;
+
         #region Public properties
 
         public bool IsNotUseThewWhenRun { set; get; }
@@ -213,6 +215,56 @@ namespace Engine
                 Globals.TheGame.GraphicsDevice.PresentationParameters.BackBufferWidth,
                 Globals.TheGame.GraphicsDevice.PresentationParameters.BackBufferHeight);
             return region.Contains(mouseState.X, mouseState.Y);
+        }
+
+        private void HandleKeyboardInput()
+        {
+            var state = Keyboard.GetState();
+            var lastState = Globals.TheGame.LastKeyboardState;
+
+            if (state.IsKeyDown(Keys.Z) && lastState.IsKeyUp(Keys.Z))
+            {
+                GuiManager.UsingBottomGood(0);
+            }
+            if (state.IsKeyDown(Keys.X) && lastState.IsKeyUp(Keys.X))
+            {
+                GuiManager.UsingBottomGood(1);
+            }
+            if (state.IsKeyDown(Keys.C) && lastState.IsKeyUp(Keys.C))
+            {
+                GuiManager.UsingBottomGood(2);
+            }
+
+            var index = -1;
+            if (state.IsKeyDown(Keys.A) && lastState.IsKeyUp(Keys.A))
+            {
+                index = 0;
+            }
+            if (state.IsKeyDown(Keys.S) && lastState.IsKeyUp(Keys.S))
+            {
+                index = 1;
+            }
+            if (state.IsKeyDown(Keys.D) && lastState.IsKeyUp(Keys.D))
+            {
+                index = 2;
+            }
+            if (state.IsKeyDown(Keys.F) && lastState.IsKeyUp(Keys.F))
+            {
+                index = 3;
+            }
+            if (state.IsKeyDown(Keys.G) && lastState.IsKeyUp(Keys.G))
+            {
+                index = 4;
+            }
+            if (index != -1)
+            {
+                var info = GuiManager.GetBottomMagicItemInfo(index);
+                if (info != null && info.TheMagic != null)
+                {
+                    CurrentMagicInUse = info;
+                    _isUseMagicByKeyborad = true;
+                }
+            }
         }
 
         #region Protected method
@@ -624,10 +676,13 @@ namespace Engine
             var mouseScreenPosition = new Vector2(mouseState.X, mouseState.Y);
             var mouseWorldPosition = Globals.TheCarmera.ToWorldPosition(mouseScreenPosition);
             var mouseTilePosition = Map.ToTilePosition(mouseWorldPosition);
+            _isUseMagicByKeyborad = false;
 
             Globals.ClearGlobalOutEdge();
             if (!GuiManager.IsMouseStateEated && CanInput)
             {
+                HandleKeyboardInput();
+
                 foreach (var one in NpcManager.NpcsInView)
                 {
                     if (!one.IsInteractive) continue;
@@ -708,13 +763,17 @@ namespace Engine
                         }
                         else WalkTo(mouseTilePosition);
                     }
-                    if (!IsFightDisabled &&
+                    if ((!IsFightDisabled &&
                         mouseState.RightButton == ButtonState.Pressed &&
-                        _lastMouseState.RightButton == ButtonState.Released)
+                        _lastMouseState.RightButton == ButtonState.Released) ||
+                        _isUseMagicByKeyborad)
                     {
                         if (CurrentMagicInUse == null)
                         {
-                            GuiManager.ShowMessage("请在武功栏使用鼠标右键选择武功");
+                            if (!_isUseMagicByKeyborad)
+                            {
+                                GuiManager.ShowMessage("请在武功栏使用鼠标右键选择武功");
+                            }
                         }
                         else
                         {
