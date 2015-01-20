@@ -737,7 +737,8 @@ namespace Engine
                     StandingImmediately();
                     MovedDistance = 0;
                 }
-                else if (DestinationMovePositionInWorld != Path.Last.Value) // new destination
+                else if ((PathType == Engine.PathFinder.PathType.PathOneStep && Path.Count <= 2) ||//Step path end
+                    (PathType != Engine.PathFinder.PathType.PathOneStep && DestinationMovePositionInWorld != Path.Last.Value)) // new destination
                 {
                     var destination = DestinationMovePositionInWorld;
                     PositionInWorld = to;
@@ -895,7 +896,7 @@ namespace Engine
             var path = new List<Vector2>() { TilePosition };
 
             var maxTry = count * 3;//For performace, otherwise method may run forever.
-            var maxOffset = 5;
+            var maxOffset = 10;
             if (isFlyer)
             {
                 maxOffset = 15;

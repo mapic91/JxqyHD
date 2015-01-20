@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Engine.Benchmark;
 using Microsoft.Xna.Framework;
 
@@ -33,6 +34,12 @@ namespace Engine
             return null;
         }
 
+        private static bool HasObstacle(Character finder, Vector2 tilePosition)
+        {
+            return (finder.HasObstacle(tilePosition) ||
+                    Globals.TheMap.IsObstacleForCharacter(tilePosition));
+        }
+
         //Returned path is in pixel position
         public static LinkedList<Vector2> FindPath(Character finder, Vector2 startTile, Vector2 endTile, PathType type)
         {
@@ -53,43 +60,76 @@ namespace Engine
         //Returned path is in pixel position
         public static LinkedList<Vector2> FindPathStep(Character finder, Vector2 startTile, Vector2 endTile, int stepCount)
         {
+            if (finder == null) return null;
             if (startTile == endTile) return null;
 
             if (Globals.TheMap.IsObstacleForCharacter(endTile))
                 return null;
 
-            var cameFrom = new Dictionary<Vector2, Vector2>();
-            var frontier = new C5.IntervalHeap<Node>();
             var path = new LinkedList<Vector2>();
+            var visted = new LinkedList<Vector2>();
 
-            frontier.Add(new Node(startTile, 0f));
-            var step = 0;
-            Vector2 current = Vector2.Zero;
-            while (!frontier.IsEmpty)
+            var endPositon = Map.ToPixelPosition(endTile);
+            path.AddLast(Map.ToPixelPosition(startTile));
+            var current = startTile;
+            var maxTry = 100;// For performance
+            while (maxTry-- > 0)
             {
-                current = frontier.DeleteMin().Location;
-                if (current == endTile) break;
-                if (finder.HasObstacle(current) && current != startTile) continue;
-                if (step++ > stepCount) break;
-                foreach (var neighbor in FindNeighbors(current))
+                var direction = Utils.GetDirectionIndex(endPositon - Map.ToPixelPosition(current), 8);
+                var neighbors = FindAllNeighbors(current);
+                var index = -1;
+                for (var i = 0; i < 5; i++)
                 {
-                    if (!cameFrom.ContainsKey(neighbor))
+                    Vector2 position;
+                    if (i == 0)
                     {
-                        var priority = GetCost(neighbor, endTile);
-                        frontier.Add(new Node(neighbor, priority));
-                        cameFrom[neighbor] = current;
+                        position = neighbors[direction];
+                        if (HasObstacle(finder, position) ||
+                            visted.Contains(position)) continue;
+                        index = direction;
+                        break;
                     }
+                    else if (i == 4)
+                    {
+                        position = neighbors[(direction + 4)%8];
+                        if (HasObstacle(finder, position) ||
+                            visted.Contains(position)) continue;
+                        index = (direction + 4)%8;
+                        break;
+                    }
+                    else
+                    {
+                        position = neighbors[(direction + i)%8];
+                        if (!HasObstacle(finder, position) &&
+                            !visted.Contains(position))
+                        {
+                            index = (direction + i)%8;
+                            break;
+                        }
+                        position = neighbors[(direction + 8 - i)%8];
+                        if (!HasObstacle(finder, position) &&
+                            !visted.Contains(position))
+                        {
+                            index = (direction + 8 - i)%8;
+                            break;
+                        }
+                    }
+                }
+                if (index == -1)
+                {
+                    break;
+                }
+                current = neighbors[index];
+                path.AddLast(Map.ToPixelPosition(current));
+                visted.AddLast(current);
+
+                if (path.Count > stepCount || current == endTile)
+                {
+                    break;
                 }
             }
 
-            while (current != startTile)
-            {
-                path.AddFirst(Map.ToPixelPosition(current));
-                current = cameFrom[current];
-            }
-            path.AddFirst(Map.ToPixelPosition(startTile));
-
-            return path;
+            return path.Count < 2 ? null : path;;
         }
 
         //Returned path is in pixel position
@@ -105,6 +145,7 @@ namespace Engine
 
             frontier.Add(new Node(startTile, 0f));
             var tryCount = 0;
+            var endPositon = Map.ToPixelPosition(endTile);
             while (!frontier.IsEmpty)
             {
                 if (tryCount++ > maxTry) break;
@@ -115,7 +156,7 @@ namespace Engine
                 {
                     if (!cameFrom.ContainsKey(neighbor))
                     {
-                        var priority = GetCost(neighbor, endTile);
+                        var priority = GetPostionCost(Map.ToPixelPosition(neighbor), endPositon);
                         frontier.Add(new Node(neighbor, priority));
                         cameFrom[neighbor] = current;
                     }
@@ -139,6 +180,7 @@ namespace Engine
             var path = new LinkedList<Vector2>();
             var frontier = new C5.IntervalHeap<Node>();
             frontier.Add(new Node(startTile, 0f));
+            var endPositon = Map.ToPixelPosition(endTile);
             while (!frontier.IsEmpty)
             {
                 if(maxTry-- < 0) break;
@@ -147,7 +189,7 @@ namespace Engine
                 if (current == endTile) break;
                 foreach (var neighbor in FindAllNeighbors(current))
                 {
-                    frontier.Add(new Node(neighbor, GetCost(neighbor, endTile)));
+                    frontier.Add(new Node(neighbor, GetPostionCost(Map.ToPixelPosition(neighbor), endPositon)));
                 }
             }
             return path;
@@ -224,6 +266,7 @@ namespace Engine
                 var path = new LinkedList<Vector2>();
                 var frontier = new C5.IntervalHeap<Node>();
                 frontier.Add(new Node(startTile, 0f));
+                var endPositon = Map.ToPixelPosition(endTile);
                 while (!frontier.IsEmpty)
                 {
                     var current = frontier.DeleteMin().Location;
@@ -234,7 +277,7 @@ namespace Engine
                     path.AddLast(current);
                     foreach (var neighbor in FindAllNeighbors(current))
                     {
-                        frontier.Add(new Node(neighbor, GetCost(neighbor, endTile)));
+                        frontier.Add(new Node(neighbor, GetPostionCost(Map.ToPixelPosition(neighbor), endPositon)));
                     }
                     visionRadius--;
                 }
@@ -275,6 +318,7 @@ namespace Engine
                     break;
             }
 
+            var endPositon = Map.ToPixelPosition(endTile);
             while (!frontier.IsEmpty)
             {
                 if (tryCount++ > maxTryCount) break;
@@ -283,12 +327,14 @@ namespace Engine
                 if (finder.HasObstacle(current) && current != startTile) continue;
                 foreach (var next in FindNeighbors(current))
                 {
-                    var newCost = costSoFar[current] + GetCost(current, next);
+                    var newCost = costSoFar[current] + 
+                        GetPostionCost(Map.ToPixelPosition(current), 
+                        Map.ToPixelPosition(next));
                     if (!costSoFar.ContainsKey(next) ||
                         newCost < costSoFar[next])
                     {
                         costSoFar[next] = newCost;
-                        var priority = newCost + GetCost(endTile, next);
+                        var priority = newCost + GetPostionCost(endPositon, Map.ToPixelPosition(next));
                         frontier.Add(new Node(next, priority));
                         cameFrom[next] = current;
                     }
@@ -351,9 +397,9 @@ namespace Engine
             return FindAllNeighbors(tilePosition)[direction];
         }
 
-        public static float GetCost(Vector2 fromTile, Vector2 toTile)
+        public static float GetPostionCost(Vector2 fromPosition, Vector2 toPosition)
         {
-            return GetTileDistance(fromTile, toTile);
+            return Vector2.Distance(fromPosition, toPosition);
         }
 
         public static List<Vector2> FindNeighbors(Vector2 location)
