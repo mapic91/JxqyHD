@@ -41,6 +41,31 @@ namespace Engine.Gui
             GuiManager.ToolTipInterface.IsShow = false;
         }
 
+        public static void MouseRightClickdHandler(object arg1, MouseEvent arg2)
+        {
+            var item = (DragDropItem)arg1;
+            var data = item.Data as MagicItemData;
+            if (data != null)
+            {
+                var info = MagicListManager.GetItemInfo(data.Index);
+                if (info != null)
+                {
+                    for (var i = MagicListManager.BottomMagicIndexStart;
+                        i <= MagicListManager.BottomMagicIndexEnd;
+                        i++)
+                    {
+                        var binfo = MagicListManager.GetItemInfo(i);
+                        if (binfo == null)
+                        {
+                            MagicListManager.ExchangeListItem(data.Index, i);
+                            GuiManager.UpdateMagicView();
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
         public MagicGui()
         {
             var baseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\", "panel2.asf"));
@@ -65,6 +90,7 @@ namespace Engine.Gui
             _listView.RegisterItemDropHandler(DropHandler);
             _listView.RegisterItemMouseStayOverHandler(MouseStayOverHandler);
             _listView.RegisterItemMouseLeaveHandler(MouseLeaveHandler);
+            _listView.RegisterItemMouseRightClickeHandler(MouseRightClickdHandler);
 
             IsShow = false;
         }
