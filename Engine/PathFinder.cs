@@ -43,7 +43,7 @@ namespace Engine
                 case PathType.PerfectMaxNpcTry:
                     return FindPathPerfect(finder, startTile, endTile, 100);
                 case PathType.PerfectMaxPlayerTry:
-                    return FindPathPerfect(finder, startTile, endTile, 2000);
+                    return FindPathPerfect(finder, startTile, endTile, 500);
                 case PathType.PathStraightLine:
                     return GetLinePath(startTile, endTile, 100);
             }
@@ -251,22 +251,13 @@ namespace Engine
             switch ((Fps.FpsValue+5)/10)
             {
                 case 5:
-                    maxTryCount /= 4;
+                    maxTryCount = 30;
                     break;
                 case 4:
-                    maxTryCount /= 8;
-                    break;
-                case 3:
-                    maxTryCount /= 16;
-                    break;
                 case 2:
-                    maxTryCount /= 32;
-                    break;
                 case 1:
-                    maxTryCount = 10;
-                    break;
                 case 0:
-                    maxTryCount = 0;
+                    maxTryCount = 15;
                     break;
             }
 

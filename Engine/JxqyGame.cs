@@ -213,6 +213,47 @@ namespace Engine
             //Weather
             WeatherManager.Update(gameTime);
         }
+
+        /// <summary>
+        /// Draw map npc obj magic etc.
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        private void DrawGamePlay(GameTime gameTime)
+        {
+            if (Globals.IsWaterEffectEnabled)
+            {
+                WaterEffectBegin();
+            }
+            //Map npcs objs magic sprite
+            Globals.TheMap.Draw(_spriteBatch);
+            //Player
+            Globals.ThePlayer.Draw(_spriteBatch);
+            //Weather
+            WeatherManager.Draw(_spriteBatch);
+            //Super magic
+            if (Globals.IsInSuperMagicMode)
+            {
+                Globals.SuperModeMagicSprite.Draw(_spriteBatch);
+            }
+            if (Globals.IsWaterEffectEnabled)
+            {
+                WaterEffectEnd(gameTime);
+            }
+            //Fade in, fade out
+            if (ScriptExecuter.IsInFadeIn || ScriptExecuter.IsInFadeOut)
+            {
+                ScriptExecuter.DrawFade(_spriteBatch);
+            }
+        }
+
+        private void DrawGameInfo(SpriteBatch spriteBatch)
+        {
+            var text = "FPS=" + Fps.FpsValue + "\n" +
+                       Globals.TheMap.MapFileNameWithoutExtension + ".map\n" +
+                       NpcManager.FileName + "\n" +
+                       ObjManager.FileName + "\n";
+            spriteBatch.DrawString(Globals.FontSize12, text, new Vector2(3, 3), Color.White*0.9f );
+        }
         #endregion Utils
 
         /// <summary>
@@ -409,41 +450,15 @@ namespace Engine
                 //GUI
                 GuiManager.Draw(_spriteBatch);
             }
+
+            if (IsInEditMode)
+            {
+                DrawGameInfo(_spriteBatch);
+            }
+
             _spriteBatch.End();
 
             base.Draw(gameTime);
-        }
-
-        /// <summary>
-        /// Draw map npc obj magic etc.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        public void DrawGamePlay(GameTime gameTime)
-        {
-            if (Globals.IsWaterEffectEnabled)
-            {
-                WaterEffectBegin();
-            }
-            //Map npcs objs magic sprite
-            Globals.TheMap.Draw(_spriteBatch);
-            //Player
-            Globals.ThePlayer.Draw(_spriteBatch);
-            //Weather
-            WeatherManager.Draw(_spriteBatch);
-            //Super magic
-            if (Globals.IsInSuperMagicMode)
-            {
-                Globals.SuperModeMagicSprite.Draw(_spriteBatch);
-            }
-            if (Globals.IsWaterEffectEnabled)
-            {
-                WaterEffectEnd(gameTime);
-            }
-            //Fade in, fade out
-            if (ScriptExecuter.IsInFadeIn || ScriptExecuter.IsInFadeOut)
-            {
-                ScriptExecuter.DrawFade(_spriteBatch);
-            }
         }
 
         /// <summary>

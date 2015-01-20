@@ -4,19 +4,7 @@ namespace Engine.Benchmark
 {
     public static class Fps
     {
-        private static int _frames;
-        private static float _elapsedMilliseconds;
-        private static int _updtaeIntervalMilliSecond = 160;
         private static int _fpsValue = 60;
-
-        /// <summary>
-        /// Interval to update fps in milliseconds.
-        /// </summary>
-        public static int UpdateIntervalMilliSecond
-        {
-            get { return _updtaeIntervalMilliSecond; }
-            set { _updtaeIntervalMilliSecond = value > 0 ? value : 1000; }
-        }
 
         public static int FpsValue
         {
@@ -29,14 +17,7 @@ namespace Engine.Benchmark
         /// <param name="gameTime"></param>
         public static void Update(GameTime gameTime)
         {
-            _elapsedMilliseconds += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-            _frames++;
-            if (_elapsedMilliseconds >= UpdateIntervalMilliSecond)
-            {
-                _fpsValue = (int)(_frames/((double) _elapsedMilliseconds/1000));
-                _elapsedMilliseconds -= UpdateIntervalMilliSecond;
-                _frames = 0;
-            }
+            _fpsValue = (int)(1000.0 / gameTime.ElapsedGameTime.TotalMilliseconds);
         }
     }
 }
