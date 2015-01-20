@@ -122,7 +122,7 @@ namespace Engine
         {
             return GetAsf(ResFile.GetAsfFilePathBase(fileName, ResType.Npc),
                 fileName);
-        } 
+        }
 
         static public SoundEffect GetSoundEffect(string wavFileName)
         {
@@ -222,8 +222,8 @@ namespace Engine
             public int Evade;
             public string NewMagic;
         }
-        private static readonly Dictionary<int,Dictionary<int, LevelDetail>> LevelList = 
-            new Dictionary<int, Dictionary<int, LevelDetail>>(); 
+        private static readonly Dictionary<int, Dictionary<int, LevelDetail>> LevelList =
+            new Dictionary<int, Dictionary<int, LevelDetail>>();
         public static Dictionary<int, LevelDetail> GetLevelLists(string filePath)
         {
             if (!File.Exists(filePath)) return null;
@@ -392,25 +392,36 @@ namespace Engine
         /// </summary>
         /// <param name="fileName">Script file name</param>
         /// <param name="mapName">Map name used to get script path, use current map name if null or empty</param>
-        /// <param name="goodsScript">Whether script file is good script</param>
+        /// <param name="category">Category of script belongs.</param>
         /// <returns></returns>
-        public static string GetScriptFilePath(string fileName, string mapName = null, bool goodsScript = false)
+        public static string GetScriptFilePath(string fileName, string mapName = null, ScriptCategory category = ScriptCategory.Normal)
         {
-            if (goodsScript)
+            switch (category)
             {
-                return  @"script\goods\" + fileName;
-            }
-            else
-            {
-                if (string.IsNullOrEmpty(mapName))
-                    mapName = Globals.TheMap.MapFileNameWithoutExtension;
-                var path = @"script\map\" + mapName + @"\" + fileName;
-                if (!File.Exists(path))
+                case ScriptCategory.Normal:
                 {
-                    return @"script\common\" + fileName;
+                    if (string.IsNullOrEmpty(mapName))
+                        mapName = Globals.TheMap.MapFileNameWithoutExtension;
+                    var path = @"script\map\" + mapName + @"\" + fileName;
+                    if (!File.Exists(path))
+                    {
+                        return @"script\common\" + fileName;
+                    }
+                    return path;
                 }
-                return path;
+                    break;
+                case ScriptCategory.Good:
+                    return @"script\goods\" + fileName;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("category");
             }
+        }
+
+        public enum ScriptCategory
+        {
+            Normal,
+            Good
         }
 
         /// <summary>
@@ -419,12 +430,12 @@ namespace Engine
         /// <param name="fileName">Script file name</param>
         /// <param name="belongObject">Belong object of returned ScriptParser</param>
         /// <param name="mapName">Map name used to get script path, use current map name if null or empty</param>
-        /// <param name="goodsScript">Whether script file is good script</param>
+        /// <param name="category">Category of script belongs.</param>
         /// <returns></returns>
-        public static ScriptParser GetScriptParser(string fileName, object belongObject = null, string mapName = null, bool goodsScript = false)
+        public static ScriptParser GetScriptParser(string fileName, object belongObject = null, string mapName = null, ScriptCategory category = ScriptCategory.Normal)
         {
             if (string.IsNullOrEmpty(fileName)) return null;
-            return new ScriptParser(GetScriptFilePath(fileName, mapName, goodsScript), belongObject);
+            return new ScriptParser(GetScriptFilePath(fileName, mapName, category), belongObject);
         }
 
         public static string RemoveStringQuotes(string str)
@@ -505,12 +516,12 @@ namespace Engine
         public static int GetMagicExp(int hitedCharacterLevel)
         {
             var exp = Math.Pow(hitedCharacterLevel,
-                1.0 + 0.343*hitedCharacterLevel/100.0);
+                1.0 + 0.343 * hitedCharacterLevel / 100.0);
             if (exp < 3)
             {
                 exp = 3;
             }
-            return (int) exp;
+            return (int)exp;
         }
     }
 }

@@ -519,6 +519,15 @@ namespace Engine
             }
         }
 
+        /// <summary>
+        /// Just add money amount do nothing else.
+        /// </summary>
+        /// <param name="amount">Amount to add</param>
+        public void AddMoneyValue(int amount)
+        {
+            Money += amount;
+        }
+
         public void SetMoney(int amount)
         {
             Money = amount;

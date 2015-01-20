@@ -57,21 +57,30 @@ namespace Engine.Gui
         {
             var theItem = (DragDropItem)arg1;
             var data = theItem.Data as GoodItemData;
-            if (data != null)
+            if (data == null) return;
+            var good = GoodsListManager.Get(data.Index);
+            if (good == null) return;
+
+            if (GuiManager.BuyInterface.IsShow)
             {
-                var good = GoodsListManager.Get(data.Index);
-                if (good != null)
+                if (good.Cost > 0)
                 {
-                    switch (good.Kind)
-                    {
-                        case Good.GoodKind.Drug:
-                        case Good.GoodKind.Event:
-                            GoodsListManager.UsingGood(data.Index);
-                            break;
-                        case Good.GoodKind.Equipment:
-                            GuiManager.EquipInterface.EquipGood(data.Index);
-                            break;
-                    }
+                    Globals.ThePlayer.AddMoneyValue(good.Cost/2);
+                    GuiManager.DeleteGood(good.FileName);
+                    GuiManager.BuyInterface.AddGood(good);
+                }
+            }
+            else
+            {
+                switch (good.Kind)
+                {
+                    case Good.GoodKind.Drug:
+                    case Good.GoodKind.Event:
+                        GoodsListManager.UsingGood(data.Index);
+                        break;
+                    case Good.GoodKind.Equipment:
+                        GuiManager.EquipInterface.EquipGood(data.Index);
+                        break;
                 }
             }
         }

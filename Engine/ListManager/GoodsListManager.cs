@@ -2,6 +2,7 @@
 using System.IO;
 using Engine.Gui;
 using Engine.Gui.Base;
+using Engine.Script;
 using IniParser;
 using IniParser.Model;
 
@@ -290,10 +291,10 @@ namespace Engine.ListManager
             return false;
         }
 
-        public static bool UsingGood(int goodIndex)
+        public static void UsingGood(int goodIndex)
         {
             var info = GetItemInfo(goodIndex);
-            if (info == null) return false;
+            if (info == null) return;
             var good = info.TheGood;
             if (good != null)
             {
@@ -306,16 +307,15 @@ namespace Engine.ListManager
                             GoodsList[goodIndex] = null;
                         else
                             info.Count -= 1;
-                        GuiManager.UpdateGoodItemView(goodIndex);
-                        return true;
                     }
                 }
                 else if (good.Kind == Good.GoodKind.Event)
                 {
-                    return false;
+                    ScriptManager.RunScript(Utils.GetScriptParser(
+                        good.FileName, good, null, Utils.ScriptCategory.Good));
                 }
+                GuiManager.UpdateGoodItemView(goodIndex);
             }
-            return false;
         }
 
         public static Good Get(int index)

@@ -13,6 +13,7 @@ namespace Engine.Gui
         private ListView _listView;
         private GuiItem _closeButton;
         private readonly Dictionary<int, Good> _goods = new Dictionary<int, Good>();
+        private int _goodCount;
 
         public BuyGui()
         {
@@ -26,7 +27,7 @@ namespace Engine.Gui
                 baseTexture.Width,
                 baseTexture.Height,
                 baseTexture,
-                3,
+                27,
                 new Vector2(-17, 0));
             var asf = Utils.GetAsf(@"asf\ui\buysell\", "CloseBtn.asf");
             baseTexture = new Texture(asf, 0, 1);
@@ -73,16 +74,12 @@ namespace Engine.Gui
                 _goods.Clear();
                 var parser = new FileIniDataParser();
                 var data =parser.ReadFile(path, Globals.LocalEncoding);
-                var count = int.Parse(data["Header"]["Count"]);
+                _goodCount = int.Parse(data["Header"]["Count"]);
                 const string basePath = @"ini\goods\";
-                for (var i = 1; i <= count; i++)
+                for (var i = 1; i <= _goodCount; i++)
                 {
                     _goods[i] = new Good(basePath + data[i.ToString()]["IniFile"]);
                 }
-                var rowCount = count % 3 == 0
-                ? count / 3
-                : (count / 3 + 1);
-                _listView.SetMaxRow(rowCount);
                 _listView.ScrollToRow(0);
                 UpdateItems();
                 IsShow = true;
@@ -91,6 +88,25 @@ namespace Engine.Gui
             {
                 Log.LogFileLoadError("BuySell", path, exception);
             }
+        }
+
+        public void AddGood(Good good)
+        {
+            if(good == null)return;
+
+            foreach (var goodItem in _goods)
+            {
+                if(goodItem.Value == null)continue;
+                if (Utils.EqualNoCase(good.FileName, goodItem.Value.FileName))
+                {
+                    //Already exist.
+                    return;
+                }
+            }
+
+            _goodCount++;
+            _goods[_goodCount] = good;
+            UpdateItems();
         }
 
         private void UpdateItems()
