@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using Engine.Gui;
 using Engine.ListManager;
 using IniParser.Model;
@@ -72,6 +73,7 @@ namespace Engine
             }
         }
 
+        private static Regex _attackName= new Regex(@"[a-zA-Z-_]*(.+).ini");
         public MagicListManager.MagicItemInfo XiuLianMagic
         {
             get { return _xiuLianMagic; }
@@ -83,6 +85,24 @@ namespace Engine
                     value = null;
                 }
                 _xiuLianMagic = value;
+
+                //Get character special attack texture
+                Asf asf = null;
+                if (_xiuLianMagic != null &&
+                    _xiuLianMagic.TheMagic.AttackFile != null)
+                {
+                    var match = _attackName.Match(_xiuLianMagic.TheMagic.AttackFile.FileName);
+                    if (match.Success)
+                    {
+                        var asfFileName = match.Groups[1].Value + NpcIniIndex + ".asf";
+                        asf = Utils.GetAsf(@"asf\character\", asfFileName);
+                    }
+                }
+                else
+                {
+                    asf = null;
+                }
+                SpecialAttackTexture = asf;
             }
         }
 
