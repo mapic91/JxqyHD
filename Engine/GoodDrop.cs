@@ -91,12 +91,12 @@ namespace Engine
             if (!character.IsEnemy) return null;
 
             var goodType = (GoodType) Globals.TheRandom.Next(0, (int) GoodType.MaxType);
-            var maxRandValue = 4;
+            var maxRandValue = 2;
             switch (goodType)
             {
                 case GoodType.Weapon:
                 case GoodType.Armor:
-                    maxRandValue = 25;
+                    maxRandValue = 10;
                     break;
             }
 
