@@ -765,8 +765,8 @@ namespace Engine
         /// <summary>
         /// Get rand position in map.
         /// </summary>
-        /// <param name="tilePostion">Base tile positon.</param>
-        /// <param name="max">Max x,y offset to the base tile posiont.</param>
+        /// <param name="tilePostion">Begin tile positon.</param>
+        /// <param name="max">Max tile distance to the begin tile position.</param>
         /// <returns>The rand tile positon.<see cref="Vector2.Zero"/> if can't find the tile in map range.</returns>
         public Vector2 GetRandPositon(Vector2 tilePostion, int max)
         {
