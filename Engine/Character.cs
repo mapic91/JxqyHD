@@ -230,15 +230,6 @@ namespace Engine
             protected set { _npcIni = value; }
         }
 
-        /// <summary>
-        /// Index of npc ini.
-        /// For example:
-        /// No npcini - 0
-        /// z-杨影枫.ini - 1
-        /// z-杨影枫2.ini - 2
-        /// </summary>
-        public int NpcIniIndex { protected set; get; }
-
         public virtual int PathFinder
         {
             get { return _pathFinder; }
@@ -294,8 +285,6 @@ namespace Engine
             get { return _attack; }
             set { _attack = value; }
         }
-
-        public Asf SpecialAttackTexture { set; get; }
 
         public int AttackLevel
         {
@@ -1606,6 +1595,11 @@ namespace Engine
             return true;
         }
 
+        protected virtual void OnPerformeAttack()
+        {
+            
+        }
+
         public void PerformeAttack(Vector2 destinationPositionInWorld)
         {
             if (PerformActionOk())
@@ -1615,20 +1609,14 @@ namespace Engine
                 ToFightingState();
                 _attackDestination = destinationPositionInWorld;
 
-                if (SpecialAttackTexture == null)
-                {
-                    var value = Globals.TheRandom.Next(3);
-                    if (value == 1 && NpcIni.ContainsKey((int)CharacterState.Attack1))
-                        SetState(CharacterState.Attack1);
-                    else if (value == 2 && NpcIni.ContainsKey((int)CharacterState.Attack2))
-                        SetState(CharacterState.Attack2);
-                    else SetState(CharacterState.Attack);
-                }
-                else
-                {
-                    SetState(CharacterState.Attack);
-                    Texture = SpecialAttackTexture;
-                }
+                var value = Globals.TheRandom.Next(3);
+                if (value == 1 && NpcIni.ContainsKey((int)CharacterState.Attack1))
+                    SetState(CharacterState.Attack1);
+                else if (value == 2 && NpcIni.ContainsKey((int)CharacterState.Attack2))
+                    SetState(CharacterState.Attack2);
+                else SetState(CharacterState.Attack);
+
+                OnPerformeAttack();
 
                 SetDirection(destinationPositionInWorld - PositionInWorld);
                 PlayCurrentDirOnce();
@@ -2022,29 +2010,15 @@ namespace Engine
             Relation = relation;
         }
 
-
-        private static Regex npcIniIndex = new Regex(@".*([0-9]+)\.ini");
         /// <summary>
         /// Set NpcIni flle
         /// </summary>
         /// <param name="fileName"></param>
-        public void SetNpcIni(string fileName)
+        public virtual void SetNpcIni(string fileName)
         {
             if (string.IsNullOrEmpty(fileName)) return;
             _npcIniFileName = fileName;
             NpcIni = ResFile.ReadFile(@"ini\npcres\" + fileName, ResType.Npc);
-
-            var match = npcIniIndex.Match(fileName);
-            int value;
-            if (match.Success &&
-                int.TryParse(match.Groups[1].Value, out value))
-            {
-                NpcIniIndex = value;
-            }
-            else
-            {
-                NpcIniIndex = 1;
-            }
         }
 
         /// <summary>

@@ -7,10 +7,6 @@ namespace Engine
 {
     public static class PathFinder
     {
-        private static Vector2 _lastStartTile = Vector2.Zero;
-        private static Vector2 _lastEndTile = Vector2.Zero;
-        private static LinkedList<Vector2> _lastPath = null; 
-
         public enum PathType
         {
             PathOneStep,
@@ -242,17 +238,6 @@ namespace Engine
             if (Globals.TheMap.IsObstacleForCharacter(endTile))
                 return null;
 
-            //last try can't find path, return null
-            if (_lastPath == null &&
-                _lastStartTile == startTile &&
-                _lastEndTile == endTile)
-            {
-                return null;
-            }
-            //Use chached for performance
-            _lastStartTile = startTile;
-            _lastEndTile = endTile;
-
             var cameFrom = new Dictionary<Vector2, Vector2>();
             var costSoFar = new Dictionary<Vector2, float>();
             var frontier = new C5.IntervalHeap<Node>();
@@ -306,8 +291,7 @@ namespace Engine
 
             }
 
-            _lastPath = GetPath(cameFrom, startTile, endTile);
-            return _lastPath;
+            return GetPath(cameFrom, startTile, endTile);;
         }
 
         /// <summary>
@@ -364,10 +348,7 @@ namespace Engine
 
         public static float GetCost(Vector2 fromTile, Vector2 toTile)
         {
-            var fromPosition = Map.ToPixelPosition(fromTile);
-            var toPosition = Map.ToPixelPosition(toTile);
-
-            return Vector2.Distance(fromPosition, toPosition);
+            return GetTileDistance(fromTile, toTile);
         }
 
         public static List<Vector2> FindNeighbors(Vector2 location)

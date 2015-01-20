@@ -209,8 +209,8 @@ namespace Engine
             }
 
             ////Follow target not found, do something else.
-            if (FollowTarget == null ||
-                !IsFollowTargetFound)
+            if ((FollowTarget == null || !IsFollowTargetFound) &&
+                !(IsFighter && IsAIDisabled)) //Fighter can't move when AI diaabled
             {
                 var isFlyer = Kind == (int)CharacterKind.Flyer;
                 const int randWalkPosibility = 400;

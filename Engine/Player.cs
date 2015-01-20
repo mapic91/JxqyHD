@@ -33,10 +33,26 @@ namespace Engine
 
         public bool IsNotUseThewWhenRun { set; get; }
         public bool IsManaRestore { set; get; }
+
         /// <summary>
         /// Can't use mana
         /// </summary>
         public bool ManaLimit { set; get; }
+
+        /// <summary>
+        /// Index of npc ini.
+        /// For example:
+        /// No npcini - 0
+        /// z-杨影枫.ini - 1
+        /// z-杨影枫2.ini - 2
+        /// </summary>
+        public int NpcIniIndex { protected set; get; }
+
+        /// <summary>
+        /// Texture when use xiulian magic attack magic
+        /// </summary>
+        public Asf SpecialAttackTexture { protected set; get; }
+
         /// <summary>
         /// Current use magic index in magic list
         /// </summary>
@@ -97,10 +113,6 @@ namespace Engine
                         var asfFileName = match.Groups[1].Value + NpcIniIndex + ".asf";
                         asf = Utils.GetAsf(@"asf\character\", asfFileName);
                     }
-                }
-                else
-                {
-                    asf = null;
                 }
                 SpecialAttackTexture = asf;
             }
@@ -309,9 +321,19 @@ namespace Engine
             }
         }
 
+        protected override void OnPerformeAttack()
+        {
+            if (SpecialAttackTexture != null &&
+                State == (int)CharacterState.Attack2)
+            {
+                Texture = SpecialAttackTexture;
+            }
+        }
+
         protected override void OnAttacking(Vector2 attackDestinationPixelPosition)
         {
-            if (XiuLianMagic != null && 
+            if (State == (int)CharacterState.Attack2 &&
+                XiuLianMagic != null && 
                 XiuLianMagic.TheMagic != null &&
                 XiuLianMagic.TheMagic.AttackFile != null)
             {
@@ -565,6 +587,25 @@ namespace Engine
             //Reset parter position relate to player position
             ResetPartnerPosition();
         }
+
+        private static readonly Regex NpcIniIndexRegx = new Regex(@".*([0-9]+)\.ini");
+        public override void SetNpcIni(string fileName)
+        {
+            base.SetNpcIni(fileName);
+
+            var match = NpcIniIndexRegx.Match(fileName);
+            int value;
+            if (match.Success &&
+                int.TryParse(match.Groups[1].Value, out value))
+            {
+                NpcIniIndex = value;
+            }
+            else
+            {
+                NpcIniIndex = 1;
+            }
+        }
+
         #endregion Public method
 
         public override void Update(GameTime gameTime)

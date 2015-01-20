@@ -307,7 +307,7 @@ namespace Engine
 
         private bool IsTileInMapViewRange(int col, int row)
         {
-            return (col < MapColumnCounts - 1 &&
+            return (col < MapColumnCounts &&
                 row < MapRowCounts - 3 &&
                 col > 0 &&
                 row > 0);
