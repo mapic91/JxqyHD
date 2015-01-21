@@ -609,8 +609,6 @@ namespace Engine.Gui
                     TimerInterface.Update(gameTime);
                 }
 
-                MessageInterface.Update(gameTime);
-
                 if (IsDropped)
                 {
                     IsDropped = false;
@@ -627,6 +625,9 @@ namespace Engine.Gui
                     DragDropSourceTexture = null;
                 }
             }
+
+            MessageInterface.Update(gameTime);
+
             _lastMouseState = mouseState;
         }
 

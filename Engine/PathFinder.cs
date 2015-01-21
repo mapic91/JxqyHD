@@ -78,42 +78,21 @@ namespace Engine
                 var direction = Utils.GetDirectionIndex(endPositon - Map.ToPixelPosition(current), 8);
                 var neighbors = FindAllNeighbors(current);
                 var index = -1;
-                for (var i = 0; i < 5; i++)
+                var list = new int[]
                 {
-                    Vector2 position;
-                    if (i == 0)
-                    {
-                        position = neighbors[direction];
-                        if (HasObstacle(finder, position) ||
+                    direction,
+                    (direction + 1)%8, (direction + 8 - 1)%8,
+                    (direction + 2)%8, (direction + 8 - 2)%8,
+                    (direction + 3)%8, (direction + 8 - 3)%8,
+                    (direction + 4)%8
+                };
+                for (var i = 0; i < 8; i++)
+                {
+                    var position = neighbors[list[i]];
+                    if (HasObstacle(finder, position) ||
                             visted.Contains(position)) continue;
-                        index = direction;
-                        break;
-                    }
-                    else if (i == 4)
-                    {
-                        position = neighbors[(direction + 4)%8];
-                        if (HasObstacle(finder, position) ||
-                            visted.Contains(position)) continue;
-                        index = (direction + 4)%8;
-                        break;
-                    }
-                    else
-                    {
-                        position = neighbors[(direction + i)%8];
-                        if (!HasObstacle(finder, position) &&
-                            !visted.Contains(position))
-                        {
-                            index = (direction + i)%8;
-                            break;
-                        }
-                        position = neighbors[(direction + 8 - i)%8];
-                        if (!HasObstacle(finder, position) &&
-                            !visted.Contains(position))
-                        {
-                            index = (direction + 8 - i)%8;
-                            break;
-                        }
-                    }
+                    index = list[i];
+                    break;
                 }
                 if (index == -1)
                 {
