@@ -1318,9 +1318,6 @@ namespace Engine.Script
 
         public static void DisableJump()
         {
-            #pragma warning disable 162
-            return;//DisableJump is disabled in game
-
             if (Globals.ThePlayer != null)
             {
                 Globals.ThePlayer.DisableJump();
@@ -1347,9 +1344,6 @@ namespace Engine.Script
         
         public static void DisableRun()
         {
-            #pragma warning disable 162
-            return;//DisableRun is disabled in game
-            
             if (Globals.ThePlayer != null)
             {
                 Globals.ThePlayer.DisableRun();

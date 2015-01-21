@@ -18,6 +18,7 @@ namespace Engine.Gui
         private static LinkedList<GuiItem> _allGuiItems = new LinkedList<GuiItem>();
         private static LinkedList<GuiItem> _panels = new LinkedList<GuiItem>();
         private static MouseState _lastMouseState;
+        private static KeyboardState _lastKeyboardState;
 
         public static TitleGui TitleInterface;
         public static SaveLoadGui SaveLoadInterface;
@@ -47,6 +48,16 @@ namespace Engine.Gui
         public static Texture DragDropSourceTexture;
         public static bool IsDropped;
         public static bool IsShow;
+
+        private static bool IsTalkNext()
+        {
+            var mouseState = Mouse.GetState();
+            var keyboardState = Keyboard.GetState();
+            return (mouseState.LeftButton == ButtonState.Pressed &&
+                    _lastMouseState.LeftButton == ButtonState.Released) ||
+                   (keyboardState.IsKeyDown(Keys.Space) && _lastKeyboardState.IsKeyUp(Keys.Space)) ||
+                   (Globals.TheGame.IsInEditMode && keyboardState.IsKeyDown(Keys.Escape));
+        }
 
         public static void Starting()
         {
@@ -550,8 +561,7 @@ namespace Engine.Gui
                 else
                 {
                     DialogInterface.Update(gameTime);
-                    if (mouseState.LeftButton == ButtonState.Pressed &&
-                        _lastMouseState.LeftButton == ButtonState.Released)
+                    if (IsTalkNext())
                     {
                         if (!DialogInterface.NextPage())
                             DialogInterface.IsShow = false;
@@ -634,6 +644,7 @@ namespace Engine.Gui
             MessageInterface.Update(gameTime);
 
             _lastMouseState = mouseState;
+            _lastKeyboardState = keyboardState;
         }
 
         public static void Draw(SpriteBatch spriteBatch)

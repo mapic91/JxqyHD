@@ -1172,7 +1172,6 @@ namespace Engine
         /// <param name="keyDataCollection">Ini key value collection</param>
         public virtual void Save(KeyDataCollection keyDataCollection)
         {
-            var c = keyDataCollection;
             keyDataCollection.AddKey("Name", _name);
             AddKey(keyDataCollection, "Kind", _kind);
             AddKey(keyDataCollection, "Relation", _relation);

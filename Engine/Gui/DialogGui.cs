@@ -15,6 +15,7 @@ namespace Engine.Gui
         private TextGui _selectB;
         private GuiItem _portrait;
         private Dictionary<int, Texture> _portraitList;
+        private readonly Color _defaultTextColor = Color.Black * 0.8f;
         public bool IsInSelecting { get; private set; }
         public int Selection { get; private set; }
 
@@ -53,7 +54,7 @@ namespace Engine.Gui
                 1,
                 2,
                 "",
-                Color.Black * 0.8f);
+                _defaultTextColor);
             _selectA = new TextGui(this,
                 new Vector2(65, 52),
                 310,
@@ -104,6 +105,7 @@ namespace Engine.Gui
         public void ShowText(string text, int portraitIndex = -1)
         {
             IsShow = true;
+            _text.DefaultColor = _defaultTextColor;//Reset color.
             _text.Text = text;
             if (portraitIndex != -1 && _portraitList.ContainsKey(portraitIndex))
             {

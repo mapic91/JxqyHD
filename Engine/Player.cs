@@ -364,6 +364,15 @@ namespace Engine
                     case "ManaLimit":
                         ManaLimit = int.Parse(keyData.Value) != 0;
                         break;
+                    case "IsRunDisabled":
+                        IsRunDisabled = (keyData.Value != "0");
+                        break;
+                    case "IsJumpDisabled":
+                        IsJumpDisabled = (keyData.Value != "0");
+                        break;
+                    case "IsFightDisabled":
+                        IsFightDisabled = (keyData.Value != "0");
+                        break;
                 }
             }
             catch (Exception)
@@ -411,6 +420,9 @@ namespace Engine
             AddKey(keyDataCollection, "CurrentUseMagicIndex", CurrentUseMagicIndex);
             AddKey(keyDataCollection, "LevelIni", LevelIniFile);
             AddKey(keyDataCollection, "ManaLimit", ManaLimit);
+            AddKey(keyDataCollection, "IsRunDisabled", IsRunDisabled);
+            AddKey(keyDataCollection, "IsJumpDisabled", IsJumpDisabled);
+            AddKey(keyDataCollection, "IsFightDisabled", IsFightDisabled);
         }
 
         public override void SetMagicFile(string fileName)
