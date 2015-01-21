@@ -97,8 +97,12 @@ namespace Engine
 
         #region Protected properties
         protected virtual bool MagicFromCache { get { return true; } }
-
         protected string LevelIniFile { set; get; }
+
+        /// <summary>
+        /// If true regenerate path when character move along path.
+        /// </summary>
+        protected bool MoveTargetChanged { set; get; }
         #endregion Protected properties
 
         #region Public properties
@@ -739,12 +743,18 @@ namespace Engine
                     MovedDistance = 0;
                 }
                 else if ((PathType == Engine.PathFinder.PathType.PathOneStep && Path.Count <= 2) ||//Step path end
-                    (PathType != Engine.PathFinder.PathType.PathOneStep && DestinationMovePositionInWorld != Path.Last.Value)) // new destination
+                    (PathType != Engine.PathFinder.PathType.PathOneStep && DestinationMovePositionInWorld != Path.Last.Value) ||// new destination
+                    MoveTargetChanged) 
                 {
                     var destination = DestinationMovePositionInWorld;
                     PositionInWorld = to;
                     Path = Engine.PathFinder.FindPath(this, TilePosition, Map.ToTilePosition(destination), PathType);
                     if (Path == null) StandingImmediately();
+
+                    if (MoveTargetChanged)
+                    {
+                        MoveTargetChanged = false;
+                    }
                 }
                 else
                 {

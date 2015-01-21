@@ -141,9 +141,9 @@ namespace Engine
             }
             else
             {
-                //Because character won't get new destination before step move end, 
-                //so clear path to make sure character get new destination.
-                Path = null;
+                //Because character won't update new destination before step move end, 
+                //so set MoveTargetChanged to true make sure character get new destination.
+                MoveTargetChanged = true;
 
                 if (attackCanReach) Attacking(FollowTarget.TilePosition);
                 else WalkTo(FollowTarget.TilePosition);
