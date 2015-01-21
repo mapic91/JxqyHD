@@ -23,7 +23,7 @@ namespace Engine.Gui
                 0f);
             _listView = new ListView(null,
                 position,
-                new Vector2(285, 120),
+                new Vector2(271, 108),
                 baseTexture.Width,
                 baseTexture.Height,
                 baseTexture,

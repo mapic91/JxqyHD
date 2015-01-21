@@ -44,10 +44,12 @@ namespace Engine.Gui
                 null,
                 Utils.GetSoundEffect("界-大按钮.wav"));
             _scrollBar = new ScrollBar(this,
+                28,
+                190,
+                null,
                 ScrollBar.ScrollBarType.Vertical,
                 slideButton,
-                new Vector2(308, 110),
-                190f,
+                new Vector2(295, 108),
                 0,
                 1,
                 0);

@@ -2,6 +2,7 @@
 using Engine.Gui.Base;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Texture = Engine.Gui.Base.Texture;
 
 namespace Engine.Gui
 {
@@ -26,6 +27,7 @@ namespace Engine.Gui
                 if (_slider != null)
                 {
                     _slider.Parent = this;
+                    _slider.Position = Vector2.Zero;
                 }
             }
         }
@@ -50,12 +52,12 @@ namespace Engine.Gui
                     switch (Type)
                     {
                         case ScrollBarType.Vertical:
-                            x = -Slider.Width / 2f;
+                            x = 0f;
                             y = (_value - MinValue) * StepLength;
                             break;
                         case ScrollBarType.Horizontal:
                             x = (_value - MinValue) * StepLength;
-                            y = -Slider.Height / 2f;
+                            y = 0f;
                             break;
                     }
                     Slider.Position = new Vector2(x, y);
@@ -109,18 +111,30 @@ namespace Engine.Gui
         }
 
         public ScrollBar(GuiItem parent,
+            int width,
+            int height,
+            Texture baseTexture,
             ScrollBarType type,
             GuiItem slider,
             Vector2 positon,
-            float length,
             int minValue,
             int maxValue,
             int value)
-            : base(parent, positon, 1, (int)length, null)
+            : base(parent, positon, width, height, baseTexture)
         {
             Type = type;
             Slider = slider;
-            Length = length;
+            switch (type)
+            {
+                case ScrollBarType.Vertical:
+                    Length = height;
+                    break;
+                case ScrollBarType.Horizontal:
+                    Length = width;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("type");
+            }
             MinValue = minValue;
             MaxValue = maxValue;
             Value = value;
@@ -133,14 +147,36 @@ namespace Engine.Gui
             Slider.MouseLeftDown += (arg1, arg2) =>
             {
                 _inDragging = true;
-                _lastValue = _value;
-                _lastMouseScreenPosition = arg2.MouseScreenPosition;
             };
             Slider.MouseLeftUp += (arg1, arg2) =>
             {
                 _inDragging = false;
             };
             Slider.MouseMove += Slider_MouseMove;
+
+            MouseLeftDown += (arg1, arg2) =>
+            {
+                _lastValue = _value;
+                _lastMouseScreenPosition = arg2.MouseScreenPosition;
+            };
+            MouseLeftUp += (arg1, arg2) =>
+            {
+                if (Vector2.Distance(arg2.MouseScreenPosition, _lastMouseScreenPosition) > StepLength) return;
+
+                var offset = 0f;
+                switch (Type)
+                {
+                    case ScrollBarType.Horizontal:
+                        offset = arg2.MouseScreenPosition.X - ScreenPosition.X;
+                        break;
+                    case ScrollBarType.Vertical:
+                        offset = arg2.MouseScreenPosition.Y - ScreenPosition.Y;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+                Value = (int)(offset / StepLength);
+            };
         }
 
         void Slider_MouseMove(object arg1, GuiItem.MouseMoveEvent arg2)
@@ -156,6 +192,8 @@ namespace Engine.Gui
                     case ScrollBarType.Vertical:
                         offset = arg2.MouseScreenPosition.Y - _lastMouseScreenPosition.Y;
                         break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
 
                 var valueOffset = (int)(offset / StepLength);
@@ -170,14 +208,14 @@ namespace Engine.Gui
         public override void Update(GameTime gameTime)
         {
             if (!IsShow) return;
-
+            base.Update(gameTime);
             if (Slider != null) Slider.Update(gameTime);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
             if (!IsShow) return;
-
+            base.Draw(spriteBatch);
             if (Slider != null) Slider.Draw(spriteBatch);
         }
 

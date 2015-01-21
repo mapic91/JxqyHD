@@ -23,14 +23,14 @@ namespace Engine.Gui.Base
 
         public ListView(GuiItem parent,
             Vector2 position,
-            Vector2 slideButtonPosition,
+            Vector2 scrollBarPosition,
             int width,
             int height,
             Texture baseTexture,
             int rowCouunts)
             :this(parent, 
-            position, 
-            slideButtonPosition, 
+            position,
+            scrollBarPosition, 
             width, 
             height, 
             baseTexture,
@@ -42,7 +42,7 @@ namespace Engine.Gui.Base
 
         public ListView(GuiItem parent,
             Vector2 position,
-            Vector2 slideButtonPosition,
+            Vector2 scrollBarPosition,
             int width,
             int height,
             Texture baseTexture,
@@ -65,10 +65,12 @@ namespace Engine.Gui.Base
                 null,
                 Utils.GetSoundEffect("界-大按钮.wav"));
             _scrollBar = new ScrollBar(this,
+                28,
+                190,
+                null,
                 ScrollBar.ScrollBarType.Vertical,
                 slideButton,
-                slideButtonPosition,
-                190f,
+                scrollBarPosition,
                 0,
                 rowCouunts - 1 - 2,
                 0);
