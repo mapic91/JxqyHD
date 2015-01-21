@@ -25,7 +25,7 @@ namespace Engine
         private RenderTarget2D _renderTarget;
 
         private double _totalInactivedSeconds;
-        private const double MaxInactivedSeconds = 5.0;
+        private const double MaxInactivedSeconds = 1.0;
         private bool _isInactivedReachMaxInterval;
 
         private readonly Color BackgroundColor = Color.Black;
@@ -47,7 +47,7 @@ namespace Engine
         /// </summary>
         public bool IsFocusLost
         {
-            get { return (!IsInEditMode && _isInactivedReachMaxInterval); }
+            get { return _isInactivedReachMaxInterval; }
         }
 
         public JxqyGame()

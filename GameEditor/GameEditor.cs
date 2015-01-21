@@ -37,12 +37,14 @@ namespace GameEditor
         private void DrawSurface_MouseEnter(object sender, EventArgs e)
         {
             Cursor.Hide();
+            Globals.TheGame.IsPaused = false;
             DrawSurface.Select();
         }
 
         private void DrawSurface_MouseLeave(object sender, EventArgs e)
         {
             Cursor.Show();
+            Globals.TheGame.IsPaused = true;
         }
 
         public void FunctionRunStateAppendLine(string line)
