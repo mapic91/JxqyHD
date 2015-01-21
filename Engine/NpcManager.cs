@@ -490,7 +490,7 @@ namespace Engine
                 var npc = node.Value;
                 var next = node.Next;
                 npc.Update(gameTime);
-                if (npc.IsDeath && npc.IsDeathScriptEnd)
+                if (npc.IsDeath)
                 {
                     if (npc.IsBodyIniOk &&
                         !npc.IsNodAddBody)
