@@ -1668,7 +1668,8 @@ namespace Engine
                     PositionInWorld - destinationPositionInWorld,
                     interactDistance);
                 //if can't reach destination tile positon, find neighbor tile
-                if (Globals.TheMap.IsObstacleForCharacter(DestinationMoveTilePosition))
+                if (Globals.TheMap.IsObstacleForCharacter(DestinationMoveTilePosition) ||
+                    HasObstacle(DestinationMoveTilePosition))
                 {
                     //Try all 8 direction
                     var directionList = Utils.GetDirection8List();
@@ -1679,7 +1680,8 @@ namespace Engine
                             destinationTilePositon,
                             dir,
                             interactDistance);
-                        if (!Globals.TheMap.IsObstacleForCharacter(DestinationMoveTilePosition))
+                        if (!Globals.TheMap.IsObstacleForCharacter(DestinationMoveTilePosition) &&
+                            !HasObstacle(DestinationMoveTilePosition))
                         {
                             isFinded = true;
                             break;
