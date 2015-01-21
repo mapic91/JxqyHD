@@ -210,6 +210,8 @@ namespace Engine.ListManager
         {
             index = -1;
             outMagic = null;
+            if (string.IsNullOrEmpty(fileName)) return false;
+
             for (var i = 1; i <= MaxMagic; i++)
             {
                 if (MagicList[i] != null)

@@ -753,28 +753,7 @@ namespace Engine.Script
 
         public static void AddMagic(List<string> parameters)
         {
-            int index;
-            Magic magic;
-            var result = MagicListManager.AddMagicToList(
-                Utils.RemoveStringQuotes(parameters[0]),
-                out index,
-                out magic);
-            if (result)
-            {
-                GuiManager.ShowMessage("你学会了" + magic.Name);
-                GuiManager.UpdateMagicView();
-            }
-            else
-            {
-                if (magic != null)
-                {
-                    GuiManager.ShowMessage("你已经学会了" + magic.Name);
-                }
-                else
-                {
-                    GuiManager.ShowMessage("错误");
-                }
-            }
+            Globals.ThePlayer.AddMagic(Utils.RemoveStringQuotes(parameters[0]));
         }
 
         public static void AddMoney(List<string> parameters)

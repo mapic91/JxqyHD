@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Text.RegularExpressions;
+using Engine.Gui;
+using Engine.ListManager;
 using Engine.Script;
 using IniParser;
 using IniParser.Model;
@@ -1915,7 +1916,30 @@ namespace Engine
 
         public virtual void AddMagic(string magicFileName)
         {
+            if(string.IsNullOrEmpty(magicFileName)) return;
 
+            int index;
+            Magic magic;
+            var result = MagicListManager.AddMagicToList(
+                magicFileName,
+                out index,
+                out magic);
+            if (result)
+            {
+                GuiManager.ShowMessage("你学会了" + magic.Name);
+                GuiManager.UpdateMagicView();
+            }
+            else
+            {
+                if (magic != null)
+                {
+                    GuiManager.ShowMessage("你已经学会了" + magic.Name);
+                }
+                else
+                {
+                    GuiManager.ShowMessage("错误");
+                }
+            }
         }
 
         /// <summary>
