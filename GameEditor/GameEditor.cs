@@ -37,6 +37,7 @@ namespace GameEditor
         private void DrawSurface_MouseEnter(object sender, EventArgs e)
         {
             Cursor.Hide();
+            DrawSurface.Select();
         }
 
         private void DrawSurface_MouseLeave(object sender, EventArgs e)

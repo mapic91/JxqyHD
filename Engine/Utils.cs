@@ -409,10 +409,8 @@ namespace Engine
                     }
                     return path;
                 }
-                    break;
                 case ScriptCategory.Good:
                     return @"script\goods\" + fileName;
-                    break;
                 default:
                     throw new ArgumentOutOfRangeException("category");
             }
