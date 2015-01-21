@@ -943,6 +943,10 @@ namespace Engine
             _fixedPathMoveDestinationPixelPostion = Map.ToPixelPosition(destinationTilePosition);
             _fixedPathDistanceToMove = Vector2.Distance(PositionInWorld, _fixedPathMoveDestinationPixelPostion);
             MovedDistance = 0f;
+            if (_fixedPathDistanceToMove < 1)
+            {
+                return;
+            }
             SetState(CharacterState.Walk);
         }
         #endregion Private method
@@ -2242,9 +2246,11 @@ namespace Engine
                     {
                         if (_fixedPathMoveDestinationPixelPostion != Vector2.Zero)
                         {
-                            MoveTo(_fixedPathMoveDestinationPixelPostion - PositionInWorld,
+                            var direction = _fixedPathMoveDestinationPixelPostion - PositionInWorld;
+                            MoveTo(direction,
                                 (float)elapsedGameTime.TotalSeconds * WalkSpeed * 2);
-                            if (MovedDistance >= _fixedPathDistanceToMove)
+                            if (direction == Vector2.Zero ||
+                                MovedDistance >= _fixedPathDistanceToMove)
                             {
                                 StandingImmediately();
                                 _fixedPathMoveDestinationPixelPostion = Vector2.Zero;
