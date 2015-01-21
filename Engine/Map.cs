@@ -644,6 +644,19 @@ namespace Engine
             return null;
         }
 
+        public bool HasTrapScript(Vector2 tilePosition)
+        {
+             int index;
+            var script = GetTileTrapScriptParser(tilePosition, out index);
+            if (script == null) return false;
+            if (_ingnoredTrapsIndex.Any(i => index == i))
+            {
+                //Script is ignored
+                return false;
+            }
+            return true;
+        }
+
         /// <summary>
         /// Run trap script in current tile position
         /// </summary>

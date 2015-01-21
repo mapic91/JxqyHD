@@ -812,7 +812,8 @@ namespace Engine
                 var nextTile = Engine.PathFinder.FindNeighborInDirection(
                     TilePosition, to - from);
                 if (Globals.TheMap.IsObstacleForCharacterJump(nextTile) ||
-                    (nextTile == to && HasObstacle(nextTile)))
+                    (nextTile == to && HasObstacle(nextTile)) ||
+                    Globals.TheMap.HasTrapScript(TilePosition))
                 {
                     TilePosition = TilePosition;//Correcting position
                     isOver = true;
