@@ -12,6 +12,8 @@ namespace Engine.Gui
         private int _minValue;
         private int _maxValue;
         private bool _inDragging;
+        private int _lastValue;
+        private Vector2 _lastMouseScreenPosition;
 
         public event Action<object, ScrolledEvent> Scrolled; 
 
@@ -128,8 +130,16 @@ namespace Engine.Gui
         private void RegisterEvent()
         {
             if (Slider == null) return;
-            Slider.MouseLeftDown += delegate { _inDragging = true; };
-            Slider.MouseLeftUp += delegate { _inDragging = false; };
+            Slider.MouseLeftDown += (arg1, arg2) =>
+            {
+                _inDragging = true;
+                _lastValue = _value;
+                _lastMouseScreenPosition = arg2.MouseScreenPosition;
+            };
+            Slider.MouseLeftUp += (arg1, arg2) =>
+            {
+                _inDragging = false;
+            };
             Slider.MouseMove += Slider_MouseMove;
         }
 
@@ -141,14 +151,18 @@ namespace Engine.Gui
                 switch (Type)
                 {
                     case ScrollBarType.Horizontal:
-                        offset = arg2.MouseScreenPosition.X - ScreenPosition.X;
+                        offset = arg2.MouseScreenPosition.X - _lastMouseScreenPosition.X;
                         break;
                     case ScrollBarType.Vertical:
-                        offset = arg2.MouseScreenPosition.Y - ScreenPosition.Y;
+                        offset = arg2.MouseScreenPosition.Y - _lastMouseScreenPosition.Y;
                         break;
                 }
 
-                Value = (int)(offset / StepLength);
+                var valueOffset = (int)(offset / StepLength);
+                if (valueOffset != 0)
+                {
+                    Value =  _lastValue + valueOffset;
+                }
             }
 
         }
