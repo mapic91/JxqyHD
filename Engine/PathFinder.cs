@@ -124,7 +124,6 @@ namespace Engine
 
             frontier.Add(new Node(startTile, 0f));
             var tryCount = 0;
-            var endPositon = Map.ToPixelPosition(endTile);
             while (!frontier.IsEmpty)
             {
                 if (tryCount++ > maxTry) break;
@@ -135,7 +134,7 @@ namespace Engine
                 {
                     if (!cameFrom.ContainsKey(neighbor))
                     {
-                        var priority = GetPostionCost(Map.ToPixelPosition(neighbor), endPositon);
+                        var priority = GetTilePositionCost(neighbor, endTile);
                         frontier.Add(new Node(neighbor, priority));
                         cameFrom[neighbor] = current;
                     }
@@ -159,7 +158,6 @@ namespace Engine
             var path = new LinkedList<Vector2>();
             var frontier = new C5.IntervalHeap<Node>();
             frontier.Add(new Node(startTile, 0f));
-            var endPositon = Map.ToPixelPosition(endTile);
             while (!frontier.IsEmpty)
             {
                 if(maxTry-- < 0) break;
@@ -168,7 +166,7 @@ namespace Engine
                 if (current == endTile) break;
                 foreach (var neighbor in FindAllNeighbors(current))
                 {
-                    frontier.Add(new Node(neighbor, GetPostionCost(Map.ToPixelPosition(neighbor), endPositon)));
+                    frontier.Add(new Node(neighbor, GetTilePositionCost(neighbor, endTile)));
                 }
             }
             return path;
@@ -245,7 +243,6 @@ namespace Engine
                 var path = new LinkedList<Vector2>();
                 var frontier = new C5.IntervalHeap<Node>();
                 frontier.Add(new Node(startTile, 0f));
-                var endPositon = Map.ToPixelPosition(endTile);
                 while (!frontier.IsEmpty)
                 {
                     var current = frontier.DeleteMin().Location;
@@ -256,7 +253,7 @@ namespace Engine
                     path.AddLast(current);
                     foreach (var neighbor in FindAllNeighbors(current))
                     {
-                        frontier.Add(new Node(neighbor, GetPostionCost(Map.ToPixelPosition(neighbor), endPositon)));
+                        frontier.Add(new Node(neighbor, GetTilePositionCost(neighbor, endTile)));
                     }
                     visionRadius--;
                 }
@@ -297,7 +294,6 @@ namespace Engine
                     break;
             }
 
-            var endPositon = Map.ToPixelPosition(endTile);
             while (!frontier.IsEmpty)
             {
                 if (tryCount++ > maxTryCount) break;
@@ -306,14 +302,12 @@ namespace Engine
                 if (finder.HasObstacle(current) && current != startTile) continue;
                 foreach (var next in FindNeighbors(current))
                 {
-                    var newCost = costSoFar[current] + 
-                        GetPostionCost(Map.ToPixelPosition(current), 
-                        Map.ToPixelPosition(next));
+                    var newCost = costSoFar[current] + 1;
                     if (!costSoFar.ContainsKey(next) ||
                         newCost < costSoFar[next])
                     {
                         costSoFar[next] = newCost;
-                        var priority = newCost + GetPostionCost(endPositon, Map.ToPixelPosition(next));
+                        var priority = newCost + GetTilePositionCost(endTile, next);
                         frontier.Add(new Node(next, priority));
                         cameFrom[next] = current;
                     }
@@ -376,9 +370,14 @@ namespace Engine
             return FindAllNeighbors(tilePosition)[direction];
         }
 
-        public static float GetPostionCost(Vector2 fromPosition, Vector2 toPosition)
+        public static float GetPixelPostionCost(Vector2 fromPosition, Vector2 toPosition)
         {
             return Vector2.Distance(fromPosition, toPosition);
+        }
+
+        public static int GetTilePositionCost(Vector2 fromTile, Vector2 toTile)
+        {
+            return GetTileDistance(fromTile, toTile);
         }
 
         public static List<Vector2> FindNeighbors(Vector2 location)
