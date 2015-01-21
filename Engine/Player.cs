@@ -746,7 +746,10 @@ namespace Engine
                     {
                         if (!one.IsInteractive) continue;
                         var texture = one.GetCurrentTexture();
-                        if (mouseTilePosition == one.TilePosition)
+                        if (mouseTilePosition == one.TilePosition ||
+                            Collider.IsPixelCollideForNpcObj(mouseWorldPosition,
+                            one.RegionInWorld,
+                            texture))
                         {
                             Globals.OutEdgeObj = one;
                             Globals.OutEdgeSprite = one;
