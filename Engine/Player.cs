@@ -590,6 +590,34 @@ namespace Engine
             return Money;
         }
 
+        public override void AddMagic(string magicFileName)
+        {
+            if (string.IsNullOrEmpty(magicFileName)) return;
+
+            int index;
+            Magic magic;
+            var result = MagicListManager.AddMagicToList(
+                magicFileName,
+                out index,
+                out magic);
+            if (result)
+            {
+                GuiManager.ShowMessage("你学会了" + magic.Name);
+                GuiManager.UpdateMagicView();
+            }
+            else
+            {
+                if (magic != null)
+                {
+                    GuiManager.ShowMessage("你已经学会了" + magic.Name);
+                }
+                else
+                {
+                    GuiManager.ShowMessage("错误");
+                }
+            }
+        }
+
         public void AddExp(int amount)
         {
             Exp += amount;

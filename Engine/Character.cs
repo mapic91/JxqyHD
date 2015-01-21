@@ -1914,33 +1914,11 @@ namespace Engine
             Thew += amount;
         }
 
-        public virtual void AddMagic(string magicFileName)
-        {
-            if(string.IsNullOrEmpty(magicFileName)) return;
-
-            int index;
-            Magic magic;
-            var result = MagicListManager.AddMagicToList(
-                magicFileName,
-                out index,
-                out magic);
-            if (result)
-            {
-                GuiManager.ShowMessage("你学会了" + magic.Name);
-                GuiManager.UpdateMagicView();
-            }
-            else
-            {
-                if (magic != null)
-                {
-                    GuiManager.ShowMessage("你已经学会了" + magic.Name);
-                }
-                else
-                {
-                    GuiManager.ShowMessage("错误");
-                }
-            }
-        }
+        /// <summary>
+        /// Do nothing, override this method to add behaviour
+        /// </summary>
+        /// <param name="magicFileName"></param>
+        public virtual void AddMagic(string magicFileName) { }
 
         /// <summary>
         /// Level up to level
