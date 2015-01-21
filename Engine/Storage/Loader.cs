@@ -39,6 +39,27 @@ namespace Engine.Storage
                 Map.DrawColor = StorageBase.GetColorFromString(option["MpcStyle"]);
                 Sprite.DrawColor = StorageBase.GetColorFromString(option["AsfStyle"]);
 
+                //Timer
+                var timer = data["Timer"];
+                if (timer != null)
+                {
+                    var isOn = timer["IsOn"] != "0";
+                    if (isOn)
+                    {
+                        ScriptExecuter.OpenTimeLimit(int.Parse(timer["TotalSecond"]));
+                        var isHide = timer["IsTimerWindowShow"] != "1";
+                        if (isHide)
+                        {
+                            ScriptExecuter.HideTimerWnd();
+                        }
+                        if (timer["IsScriptSet"] != "0")
+                        {
+                            ScriptExecuter.SetTimeScript(int.Parse(timer["TriggerTime"]),
+                                timer["TimerScript"]);
+                        }
+                    }
+                }
+
                 //Variables
                 ScriptExecuter.LoadVariables(data["Var"]);
             }
@@ -113,6 +134,7 @@ namespace Engine.Storage
             NpcManager.ClearAllNpc();
             ObjManager.ClearAllObjAndFileName();
             Globals.TheMap.Free();
+            ScriptExecuter.Init();
 
             LoadGameFile();
             LoadMagicGoodMemoList();
@@ -126,7 +148,7 @@ namespace Engine.Storage
             LoadTrapIgnoreList();
 
             Globals.TheCarmera.CenterPlayerInCamera();
-            ScriptExecuter.Init();
+            
             GameState.State = GameState.StateType.Playing;
             Globals.TheGame.IsGamePlayPaused = false;
             GuiManager.ShowAllPanels(false);

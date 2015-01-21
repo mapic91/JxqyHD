@@ -41,6 +41,19 @@ namespace Engine.Storage
             option.AddKey("MpcStyle", StorageBase.GetStringFromColor(Map.DrawColor));
             option.AddKey("AsfStyle", StorageBase.GetStringFromColor(Sprite.DrawColor));
 
+            //Timer
+            data.Sections.AddSection("Timer");
+            var timer = data["Timer"];
+            timer.AddKey("IsOn", GuiManager.IsTimerStarted() ? "1" : "0");
+            if (GuiManager.IsTimerStarted())
+            {
+                timer.AddKey("TotalSecond", GuiManager.GetTimerCurrentSeconds().ToString());
+                timer.AddKey("IsTimerWindowShow", GuiManager.IsTimerWindowHided() ? "0" : "1");
+                timer.AddKey("IsScriptSet", ScriptExecuter.IsTimeScriptSet ? "1" : "0");
+                timer.AddKey("TimerScript", ScriptExecuter.TimeScriptFileName);
+                timer.AddKey("TriggerTime", ScriptExecuter.TimeScriptSeconds.ToString());
+            }
+
             //Variables
             data.Sections.AddSection("Var");
             ScriptExecuter.SaveVariables(data["Var"]);

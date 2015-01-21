@@ -336,7 +336,7 @@ namespace Engine
 
         public static Character GetPlayerOrFighterFriend(Vector2 tilePosition)
         {
-            if (tilePosition == Globals.ThePlayer.TilePosition) return Globals.ThePlayer;
+            if (tilePosition == Globals.PlayerTilePosition) return Globals.PlayerKindCharacter;
             foreach (var npc in _list)
             {
                 if (npc.IsFighterFriend && npc.TilePosition == tilePosition)
@@ -524,6 +524,11 @@ namespace Engine
                     npc.CancleAttackTarget();
                 }
             }
+        }
+
+        public static Character GetPlayerKindCharacter()
+        {
+            return _list.FirstOrDefault(npc => npc.Kind == (int) Character.CharacterKind.Player);
         }
     }
 }

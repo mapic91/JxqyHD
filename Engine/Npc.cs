@@ -75,7 +75,7 @@ namespace Engine
         {
             if (!Globals.ThePlayer.IsStanding())
             {
-                PartnerMoveTo(Globals.ThePlayer.TilePosition);
+                PartnerMoveTo(Globals.PlayerTilePosition);
             }
         }
 
@@ -156,7 +156,7 @@ namespace Engine
             CancleAttackTarget();
             if (IsPartner)
             {
-                WalkTo(Globals.ThePlayer.TilePosition);
+                WalkTo(Globals.PlayerTilePosition);
             }
         }
 
@@ -251,7 +251,7 @@ namespace Engine
                             break;
                         case CharacterKind.AfraidPlayerAnimal:
                             {
-                                KeepMinTileDistance(Globals.ThePlayer.TilePosition, VisionRadius);
+                                KeepMinTileDistance(Globals.PlayerTilePosition, VisionRadius);
                             }
                             break;
                     }

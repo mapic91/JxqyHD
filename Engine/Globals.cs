@@ -56,8 +56,57 @@ namespace Engine
         public static JxqyGame TheGame;
         public static readonly Carmera TheCarmera = new Carmera();
         public static readonly Map TheMap = new Map();
-        public static Player ThePlayer;
         public static int PlayerIndex;
+        public static Player ThePlayer;
+
+        public static Character PlayerKindCharacter
+        {
+            get
+            {
+                if (ThePlayer == null ||
+                    ThePlayer.Kind != (int)Character.CharacterKind.Player)
+                {
+                    return NpcManager.GetPlayerKindCharacter();
+                }
+                return ThePlayer;
+            }
+        }
+
+        public static Vector2 PlayerPositionInWorld
+        {
+            get
+            {
+                if (ThePlayer == null) return Vector2.Zero;
+                if (ThePlayer.Kind != (int) Character.CharacterKind.Player)
+                {
+                    var character = NpcManager.GetPlayerKindCharacter();
+                    if (character == null)
+                    {
+                        return Vector2.Zero;
+                    }
+                    return character.PositionInWorld;
+                }
+                return ThePlayer.PositionInWorld;
+            }
+        }
+
+        public static Vector2 PlayerTilePosition
+        {
+            get
+            {
+                if (ThePlayer == null) return Vector2.Zero;
+                if (ThePlayer.Kind != (int)Character.CharacterKind.Player)
+                {
+                    var character = NpcManager.GetPlayerKindCharacter();
+                    if (character == null)
+                    {
+                        return Vector2.Zero;
+                    }
+                    return character.TilePosition;
+                }
+                return ThePlayer.TilePosition;
+            }
+        }
 
         public static bool IsInSuperMagicMode;
         public static MagicSprite SuperModeMagicSprite;

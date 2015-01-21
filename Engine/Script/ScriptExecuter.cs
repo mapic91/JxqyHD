@@ -50,6 +50,22 @@ namespace Engine.Script
                         _videoPlayer.State != MediaState.Stopped);
             }
         }
+
+        public static bool IsTimeScriptSet
+        {
+            get { return _isTimeScriptSet; }
+        }
+
+        public static int TimeScriptSeconds
+        {
+            get { return _timeScriptSeconds; }
+        }
+
+        public static string TimeScriptFileName
+        {
+            get { return _timeScriptFileName; }
+        }
+
         #endregion Public property
 
         #region Private
@@ -290,6 +306,8 @@ namespace Engine.Script
             IsInTalk = false;
             _sleepingMilliseconds = 0;
             _isTimeScriptSet = false;
+            _timeScriptFileName = string.Empty;
+            Variables.Clear();
         }
 
         #region Update Draw
@@ -351,7 +369,7 @@ namespace Engine.Script
                         Utils.GetScriptFilePath(_timeScriptFileName),
                         null));
                     _isTimeScriptSet = false;
-                    _timeScriptFileName = "";
+                    _timeScriptFileName = string.Empty;
                 }
             }
         }
@@ -1615,7 +1633,12 @@ namespace Engine.Script
 
         public static void OpenTimeLimit(List<string> parameters)
         {
-            GuiManager.OpenTimeLimit(int.Parse(parameters[0]));
+           OpenTimeLimit(int.Parse(parameters[0]));
+        }
+
+        public static void OpenTimeLimit(int time)
+        {
+            GuiManager.OpenTimeLimit(time);
         }
 
         public static void CloseTimeLimit()
@@ -1631,9 +1654,15 @@ namespace Engine.Script
 
         public static void SetTimeScript(List<string> parameters)
         {
+            SetTimeScript(int.Parse(parameters[0]),
+                Utils.RemoveStringQuotes(parameters[1]));
+        }
+
+        public static void SetTimeScript(int time, string scriptFileName)
+        {
             if (!GuiManager.IsTimerStarted()) return;
-            _timeScriptSeconds = int.Parse(parameters[0]);
-            _timeScriptFileName = Utils.RemoveStringQuotes(parameters[1]);
+            _timeScriptSeconds = time;
+            _timeScriptFileName = scriptFileName;
             _isTimeScriptSet = true;
         }
 

@@ -442,6 +442,11 @@ namespace Engine.Gui
             TimerInterface.HideTimerWnd();
         }
 
+        public static bool IsTimerWindowHided()
+        {
+            return TimerInterface.IsHide;
+        }
+
         public static int GetTimerCurrentSeconds()
         {
             return TimerInterface.GetCurrentSecond();

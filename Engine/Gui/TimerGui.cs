@@ -11,6 +11,12 @@ namespace Engine.Gui
         private int _seconds;
         private float _elapsedMilliSeconds;
         private bool _isHide;
+
+        public bool IsHide
+        {
+            get { return _isHide; }
+        }
+
         public TimerGui()
         {
             BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\timer\", "window.asf"));

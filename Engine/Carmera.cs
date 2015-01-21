@@ -182,8 +182,8 @@ namespace Engine
 
         private void UpdatePlayerView()
         {
-            if (Globals.ThePlayer == null) return;
-            var position = Globals.ThePlayer.PositionInWorld;
+            var position = Globals.PlayerPositionInWorld;
+            if(position == Vector2.Zero) return;
             var halfView = GetHalfViewSize();
             var center = halfView +
                          new Vector2(ViewBeginX, ViewBeginY);
@@ -216,8 +216,8 @@ namespace Engine
 
         public void CenterPlayerInCamera()
         {
-            if (Globals.ThePlayer == null) return;
-            CarmeraBeginPositionInWorld = Globals.ThePlayer.PositionInWorld -
+            var position = Globals.PlayerPositionInWorld;
+            CarmeraBeginPositionInWorld = position -
                                           GetHalfViewSize();
             Globals.TheMap.ViewBeginX = ViewBeginX;
             Globals.TheMap.ViewBeginY = ViewBeginY;
