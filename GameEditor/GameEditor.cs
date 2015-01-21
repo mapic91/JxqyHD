@@ -24,14 +24,12 @@ namespace GameEditor
 
         private void GameEditor_Activated(object sender, EventArgs e)
         {
-            if(TheJxqyGame == null) return;
-            TheJxqyGame.IsPaused = false;
+            
         }
 
         private void GameEditor_Deactivate(object sender, EventArgs e)
         {
-            if (TheJxqyGame == null) return;
-            TheJxqyGame.IsPaused = true;
+            
         }
 
         private void DrawSurface_MouseEnter(object sender, EventArgs e)

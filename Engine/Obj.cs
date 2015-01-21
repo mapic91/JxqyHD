@@ -34,6 +34,18 @@ namespace Engine
 
         public bool IsRemoved { set; get; }
 
+        public override Rectangle RegionInWorld
+        {
+            get
+            {
+                var region = base.RegionInWorld;
+                return new Rectangle(region.X + OffX,
+                    region.Y + OffY,
+                    region.Width,
+                    region.Height);
+            }
+        }
+
         public string ObjName
         {
             get { return _objName; }

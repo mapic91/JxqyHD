@@ -206,7 +206,7 @@ namespace Engine
             get { return new Vector2(Width, Height); }
         }
 
-        public Rectangle RegionInWorld
+        public virtual Rectangle RegionInWorld
         {
             get
             {
