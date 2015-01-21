@@ -38,6 +38,8 @@ namespace Engine.Gui
         public static ToolTipGui ToolTipInterface;
         public static MessageGui MessageInterface;
         public static DialogGui DialogInterface;
+        public static LittleHeadGui LittleHeadInterface;
+
         public static MouseGui MouseInterface;
 
         public static bool IsMouseStateEated;
@@ -119,6 +121,9 @@ namespace Engine.Gui
 
             DialogInterface = new DialogGui();
             _allGuiItems.AddLast(DialogInterface);
+
+            LittleHeadInterface = new LittleHeadGui();
+            _allGuiItems.AddLast(LittleHeadInterface);
 
             MagicListManager.RenewList();
             GoodsListManager.RenewList();
@@ -664,6 +669,7 @@ namespace Engine.Gui
                 SystemInterface.Draw(spriteBatch);
 
                 LittleMapInterface.Draw(spriteBatch);
+                LittleHeadInterface.Draw(spriteBatch);
             }
 
             MouseInterface.Draw(spriteBatch);

@@ -83,6 +83,7 @@
     <Compile Include="Gui\Base\LineText.cs" />
     <Compile Include="Gui\Base\ListItem.cs" />
     <Compile Include="Gui\Base\ListTextItem.cs" />
+    <Compile Include="Gui\LittleHeadGui.cs" />
     <Compile Include="MouseScrollHandler.cs" />
     <Compile Include="Gui\BottomGui.cs" />
     <Compile Include="Gui\BuyGui.cs" />
