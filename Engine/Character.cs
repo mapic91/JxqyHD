@@ -1274,8 +1274,7 @@ namespace Engine
                 State == (int)CharacterState.Hurt ||
                 State == (int)CharacterState.Death ||
                 State == (int)CharacterState.FightJump ||
-                IsPetrified ||
-                _isInInteract) return false;
+                IsPetrified) return false;
             return true;
         }
 
