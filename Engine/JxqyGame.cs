@@ -342,6 +342,9 @@ namespace Engine
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            //Update mouse scroll state.
+            MouseScrollHandler.Update();
+
             UpdateGameActiveState(gameTime);
 
             if (IsPaused || IsFocusLost)

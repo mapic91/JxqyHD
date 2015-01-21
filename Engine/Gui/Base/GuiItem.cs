@@ -25,6 +25,8 @@ namespace Engine.Gui.Base
         public event Action<object, MouseRightUpEvent> MouseRightUp;
         public event Action<object, MouseLeftClickEvent> Click;
         public event Action<object, MouseRightClickEvent> RightClick;
+        public event Action<object, MouseEvent> MouseScrollUp;
+        public event Action<object, MouseEvent> MouseScrollDown; 
 
         public virtual bool IsShow
         {
@@ -193,6 +195,17 @@ namespace Engine.Gui.Base
                     {
                         RightClick(this, new MouseRightClickEvent(position, screenPosition));
                     }
+                }
+
+                if (MouseScrollHandler.IsScrollUp && 
+                    MouseScrollUp != null)
+                {
+                    MouseScrollUp(this, new MouseEvent(position, screenPosition));
+                }
+                if (MouseScrollHandler.IsScrollDown &&
+                    MouseScrollDown != null)
+                {
+                    MouseScrollDown(this, new MouseEvent(position, screenPosition));
                 }
 
                 InRange = true;

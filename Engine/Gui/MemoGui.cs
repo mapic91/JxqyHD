@@ -55,6 +55,9 @@ namespace Engine.Gui
                 0);
             _scrollBar.Scrolled += (arg1, arg2) => SetTextShow(arg2.Value);
 
+            MouseScrollUp += (arg1, arg2) => _scrollBar.Value -= 1;
+            MouseScrollDown += (arg1, arg2) => _scrollBar.Value += 1;
+
             IsShow = false;
         }
 

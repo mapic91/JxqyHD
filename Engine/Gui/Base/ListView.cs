@@ -79,6 +79,9 @@ namespace Engine.Gui.Base
                 if (Scrolled != null)
                     Scrolled(this, new ListScrollEvent(arg2.Value));
             };
+
+            MouseScrollUp += (arg1, arg2) => _scrollBar.Value -= 1;
+            MouseScrollDown += (arg1, arg2) => _scrollBar.Value += 1;
         }
 
         private void InitializeItems()
