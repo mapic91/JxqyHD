@@ -58,12 +58,12 @@ namespace Engine
         /// <summary>
         /// Current use magic index in magic list
         /// </summary>
-        public int CurrentUseMagicIndex 
+        public int CurrentUseMagicIndex
         {
             set
             {
                 CurrentMagicInUse = MagicListManager.GetItemInfo(value);
-                
+
             }
             get
             {
@@ -91,7 +91,6 @@ namespace Engine
             }
         }
 
-        private static Regex _attackName= new Regex(@"[a-zA-Z-_]*(.+).ini");
         public MagicListManager.MagicItemInfo XiuLianMagic
         {
             get { return _xiuLianMagic; }
@@ -107,14 +106,11 @@ namespace Engine
                 //Get character special attack texture
                 Asf asf = null;
                 if (_xiuLianMagic != null &&
-                    _xiuLianMagic.TheMagic.AttackFile != null)
+                    _xiuLianMagic.TheMagic.AttackFile != null &&
+                    !string.IsNullOrEmpty(_xiuLianMagic.TheMagic.ActionFile))
                 {
-                    var match = _attackName.Match(_xiuLianMagic.TheMagic.AttackFile.FileName);
-                    if (match.Success)
-                    {
-                        var asfFileName = match.Groups[1].Value + NpcIniIndex + ".asf";
-                        asf = Utils.GetAsf(@"asf\character\", asfFileName);
-                    }
+                    asf = Utils.GetAsf(@"asf\character\",
+                        _xiuLianMagic.TheMagic.ActionFile + NpcIniIndex + ".asf");
                 }
                 SpecialAttackTexture = asf;
             }
@@ -394,11 +390,11 @@ namespace Engine
         protected override void OnAttacking(Vector2 attackDestinationPixelPosition)
         {
             if (State == (int)CharacterState.Attack2 &&
-                XiuLianMagic != null && 
+                XiuLianMagic != null &&
                 XiuLianMagic.TheMagic != null &&
                 XiuLianMagic.TheMagic.AttackFile != null)
             {
-                MagicManager.UseMagic(this, 
+                MagicManager.UseMagic(this,
                     XiuLianMagic.TheMagic.AttackFile,
                     PositionInWorld,
                     attackDestinationPixelPosition);
@@ -658,7 +654,7 @@ namespace Engine
             var levelupExp = info.TheMagic.LevelupExp;
             if (info.Exp >= levelupExp)
             {
-                info.TheMagic = info.TheMagic.GetLevel(info.TheMagic.CurrentLevel+1);
+                info.TheMagic = info.TheMagic.GetLevel(info.TheMagic.CurrentLevel + 1);
                 if (info.TheMagic.LevelupExp == 0)
                 {
                     //Magic is max level, make exp equal max exp
@@ -853,7 +849,7 @@ namespace Engine
 
             if (IsSitted)
             {
-                int changeManaAmount = ManaMax/100;
+                int changeManaAmount = ManaMax / 100;
                 if (changeManaAmount == 0) changeManaAmount = 1;
                 if (Mana < ManaMax && Thew > changeManaAmount)
                 {
@@ -924,21 +920,21 @@ namespace Engine
             base.Draw(spriteBatch, texture);
 
             if (Globals.OutEdgeSprite != null &&
-                !(Globals.OutEdgeNpc != null && Globals.OutEdgeNpc.IsHide) )
+                !(Globals.OutEdgeNpc != null && Globals.OutEdgeNpc.IsHide))
             {
                 Globals.OutEdgeSprite.Draw(spriteBatch,
                     Globals.OutEdgeTexture,
                     Globals.OffX,
                     Globals.OffY);
             }
-            if (Globals.OutEdgeNpc != null && 
+            if (Globals.OutEdgeNpc != null &&
                 !Globals.OutEdgeNpc.IsHide)
                 InfoDrawer.DrawLife(spriteBatch, Globals.OutEdgeNpc);
         }
 
         public void BuyGood(Good good)
         {
-            if(good == null) return;
+            if (good == null) return;
             var cost = good.Cost;
             if (Money > cost)
             {
