@@ -62,7 +62,7 @@ namespace Engine.Storage
             File.WriteAllText(StorageBase.GameIniFilePath, data.ToString(), Globals.LocalEncoding);
         }
 
-        private static void SavePlayer()
+        public static void SavePlayer()
         {
             var data = new IniData();
             data.Sections.AddSection("Init");

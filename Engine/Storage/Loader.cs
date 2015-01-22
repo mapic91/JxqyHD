@@ -172,6 +172,7 @@ namespace Engine.Storage
 
         public static void ChangePlayer(int index)
         {
+            Saver.SavePlayer();
             Globals.PlayerIndex = index;
             GuiManager.StateInterface.IsFemale = (index == 1);
             LoadMagicGoodList();
