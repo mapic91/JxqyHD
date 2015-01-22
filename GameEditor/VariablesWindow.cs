@@ -32,6 +32,7 @@ namespace GameEditor
             VariablesList.Select();
             VariablesList.SelectionStart = index;
             VariablesList.SelectionLength = _findText.Text.Length;
+            VariablesList.ScrollToCaret();
         }
     }
 }
