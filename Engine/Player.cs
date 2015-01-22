@@ -325,7 +325,13 @@ namespace Engine
 
         protected override bool CanJump()
         {
-            if (IsJumpDisabled) return false;
+            if (IsJumpDisabled ||
+                NpcIni == null ||
+                !NpcIni.ContainsKey((int) CharacterState.Jump) ||
+                NpcIni[(int) CharacterState.Jump].Image == null)
+            {
+                return false;
+            }
             if (Thew < ThewUseAmountWhenJump)
             {
                 GuiManager.ShowMessage("体力不足!");
@@ -349,26 +355,25 @@ namespace Engine
 
         protected override void AssignToValue(KeyData keyData)
         {
-            base.AssignToValue(keyData);
             try
             {
                 switch (keyData.KeyName)
                 {
                     case "Money":
                         Money = int.Parse(keyData.Value);
-                        break;
+                        return;
                     case "ManaLimit":
                         ManaLimit = int.Parse(keyData.Value) != 0;
-                        break;
+                        return;
                     case "IsRunDisabled":
                         IsRunDisabled = (keyData.Value != "0");
-                        break;
+                        return;
                     case "IsJumpDisabled":
                         IsJumpDisabled = (keyData.Value != "0");
-                        break;
+                        return;
                     case "IsFightDisabled":
                         IsFightDisabled = (keyData.Value != "0");
-                        break;
+                        return;
                 }
             }
             catch (Exception)
@@ -376,6 +381,7 @@ namespace Engine
                 //do nothing
                 return;
             }
+            base.AssignToValue(keyData);
         }
 
         protected override void OnPerformeAttack()
