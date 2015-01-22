@@ -22,7 +22,7 @@ namespace Engine.Weather
 
         public static void StopRain()
         {
-            Rain.Raining(false);
+            if(IsRaining) Rain.Raining(false);
         }
 
         public static void Update(GameTime gameTime)
