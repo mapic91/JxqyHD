@@ -81,8 +81,20 @@
     <Compile Include="GameEditor.Designer.cs">
       <DependentUpon>GameEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="PlayerPosDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PlayerPosDialog.Designer.cs">
+      <DependentUpon>PlayerPosDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="RunScript.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RunScript.Designer.cs">
+      <DependentUpon>RunScript.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />
@@ -125,6 +137,12 @@
   <ItemGroup>
     <EmbeddedResource Include="GameEditor.resx">
       <DependentUpon>GameEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerPosDialog.resx">
+      <DependentUpon>PlayerPosDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RunScript.resx">
+      <DependentUpon>RunScript.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

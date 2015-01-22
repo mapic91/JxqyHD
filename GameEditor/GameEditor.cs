@@ -3,13 +3,17 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Engine;
+using Engine.Script;
+using Microsoft.Xna.Framework;
 
 namespace GameEditor
 {
     public partial class GameEditor : Form
     {
+        private RunScript _scriptDialog = new RunScript();
         public JxqyGame TheJxqyGame;
         public GameEditor()
         {
@@ -24,12 +28,12 @@ namespace GameEditor
 
         private void GameEditor_Activated(object sender, EventArgs e)
         {
-            
+
         }
 
         private void GameEditor_Deactivate(object sender, EventArgs e)
         {
-            
+
         }
 
         private void DrawSurface_MouseEnter(object sender, EventArgs e)
@@ -123,6 +127,37 @@ namespace GameEditor
         private void _allEnemyDie_Click(object sender, EventArgs e)
         {
             NpcManager.AllEnemyDie();
+        }
+
+        private void _changePlayerPos_Click(object sender, EventArgs e)
+        {
+            using (var posDialog = new PlayerPosDialog())
+            {
+                if (posDialog.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        var x = int.Parse(posDialog.MapX.Text);
+                        var y = int.Parse(posDialog.MapY.Text);
+                        Globals.PlayerKindCharacter.StandingImmediately();
+                        Globals.PlayerKindCharacter.TilePosition = new Vector2(x, y);
+                    }
+                    catch (Exception)
+                    {
+                        //Do nothing
+                    }
+                }
+            }
+        }
+
+        private void _runScriptMenu_Click(object sender, EventArgs e)
+        {
+            if (_scriptDialog.ShowDialog() == DialogResult.OK)
+            {
+                var script = new ScriptParser();
+                script.ReadFromLines(_scriptDialog.ScriptContent.Lines, "运行脚本");
+                ScriptManager.RunScript(script);
+            }
         }
     }
 }

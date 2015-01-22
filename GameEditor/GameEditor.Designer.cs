@@ -34,6 +34,7 @@
             this._fullLifeThewMana = new System.Windows.Forms.ToolStripMenuItem();
             this._levelUp = new System.Windows.Forms.ToolStripMenuItem();
             this._addMoney1000 = new System.Windows.Forms.ToolStripMenuItem();
+            this._allEnemyDie = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.DrawSurface = new System.Windows.Forms.PictureBox();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
@@ -42,7 +43,9 @@
             this._fileText = new System.Windows.Forms.TextBox();
             this._scriptFilePath = new System.Windows.Forms.Button();
             this.TheToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this._allEnemyDie = new System.Windows.Forms.ToolStripMenuItem();
+            this.DebugMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this._changePlayerPos = new System.Windows.Forms.ToolStripMenuItem();
+            this._runScriptMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -59,7 +62,8 @@
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.CheatMenu});
+            this.CheatMenu,
+            this.DebugMenu});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(928, 24);
@@ -100,6 +104,14 @@
             this._addMoney1000.Size = new System.Drawing.Size(194, 22);
             this._addMoney1000.Text = "加钱1000";
             this._addMoney1000.Click += new System.EventHandler(this._addMoney1000_Click);
+            // 
+            // _allEnemyDie
+            // 
+            this._allEnemyDie.Name = "_allEnemyDie";
+            this._allEnemyDie.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D)));
+            this._allEnemyDie.Size = new System.Drawing.Size(194, 22);
+            this._allEnemyDie.Text = "所有敌人死亡";
+            this._allEnemyDie.Click += new System.EventHandler(this._allEnemyDie_Click);
             // 
             // splitContainer1
             // 
@@ -198,13 +210,30 @@
             this._scriptFilePath.UseVisualStyleBackColor = true;
             this._scriptFilePath.Click += new System.EventHandler(this._scriptFilePath_Click);
             // 
-            // _allEnemyDie
+            // DebugMenu
             // 
-            this._allEnemyDie.Name = "_allEnemyDie";
-            this._allEnemyDie.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D)));
-            this._allEnemyDie.Size = new System.Drawing.Size(194, 22);
-            this._allEnemyDie.Text = "所有敌人死亡";
-            this._allEnemyDie.Click += new System.EventHandler(this._allEnemyDie_Click);
+            this.DebugMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this._changePlayerPos,
+            this._runScriptMenu});
+            this.DebugMenu.Name = "DebugMenu";
+            this.DebugMenu.Size = new System.Drawing.Size(45, 20);
+            this.DebugMenu.Text = "调试";
+            // 
+            // _changePlayerPos
+            // 
+            this._changePlayerPos.Name = "_changePlayerPos";
+            this._changePlayerPos.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
+            this._changePlayerPos.Size = new System.Drawing.Size(175, 22);
+            this._changePlayerPos.Text = "瞬移...";
+            this._changePlayerPos.Click += new System.EventHandler(this._changePlayerPos_Click);
+            // 
+            // _runScriptMenu
+            // 
+            this._runScriptMenu.Name = "_runScriptMenu";
+            this._runScriptMenu.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+            this._runScriptMenu.Size = new System.Drawing.Size(175, 22);
+            this._runScriptMenu.Text = "运行脚本...";
+            this._runScriptMenu.Click += new System.EventHandler(this._runScriptMenu_Click);
             // 
             // GameEditor
             // 
@@ -257,5 +286,8 @@
         private System.Windows.Forms.ToolStripMenuItem _levelUp;
         private System.Windows.Forms.ToolStripMenuItem _addMoney1000;
         private System.Windows.Forms.ToolStripMenuItem _allEnemyDie;
+        private System.Windows.Forms.ToolStripMenuItem DebugMenu;
+        private System.Windows.Forms.ToolStripMenuItem _changePlayerPos;
+        private System.Windows.Forms.ToolStripMenuItem _runScriptMenu;
     }
 }

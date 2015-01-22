@@ -127,7 +127,7 @@ namespace Engine.Script
             try
             {
                 FileName = Path.GetFileName(filePath);
-                IsOk = ReadFromLines(File.ReadAllLines(filePath, Globals.LocalEncoding));
+                ReadFromLines(File.ReadAllLines(filePath, Globals.LocalEncoding));
             }
             catch (Exception exception)
             {
@@ -137,7 +137,7 @@ namespace Engine.Script
             return IsOk;
         }
 
-        public bool ReadFromLines(string[] lines)
+        private bool ReadFromLines(string[] lines)
         {
             _lineNumber = 1;
             _codes = new List<Code>(lines.Count());
@@ -146,7 +146,29 @@ namespace Engine.Script
                 ParserLine(line);
                 _lineNumber++;
             }
+            IsOk = true;
             return true;
+        }
+
+        /// <summary>
+        /// Used only for debug purpose.
+        /// </summary>
+        /// <param name="lines">Script contents.</param>
+        /// <param name="filePath">Script file path to set.</param>
+        /// <param name="belongObject">Script belong object.</param>
+        /// <returns>Return ture if read success.Otherwise false.</returns>
+        public bool ReadFromLines(string[] lines, string filePath, object belongObject = null)
+        {
+            try
+            {
+                FilePath = filePath;
+                BelongObject = belongObject;
+                return ReadFromLines(lines);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         public void Begin()
@@ -704,7 +726,16 @@ namespace Engine.Script
             }
             catch (Exception exception)
             {
-                var message = "Script error! File: " + Path.GetFullPath(FilePath) + ".";
+                string fullPath;
+                try
+                {
+                    fullPath = Path.GetFullPath(FilePath);
+                }
+                catch (Exception)
+                {
+                    fullPath = FilePath;
+                }
+                var message = "Script error! File: " + fullPath + ".";
                 if (_currentCode != null)
                 {
                     message += ("\nCode: " + _currentCode.Literal);
