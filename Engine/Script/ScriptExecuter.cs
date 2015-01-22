@@ -313,6 +313,8 @@ namespace Engine.Script
         #region Update Draw
         public static void Update(GameTime gameTime)
         {
+            Globals.TheMessageSender.SendScriptVariablesMessage(Variables);
+
             if (IsInFadeOut && FadeTransparence < 1f)
             {
                 FadeTransparence += 0.02f;

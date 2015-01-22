@@ -35,6 +35,9 @@
             this._levelUp = new System.Windows.Forms.ToolStripMenuItem();
             this._addMoney1000 = new System.Windows.Forms.ToolStripMenuItem();
             this._allEnemyDie = new System.Windows.Forms.ToolStripMenuItem();
+            this.DebugMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this._changePlayerPos = new System.Windows.Forms.ToolStripMenuItem();
+            this._runScriptMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.DrawSurface = new System.Windows.Forms.PictureBox();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
@@ -43,9 +46,7 @@
             this._fileText = new System.Windows.Forms.TextBox();
             this._scriptFilePath = new System.Windows.Forms.Button();
             this.TheToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.DebugMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this._changePlayerPos = new System.Windows.Forms.ToolStripMenuItem();
-            this._runScriptMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this._variablesMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -112,6 +113,32 @@
             this._allEnemyDie.Size = new System.Drawing.Size(194, 22);
             this._allEnemyDie.Text = "所有敌人死亡";
             this._allEnemyDie.Click += new System.EventHandler(this._allEnemyDie_Click);
+            // 
+            // DebugMenu
+            // 
+            this.DebugMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this._changePlayerPos,
+            this._runScriptMenu,
+            this._variablesMenu});
+            this.DebugMenu.Name = "DebugMenu";
+            this.DebugMenu.Size = new System.Drawing.Size(45, 20);
+            this.DebugMenu.Text = "调试";
+            // 
+            // _changePlayerPos
+            // 
+            this._changePlayerPos.Name = "_changePlayerPos";
+            this._changePlayerPos.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
+            this._changePlayerPos.Size = new System.Drawing.Size(176, 22);
+            this._changePlayerPos.Text = "瞬移...";
+            this._changePlayerPos.Click += new System.EventHandler(this._changePlayerPos_Click);
+            // 
+            // _runScriptMenu
+            // 
+            this._runScriptMenu.Name = "_runScriptMenu";
+            this._runScriptMenu.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+            this._runScriptMenu.Size = new System.Drawing.Size(176, 22);
+            this._runScriptMenu.Text = "运行脚本...";
+            this._runScriptMenu.Click += new System.EventHandler(this._runScriptMenu_Click);
             // 
             // splitContainer1
             // 
@@ -210,30 +237,13 @@
             this._scriptFilePath.UseVisualStyleBackColor = true;
             this._scriptFilePath.Click += new System.EventHandler(this._scriptFilePath_Click);
             // 
-            // DebugMenu
+            // _variablesMenu
             // 
-            this.DebugMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this._changePlayerPos,
-            this._runScriptMenu});
-            this.DebugMenu.Name = "DebugMenu";
-            this.DebugMenu.Size = new System.Drawing.Size(45, 20);
-            this.DebugMenu.Text = "调试";
-            // 
-            // _changePlayerPos
-            // 
-            this._changePlayerPos.Name = "_changePlayerPos";
-            this._changePlayerPos.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-            this._changePlayerPos.Size = new System.Drawing.Size(175, 22);
-            this._changePlayerPos.Text = "瞬移...";
-            this._changePlayerPos.Click += new System.EventHandler(this._changePlayerPos_Click);
-            // 
-            // _runScriptMenu
-            // 
-            this._runScriptMenu.Name = "_runScriptMenu";
-            this._runScriptMenu.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this._runScriptMenu.Size = new System.Drawing.Size(175, 22);
-            this._runScriptMenu.Text = "运行脚本...";
-            this._runScriptMenu.Click += new System.EventHandler(this._runScriptMenu_Click);
+            this._variablesMenu.Name = "_variablesMenu";
+            this._variablesMenu.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
+            this._variablesMenu.Size = new System.Drawing.Size(176, 22);
+            this._variablesMenu.Text = "变量列表...";
+            this._variablesMenu.Click += new System.EventHandler(this._variablesMenu_Click);
             // 
             // GameEditor
             // 
@@ -247,6 +257,7 @@
             this.Text = "GameEditor";
             this.Activated += new System.EventHandler(this.GameEditor_Activated);
             this.Deactivate += new System.EventHandler(this.GameEditor_Deactivate);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.GameEditor_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.GameEditor_FormClosed);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.GameEditor_KeyDown);
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.GameEditor_KeyPress);
@@ -289,5 +300,6 @@
         private System.Windows.Forms.ToolStripMenuItem DebugMenu;
         private System.Windows.Forms.ToolStripMenuItem _changePlayerPos;
         private System.Windows.Forms.ToolStripMenuItem _runScriptMenu;
+        private System.Windows.Forms.ToolStripMenuItem _variablesMenu;
     }
 }

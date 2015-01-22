@@ -23,6 +23,7 @@ namespace GameEditor
             //Register log event
             Globals.TheMessageSender.OnFunctionCall += form.FunctionRunStateAppendLine;
             Globals.TheMessageSender.OnScriptFileChange += form.SetScriptFileContent;
+            Globals.TheMessageSender.OnScriptVariables += form.OnScriptVariables;
 
             form.TheJxqyGame.Run();
         }

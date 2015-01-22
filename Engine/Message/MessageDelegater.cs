@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Engine.Message
 {
     public class MessageDelegater
     {
         public event Action<string> OnFunctionCall;
-        public event Action<string> OnScriptFileChange; 
+        public event Action<string> OnScriptFileChange;
+        public event Action<Dictionary<string, int>> OnScriptVariables;
 
         public void SendFunctionCallMessage(string functionDetail)
         {
@@ -22,5 +24,14 @@ namespace Engine.Message
                 OnScriptFileChange(filePath);
             }
         }
+
+        public void SendScriptVariablesMessage(Dictionary<string, int> variables)
+        {
+            if (OnScriptVariables != null)
+            {
+                OnScriptVariables(variables);
+            }
+        }
+
     }
 }

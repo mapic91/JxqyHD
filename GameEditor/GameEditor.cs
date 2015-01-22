@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace GameEditor
     public partial class GameEditor : Form
     {
         private RunScript _scriptDialog = new RunScript();
+        private VariablesWindow _variablesWindow = new VariablesWindow();
         public JxqyGame TheJxqyGame;
         public GameEditor()
         {
@@ -158,6 +160,30 @@ namespace GameEditor
                 script.ReadFromLines(_scriptDialog.ScriptContent.Lines, "运行脚本");
                 ScriptManager.RunScript(script);
             }
+        }
+
+        private void _variablesMenu_Click(object sender, EventArgs e)
+        {
+            if (_variablesWindow.Visible == false)
+            {
+                _variablesWindow.Show(this);
+            }
+        }
+
+        public void OnScriptVariables(Dictionary<string, int> variables)
+        {
+            var text = new StringBuilder();
+            foreach (var variable in variables)
+            {
+                text.AppendLine(variable.Key + "=" + variable.Value);
+            }
+            _variablesWindow.VariablesList.Text = text.ToString();
+        }
+
+        private void GameEditor_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            _variablesWindow.Dispose();
+            e.Cancel = false;
         }
     }
 }

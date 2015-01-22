@@ -95,6 +95,12 @@
     <Compile Include="RunScript.Designer.cs">
       <DependentUpon>RunScript.cs</DependentUpon>
     </Compile>
+    <Compile Include="VariablesWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VariablesWindow.Designer.cs">
+      <DependentUpon>VariablesWindow.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />
@@ -143,6 +149,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="RunScript.resx">
       <DependentUpon>RunScript.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VariablesWindow.resx">
+      <DependentUpon>VariablesWindow.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
