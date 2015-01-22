@@ -15,6 +15,7 @@ namespace Engine.Gui
         private TextGui _introText;
         private const int ItemIndex = 49;
         private bool _isShow = false;
+        private bool _isItemChange;
 
         public override bool IsShow
         {
@@ -41,6 +42,7 @@ namespace Engine.Gui
                 null,
                 new MagicGui.MagicItemData(ItemIndex));
             _infoItem.Drop += MagicGui.DropHandler;
+            _infoItem.Drop += (arg1, arg2) => _isItemChange = true;
             _infoItem.MouseStayOver += MagicGui.MouseStayOverHandler;
             _infoItem.MouseLeave += MagicGui.MouseLeaveHandler;
             _levelText = new TextGui(this,
@@ -90,7 +92,14 @@ namespace Engine.Gui
                 _expText.Text = info.Exp + "/" + info.TheMagic.LevelupExp;
                 _nameText.Text = info.TheMagic == null ? "无" : info.TheMagic.Name;
                 _introText.Text = info.TheMagic == null ? "无" : info.TheMagic.Intro;
-                _infoItem.BaseTexture = MagicListManager.GetTexture(ItemIndex);
+                if (_isItemChange || _infoItem.BaseTexture == null)
+                {
+                    //Change texture only item changed or base texture is null.
+                    //Because this method is called in Update() if change base texture every update,
+                    //texture won't update it's frame index and will always stay at frame 0.
+                    _isItemChange = false;
+                    _infoItem.BaseTexture = MagicListManager.GetTexture(ItemIndex);
+                }
             }
             else
             {
