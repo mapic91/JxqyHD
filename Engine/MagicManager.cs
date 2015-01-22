@@ -523,8 +523,12 @@ namespace Engine
             }
         }
 
-        private static void AddFollowCharacterMagicSprite(Character user, Magic magic, Vector2 origin, bool destroyOnEnd)
+        private static void AddFollowCharacterMagicSprite(Character user, Magic magic, Vector2 origin, bool destroyOnEnd, Character target)
         {
+            if (target != null && user.Kind == (int) Character.CharacterKind.Player && target.IsFighterFriend)
+            {
+                user = target;
+            }
             var sprite = GetFixedPositionMagicSprite(user, magic, origin, destroyOnEnd);
             switch (magic.SpecialKind)
             {
@@ -661,7 +665,8 @@ namespace Engine
         /// <param name="magic">Magic to use.</param>
         /// <param name="origin">Magic initial pixel postion in world.</param>
         /// <param name="destination">Magic destination pixel postiont in world.</param>
-        public static void UseMagic(Character user, Magic magic, Vector2 origin, Vector2 destination)
+        /// <param name="target">Magic target</param>
+        public static void UseMagic(Character user, Magic magic, Vector2 origin, Vector2 destination, Character target = null)
         {
             if (user == null || magic == null) return;
             if (magic.FlyingSound != null)
@@ -718,7 +723,7 @@ namespace Engine
                         break;
                     }
                 case 13:
-                    AddFollowCharacterMagicSprite(user, magic, origin, true);
+                    AddFollowCharacterMagicSprite(user, magic, origin, true, target);
                     break;
                 case 15:
                     AddSuperModeMagic(user, magic, origin, true);

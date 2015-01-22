@@ -73,7 +73,7 @@ namespace Engine
 
         private void MoveToPlayer()
         {
-            if (!Globals.ThePlayer.IsStanding())
+            if (!Globals.PlayerKindCharacter.IsStanding())
             {
                 PartnerMoveTo(Globals.PlayerTilePosition);
             }
@@ -156,7 +156,7 @@ namespace Engine
             CancleAttackTarget();
             if (IsPartner)
             {
-                WalkTo(Globals.PlayerTilePosition);
+                MoveToPlayer();
             }
         }
 

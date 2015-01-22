@@ -55,6 +55,7 @@ namespace Engine
         private string _fixedPos;
         private int _idle;
         private Vector2 _magicDestination;
+        private Character _magicTarget;
         private Vector2 _attackDestination;
         private bool _isInFighting;
         private float _totalNonFightingSeconds;
@@ -1429,7 +1430,7 @@ namespace Engine
             }
         }
 
-        public void UseMagic(Magic magicUse, Vector2 magicDestinationTilePosition)
+        public void UseMagic(Magic magicUse, Vector2 magicDestinationTilePosition, Character target = null)
         {
             if (PerformActionOk())
             {
@@ -1438,6 +1439,7 @@ namespace Engine
 
                 MagicUse = magicUse;
                 _magicDestination = Map.ToPixelPosition(magicDestinationTilePosition);
+                _magicTarget = target;
                 SetState(CharacterState.Magic);
                 SetDirection(_magicDestination - PositionInWorld);
                 PlayCurrentDirOnce();
@@ -2316,7 +2318,7 @@ namespace Engine
                             PlaySoundEffect(NpcIni[(int)CharacterState.Magic].Sound);
                         }
                         if (CanUseMagic())
-                            MagicManager.UseMagic(this, MagicUse, PositionInWorld, _magicDestination);
+                            MagicManager.UseMagic(this, MagicUse, PositionInWorld, _magicDestination, _magicTarget);
                         StandingImmediately();
                     }
                     break;

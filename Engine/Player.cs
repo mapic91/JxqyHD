@@ -822,8 +822,8 @@ namespace Engine
                         }
                         else
                         {
-                            if (Globals.OutEdgeNpc != null && Globals.OutEdgeNpc.IsEnemy)
-                                UseMagic(CurrentMagicInUse.TheMagic, Globals.OutEdgeNpc.TilePosition);
+                            if (Globals.OutEdgeNpc != null)
+                                UseMagic(CurrentMagicInUse.TheMagic, Globals.OutEdgeNpc.TilePosition, Globals.OutEdgeNpc);
                             else UseMagic(CurrentMagicInUse.TheMagic, mouseTilePosition);
                         }
 
