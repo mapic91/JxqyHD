@@ -695,7 +695,10 @@ namespace Engine.Script
         {
             var x = int.Parse(parameters[0]);
             var y = int.Parse(parameters[1]);
-            Globals.ThePlayer.SetPosition(new Vector2(x, y));
+            Globals.PlayerKindCharacter.SetPosition(new Vector2(x, y));
+            Globals.TheCarmera.CenterPlayerInCamera();
+            //Reset parter position relate to player position
+            Globals.ThePlayer.ResetPartnerPosition();
         }
 
         public static void SetPlayerDir(List<string> parameters)

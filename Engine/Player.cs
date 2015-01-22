@@ -683,14 +683,6 @@ namespace Engine
             AddExp(LevelUpExp - Exp + 1);
         }
 
-        public override void SetPosition(Vector2 tilePosition)
-        {
-            base.SetPosition(tilePosition);
-            Globals.TheCarmera.CenterPlayerInCamera();
-            //Reset parter position relate to player position
-            ResetPartnerPosition();
-        }
-
         private static readonly Regex NpcIniIndexRegx = new Regex(@".*([0-9]+)\.ini");
         public override void SetNpcIni(string fileName)
         {
