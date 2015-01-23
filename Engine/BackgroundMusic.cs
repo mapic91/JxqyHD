@@ -38,6 +38,7 @@ namespace Engine
         public static void Stop()
         {
             MediaPlayer.Stop();
+            _fileName = string.Empty;
         }
 
         public static void Pause()
