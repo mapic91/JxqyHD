@@ -246,7 +246,7 @@ namespace Engine
 
         public int VisionRadius
         {
-            get { return _visionRadius == 0 ? 1 : _visionRadius; }
+            get { return _visionRadius == 0 ? 9 : _visionRadius; }
             set { _visionRadius = value; }
         }
 
@@ -530,7 +530,14 @@ namespace Engine
         public bool IsDeath
         {
             get { return _isDeath; }
-            protected set { _isDeath = value; }
+            protected set
+            {
+                _isDeath = value;
+                if (value)
+                {
+                    _currentRunDeathScript = ScriptManager.RunScript(Utils.GetScriptParser(DeathScript, this));
+                }
+            }
         }
 
         /// <summary>
@@ -1210,9 +1217,9 @@ namespace Engine
             AddKey(keyDataCollection, "CurrentFixedPosIndex", CurrentFixedPosIndex);
             AddKey(keyDataCollection, "Idle", _idle);
             AddKey(keyDataCollection, "NpcIni", _npcIniFileName);
-            AddKey(keyDataCollection, "PoisonSeconds", PoisonSeconds);
-            AddKey(keyDataCollection, "PetrifiedSeconds", PetrifiedSeconds);
-            AddKey(keyDataCollection, "FrozenSeconds", FrozenSeconds);
+            AddKey(keyDataCollection, "PoisonSeconds", _poisonSeconds);
+            AddKey(keyDataCollection, "PetrifiedSeconds", _petrifiedSeconds);
+            AddKey(keyDataCollection, "FrozenSeconds", _frozenSeconds);
             if (_bodyIni != null)
             {
                 AddKey(keyDataCollection,
@@ -1475,7 +1482,6 @@ namespace Engine
         {
             if (State == (int)CharacterState.Death) return;
             IsDeathInvoked = true;
-            _currentRunDeathScript = ScriptManager.RunScript(Utils.GetScriptParser(DeathScript, this));
             StateInitialize();
             if (NpcIni.ContainsKey((int)CharacterState.Death))
             {

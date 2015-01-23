@@ -7,7 +7,7 @@ namespace Engine
     public static class Log
     {
         private const string LogFilename = "Log.txt";
-        private static bool LogOn;
+        private static bool LogOn = false;
 
         private enum FileOpration
         {

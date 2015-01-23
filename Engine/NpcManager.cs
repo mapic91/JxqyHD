@@ -128,11 +128,11 @@ namespace Engine
         }
 
         /// <summary>
-        /// Get player or fighter friend closed to target position.
+        /// Get not death player or fighter friend closed to target position.
         /// </summary>
         /// <param name="positionInWorld">Target position</param>
         /// <returns>If not find, return null</returns>
-        public static Character GetClosedPlayerOrFighterFriend(Vector2 positionInWorld)
+        public static Character GetLiveClosedPlayerOrFighterFriend(Vector2 positionInWorld)
         {
             Character closed = null;
             var closedDistance = 99999999f;
@@ -141,16 +141,15 @@ namespace Engine
                 if (npc.IsFighterFriend)
                 {
                     var distance = Vector2.Distance(positionInWorld, npc.PositionInWorld);
-                    if (distance < closedDistance)
-                    {
-                        closed = npc;
-                        closedDistance = distance;
-                    }
+                    if (npc.IsDeathInvoked || !(distance < closedDistance)) continue;
+                    closed = npc;
+                    closedDistance = distance;
                 }
             }
 
-            if (Vector2.Distance(positionInWorld, Globals.ThePlayer.PositionInWorld) <
-                closedDistance)
+            var character = Globals.PlayerKindCharacter;
+            if (!character.IsDeathInvoked &&
+                Vector2.Distance(positionInWorld, character.PositionInWorld) < closedDistance)
             {
                 closed = Globals.ThePlayer;
             }

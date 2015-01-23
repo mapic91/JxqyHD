@@ -145,7 +145,7 @@ namespace Engine
             {
                 if (IsEnemy)
                 {
-                    FollowTarget = IsAIDisabled ? null : NpcManager.GetClosedPlayerOrFighterFriend(PositionInWorld);
+                    FollowTarget = IsAIDisabled ? null : NpcManager.GetLiveClosedPlayerOrFighterFriend(PositionInWorld);
                 }
                 else if (IsFighterFriend)
                 {
