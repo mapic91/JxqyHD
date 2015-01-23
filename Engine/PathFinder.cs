@@ -77,6 +77,7 @@ namespace Engine
             {
                 var direction = Utils.GetDirectionIndex(endPositon - Map.ToPixelPosition(current), 8);
                 var neighbors = FindAllNeighbors(current);
+                var removeList = GetObstacleIndexList(neighbors);
                 var index = -1;
                 var list = new int[]
                 {
@@ -89,8 +90,12 @@ namespace Engine
                 for (var i = 0; i < 8; i++)
                 {
                     var position = neighbors[list[i]];
-                    if (HasObstacle(finder, position) ||
-                            visted.Contains(position)) continue;
+                    if (removeList.Contains(list[i]) ||
+                        HasObstacle(finder, position) ||
+                            visted.Contains(position))
+                    {
+                        continue;
+                    }
                     index = list[i];
                     break;
                 }
@@ -380,19 +385,49 @@ namespace Engine
             return GetTileDistance(fromTile, toTile);
         }
 
+        /// <summary>
+        /// Find not obstacle tile neighbors at location.
+        /// </summary>
+        /// <param name="location">Tile postion.</param>
+        /// <returns>Neighbors list.</returns>
         public static List<Vector2> FindNeighbors(Vector2 location)
         {
+            List<int> list;
+            return FindNeighbors(location, out list);
+        }
+
+        /// <summary>
+        /// Find not obstacle tile neighbors at location.
+        /// </summary>
+        /// <param name="location">Tile postion.</param>
+        /// <param name="removeList">Obstacle neighbor index list.</param>
+        /// <returns>Neighbors list.</returns>
+        public static List<Vector2> FindNeighbors(Vector2 location, out List<int> removeList)
+        {
             var listAll = FindAllNeighbors(location);
+            removeList = GetObstacleIndexList(listAll);
 
             var list = new List<Vector2>();
-            var removeList = new List<int>();
             var count = listAll.Count;
+            for (var j = 0; j < count; j++)
+            {
+                if (!removeList.Contains(j))
+                    list.Add(listAll[j]);
+            }
+
+            return list;
+        }
+
+        private static List<int> GetObstacleIndexList(List<Vector2> neighborList)
+        {
+            var removeList = new List<int>();
+            var count = neighborList.Count;
             for (var i = 0; i < count; i++)
             {
-                if (Globals.TheMap.IsObstacleForCharacter(listAll[i]))
+                if (Globals.TheMap.IsObstacleForCharacter(neighborList[i]))
                 {
                     removeList.Add(i);
-                    if (Globals.TheMap.IsObstacle(listAll[i]))
+                    if (Globals.TheMap.IsObstacle(neighborList[i]))
                     {
                         switch (i)
                         {
@@ -416,14 +451,7 @@ namespace Engine
                     }
                 }
             }
-
-            for (var j = 0; j < count; j++)
-            {
-                if (!removeList.Contains(j))
-                    list.Add(listAll[j]);
-            }
-
-            return list;
+            return removeList;
         }
 
         public static List<Vector2> FindAllNeighbors(Vector2 tilePosition)
