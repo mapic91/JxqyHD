@@ -25,6 +25,7 @@ namespace Engine
         private const float ManaRestorePercent = 0.02f;
         private float _standingMilliseconds;
         private float _sittedMilliseconds;
+        private bool _isRun;
 
         private MagicListManager.MagicItemInfo _currentMagicInUse;
         private MagicListManager.MagicItemInfo _xiuLianMagic;
@@ -263,6 +264,38 @@ namespace Engine
             }
         }
 
+        private void HandleMoveKeyboardInput()
+        {
+            var state = Keyboard.GetState();
+            if (state.IsKeyDown(Keys.Up))
+            {
+                var neighbers = Engine.PathFinder.FindNeighborInDirection(TilePosition, CurrentDirection);
+                if (_isRun)
+                {
+                    RunTo(neighbers);
+                }
+                else
+                {
+                    WalkTo(neighbers);
+                }
+            }
+            else if (state.IsKeyDown(Keys.Left) &&
+                _lastKeyboardState.IsKeyUp(Keys.Left))
+            {
+                SetDirection(CurrentDirection - 1);
+            }
+            else if (state.IsKeyDown(Keys.Right) &&
+                _lastKeyboardState.IsKeyUp(Keys.Right))
+            {
+                SetDirection(CurrentDirection + 1);
+            }
+            else if (state.IsKeyDown(Keys.Down) &&
+                     _lastKeyboardState.IsKeyUp(Keys.Down))
+            {
+                SetDirection(CurrentDirection + 4);
+            }
+        }
+
         #region Protected method
 
         protected override bool MagicFromCache
@@ -327,8 +360,8 @@ namespace Engine
         {
             if (IsJumpDisabled ||
                 NpcIni == null ||
-                !NpcIni.ContainsKey((int) CharacterState.Jump) ||
-                NpcIni[(int) CharacterState.Jump].Image == null)
+                !NpcIni.ContainsKey((int)CharacterState.Jump) ||
+                NpcIni[(int)CharacterState.Jump].Image == null)
             {
                 return false;
             }
@@ -712,6 +745,10 @@ namespace Engine
             var mouseTilePosition = Map.ToTilePosition(mouseWorldPosition);
             _isUseMagicByKeyborad = false;
 
+            _isRun = (keyboardState.IsKeyDown(Keys.LeftShift) ||
+                      keyboardState.IsKeyDown(Keys.RightShift)) &&
+                      !IsRunDisabled;
+
             Globals.ClearGlobalOutEdge();
             if (!GuiManager.IsMouseStateEated && CanInput)
             {
@@ -759,29 +796,25 @@ namespace Engine
                 {
                     if (mouseState.LeftButton == ButtonState.Pressed)
                     {
-                        var isRun = (keyboardState.IsKeyDown(Keys.LeftShift) ||
-                                     keyboardState.IsKeyDown(Keys.RightShift)) &&
-                                     !IsRunDisabled;
-
                         if (!IsFightDisabled &&
                             Globals.OutEdgeNpc != null &&
                             Globals.OutEdgeNpc.IsEnemy)
                         {
-                            Attacking(Globals.OutEdgeNpc.TilePosition, isRun);
+                            Attacking(Globals.OutEdgeNpc.TilePosition, _isRun);
                         }
                         else if (Globals.OutEdgeNpc != null &&
                             Globals.OutEdgeNpc.HasInteractScript)
                         {
                             if (_lastMouseState.LeftButton == ButtonState.Released)
-                                InteractWith(Globals.OutEdgeNpc, isRun);
+                                InteractWith(Globals.OutEdgeNpc, _isRun);
                         }
                         else if (Globals.OutEdgeObj != null &&
                                  Globals.OutEdgeObj.HasInteractScript)
                         {
                             if (_lastMouseState.LeftButton == ButtonState.Released)
-                                InteractWith(Globals.OutEdgeObj, isRun);
+                                InteractWith(Globals.OutEdgeObj, _isRun);
                         }
-                        else if (isRun)
+                        else if (_isRun)
                         {
                             RunTo(mouseTilePosition);
                         }
@@ -800,6 +833,11 @@ namespace Engine
                         }
                         else WalkTo(mouseTilePosition);
                     }
+                    else
+                    {
+                        HandleMoveKeyboardInput();
+                    }
+
                     if ((!IsFightDisabled &&
                         mouseState.RightButton == ButtonState.Pressed &&
                         _lastMouseState.RightButton == ButtonState.Released) ||

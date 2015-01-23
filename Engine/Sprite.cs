@@ -90,7 +90,12 @@ namespace Engine
             set
             {
                 var last = _currentDirection;
-                _currentDirection = value % (_texture.DirectionCounts == 0 ? 1 : _texture.DirectionCounts);
+                var directionCount = _texture.DirectionCounts == 0 ? 1 : _texture.DirectionCounts;
+                _currentDirection = value % directionCount;
+                if(_currentDirection < 0)
+                {
+                    _currentDirection = (_currentDirection + directionCount)%directionCount;
+                }
                 _frameBegin = _currentDirection * _texture.FrameCountsPerDirection;
                 _frameEnd = _frameBegin + _texture.FrameCountsPerDirection - 1;
                 //If direction change,also change frame index
