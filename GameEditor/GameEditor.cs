@@ -141,8 +141,7 @@ namespace GameEditor
                     {
                         var x = int.Parse(posDialog.MapX.Text);
                         var y = int.Parse(posDialog.MapY.Text);
-                        Globals.PlayerKindCharacter.StandingImmediately();
-                        Globals.PlayerKindCharacter.TilePosition = new Vector2(x, y);
+                        Globals.PlayerKindCharacter.SetPosition(new Vector2(x, y));
                     }
                     catch (Exception)
                     {

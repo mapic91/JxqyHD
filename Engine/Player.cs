@@ -637,8 +637,8 @@ namespace Engine
             Exp += amount;
             if (Exp > LevelUpExp)
             {
-                ToLevel(Exp);
                 GuiManager.ShowMessage(Name + "的等级提升了");
+                ToLevel(Exp);
             }
         }
 

@@ -652,7 +652,7 @@ namespace Engine.Script
 
         public static void SetLevelFile(List<string> parameters, object belongObject)
         {
-            var target = belongObject as Character;
+            var target = Globals.PlayerKindCharacter;
             if (target != null)
             {
                 var path = @"ini\level\" + Utils.RemoveStringQuotes(parameters[0]);
@@ -695,7 +695,9 @@ namespace Engine.Script
         {
             var x = int.Parse(parameters[0]);
             var y = int.Parse(parameters[1]);
-            Globals.PlayerKindCharacter.SetPosition(new Vector2(x, y));
+            var character = Globals.PlayerKindCharacter;
+            if(character == null) return;
+            character.SetPosition(new Vector2(x, y));
             Globals.TheCarmera.CenterPlayerInCamera();
             //Reset parter position relate to player position
             Globals.ThePlayer.ResetPartnerPosition();
