@@ -252,8 +252,9 @@ namespace Engine.Script
                 }
                 //Check moveable
                 if (character.Path == null ||
-                    (character.Path.Count == 2 && character.HasObstacle(
-                    Map.ToTilePosition(character.Path.First.Next.Value))))
+                    (character.Path.Count == 2 && 
+                    character.TilePosition != Map.ToTilePosition(character.Path.First.Next.Value) &&
+                    character.HasObstacle(Map.ToTilePosition(character.Path.First.Next.Value))))
                 {
                     character.StandingImmediately();
                 }
