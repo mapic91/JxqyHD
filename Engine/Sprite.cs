@@ -1,4 +1,5 @@
 ﻿using System;
+using Engine.Weather;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -21,12 +22,34 @@ namespace Engine
         private float _movedDistance;
         private bool _isTilePositionNew;
         private static Color _drawColor = Color.White;
+        private static Color _rainDrawColor = Color.White;
         public int FrameAdvanceCount { protected set; get; }
 
         public static Color DrawColor
         {
-            get { return _drawColor; }
-            set { _drawColor = value; }
+            get
+            {
+                if (WeatherManager.IsRaining)
+                {
+                    return _rainDrawColor;
+                }
+                else
+                {
+                    return _drawColor;
+                }
+
+            }
+            set
+            {
+                if (WeatherManager.IsRaining)
+                {
+                    _rainDrawColor = value;
+                }
+                else
+                {
+                    _drawColor = value;
+                }
+            }
         }
 
         public Sprite() { }

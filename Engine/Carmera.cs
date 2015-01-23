@@ -182,7 +182,15 @@ namespace Engine
 
         private void UpdatePlayerView()
         {
-            var position = Globals.PlayerPositionInWorld;
+            var player = Globals.PlayerKindCharacter;
+            var position = player.PositionInWorld;
+            if(player.Kind != (int)Character.CharacterKind.Player)
+            {
+                //Don't update when player kind character is missing.
+                _lastPlayerPosition = position;
+                return;
+            }
+            
             if(position == Vector2.Zero) return;
             var halfView = GetHalfViewSize();
             var center = halfView +

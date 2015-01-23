@@ -1412,7 +1412,7 @@ namespace Engine.Script
             var tilePosition = new Vector2(
                 int.Parse(parameters[0]),
                 int.Parse(parameters[1]));
-            if (Globals.ThePlayer != null)
+            if (Globals.PlayerKindCharacter != null)
             {
                 Globals.PlayerKindCharacter.WalkTo(tilePosition);
                 _playerGotoDesitination = tilePosition;

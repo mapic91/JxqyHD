@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Engine.Script;
+using Engine.Weather;
 using IniParser;
 using IniParser.Model;
 using Microsoft.Xna.Framework;
@@ -42,6 +43,7 @@ namespace Engine
         private MapTileInfo[] _tileInfos;
         private readonly bool[] _isLayerDraw = new bool[3] { true, true, true };
         private static Color _drawColor = Color.White;
+        private static Color _rainDrawColor = Color.White;
 
         //traps
         private readonly Dictionary<string, Dictionary<int, string>> _traps = new Dictionary<string, Dictionary<int, string>>();
@@ -125,8 +127,29 @@ namespace Engine
 
         public static Color DrawColor
         {
-            get { return _drawColor; }
-            set { _drawColor = value; }
+            get
+            {
+                if (WeatherManager.IsRaining)
+                {
+                    return _rainDrawColor;
+                }
+                else
+                {
+                    return _drawColor;
+                }
+                
+            }
+            set
+            {
+                if (WeatherManager.IsRaining)
+                {
+                    _rainDrawColor = value;
+                }
+                else
+                {
+                    _drawColor = value;
+                }
+            }
         }
 
         #endregion Public Properties

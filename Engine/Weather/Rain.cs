@@ -58,7 +58,6 @@ namespace Engine.Weather
             }
             else
             {
-                Sprite.DrawColor = Map.DrawColor = Color.White;
                 _rainSound.Stop();
             }
         }

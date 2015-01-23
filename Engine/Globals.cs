@@ -63,12 +63,8 @@ namespace Engine
         {
             get
             {
-                if (ThePlayer == null ||
-                    ThePlayer.Kind != (int)Character.CharacterKind.Player)
-                {
-                    return NpcManager.GetPlayerKindCharacter();
-                }
-                return ThePlayer;
+                var charcter = NpcManager.GetPlayerKindCharacter();
+                return charcter ?? ThePlayer;
             }
         }
 
@@ -76,17 +72,8 @@ namespace Engine
         {
             get
             {
-                if (ThePlayer == null) return Vector2.Zero;
-                if (ThePlayer.Kind != (int) Character.CharacterKind.Player)
-                {
-                    var character = NpcManager.GetPlayerKindCharacter();
-                    if (character == null)
-                    {
-                        return Vector2.Zero;
-                    }
-                    return character.PositionInWorld;
-                }
-                return ThePlayer.PositionInWorld;
+                var character = PlayerKindCharacter;
+                return character == null ? Vector2.Zero : character.PositionInWorld;
             }
         }
 
@@ -94,17 +81,8 @@ namespace Engine
         {
             get
             {
-                if (ThePlayer == null) return Vector2.Zero;
-                if (ThePlayer.Kind != (int)Character.CharacterKind.Player)
-                {
-                    var character = NpcManager.GetPlayerKindCharacter();
-                    if (character == null)
-                    {
-                        return Vector2.Zero;
-                    }
-                    return character.TilePosition;
-                }
-                return ThePlayer.TilePosition;
+                var character = PlayerKindCharacter;
+                return character == null ? Vector2.Zero : character.TilePosition;
             }
         }
 
