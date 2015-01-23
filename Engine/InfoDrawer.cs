@@ -33,6 +33,10 @@ namespace Engine
                 percent = npc.Life / (float)npc.LifeMax;
                 if (percent > 1f) percent = 1f;
             }
+            if (npc.LifeMax <= 0)
+            {
+                percent = 1f;
+            }
             var lifeLength = (int)(width * percent);
             var lifeRegion = new Rectangle(topLeftX, topLeftY, lifeLength, height);
             var lifeLoseRegion = new Rectangle(topLeftX + lifeLength, topLeftY, width - lifeLength, height);

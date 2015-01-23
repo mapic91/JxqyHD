@@ -745,7 +745,7 @@ namespace Engine
                 }
                 else if ((PathType == Engine.PathFinder.PathType.PathOneStep && Path.Count <= 2) ||//Step path end
                     (PathType != Engine.PathFinder.PathType.PathOneStep && DestinationMovePositionInWorld != Path.Last.Value) ||// new destination
-                    MoveTargetChanged) 
+                    MoveTargetChanged)
                 {
                     var destination = DestinationMovePositionInWorld;
                     PositionInWorld = to;
@@ -926,10 +926,10 @@ namespace Engine
                 } while (tilePosition == Vector2.Zero ||
                     (!isFlyer && Engine.PathFinder.HasMapObstacalInTilePositionList(
                     Engine.PathFinder.GetLinePath(
-                    TilePosition, 
-                    tilePosition, 
-                    maxOffset*2, 
-                    true))) );
+                    TilePosition,
+                    tilePosition,
+                    maxOffset * 2,
+                    true))));
                 path.Add(tilePosition);
             }
 
@@ -1371,27 +1371,21 @@ namespace Engine
             if (PerformActionOk() &&
                 destinationTilePosition != TilePosition)
             {
-                if (Thew > 0)
+                if (IsRuning())
+                    DestinationMoveTilePosition = destinationTilePosition;
+                else
                 {
-                    if (IsRuning())
-                        DestinationMoveTilePosition = destinationTilePosition;
+                    StateInitialize();
+                    Path = Engine.PathFinder.FindPath(this, TilePosition, destinationTilePosition, PathType);
+                    if (Path == null) StandingImmediately();
                     else
                     {
-                        StateInitialize();
-                        Path = Engine.PathFinder.FindPath(this, TilePosition, destinationTilePosition, PathType);
-                        if (Path == null) StandingImmediately();
-                        else
-                        {
-                            DestinationMoveTilePosition = destinationTilePosition;
-                            if (_isInFighting && NpcIni.ContainsKey((int)CharacterState.FightRun)) SetState(CharacterState.FightRun);
-                            else SetState(CharacterState.Run);
-                        }
+                        DestinationMoveTilePosition = destinationTilePosition;
+                        if (_isInFighting && NpcIni.ContainsKey((int)CharacterState.FightRun)) SetState(CharacterState.FightRun);
+                        else SetState(CharacterState.Run);
                     }
                 }
-                else//Thew not enough
-                {
-                    WalkTo(destinationTilePosition);
-                }
+
             }
         }
 
@@ -1623,7 +1617,7 @@ namespace Engine
 
         protected virtual void OnPerformeAttack()
         {
-            
+
         }
 
         public void PerformeAttack(Vector2 destinationPositionInWorld)
