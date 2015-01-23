@@ -142,7 +142,8 @@ namespace Engine
         private static void AddLineMoveMagicSprite(Character user, Magic magic, Vector2 origin, Vector2 destination, bool destroyOnEnd)
         {
             var speedRatio = GetSpeedRatio(destination - origin);
-            for (var i = 0; i < magic.CurrentLevel; i++)
+            var level = magic.CurrentLevel < 1 ? 1 : magic.CurrentLevel;
+            for (var i = 0; i < level; i++)
             {
                 const float magicDelayMilliseconds = 60f;
                 AddWorkItem(new WorkItem(
