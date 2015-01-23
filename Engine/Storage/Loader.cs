@@ -135,6 +135,7 @@ namespace Engine.Storage
             ObjManager.ClearAllObjAndFileName();
             Globals.TheMap.Free();
             ScriptExecuter.Init();
+            GuiManager.CloseTimeLimit();
 
             LoadGameFile();
             LoadMagicGoodMemoList();
