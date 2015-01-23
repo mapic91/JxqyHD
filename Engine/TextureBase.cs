@@ -75,6 +75,10 @@ namespace Engine
                 }
                 LoadPalette(buf, ref offset);
                 LoadFrame(buf, ref offset);
+                if (Head.FrameCounts < Head.Direction)
+                {
+                    Head.Direction = 1;
+                }
                 if (Head.Direction != 0)
                     FrameCountsPerDirection = FrameCounts / DirectionCounts;
                 else FrameCountsPerDirection = FrameCounts;
