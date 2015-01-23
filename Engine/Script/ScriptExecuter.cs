@@ -318,11 +318,11 @@ namespace Engine.Script
 
             if (IsInFadeOut && FadeTransparence < 1f)
             {
-                FadeTransparence += 0.02f;
+                FadeTransparence += 0.03f;
             }
             else if (IsInFadeIn && FadeTransparence > 0f)
             {
-                FadeTransparence -= 0.02f;
+                FadeTransparence -= 0.03f;
                 if (FadeTransparence <= 0f) IsInFadeIn = false;
             }
 
