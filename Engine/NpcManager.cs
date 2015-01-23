@@ -417,7 +417,8 @@ namespace Engine
             for (var node = _list.First; node != null;)
             {
                 var next = node.Next;
-                if (node.Value.Name == npcName)
+                if (node.Value.Name == npcName &&
+                    node.Value.Kind != (int)Character.CharacterKind.Follower)
                 {
                     DeleteNpc(node);
                 }

@@ -34,7 +34,7 @@ FadeIn();
 FadeOut()
 FadeOut();
 
-//删除所有名字为a的npc
+//删除所有名字为a的npc,不包括Partner（Kind=3）
 DelNpc(a)
 DelNpc("月眉儿");
 
