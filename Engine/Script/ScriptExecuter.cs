@@ -416,6 +416,7 @@ namespace Engine.Script
                         int.Parse(parameters[1]));
                     break;
             }
+            Globals.PlayerKindCharacter.ToNonFightingState();
         }
 
         public static bool IsSayEnd()
@@ -818,6 +819,7 @@ namespace Engine.Script
             {
                 IsInTalk = false;
             }
+            Globals.PlayerKindCharacter.ToNonFightingState();
         }
 
         public static void Memo(List<string> parameters)
