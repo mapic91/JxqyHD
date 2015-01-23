@@ -70,14 +70,15 @@ namespace Engine.ListManager
             for (; i < count; i++)
             {
                 idx = List[i].Index;
-                if (idx >= from)
+                if (idx == from)
                 {
                     break;
                 }
             }
 
-            if (i >= count || idx < from)
+            if (idx != from)
             {
+                Log.LogMessageToFile("对话索引错误：" + from + " - " + to);
                 return null;
             }
 

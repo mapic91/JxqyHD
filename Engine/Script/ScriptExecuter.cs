@@ -965,6 +965,10 @@ namespace Engine.Script
             var color = new Color(int.Parse(parameters[0]),
                 int.Parse(parameters[1]),
                 int.Parse(parameters[2]));
+            if (color == Color.Black)
+            {
+                color = new Color(128, 150, 200);
+            }
             Map.DrawColor = color;
         }
 

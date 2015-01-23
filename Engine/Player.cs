@@ -732,6 +732,8 @@ namespace Engine
             {
                 NpcIniIndex = 1;
             }
+            //Renew xiulian magic
+            XiuLianMagic = XiuLianMagic;
         }
 
         #endregion Public method

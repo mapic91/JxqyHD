@@ -38,6 +38,7 @@
             this.DebugMenu = new System.Windows.Forms.ToolStripMenuItem();
             this._changePlayerPos = new System.Windows.Forms.ToolStripMenuItem();
             this._runScriptMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this._variablesMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.DrawSurface = new System.Windows.Forms.PictureBox();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
@@ -46,7 +47,7 @@
             this._fileText = new System.Windows.Forms.TextBox();
             this._scriptFilePath = new System.Windows.Forms.Button();
             this.TheToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this._variablesMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this._logMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -119,7 +120,8 @@
             this.DebugMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this._changePlayerPos,
             this._runScriptMenu,
-            this._variablesMenu});
+            this._variablesMenu,
+            this._logMenu});
             this.DebugMenu.Name = "DebugMenu";
             this.DebugMenu.Size = new System.Drawing.Size(45, 20);
             this.DebugMenu.Text = "调试";
@@ -139,6 +141,14 @@
             this._runScriptMenu.Size = new System.Drawing.Size(176, 22);
             this._runScriptMenu.Text = "运行脚本...";
             this._runScriptMenu.Click += new System.EventHandler(this._runScriptMenu_Click);
+            // 
+            // _variablesMenu
+            // 
+            this._variablesMenu.Name = "_variablesMenu";
+            this._variablesMenu.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
+            this._variablesMenu.Size = new System.Drawing.Size(176, 22);
+            this._variablesMenu.Text = "变量列表...";
+            this._variablesMenu.Click += new System.EventHandler(this._variablesMenu_Click);
             // 
             // splitContainer1
             // 
@@ -237,13 +247,13 @@
             this._scriptFilePath.UseVisualStyleBackColor = true;
             this._scriptFilePath.Click += new System.EventHandler(this._scriptFilePath_Click);
             // 
-            // _variablesMenu
+            // _logMenu
             // 
-            this._variablesMenu.Name = "_variablesMenu";
-            this._variablesMenu.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
-            this._variablesMenu.Size = new System.Drawing.Size(176, 22);
-            this._variablesMenu.Text = "变量列表...";
-            this._variablesMenu.Click += new System.EventHandler(this._variablesMenu_Click);
+            this._logMenu.Name = "_logMenu";
+            this._logMenu.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
+            this._logMenu.Size = new System.Drawing.Size(176, 22);
+            this._logMenu.Text = "日志...";
+            this._logMenu.Click += new System.EventHandler(this._logMenu_Click);
             // 
             // GameEditor
             // 
@@ -301,5 +311,6 @@
         private System.Windows.Forms.ToolStripMenuItem _changePlayerPos;
         private System.Windows.Forms.ToolStripMenuItem _runScriptMenu;
         private System.Windows.Forms.ToolStripMenuItem _variablesMenu;
+        private System.Windows.Forms.ToolStripMenuItem _logMenu;
     }
 }

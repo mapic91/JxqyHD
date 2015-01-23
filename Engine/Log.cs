@@ -7,7 +7,7 @@ namespace Engine
     public static class Log
     {
         private const string LogFilename = "Log.txt";
-        public static bool LogOn;
+        private static bool LogOn;
 
         private enum FileOpration
         {
@@ -24,10 +24,10 @@ namespace Engine
             switch (opration)
             {
                 case FileOpration.Save:
-                    op = "save";
+                    op = "保存";
                     break;
                 case FileOpration.Load:
-                    op = "load";
+                    op = "读取";
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("opration");
@@ -46,7 +46,7 @@ namespace Engine
                 fullPath +
                 "] " + 
                 op + 
-                " error: \n" +
+                " 错误: \n" +
                 exception.Message +
                 "\n" +
                 GetLastLine(exception));
@@ -63,14 +63,18 @@ namespace Engine
 
         public static void Initialize()
         {
-            File.Create(LogFilename).Dispose();
+            //File.Create(LogFilename).Dispose();
         }
 
         public static void LogMessageToFile(string msg)
         {
-            if(!LogOn) return;
+            if(!LogOn && !Globals.TheGame.IsInEditMode) return;
             msg = string.Format("{0:G}: {1}{2}", DateTime.Now, msg, Environment.NewLine);
-            File.AppendAllText(LogFilename, msg);
+            Globals.TheMessageSender.SendLogMessage(msg);
+            if (LogOn)
+            {
+                File.AppendAllText(LogFilename, msg);
+            }
         }
 
         public static void LogFileLoadError(string msg, string filePath, Exception exception)

@@ -16,6 +16,7 @@ namespace GameEditor
     {
         private RunScript _scriptDialog = new RunScript();
         private VariablesWindow _variablesWindow = new VariablesWindow();
+        private LogWindow _log = new LogWindow();
         public JxqyGame TheJxqyGame;
         public GameEditor()
         {
@@ -181,8 +182,23 @@ namespace GameEditor
 
         private void GameEditor_FormClosing(object sender, FormClosingEventArgs e)
         {
+            _scriptDialog.Dispose();
             _variablesWindow.Dispose();
+            _log.Dispose();
             e.Cancel = false;
+        }
+
+        private void _logMenu_Click(object sender, EventArgs e)
+        {
+            if (_log.Visible == false)
+            {
+                _log.Show(this);
+            }
+        }
+
+        public void OnLog(string message)
+        {
+            _log.LogTextCtrl.AppendText(message);
         }
     }
 }

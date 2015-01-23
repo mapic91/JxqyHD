@@ -8,6 +8,7 @@ namespace Engine.Message
         public event Action<string> OnFunctionCall;
         public event Action<string> OnScriptFileChange;
         public event Action<Dictionary<string, int>> OnScriptVariables;
+        public event Action<string> OnLog;
 
         public void SendFunctionCallMessage(string functionDetail)
         {
@@ -33,5 +34,12 @@ namespace Engine.Message
             }
         }
 
+        public void SendLogMessage(string message)
+        {
+            if (OnLog != null)
+            {
+                OnLog(message);
+            }
+        }
     }
 }

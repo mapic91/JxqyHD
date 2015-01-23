@@ -264,8 +264,8 @@ namespace Engine
         /// </summary>
         protected override void Initialize()
         {
-            Globals.LoadSetting();
             Globals.TheGame = this;
+            Globals.LoadSetting();
             TalkTextList.Initialize();
             Log.Initialize();
 
