@@ -736,6 +736,21 @@ namespace Engine
             XiuLianMagic = XiuLianMagic;
         }
 
+        public override void Death()
+        {
+            base.Death();
+            Globals.IsInputDisabled = true;
+        }
+
+        public override void FullLife()
+        {
+            if (IsDeath)
+            {
+                Globals.IsInputDisabled = false;
+            }
+            base.FullLife();
+        }
+
         #endregion Public method
 
         public override void Update(GameTime gameTime)

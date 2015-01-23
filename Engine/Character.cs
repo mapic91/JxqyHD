@@ -1478,7 +1478,7 @@ namespace Engine
         private static Asf FrozenDie;
         private static Asf PoisonDie;
         private static Asf PetrifiedDie;
-        public void Death()
+        public virtual void Death()
         {
             if (State == (int)CharacterState.Death) return;
             IsDeathInvoked = true;
@@ -2017,7 +2017,7 @@ namespace Engine
             }
         }
 
-        public void FullLife()
+        public virtual void FullLife()
         {
             Life = LifeMax;
             IsDeath = false;
