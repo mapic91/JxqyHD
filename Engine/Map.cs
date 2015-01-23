@@ -332,7 +332,7 @@ namespace Engine
         {
             return (col < MapColumnCounts &&
                 row < MapRowCounts - 1 &&
-                col > 0 &&
+                col >= 0 &&
                 row > 0);
         }
 
