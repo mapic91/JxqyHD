@@ -1793,6 +1793,43 @@ namespace Engine
             return true;
         }
 
+        /// <summary>
+        /// Walk or run to destination.
+        /// If distance greater than 5, run to destination.
+        /// If distance greater than 2, and is running, run to destination, else walk to destination.
+        /// </summary>
+        /// <param name="destinationTilePosition">Destination tile position</param>
+        public void PartnerMoveTo(Vector2 destinationTilePosition)
+        {
+            if (Globals.TheMap.IsObstacleForCharacter(destinationTilePosition))
+            {
+                //Destination is obstacle, can't move to destination, do nothing.
+                return;
+            }
+
+            var distance = Engine.PathFinder.GetTileDistance(TilePosition,
+                destinationTilePosition);
+            if (distance > 20)
+            {
+                Globals.ThePlayer.ResetPartnerPosition();
+            }
+            else if (distance > 5)
+            {
+                RunTo(destinationTilePosition);
+            }
+            else if (distance > 2)
+            {
+                if (IsRuning())
+                {
+                    RunTo(destinationTilePosition);
+                }
+                else
+                {
+                    WalkTo(destinationTilePosition);
+                }
+            }
+        }
+
         #endregion Perform action
 
         #region Character state set and get method

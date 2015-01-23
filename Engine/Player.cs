@@ -750,7 +750,13 @@ namespace Engine
                       !IsRunDisabled;
 
             Globals.ClearGlobalOutEdge();
-            if (!GuiManager.IsMouseStateEated && CanInput)
+
+            if (Kind == (int)CharacterKind.Follower)
+            {
+                //If player kind is changed to follower, follow the player kind npc.
+                PartnerMoveTo(Globals.PlayerTilePosition);
+            }
+            else if (!GuiManager.IsMouseStateEated && CanInput)
             {
                 HandleKeyboardInput();
 

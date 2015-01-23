@@ -114,7 +114,7 @@ namespace Engine.Script
 
         private static bool IsPlayerNull()
         {
-            return Globals.ThePlayer == null;
+            return Globals.PlayerKindCharacter == null;
         }
 
         /// <summary>
@@ -1409,7 +1409,7 @@ namespace Engine.Script
                 int.Parse(parameters[1]));
             if (Globals.ThePlayer != null)
             {
-                Globals.ThePlayer.WalkTo(tilePosition);
+                Globals.PlayerKindCharacter.WalkTo(tilePosition);
                 _playerGotoDesitination = tilePosition;
                 Globals.IsInputDisabled = true;
             }
@@ -1417,27 +1417,27 @@ namespace Engine.Script
 
         public static bool IsPlayerGotoEnd()
         {
-            return IsCharacterMoveEndAndStanding(Globals.ThePlayer, _playerGotoDesitination, false);
+            return IsCharacterMoveEndAndStanding(Globals.PlayerKindCharacter, _playerGotoDesitination, false);
         }
 
         public static void PlayerGotoDir(List<string> parameters)
         {
             if (IsPlayerNull()) return;
-            Globals.ThePlayer.WalkToDirection(int.Parse(parameters[0]),
+            Globals.PlayerKindCharacter.WalkToDirection(int.Parse(parameters[0]),
                 int.Parse(parameters[1]));
             Globals.IsInputDisabled = true;
         }
 
         public static bool IsPlayerGotoDirEnd()
         {
-            return IsCharacterGotoDirEnd(Globals.ThePlayer);
+            return IsCharacterGotoDirEnd(Globals.PlayerKindCharacter);
         }
 
         public static void PlayerGotoEx(List<string> parameters)
         {
-            if (Globals.ThePlayer != null)
+            if (Globals.PlayerKindCharacter != null)
             {
-                Globals.ThePlayer.WalkTo(new Vector2(
+                Globals.PlayerKindCharacter.WalkTo(new Vector2(
                     int.Parse(parameters[0]),
                     int.Parse(parameters[1])));
             }
@@ -1447,14 +1447,14 @@ namespace Engine.Script
         {
             if (IsPlayerNull()) return;
             Globals.IsInputDisabled = true;
-            Globals.ThePlayer.JumpTo(new Vector2(
+            Globals.PlayerKindCharacter.JumpTo(new Vector2(
                 int.Parse(parameters[0]),
                 int.Parse(parameters[1])));
         }
 
         public static bool IsPlayerJumpToEnd()
         {
-            return IsCharacterStanding(Globals.ThePlayer);
+            return IsCharacterStanding(Globals.PlayerKindCharacter);
         }
 
         private static Vector2 _playerRunToDestination;
@@ -1465,19 +1465,19 @@ namespace Engine.Script
             _playerRunToDestination = new Vector2(
                 int.Parse(parameters[0]),
                 int.Parse(parameters[1]));
-            Globals.ThePlayer.RunTo(_playerRunToDestination);
+            Globals.PlayerKindCharacter.RunTo(_playerRunToDestination);
 
         }
 
         public static bool IsPlayerRunToEnd()
         {
-            return IsCharacterMoveEndAndStanding(Globals.ThePlayer, _playerRunToDestination, true);
+            return IsCharacterMoveEndAndStanding(Globals.PlayerKindCharacter, _playerRunToDestination, true);
         }
 
         public static void PlayerRunToEx(List<string> parameters)
         {
             if (IsPlayerNull()) return;
-            Globals.ThePlayer.RunTo(new Vector2(
+            Globals.PlayerKindCharacter.RunTo(new Vector2(
                 int.Parse(parameters[0]),
                 int.Parse(parameters[1])));
         }
