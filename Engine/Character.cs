@@ -883,7 +883,7 @@ namespace Engine
                 return;
             }
 
-            var tileDistance = Engine.PathFinder.GetTileDistance(TilePosition, targetTilePosition);
+            var tileDistance = Engine.PathFinder.GetViewTileDistance(TilePosition, targetTilePosition);
 
             if (tileDistance < minTileDistance && IsStanding())
             {
@@ -1033,7 +1033,7 @@ namespace Engine
             if (FollowTarget == null) return;
             var targetTilePosition = FollowTarget.TilePosition;
 
-            var tileDistance = Engine.PathFinder.GetTileDistance(TilePosition, targetTilePosition);
+            var tileDistance = Engine.PathFinder.GetViewTileDistance(TilePosition, targetTilePosition);
 
             var canSeeTarget = false;
 
@@ -1534,7 +1534,7 @@ namespace Engine
         {
             if (DestinationAttackTilePosition != Vector2.Zero)
             {
-                int tileDistance = Engine.PathFinder.GetTileDistance(TilePosition, DestinationAttackTilePosition);
+                int tileDistance = Engine.PathFinder.GetViewTileDistance(TilePosition, DestinationAttackTilePosition);
 
                 if (tileDistance == AttackRadius)
                 {
@@ -1747,7 +1747,7 @@ namespace Engine
                 return false;
             }
 
-            var tileDistance = Engine.PathFinder.GetTileDistance(TilePosition, destinationTilePositon);
+            var tileDistance = Engine.PathFinder.GetViewTileDistance(TilePosition, destinationTilePositon);
             if (tileDistance <= interactDistance)
             {
                 return true;
@@ -1813,7 +1813,7 @@ namespace Engine
                 return;
             }
 
-            var distance = Engine.PathFinder.GetTileDistance(TilePosition,
+            var distance = Engine.PathFinder.GetViewTileDistance(TilePosition,
                 destinationTilePosition);
             if (distance > 20)
             {
@@ -2276,6 +2276,8 @@ namespace Engine
             {
                 FrozenSeconds -= (float)elapsedGameTime.TotalSeconds;
                 elapsedGameTime = new TimeSpan(elapsedGameTime.Ticks / 2);
+                var totalGameTime = new TimeSpan(gameTime.TotalGameTime.Ticks/2);
+                gameTime = new GameTime(totalGameTime, elapsedGameTime);
             }
 
             switch ((CharacterState)State)

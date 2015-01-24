@@ -190,16 +190,18 @@ namespace Engine
             return false;
         }
 
-        public static int GetTileDistance(Vector2 startTile, Vector2 endTile)
+        private static void GetTileDistanceOff(Vector2 startTile, Vector2 endTile, out int offX, out int offY)
         {
-            if (startTile == endTile) return 0;
+            offX = 0;
+            offY = 0;
+            if (startTile == endTile) return;
 
-            var startX = (int) startTile.X;
-            var startY = (int) startTile.Y;
-            var endX = (int) endTile.X;
-            var endY = (int) endTile.Y;
+            var startX = (int)startTile.X;
+            var startY = (int)startTile.Y;
+            var endX = (int)endTile.X;
+            var endY = (int)endTile.Y;
 
-            if (endY%2 != startY%2)
+            if (endY % 2 != startY % 2)
             {
                 //Start tile and end tile is not both at even row or odd row.
                 //Move start tile position to make it at even row or odd row which is same as the end tile row.
@@ -208,7 +210,7 @@ namespace Engine
                 startY += ((endY < startY) ? 1 : -1);
 
                 //Add some adjust to start tile column value
-                if (endY%2 == 0)
+                if (endY % 2 == 0)
                 {
                     startX += ((endX > startX) ? 1 : 0);
                 }
@@ -218,9 +220,22 @@ namespace Engine
                 }
             }
 
-            var offX = Math.Abs(startX - endX);
-            var offY = Math.Abs(startY - endY)/2;
+            offX = Math.Abs(startX - endX);
+            offY = Math.Abs(startY - endY) / 2;
+        }
 
+        private static int GetPathTileDistance(Vector2 startTile, Vector2 endTile)
+        {
+            int offX, offY;
+            GetTileDistanceOff(startTile, endTile, out offX, out offY);
+
+            return offX + offY;
+        }
+
+        public static int GetViewTileDistance(Vector2 startTile, Vector2 endTile)
+        {
+            int offX, offY;
+            GetTileDistanceOff(startTile, endTile, out offX, out offY);
 
             return offX + offY;
         }
@@ -382,7 +397,7 @@ namespace Engine
 
         public static int GetTilePositionCost(Vector2 fromTile, Vector2 toTile)
         {
-            return GetTileDistance(fromTile, toTile);
+            return GetPathTileDistance(fromTile, toTile);
         }
 
         /// <summary>
