@@ -527,7 +527,11 @@ namespace Engine.Gui
             }
             else if (TitleInterface.IsShow)
             {
+                //Temporaty enable input
+                Globals.EnableInputTemporary();
                 TitleInterface.Update(gameTime);
+                //Restore input
+                Globals.RestoreInputDisableState();
             }
             else if (SystemInterface.IsShow)
             {
