@@ -286,18 +286,18 @@ namespace Engine
             var tryCount = 0; //For performance
 
             //Decrease max try count when fps low
-            switch ((Fps.FpsValue+5)/10)
-            {
-                case 5:
-                    maxTryCount = 30;
-                    break;
-                case 4:
-                case 2:
-                case 1:
-                case 0:
-                    maxTryCount = 15;
-                    break;
-            }
+            //switch ((Fps.FpsValue+5)/10)
+            //{
+            //    case 5:
+            //        maxTryCount = 30;
+            //        break;
+            //    case 4:
+            //    case 2:
+            //    case 1:
+            //    case 0:
+            //        maxTryCount = 15;
+            //        break;
+            //}
 
             while (!frontier.IsEmpty)
             {

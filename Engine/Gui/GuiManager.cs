@@ -361,6 +361,12 @@ namespace Engine.Gui
             DialogInterface.ShowText(text, portraitIndex);
         }
 
+        public static void EndDialog()
+        {
+            DialogInterface.ShowText("");
+            DialogInterface.IsShow = false;
+        }
+
         public static void Selection(string message, string selectA, string selectionB)
         {
             ShowAllPanels(false);

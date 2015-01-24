@@ -308,6 +308,7 @@ namespace Engine.Script
             _sleepingMilliseconds = 0;
             _isTimeScriptSet = false;
             _timeScriptFileName = string.Empty;
+            StopMovie();
             Variables.Clear();
         }
 
@@ -486,14 +487,12 @@ namespace Engine.Script
             IsInFadeOut = true;
             IsInFadeIn = false;
             FadeTransparence = 0f;
-            Globals.IsInputDisabled = true;
         }
 
         public static bool IsFadeOutEnd()
         {
             if (FadeTransparence >= 1f)
             {
-                Globals.IsInputDisabled = false;
                 return true;
             }
             return false;
@@ -504,14 +503,12 @@ namespace Engine.Script
             IsInFadeOut = false;
             IsInFadeIn = true;
             FadeTransparence = 1f;
-            Globals.IsInputDisabled = true;
         }
 
         public static bool IsFadeInEnd()
         {
             if (!IsInFadeIn)
             {
-                Globals.IsInputDisabled = false;
                 return true;
             }
             return false;

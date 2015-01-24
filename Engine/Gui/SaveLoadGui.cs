@@ -169,8 +169,7 @@ namespace Engine.Gui
                     }
 
                     var index = _list.SelectionIndex + 1;
-                    StorageBase.SaveSaveSnapShot(index, Snapshot);
-                    Saver.SaveGame(index);
+                    Saver.SaveGame(index, Snapshot);
 
                     IsShow = false;
                     GuiManager.ShowSystem(false);

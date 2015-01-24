@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Windows.Forms;
 using Engine;
 
@@ -6,6 +7,7 @@ namespace GameEditor
 #if WINDOWS || XBOX
     static class Program
     {
+        public static bool Restart = false;
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -27,6 +29,11 @@ namespace GameEditor
             Globals.TheMessageSender.OnLog += form.OnLog;
 
             form.TheJxqyGame.Run();
+
+            if (Restart)
+            {
+                Process.Start("GameEditor.exe");
+            }
         }
     }
 #endif

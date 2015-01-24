@@ -20,6 +20,11 @@ namespace Engine.Script
             return scriptParser;
         }
 
+        public static void Clear()
+        {
+            _list.Clear();
+        }
+
         public static void Update(GameTime gameTime)
         {
             //To avoid Sleep() script function end early, update ScriptExecuter first.

@@ -5,6 +5,7 @@ using Engine.Script;
 using Engine.Weather;
 using IniParser.Model;
 using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 
 namespace Engine.Storage
@@ -109,9 +110,15 @@ namespace Engine.Storage
         /// Save game to 0-7
         /// </summary>
         /// <param name="index">Save index</param>
-        public static void SaveGame(int index)
+        /// <param name="snapShot">Game snapshot</param>
+        public static void SaveGame(int index, Texture2D snapShot)
         {
-            if(!StorageBase.IsIndexInRange(index)) return;
+            if (!StorageBase.IsIndexInRange(index) ||
+                GameState.State != GameState.StateType.Playing)
+            {
+                return;
+            }
+            StorageBase.SaveSaveSnapShot(index, snapShot);
             SaveGame();
             StorageBase.CopyGameToSave(index);
         }

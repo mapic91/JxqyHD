@@ -7,7 +7,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Engine;
+using Engine.Gui;
 using Engine.Script;
+using Engine.Storage;
 using Microsoft.Xna.Framework;
 
 namespace GameEditor
@@ -18,6 +20,7 @@ namespace GameEditor
         private VariablesWindow _variablesWindow = new VariablesWindow();
         private LogWindow _log = new LogWindow();
         public JxqyGame TheJxqyGame;
+
         public GameEditor()
         {
             InitializeComponent();
@@ -26,7 +29,7 @@ namespace GameEditor
 
         private void GameEditor_FormClosed(object sender, FormClosedEventArgs e)
         {
-            TheJxqyGame.Exit();
+            TheJxqyGame.ExitGame();
         }
 
         private void GameEditor_Activated(object sender, EventArgs e)
@@ -199,6 +202,94 @@ namespace GameEditor
         public void OnLog(string message)
         {
             _log.LogTextCtrl.AppendText(message);
+        }
+
+        private void OnLoadGame(int index)
+        {
+            Loader.LoadGame(index);
+            GuiManager.ShowSaveLoad(false);
+            GuiManager.ShowTitle(false);
+        }
+
+        private void rpg0ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OnLoadGame(0);
+        }
+
+        private void rpg1ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OnLoadGame(1);
+        }
+
+        private void rpg2ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OnLoadGame(2);
+        }
+
+        private void rpg3ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OnLoadGame(3);
+        }
+
+        private void rpg4ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OnLoadGame(4);
+        }
+
+        private void rpg5ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OnLoadGame(5);
+        }
+
+        private void rpg6ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OnLoadGame(6);
+        }
+
+        private void rpg7ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OnLoadGame(7);
+        }
+
+        private void rpg1ToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            Saver.SaveGame(1, Globals.TheGame.TakeSnapShot());
+        }
+
+        private void rpg2ToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            Saver.SaveGame(2, Globals.TheGame.TakeSnapShot());
+        }
+
+        private void rpg3ToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            Saver.SaveGame(3, Globals.TheGame.TakeSnapShot());
+        }
+
+        private void rpg4ToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            Saver.SaveGame(4, Globals.TheGame.TakeSnapShot());
+        }
+
+        private void rpg5ToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            Saver.SaveGame(5, Globals.TheGame.TakeSnapShot());
+        }
+
+        private void rpg6ToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            Saver.SaveGame(6, Globals.TheGame.TakeSnapShot());
+        }
+
+        private void rpg7ToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            Saver.SaveGame(7, Globals.TheGame.TakeSnapShot());
+        }
+
+        private void _restartGameMenu_Click(object sender, EventArgs e)
+        {
+            Program.Restart = true;
+            TheJxqyGame.ExitGame();
         }
     }
 }
