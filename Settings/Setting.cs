@@ -38,6 +38,7 @@ namespace Settings
             _soundEffectVolume.Value = (int)(SoundEffect.MasterVolume*100);
             _musicVolume.Value = (int) (BackgroundMusic.GetVolume()*100);
             UpdateLabelText();
+            CenterToScreen();
         }
 
         private void _saveButton_Click(object sender, EventArgs e)

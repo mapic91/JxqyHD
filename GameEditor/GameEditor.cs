@@ -25,6 +25,7 @@ namespace GameEditor
         {
             InitializeComponent();
             FunctionRunStateAppendLine("[时间]\t[函数]\t[行数]");
+            CenterToScreen();
         }
 
         private void GameEditor_FormClosed(object sender, FormClosedEventArgs e)
