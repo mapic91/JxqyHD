@@ -23,6 +23,8 @@ namespace Engine
         private Effect _waterEffect;
         private Texture2D _waterfallTexture;
         private RenderTarget2D _renderTarget;
+        private RenderTarget2D _snapShotRenderTarget;
+        private bool _isInSnapShot;
 
         private double _totalInactivedSeconds;
         private const double MaxInactivedSeconds = 1.0;
@@ -53,7 +55,6 @@ namespace Engine
         public JxqyGame()
         {
             _graphics = new GraphicsDeviceManager(this);
-            _graphics.GraphicsProfile = GraphicsProfile.HiDef;
             Content.RootDirectory = "Content";
             IsMouseVisible = false;
             _graphics.IsFullScreen = false;
@@ -146,6 +147,7 @@ namespace Engine
 
         private void WaterEffectBegin()
         {
+            GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.SetRenderTarget(_renderTarget);
         }
 
@@ -153,6 +155,10 @@ namespace Engine
         {
             _spriteBatch.End();
             GraphicsDevice.SetRenderTarget(null);
+            if (_isInSnapShot)
+            {
+                GraphicsDevice.SetRenderTarget(_snapShotRenderTarget);
+            }
             // Set an effect parameter to make the
             // displacement texture scroll in a giant circle.
             _waterEffect.Parameters["DisplacementScroll"].SetValue(
@@ -472,15 +478,16 @@ namespace Engine
         /// <returns>Texture of snapshot be taken.</returns>
         public Texture2D TakeSnapShot()
         {
+            _isInSnapShot = true;
+            _snapShotRenderTarget = new RenderTarget2D(GraphicsDevice,
+                GraphicsDevice.PresentationParameters.BackBufferWidth,
+                GraphicsDevice.PresentationParameters.BackBufferHeight);
+            GraphicsDevice.SetRenderTarget(_snapShotRenderTarget);
             Draw(new GameTime());
+            GraphicsDevice.SetRenderTarget(null);
+            _isInSnapShot = false;
 
-            var w = GraphicsDevice.PresentationParameters.BackBufferWidth;
-            var h = GraphicsDevice.PresentationParameters.BackBufferHeight;
-            var data = new byte[w * h * 4];
-            GraphicsDevice.GetBackBufferData(data);
-            var texture = new Texture2D(GraphicsDevice, w, h);
-            texture.SetData(data);
-            return texture;
+            return _snapShotRenderTarget;
         }
 
         /// <summary>
