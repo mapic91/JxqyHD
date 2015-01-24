@@ -345,9 +345,9 @@ namespace Engine
             {
                 if (BelongMagic.MoveKind == 16)
                 {
-                    if (MovedDistance > 200f)
+                    if (MovedDistance > 200f) //First move 200, than find target
                     {
-                        if (BelongCharacter.IsPlayer)
+                        if (BelongCharacter.IsPlayer || BelongCharacter.IsFriend)
                         {
                             if (_closedCharecter == null || _closedCharecter.IsDeath)
                             {

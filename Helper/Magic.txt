@@ -18,8 +18,8 @@ VanishImage 消亡图像
 VanishSound 消亡声音
 SuperModeImage 超级模式图像（MoveKide=15）
 Belong 可忽视
-ActionFile 可忽视
-AttackFile 修炼此武功时刀劈时使用此文件中的武功
+ActionFile 释放AttackFile时的角色动作
+AttackFile 修炼此武功时刀劈时（Attack2时）使用此文件中的武功
 
 Level 1-10
 Effect 效果值

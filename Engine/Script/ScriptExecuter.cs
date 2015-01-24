@@ -429,7 +429,7 @@ namespace Engine.Script
             return false;
         }
 
-        private static readonly Regex IfParameterPatten = new Regex(@"(\$[a-zA-Z0-9]+) *([><=]+) *(.+)");
+        private static readonly Regex IfParameterPatten = new Regex(@"(\$[a-zA-Z0-9]+) *([><=]+).*?([0-9]+)");
         public static bool If(List<string> parameters)
         {
             var parmeter = parameters[0];
