@@ -211,11 +211,6 @@ namespace GameEditor
             GuiManager.ShowTitle(false);
         }
 
-        private void rpg0ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OnLoadGame(0);
-        }
-
         private void rpg1ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OnLoadGame(1);

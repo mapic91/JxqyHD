@@ -127,19 +127,22 @@ namespace Engine.Storage
         /// Load game from "save/game" directory
         /// GuiManager must started first
         /// </summary>
-        public static void LoadGame()
+        public static void LoadGame(bool isInitlizeGame)
         {
-            //Clear
-            ScriptManager.Clear();
-            ScriptExecuter.Init();
-            MagicManager.Clear();
-            NpcManager.ClearAllNpc();
-            ObjManager.ClearAllObjAndFileName();
-            Globals.TheMap.Free();
-            GuiManager.CloseTimeLimit();
-            GuiManager.EndDialog();
-            BackgroundMusic.Stop();
-            Globals.IsInputDisabled = false;
+            if (isInitlizeGame)
+            {
+                //Clear
+                ScriptManager.Clear();
+                ScriptExecuter.Init();
+                MagicManager.Clear();
+                NpcManager.ClearAllNpc();
+                ObjManager.ClearAllObjAndFileName();
+                Globals.TheMap.Free();
+                GuiManager.CloseTimeLimit();
+                GuiManager.EndDialog();
+                BackgroundMusic.Stop();
+                Globals.IsInputDisabled = false;
+            }
 
             LoadGameFile();
             LoadMagicGoodMemoList();
@@ -153,7 +156,7 @@ namespace Engine.Storage
             LoadTrapIgnoreList();
 
             Globals.TheCarmera.CenterPlayerInCamera();
-            
+
             GameState.State = GameState.StateType.Playing;
             Globals.TheGame.IsGamePlayPaused = false;
             GuiManager.ShowAllPanels(false);
@@ -167,7 +170,7 @@ namespace Engine.Storage
         {
             if (!StorageBase.IsIndexInRange(index)) return;
             StorageBase.ClearGameAndCopySaveToGame(index);
-            LoadGame();
+            LoadGame(index != 0);
         }
 
         public static void NewGame()
