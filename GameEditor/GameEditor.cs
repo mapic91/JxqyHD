@@ -287,5 +287,19 @@ namespace GameEditor
             Program.Restart = true;
             TheJxqyGame.ExitGame();
         }
+
+        private void _aboutMeun_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("By 小试刀剑");
+        }
+
+        private void _xiulianMagicLevelUp_Click(object sender, EventArgs e)
+        {
+            if(Globals.ThePlayer == null) return;
+            var info = Globals.ThePlayer.XiuLianMagic;
+            if (info == null || info.TheMagic == null) return;
+            
+            Globals.ThePlayer.AddMagicExp(info, info.TheMagic.LevelupExp - info.Exp + 1);
+        }
     }
 }
