@@ -348,7 +348,10 @@ namespace Engine
         {
             if (CanRun())
             {
-                Thew -= 1;
+                if (!IsNotUseThewWhenRun)
+                {
+                    Thew -= 1;
+                }
                 return true;
             }
             return false;
