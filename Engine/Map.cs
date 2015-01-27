@@ -47,7 +47,9 @@ namespace Engine
 
         //traps
         private readonly Dictionary<string, Dictionary<int, string>> _traps = new Dictionary<string, Dictionary<int, string>>();
-        private readonly List<int> _ingnoredTrapsIndex = new List<int>(); 
+        private readonly List<int> _ingnoredTrapsIndex = new List<int>();
+        private bool _isInRunMapTrap;
+        private ScriptParser _currentRunTrapScript;
 
         private int _viewBeginX;
         private int _viewBeginY;
@@ -699,7 +701,13 @@ namespace Engine
                 //Player standing when run map trap script
                 Globals.ThePlayer.StandingImmediately();
 
+                _isInRunMapTrap = true;
+                _currentRunTrapScript = script;
+                // disable input prevet from unexpected result
+                Globals.IsInputDisabled = true; 
+
                 ScriptManager.RunScript(script);
+                
 
                 //Script is run, add to ignore list
                 _ingnoredTrapsIndex.Add(index);
@@ -823,6 +831,18 @@ namespace Engine
             Globals.TheCarmera.Update(gameTime);
             ViewBeginX = Globals.TheCarmera.ViewBeginX;
             ViewBeginY = Globals.TheCarmera.ViewBeginY;
+
+            //Trap script
+            if (_isInRunMapTrap)
+            {
+                if (_currentRunTrapScript == null || 
+                    _currentRunTrapScript.IsEnd)
+                {
+                    _isInRunMapTrap = false;
+                    _currentRunTrapScript = null;
+                    Globals.IsInputDisabled = false;
+                }
+            }
         }
 
         /// <summary>
