@@ -346,13 +346,19 @@ namespace Engine
 
         protected override bool CanRunning()
         {
-            if (IsRunDisabled) return false;
-            if (IsNotUseThewWhenRun) return true;
-            if (Thew > 0)
+            if (CanRun())
             {
                 Thew -= 1;
                 return true;
             }
+            return false;
+        }
+
+        private bool CanRun()
+        {
+            if (IsRunDisabled) return false;
+            if (IsNotUseThewWhenRun) return true;
+            if (Thew > 0) return true;
             return false;
         }
 
@@ -839,7 +845,14 @@ namespace Engine
                         }
                         else if (_isRun)
                         {
-                            RunTo(mouseTilePosition);
+                            if (CanRun())
+                            {
+                                RunTo(mouseTilePosition);
+                            }
+                            else
+                            {
+                                WalkTo(mouseTilePosition);
+                            }
                         }
                         else if (keyboardState.IsKeyDown(Keys.LeftAlt) ||
                                  keyboardState.IsKeyDown(Keys.RightAlt))
