@@ -555,6 +555,11 @@ namespace Engine
             get { return Kind == 1 && Relation == 1; }
         }
 
+        public bool IsEventCharacter
+        {
+            get { return Kind == (int) CharacterKind.Eventer; }
+        }
+
         public bool IsFriend
         {
             get { return Relation == (int)RelationType.Friend; }
@@ -820,8 +825,9 @@ namespace Engine
                 var nextTile = Engine.PathFinder.FindNeighborInDirection(
                     TilePosition, to - from);
                 if (Globals.TheMap.IsObstacleForCharacterJump(nextTile) ||
-                    (nextTile == to && HasObstacle(nextTile)) ||
-                    Globals.TheMap.HasTrapScript(TilePosition))
+                    (nextTile == Map.ToTilePosition(to) && HasObstacle(nextTile)) ||
+                    Globals.TheMap.HasTrapScript(TilePosition) ||
+                    NpcManager.GetEventer(nextTile) != null)
                 {
                     TilePosition = TilePosition;//Correcting position
                     isOver = true;

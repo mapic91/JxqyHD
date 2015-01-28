@@ -328,6 +328,11 @@ namespace Engine
             return null;
         }
 
+        public static Character GetEventer(Vector2 tilePosition)
+        {
+            return _list.FirstOrDefault(npc => npc.IsEventCharacter && npc.TilePosition == tilePosition);
+        }
+
         public static Npc GetEnemy(Vector2 tilePosition)
         {
             return GetEnemy((int)tilePosition.X, (int)tilePosition.Y);
