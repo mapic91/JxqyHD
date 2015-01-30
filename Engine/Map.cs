@@ -85,9 +85,10 @@ namespace Engine
             get { return _viewBeginY; }
             set
             {
-                if (value + ViewHeight > _mapPixelHeight) _viewBeginY = _mapPixelHeight - ViewHeight;
-                else if (value < 0) _viewBeginY = 0;
+                if (value <= 0) _viewBeginY = 0;
+                else if (value + ViewHeight > _mapPixelHeight) _viewBeginY = _mapPixelHeight - ViewHeight;
                 else _viewBeginY = value;
+                if (_viewBeginY < 0) _viewBeginY = 0;
             }
         }
 
@@ -96,14 +97,10 @@ namespace Engine
             get { return _viewBeginX; }
             set
             {
-                if (value + ViewWidth > _mapPixelWidth)
-                {
-                    _viewBeginX = _mapPixelWidth - ViewWidth;
-                    //if map too small, _viewBeginX is negative
-                    if (_viewBeginX < 0) _viewBeginX = 0;
-                }
-                else if (value < 0) _viewBeginX = 0;
+                if (value <= 0) _viewBeginX = 0;
+                else if(value + ViewWidth > _mapPixelWidth)  _viewBeginX = _mapPixelWidth - ViewWidth;
                 else _viewBeginX = value;
+                if (_viewBeginX < 0) _viewBeginX = 0;
             }
         }
 
