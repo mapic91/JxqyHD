@@ -51,6 +51,7 @@
             this.CheatMenu = new System.Windows.Forms.ToolStripMenuItem();
             this._fullLifeThewMana = new System.Windows.Forms.ToolStripMenuItem();
             this._levelUp = new System.Windows.Forms.ToolStripMenuItem();
+            this._xiulianMagicLevelUp = new System.Windows.Forms.ToolStripMenuItem();
             this._addMoney1000 = new System.Windows.Forms.ToolStripMenuItem();
             this._allEnemyDie = new System.Windows.Forms.ToolStripMenuItem();
             this.DebugMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -58,6 +59,8 @@
             this._runScriptMenu = new System.Windows.Forms.ToolStripMenuItem();
             this._variablesMenu = new System.Windows.Forms.ToolStripMenuItem();
             this._logMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this._helpMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this._aboutMeun = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.DrawSurface = new System.Windows.Forms.PictureBox();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
@@ -66,9 +69,6 @@
             this._fileText = new System.Windows.Forms.TextBox();
             this._scriptFilePath = new System.Windows.Forms.Button();
             this.TheToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this._helpMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this._aboutMeun = new System.Windows.Forms.ToolStripMenuItem();
-            this._xiulianMagicLevelUp = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -268,7 +268,7 @@
             // _fullLifeThewMana
             // 
             this._fullLifeThewMana.Name = "_fullLifeThewMana";
-            this._fullLifeThewMana.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
+            this._fullLifeThewMana.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.H)));
             this._fullLifeThewMana.Size = new System.Drawing.Size(236, 22);
             this._fullLifeThewMana.Text = "生体内全满";
             this._fullLifeThewMana.Click += new System.EventHandler(this._fullLifeThewMana_Click);
@@ -280,6 +280,14 @@
             this._levelUp.Size = new System.Drawing.Size(236, 22);
             this._levelUp.Text = "升一级";
             this._levelUp.Click += new System.EventHandler(this._levelUp_Click);
+            // 
+            // _xiulianMagicLevelUp
+            // 
+            this._xiulianMagicLevelUp.Name = "_xiulianMagicLevelUp";
+            this._xiulianMagicLevelUp.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
+            this._xiulianMagicLevelUp.Size = new System.Drawing.Size(236, 22);
+            this._xiulianMagicLevelUp.Text = "当前修炼武功升一级";
+            this._xiulianMagicLevelUp.Click += new System.EventHandler(this._xiulianMagicLevelUp_Click);
             // 
             // _addMoney1000
             // 
@@ -339,6 +347,21 @@
             this._logMenu.Size = new System.Drawing.Size(176, 22);
             this._logMenu.Text = "日志...";
             this._logMenu.Click += new System.EventHandler(this._logMenu_Click);
+            // 
+            // _helpMenu
+            // 
+            this._helpMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this._aboutMeun});
+            this._helpMenu.Name = "_helpMenu";
+            this._helpMenu.Size = new System.Drawing.Size(45, 20);
+            this._helpMenu.Text = "帮助";
+            // 
+            // _aboutMeun
+            // 
+            this._aboutMeun.Name = "_aboutMeun";
+            this._aboutMeun.Size = new System.Drawing.Size(152, 22);
+            this._aboutMeun.Text = "关于";
+            this._aboutMeun.Click += new System.EventHandler(this._aboutMeun_Click);
             // 
             // splitContainer1
             // 
@@ -436,29 +459,6 @@
             this._scriptFilePath.Text = "文件路径";
             this._scriptFilePath.UseVisualStyleBackColor = true;
             this._scriptFilePath.Click += new System.EventHandler(this._scriptFilePath_Click);
-            // 
-            // _helpMenu
-            // 
-            this._helpMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this._aboutMeun});
-            this._helpMenu.Name = "_helpMenu";
-            this._helpMenu.Size = new System.Drawing.Size(45, 20);
-            this._helpMenu.Text = "帮助";
-            // 
-            // _aboutMeun
-            // 
-            this._aboutMeun.Name = "_aboutMeun";
-            this._aboutMeun.Size = new System.Drawing.Size(152, 22);
-            this._aboutMeun.Text = "关于";
-            this._aboutMeun.Click += new System.EventHandler(this._aboutMeun_Click);
-            // 
-            // _xiulianMagicLevelUp
-            // 
-            this._xiulianMagicLevelUp.Name = "_xiulianMagicLevelUp";
-            this._xiulianMagicLevelUp.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
-            this._xiulianMagicLevelUp.Size = new System.Drawing.Size(236, 22);
-            this._xiulianMagicLevelUp.Text = "当前修炼武功升一级";
-            this._xiulianMagicLevelUp.Click += new System.EventHandler(this._xiulianMagicLevelUp_Click);
             // 
             // GameEditor
             // 

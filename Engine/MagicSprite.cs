@@ -252,7 +252,6 @@ namespace Engine
         {
             if (IsInDestroy) return;
             _isInDestroy = true;
-            MoveDirection = Vector2.Zero;
 
             if (BelongMagic.MoveKind == 15)
             {
@@ -288,7 +287,19 @@ namespace Engine
                 }
                 SoundManager.Play3DSoundOnece(BelongMagic.VanishSound,
                 PositionInWorld - Globals.ListenerPosition);
+
+                if (BelongMagic.ExplodeMagicFile != null)
+                {
+                    MagicManager.UseMagic(BelongCharacter, 
+                        BelongMagic.ExplodeMagicFile,
+                        PositionInWorld,
+                        MoveDirection == Vector2.Zero ?
+                        PositionInWorld + (PositionInWorld - BelongCharacter.PositionInWorld) : 
+                        PositionInWorld + MoveDirection);
+                }
             }
+
+            MoveDirection = Vector2.Zero;
         }
 
         public void SetPath(LinkedList<Vector2> paths)
