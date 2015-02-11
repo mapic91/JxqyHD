@@ -676,6 +676,7 @@ namespace Engine
 
         public void AddExp(int amount)
         {
+            if(LevelUpExp <= 0) return;
             Exp += amount;
             if (Exp > LevelUpExp)
             {

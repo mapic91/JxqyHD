@@ -40,6 +40,14 @@ namespace Engine
         private int _levelupExp;
         private bool _isOk;
         private MagicListManager.MagicItemInfo _iteminfo;
+        #region Leap
+
+        private int _leapTimes;
+        private int _leapFrame;
+        private int _effectReducePercentage;
+        private Asf _leapImage;
+
+        #endregion Leap
 
         #region Public properties
         public AddonEffect AdditionalEffect { set; get; }
@@ -230,6 +238,30 @@ namespace Engine
             set { _levelupExp = value; }
         }
 
+        public int LeapTimes
+        {
+            get { return _leapTimes; }
+            set { _leapTimes = value; }
+        }
+
+        public int LeapFrame
+        {
+            get { return _leapFrame; }
+            set { _leapFrame = value; }
+        }
+
+        public int EffectReducePercentage
+        {
+            get { return _effectReducePercentage; }
+            set { _effectReducePercentage = value; }
+        }
+
+        public Asf LeapImage
+        {
+            get { return _leapImage; }
+            set { _leapImage = value; }
+        }
+
         #endregion
 
         //noAttackFile - resolve recursive problem of AttackFile
@@ -257,6 +289,7 @@ namespace Engine
                     case "FlyingImage":
                     case "VanishImage":
                     case "SuperModeImage":
+                    case "LeapImage":
                         info.SetValue(this, Utils.GetAsf(@"asf\effect\", nameValue[1]), null);
                         break;
                     case "AttackFile":

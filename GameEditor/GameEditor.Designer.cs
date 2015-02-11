@@ -69,6 +69,8 @@
             this._fileText = new System.Windows.Forms.TextBox();
             this._scriptFilePath = new System.Windows.Forms.Button();
             this.TheToolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.disableNpcAIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.enableNpcAIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -311,7 +313,9 @@
             this._changePlayerPos,
             this._runScriptMenu,
             this._variablesMenu,
-            this._logMenu});
+            this._logMenu,
+            this.disableNpcAIToolStripMenuItem,
+            this.enableNpcAIToolStripMenuItem});
             this.DebugMenu.Name = "DebugMenu";
             this.DebugMenu.Size = new System.Drawing.Size(45, 20);
             this.DebugMenu.Text = "调试";
@@ -359,7 +363,7 @@
             // _aboutMeun
             // 
             this._aboutMeun.Name = "_aboutMeun";
-            this._aboutMeun.Size = new System.Drawing.Size(152, 22);
+            this._aboutMeun.Size = new System.Drawing.Size(100, 22);
             this._aboutMeun.Text = "关于";
             this._aboutMeun.Click += new System.EventHandler(this._aboutMeun_Click);
             // 
@@ -460,6 +464,20 @@
             this._scriptFilePath.UseVisualStyleBackColor = true;
             this._scriptFilePath.Click += new System.EventHandler(this._scriptFilePath_Click);
             // 
+            // disableNpcAIToolStripMenuItem
+            // 
+            this.disableNpcAIToolStripMenuItem.Name = "disableNpcAIToolStripMenuItem";
+            this.disableNpcAIToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.disableNpcAIToolStripMenuItem.Text = "DisableNpcAI";
+            this.disableNpcAIToolStripMenuItem.Click += new System.EventHandler(this.disableNpcAIToolStripMenuItem_Click);
+            // 
+            // enableNpcAIToolStripMenuItem
+            // 
+            this.enableNpcAIToolStripMenuItem.Name = "enableNpcAIToolStripMenuItem";
+            this.enableNpcAIToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.enableNpcAIToolStripMenuItem.Text = "EnableNpcAI";
+            this.enableNpcAIToolStripMenuItem.Click += new System.EventHandler(this.enableNpcAIToolStripMenuItem_Click);
+            // 
             // GameEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -538,5 +556,7 @@
         private System.Windows.Forms.ToolStripMenuItem _helpMenu;
         private System.Windows.Forms.ToolStripMenuItem _aboutMeun;
         private System.Windows.Forms.ToolStripMenuItem _xiulianMagicLevelUp;
+        private System.Windows.Forms.ToolStripMenuItem disableNpcAIToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem enableNpcAIToolStripMenuItem;
     }
 }

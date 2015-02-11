@@ -80,8 +80,39 @@ FlyingImage使用方向0，碰到敌人就爆炸，LifeFrame完也爆炸.
 四个角朝向上下左右，正方形中心在鼠标处
 
 
-+++++++++++++++++++++++++++++
-+++++++++++++++++++++++++++++
-扩展（原版没有的）：
+[扩展]
+（原版没有的）：
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+爆炸：
+
+爆炸是当Magic爆炸时，在Magic处释放ExplodeMagicFile。
+
+**当Magic设置了ExplodeMagicFile时，表示该Magic可在爆炸时释放ExplodeMagicFile。
+
+详细：
 ExplodeMagicFile - 设置爆炸后的释放的Magic（等级跟原Magic相同，跟Kind无关，只要会爆炸的Magic都可以设置此项）
+
 范例见文件：magic-爆炸类.ini
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+跳跃：
+
+跳跃是在击中敌人时会跳向其它敌人，LeapTimes设置总共跳的次数， LeapImage设置跳跃时的图像，LeapFrame设置跳跃持续帧（在LeapFrame时间内没跳到下一个敌人或碰到障碍，终止跳跃），EffectReducePercentage设置效果衰减度。
+
+**当Magic设置了LeapTimes项时，表示该Magic可跳跃。
+
+详细：
+LeapTimes - 跳跃次数
+LeapImage - 跳跃时的图像
+LeapFrame - 跳跃持续帧，值越大跳跃的距离越远
+EffectReducePercentage - 每次跳跃减少多少白分比的效果（比如，Effect=200，EffectReducePercentage=20，第一次Effect是200，第二次是200-200*0.2=160 ，第三次是160-160*0.2=128 ...）
+
+范例见文件：magic-跳跃.ini
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+召唤：
+
+

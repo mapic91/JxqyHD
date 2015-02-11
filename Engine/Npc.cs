@@ -149,7 +149,7 @@ namespace Engine
                 }
                 else if (IsFighterFriend)
                 {
-                    FollowTarget = IsAIDisabled ? null : NpcManager.GetClosedEnemy(PositionInWorld);
+                    FollowTarget = IsAIDisabled ? null : NpcManager.GetClosedEnemyTypeCharacter(PositionInWorld);
                     //Fighter friend may be parter
                     if (FollowTarget == null && IsPartner)
                     {

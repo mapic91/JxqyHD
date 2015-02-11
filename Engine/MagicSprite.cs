@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Engine.Weather;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Engine
@@ -15,7 +16,13 @@ namespace Engine
         private bool _isInDestroy;
         private bool _destroyOnEnd;
         private LinkedList<Sprite> _superModeDestroySprites;
+        private LinkedList<Sprite> _destoryedLeapSprites;
+        private List<Character> _leapedCharacters; 
         private Character _closedCharecter;
+
+        private int _leftLeapTimes;
+        private int _currentEffect;
+
 
         #region Public properties
         public Magic BelongMagic
@@ -94,6 +101,17 @@ namespace Engine
         }
         #endregion Ctor
 
+        private static int GetEffectAmount(Magic magic, Character belongCharacter)
+        {
+            //If magic effect not set(equal 0) use belong character attack value as amount.
+            //Because npc just can use FlyIni FlyIni2, 
+            //so if belong character is a npc not a player use character attack value as amount also.
+            if (magic == null || belongCharacter == null) return 0;
+            return (magic.Effect == 0 || !belongCharacter.IsPlayer) ?
+                    belongCharacter.Attack :
+                    magic.Effect;
+        }
+
         private void CharacterHited(Character character)
         {
             if (character == null) return;
@@ -157,12 +175,7 @@ namespace Engine
                 const int minimalEffect = 5;
                 var effect = minimalEffect;
 
-                //If magic effect not set(equal 0) use belong character attack value as amount.
-                //Because npc just can use FlyIni FlyIni2, 
-                //so if belong character is a npc not a player use character attack value as amount also.
-                var amount = (BelongMagic.Effect == 0 || !BelongCharacter.IsPlayer) ? 
-                    BelongCharacter.Attack : 
-                    BelongMagic.Effect;
+                var amount = _currentEffect > 0 ? _currentEffect : GetEffectAmount(BelongMagic, BelongCharacter);
 
                 var offset = amount - character.Defend;
                 if (offset > minimalEffect) effect = offset;
@@ -200,7 +213,14 @@ namespace Engine
                 }
             }
 
-            Destroy();
+            if (_leftLeapTimes > 0)
+            {
+                LeapToNextTarget(character);
+            }
+            else
+            {
+                Destroy();
+            }
         }
 
         private void CheckCharacterHited()
@@ -230,8 +250,18 @@ namespace Engine
             }
         }
 
-        public void Begin()
+        private void Begin()
         {
+            _leftLeapTimes = BelongMagic.LeapTimes;
+            _currentEffect = GetEffectAmount(BelongMagic, BelongCharacter);
+
+            if (_leftLeapTimes > 0)
+            {
+                //Initilize leap
+                _destoryedLeapSprites = new LinkedList<Sprite>();
+                _leapedCharacters = new List<Character>();
+            }
+
             //Start play FlyingImage
             ResetPlay();
 
@@ -248,7 +278,18 @@ namespace Engine
             }
         }
 
-        public void Destroy()
+        private static void AddDestroySprite(LinkedList<Sprite> list, Vector2 positionInWorld, Asf image, SoundEffect sound)
+        {
+            var sprite = new Sprite(positionInWorld,
+                            0f,
+                            image);
+            sprite.PlayFrames(sprite.FrameCountsPerDirection);
+            list.AddLast(sprite);
+            SoundManager.Play3DSoundOnece(sound,
+                positionInWorld - Globals.ListenerPosition);
+        }
+
+        private void Destroy()
         {
             if (IsInDestroy) return;
             _isInDestroy = true;
@@ -261,15 +302,11 @@ namespace Engine
                 {
                     if (npc.IsEnemy)
                     {
-                        var sprite = new Sprite(npc.PositionInWorld,
-                            0f,
+                        AddDestroySprite(_superModeDestroySprites, 
+                            npc.PositionInWorld,
                             BelongMagic.VanishImage,
-                            0);
-                        sprite.PlayFrames(sprite.FrameCountsPerDirection);
-                        _superModeDestroySprites.AddLast(sprite);
+                            BelongMagic.VanishSound);
                         CharacterHited(npc);
-                        SoundManager.Play3DSoundOnece(BelongMagic.VanishSound,
-                            npc.PositionInWorld - Globals.ListenerPosition);
                     }
                 }
                 if (_superModeDestroySprites.Count == 0) _isDestroyed = true;
@@ -286,20 +323,60 @@ namespace Engine
                     _isDestroyed = true;
                 }
                 SoundManager.Play3DSoundOnece(BelongMagic.VanishSound,
-                PositionInWorld - Globals.ListenerPosition);
+                    PositionInWorld - Globals.ListenerPosition);
 
                 if (BelongMagic.ExplodeMagicFile != null)
                 {
-                    MagicManager.UseMagic(BelongCharacter, 
+                    MagicManager.UseMagic(BelongCharacter,
                         BelongMagic.ExplodeMagicFile,
                         PositionInWorld,
-                        MoveDirection == Vector2.Zero ?
-                        PositionInWorld + (PositionInWorld - BelongCharacter.PositionInWorld) : 
-                        PositionInWorld + MoveDirection);
+                        MoveDirection == Vector2.Zero
+                            ? PositionInWorld + (PositionInWorld - BelongCharacter.PositionInWorld)
+                            : PositionInWorld + MoveDirection);
                 }
+
+                MoveDirection = Vector2.Zero;
+            }
+        }
+
+        private void LeapToNextTarget(Character hitedCharacter)
+        {
+            if (_leftLeapTimes > 0)
+            {
+                _leftLeapTimes--;
+                _currentEffect -= _currentEffect*BelongMagic.EffectReducePercentage/100;
+            }
+            else
+            {
+                EndLeap();
             }
 
-            MoveDirection = Vector2.Zero;
+            if (BelongMagic.VanishImage != null)
+            {
+                AddDestroySprite(_destoryedLeapSprites, PositionInWorld, BelongMagic.VanishImage, BelongMagic.VanishSound);
+            }
+
+            var closedEnemy = NpcManager.GetClosedEnemy(BelongCharacter, hitedCharacter.PositionInWorld, _leapedCharacters);
+            if (closedEnemy == null)
+            {
+                EndLeap();
+                return;
+            }
+            Texture = BelongMagic.LeapImage;
+            PlayFrames(BelongMagic.LeapFrame);
+            MoveDirection = closedEnemy.PositionInWorld - PositionInWorld;
+            //Move magic sprite to neighber tile
+            TilePosition = PathFinder.FindNeighborInDirection(TilePosition, MoveDirection);
+            //Correct move direction
+            MoveDirection = closedEnemy.PositionInWorld - PositionInWorld;
+
+            _leapedCharacters.Add(hitedCharacter);
+        }
+
+        private void EndLeap()
+        {
+            _leftLeapTimes = 0;
+            if (_destroyOnEnd) Destroy();
         }
 
         public void SetPath(LinkedList<Vector2> paths)
@@ -362,7 +439,7 @@ namespace Engine
                         {
                             if (_closedCharecter == null || _closedCharecter.IsDeath)
                             {
-                                _closedCharecter = NpcManager.GetClosedEnemy(PositionInWorld);
+                                _closedCharecter = NpcManager.GetClosedEnemyTypeCharacter(PositionInWorld);
                             }
                         }
                         else
@@ -429,10 +506,31 @@ namespace Engine
                 }
                 else if (!IsInPlaying)
                 {
-                    if (_destroyOnEnd) Destroy();
+                    if (_destroyOnEnd)
+                    {
+                        Destroy();
+                    }
                     else _isDestroyed = true;
                 }
             }
+
+            if (_destoryedLeapSprites != null)
+            {
+                for (var node = _destoryedLeapSprites.First; node != null;)
+                {
+                    var next = node.Next;
+                    var value = node.Value;
+
+                    value.Update(gameTime);
+                    if (!value.IsInPlaying)
+                    {
+                        _destoryedLeapSprites.Remove(node);
+                    }
+
+                    node = next;
+                }
+            }
+
             base.Update(gameTime);
         }
 
@@ -451,6 +549,15 @@ namespace Engine
                     sprite.Draw(spriteBatch, color);
                 }
             }
+
+            if (_destoryedLeapSprites != null)
+            {
+                foreach (var sprite in _destoryedLeapSprites)
+                {
+                    sprite.Draw(spriteBatch, color);
+                }
+            }
+
             base.Draw(spriteBatch, color);
         }
     }

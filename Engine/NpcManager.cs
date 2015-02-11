@@ -107,14 +107,27 @@ namespace Engine
         /// Get enemy closed to target position.
         /// </summary>
         /// <param name="positionInWorld">Target position</param>
+        /// <param name="ignoreList">Ignore those character when finding</param>
         /// <returns>If not find, return null</returns>
-        public static Npc GetClosedEnemy(Vector2 positionInWorld)
+        public static Character GetClosedEnemyTypeCharacter(Vector2 positionInWorld, List<Character> ignoreList = null)
         {
-            Npc closed = null;
+            return GetClosedEnemyTypeCharacter(NpcList, positionInWorld, ignoreList);
+        }
+
+        /// <summary>
+        /// Get enemy closed to target position.
+        /// </summary>
+        /// <param name="list">Npc list</param>
+        /// <param name="positionInWorld">Target position</param>
+        /// <param name="ignoreList">Ignore those character when finding</param>
+        /// <returns>If not find, return null</returns>
+        public static Character GetClosedEnemyTypeCharacter(IEnumerable<Character> list, Vector2 positionInWorld, List<Character> ignoreList = null)
+        {
+            Character closed = null;
             var closedDistance = 99999999f;
-            foreach (var npc in NpcManager.NpcList)
+            foreach (var npc in list)
             {
-                if (npc.IsEnemy)
+                if ((ignoreList == null || ignoreList.All(item => npc != item)) && npc.IsEnemy)
                 {
                     var distance = Vector2.Distance(positionInWorld, npc.PositionInWorld);
                     if (distance < closedDistance)
@@ -128,17 +141,42 @@ namespace Engine
         }
 
         /// <summary>
+        /// Get enemy relate to finder closed to targetPositionInWorld.
+        /// </summary>
+        /// <param name="finder">The finder.</param>
+        /// <param name="targetPositionInWorld">Target position to begin find.</param>
+        /// <param name="ignoreList">Ignore those character when finding</param>
+        /// <returns></returns>
+        public static Character GetClosedEnemy(Character finder, Vector2 targetPositionInWorld, List<Character> ignoreList = null)
+        {
+            if (finder == null) return null;
+
+            if (finder.IsEnemy)
+            {
+                return GetLiveClosedPlayerOrFighterFriend(targetPositionInWorld, ignoreList);
+            }
+
+            if (finder.IsPlayer || finder.IsFighterFriend)
+            {
+                return GetClosedEnemyTypeCharacter(targetPositionInWorld, ignoreList);
+            }
+
+            return null;
+        }
+
+        /// <summary>
         /// Get not death player or fighter friend closed to target position.
         /// </summary>
         /// <param name="positionInWorld">Target position</param>
+        /// <param name="ignoreList">Ignore those character when finding</param>
         /// <returns>If not find, return null</returns>
-        public static Character GetLiveClosedPlayerOrFighterFriend(Vector2 positionInWorld)
+        public static Character GetLiveClosedPlayerOrFighterFriend(Vector2 positionInWorld, List<Character> ignoreList = null)
         {
             Character closed = null;
             var closedDistance = 99999999f;
             foreach (var npc in _list)
             {
-                if (npc.IsFighterFriend)
+                if ((ignoreList == null || ignoreList.All(item => npc != item)) && npc.IsFighterFriend)
                 {
                     var distance = Vector2.Distance(positionInWorld, npc.PositionInWorld);
                     if (npc.IsDeathInvoked || !(distance < closedDistance)) continue;
@@ -148,7 +186,8 @@ namespace Engine
             }
 
             var character = Globals.PlayerKindCharacter;
-            if (!character.IsDeathInvoked &&
+            if ((ignoreList == null || ignoreList.All(item => character != item)) &&
+                !character.IsDeathInvoked &&
                 Vector2.Distance(positionInWorld, character.PositionInWorld) < closedDistance)
             {
                 closed = Globals.ThePlayer;

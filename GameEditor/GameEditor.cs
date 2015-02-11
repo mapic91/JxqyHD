@@ -301,5 +301,15 @@ namespace GameEditor
             
             Globals.ThePlayer.AddMagicExp(info, info.TheMagic.LevelupExp - info.Exp + 1);
         }
+
+        private void disableNpcAIToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ScriptExecuter.DisableNpcAI();
+        }
+
+        private void enableNpcAIToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ScriptExecuter.EnableNpcAI();
+        }
     }
 }
