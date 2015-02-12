@@ -142,7 +142,6 @@ namespace Engine.Storage
                 GuiManager.EndDialog();
                 BackgroundMusic.Stop();
                 Globals.IsInputDisabled = false;
-                ScriptExecuter.EnableNpcAI();
             }
 
             LoadGameFile();
