@@ -22,6 +22,7 @@ namespace Engine
 
         private int _leftLeapTimes;
         private int _currentEffect;
+        private bool _canLeap;
 
 
         #region Public properties
@@ -175,7 +176,7 @@ namespace Engine
                 const int minimalEffect = 5;
                 var effect = minimalEffect;
 
-                var amount = _currentEffect > 0 ? _currentEffect : GetEffectAmount(BelongMagic, BelongCharacter);
+                var amount = _canLeap ? _currentEffect : GetEffectAmount(BelongMagic, BelongCharacter);
 
                 var offset = amount - character.Defend;
                 if (offset > minimalEffect) effect = offset;
@@ -260,6 +261,7 @@ namespace Engine
                 //Initilize leap
                 _destoryedLeapSprites = new LinkedList<Sprite>();
                 _leapedCharacters = new List<Character>();
+                _canLeap = true;
             }
 
             //Start play FlyingImage
