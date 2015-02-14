@@ -16,7 +16,6 @@ namespace Engine
         private bool _isInDestroy;
         private bool _destroyOnEnd;
         private LinkedList<Sprite> _superModeDestroySprites;
-        private LinkedList<Sprite> _destoryedLeapSprites;
         private List<Character> _leapedCharacters; 
         private Character _closedCharecter;
 
@@ -214,7 +213,7 @@ namespace Engine
                 }
             }
 
-            if (_leftLeapTimes > 0)
+            if (_canLeap)
             {
                 LeapToNextTarget(character);
             }
@@ -259,7 +258,6 @@ namespace Engine
             if (_leftLeapTimes > 0)
             {
                 //Initilize leap
-                _destoryedLeapSprites = new LinkedList<Sprite>();
                 _leapedCharacters = new List<Character>();
                 _canLeap = true;
             }
@@ -355,7 +353,7 @@ namespace Engine
 
             if (BelongMagic.VanishImage != null)
             {
-                AddDestroySprite(_destoryedLeapSprites, PositionInWorld, BelongMagic.VanishImage, BelongMagic.VanishSound);
+                AddDestroySprite(MagicManager.EffectSprites, PositionInWorld, BelongMagic.VanishImage, BelongMagic.VanishSound);
             }
 
             var closedEnemy = NpcManager.GetClosedEnemy(BelongCharacter, hitedCharacter.PositionInWorld, _leapedCharacters);
@@ -378,7 +376,7 @@ namespace Engine
         private void EndLeap()
         {
             _leftLeapTimes = 0;
-            if (_destroyOnEnd) Destroy();
+            _isDestroyed = true;
         }
 
         public void SetPath(LinkedList<Vector2> paths)
@@ -516,23 +514,6 @@ namespace Engine
                 }
             }
 
-            if (_destoryedLeapSprites != null)
-            {
-                for (var node = _destoryedLeapSprites.First; node != null;)
-                {
-                    var next = node.Next;
-                    var value = node.Value;
-
-                    value.Update(gameTime);
-                    if (!value.IsInPlaying)
-                    {
-                        _destoryedLeapSprites.Remove(node);
-                    }
-
-                    node = next;
-                }
-            }
-
             base.Update(gameTime);
         }
 
@@ -547,14 +528,6 @@ namespace Engine
             if (BelongMagic.MoveKind == 15 && IsInDestroy)
             {
                 foreach (var sprite in _superModeDestroySprites)
-                {
-                    sprite.Draw(spriteBatch, color);
-                }
-            }
-
-            if (_destoryedLeapSprites != null)
-            {
-                foreach (var sprite in _destoryedLeapSprites)
                 {
                     sprite.Draw(spriteBatch, color);
                 }

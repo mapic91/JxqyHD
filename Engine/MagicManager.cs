@@ -9,6 +9,7 @@ namespace Engine
     {
         private static LinkedList<MagicSprite> _magicSprites = new LinkedList<MagicSprite>();
         private static LinkedList<WorkItem> _workList = new LinkedList<WorkItem>();
+        private static LinkedList<Sprite> _effectSprites = new LinkedList<Sprite>(); 
         private static List<MagicSprite> _magicSpritesInView = new List<MagicSprite>();
         private static Rectangle _lastViewRegion;
         private static bool _listChanged = true;
@@ -21,6 +22,11 @@ namespace Engine
         public static LinkedList<WorkItem> WorkList
         {
             get { return _workList; }
+        }
+
+        public static LinkedList<Sprite> EffectSprites
+        {
+            get { return _effectSprites; }
         }
 
         public static List<MagicSprite> MagicSpritesInView
@@ -657,6 +663,7 @@ namespace Engine
         {
             _magicSprites.Clear();
             _workList.Clear();
+            _effectSprites.Clear();
         }
 
         /// <summary>
@@ -738,6 +745,12 @@ namespace Engine
             }
         }
 
+        public static void AddEffectSprite(Sprite sprite)
+        {
+            if(sprite == null) return;
+            _effectSprites.AddLast(sprite);
+        }
+
         public static void Update(GameTime gameTime)
         {
             var elapsedMilliseconds = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
@@ -769,11 +782,28 @@ namespace Engine
                 }
                 node = next;
             }
+
+            for (var node = _effectSprites.First; node != null;)
+            {
+                var sprite = node.Value;
+                var next = node.Next;
+                sprite.Update(gameTime);
+                if (!sprite.IsInPlaying)
+                {
+                    _effectSprites.Remove(node);
+                }
+                node = next;
+            }
         }
 
         public static void Draw(SpriteBatch spriteBatch)
         {
             foreach (var sprite in _magicSprites)
+            {
+                sprite.Draw(spriteBatch);
+            }
+
+            foreach (var sprite in _effectSprites)
             {
                 sprite.Draw(spriteBatch);
             }

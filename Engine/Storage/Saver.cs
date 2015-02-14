@@ -76,7 +76,7 @@ namespace Engine.Storage
             NpcManager.SavePartner(StorageBase.PartnerFileName);
         }
 
-        private static void SaveMagicGoodMemoList()
+        public static void SaveMagicGoodMemoList()
         {
             GuiManager.Save(StorageBase.MagicListFilePath,
                 StorageBase.GoodsListFilePath,

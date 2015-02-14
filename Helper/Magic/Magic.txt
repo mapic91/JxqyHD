@@ -113,6 +113,11 @@ EffectReducePercentage - 每次跳跃减少多少白分比的效果（比如，Effect=200，EffectR
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-召唤：
 
+提示：
 
+Magic文件各项即可以在[Init]下设置，也可已在[Level*]下设置
+比如：
+ExplodeMagicFile 在 Init下设置，表示该Magic一直可以爆炸，不管在任何Level下。
+ExplodeMagicFile 不设置在 Init 下，设置在Level*下，表示该Magic不可爆炸，当升级到该Level时，可爆炸。
+各Level可设置不同的 ExplodeMagicFile， 达到 不同 的武功等级， 不同的爆炸 Magic的效果。

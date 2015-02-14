@@ -979,6 +979,11 @@ namespace Engine
                 if (magicSprite.MapY >= MapY)
                     Collider.MakePixelCollidedTransparent(region, texture, magicSprite.RegionInWorld, magicSprite.GetCurrentTexture());
             }
+            foreach (var effectSprite in MagicManager.EffectSprites)
+            {
+                if (effectSprite.MapY >= MapY)
+                    Collider.MakePixelCollidedTransparent(region, texture, effectSprite.RegionInWorld, effectSprite.GetCurrentTexture());
+            }
             for (var y = (int)start.Y; y < (int)end.Y; y++)
             {
                 for (var x = (int)start.X; x < (int)end.X; x++)
