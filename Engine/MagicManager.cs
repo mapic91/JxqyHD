@@ -745,12 +745,6 @@ namespace Engine
             }
         }
 
-        public static void AddEffectSprite(Sprite sprite)
-        {
-            if(sprite == null) return;
-            _effectSprites.AddLast(sprite);
-        }
-
         public static void Update(GameTime gameTime)
         {
             var elapsedMilliseconds = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
