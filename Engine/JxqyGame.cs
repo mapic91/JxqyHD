@@ -16,7 +16,7 @@ namespace Engine
     /// <summary>
     /// This is the main type for your game
     /// </summary>
-    public class JxqyGame : Microsoft.Xna.Framework.Game
+    public class JxqyGame : Game
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
@@ -92,6 +92,12 @@ namespace Engine
                     Globals.TheMap.ViewHeight =
                     _pictureBox.Height;
                 _graphics.ApplyChanges();
+
+                _renderTarget = new RenderTarget2D(GraphicsDevice,
+                Globals.WindowWidth,
+                Globals.WindowHeight);
+
+                GuiManager.Adjust(_pictureBox.Width, _pictureBox.Height);
             }
         }
 

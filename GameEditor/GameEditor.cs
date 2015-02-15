@@ -311,5 +311,10 @@ namespace GameEditor
         {
             ScriptExecuter.EnableNpcAI();
         }
+
+        private void _reducePlayerLifeMenu_Click(object sender, EventArgs e)
+        {
+            Globals.ThePlayer.AddLife(-1000);
+        }
     }
 }

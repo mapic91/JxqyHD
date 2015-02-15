@@ -473,6 +473,21 @@ namespace Engine.Gui
             return MagicListManager.GetItemInfo(index + MagicListManager.BottomMagicIndexStart);
         }
 
+        public static void Adjust(int windowWidth, int windowHeight)
+        {
+            if (BottomInterface != null)
+            {
+                BottomInterface.Position = new Vector2(BottomInterface.Position.X, 
+                    windowHeight - BottomInterface.Height);
+            }
+
+            if (ColumnInterface != null)
+            {
+                ColumnInterface.Position = new Vector2(ColumnInterface.Position.X,
+                    windowHeight - ColumnInterface.Height);
+            }
+        }
+
         #endregion Functionail method
 
         #region Handle key press

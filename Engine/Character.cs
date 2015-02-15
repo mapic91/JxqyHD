@@ -123,6 +123,12 @@ namespace Engine
         public bool IsFollowTargetFound { protected set; get; }
         public bool IsInSpecialAction { protected set; get; }
 
+        public bool IsInFighting
+        {
+            get { return _isInFighting; }
+            protected set { _isInFighting = value; }
+        }
+
         public bool IsDeathScriptEnd
         {
             get

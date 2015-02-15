@@ -348,7 +348,7 @@ namespace Engine
         {
             if (CanRun())
             {
-                if (!IsNotUseThewWhenRun)
+                if (!IsNotUseThewWhenRun && IsInFighting)
                 {
                     Thew -= 1;
                 }
@@ -360,7 +360,7 @@ namespace Engine
         private bool CanRun()
         {
             if (IsRunDisabled) return false;
-            if (IsNotUseThewWhenRun) return true;
+            if (IsNotUseThewWhenRun || !IsInFighting) return true;
             if (Thew > 0) return true;
             return false;
         }
