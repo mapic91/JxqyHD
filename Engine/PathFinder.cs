@@ -125,9 +125,9 @@ namespace Engine
                 return null;
 
             var cameFrom = new Dictionary<Vector2, Vector2>();
-            var frontier = new C5.IntervalHeap<Node>();
+            var frontier = new C5.IntervalHeap<Node<Vector2>>();
 
-            frontier.Add(new Node(startTile, 0f));
+            frontier.Add(new Node<Vector2>(startTile, 0f));
             var tryCount = 0;
             while (!frontier.IsEmpty)
             {
@@ -140,7 +140,7 @@ namespace Engine
                     if (!cameFrom.ContainsKey(neighbor))
                     {
                         var priority = GetTilePositionCost(neighbor, endTile);
-                        frontier.Add(new Node(neighbor, priority));
+                        frontier.Add(new Node<Vector2>(neighbor, priority));
                         cameFrom[neighbor] = current;
                     }
                 }
@@ -161,8 +161,8 @@ namespace Engine
             if (startTile == endTile) return null;
 
             var path = new LinkedList<Vector2>();
-            var frontier = new C5.IntervalHeap<Node>();
-            frontier.Add(new Node(startTile, 0f));
+            var frontier = new C5.IntervalHeap<Node<Vector2>>();
+            frontier.Add(new Node<Vector2>(startTile, 0f));
             while (!frontier.IsEmpty)
             {
                 if(maxTry-- < 0) break;
@@ -171,7 +171,7 @@ namespace Engine
                 if (current == endTile) break;
                 foreach (var neighbor in FindAllNeighbors(current))
                 {
-                    frontier.Add(new Node(neighbor, GetTilePositionCost(neighbor, endTile)));
+                    frontier.Add(new Node<Vector2>(neighbor, GetTilePositionCost(neighbor, endTile)));
                 }
             }
             return path;
@@ -261,8 +261,8 @@ namespace Engine
                 if (Globals.TheMap.IsObstacleForMagic(endTile)) return false;
 
                 var path = new LinkedList<Vector2>();
-                var frontier = new C5.IntervalHeap<Node>();
-                frontier.Add(new Node(startTile, 0f));
+                var frontier = new C5.IntervalHeap<Node<Vector2>>();
+                frontier.Add(new Node<Vector2>(startTile, 0f));
                 while (!frontier.IsEmpty)
                 {
                     var current = frontier.DeleteMin().Location;
@@ -273,7 +273,7 @@ namespace Engine
                     path.AddLast(current);
                     foreach (var neighbor in FindAllNeighbors(current))
                     {
-                        frontier.Add(new Node(neighbor, GetTilePositionCost(neighbor, endTile)));
+                        frontier.Add(new Node<Vector2>(neighbor, GetTilePositionCost(neighbor, endTile)));
                     }
                     visionRadius--;
                 }
@@ -293,9 +293,9 @@ namespace Engine
 
             var cameFrom = new Dictionary<Vector2, Vector2>();
             var costSoFar = new Dictionary<Vector2, float>();
-            var frontier = new C5.IntervalHeap<Node>();
+            var frontier = new C5.IntervalHeap<Node<Vector2>>();
 
-            frontier.Add(new Node(startTile, 0f));
+            frontier.Add(new Node<Vector2>(startTile, 0f));
             costSoFar[startTile] = 0f;
 
             var tryCount = 0; //For performance
@@ -328,7 +328,7 @@ namespace Engine
                     {
                         costSoFar[next] = newCost;
                         var priority = newCost + GetTilePositionCost(endTile, next);
-                        frontier.Add(new Node(next, priority));
+                        frontier.Add(new Node<Vector2>(next, priority));
                         cameFrom[next] = current;
                     }
                 }
@@ -504,18 +504,18 @@ namespace Engine
         }
     }
 
-    public struct Node : IComparable<Node>
+    public struct Node<T> : IComparable<Node<T>>
     {
-        public Vector2 Location;
+        public T Location;
         public float Priority;
 
-        public Node(Vector2 location, float priority)
+        public Node(T location, float priority)
         {
             Location = location;
             Priority = priority;
         }
 
-        public int CompareTo(Node other)
+        public int CompareTo(Node<T> other)
         {
             return this.Priority.CompareTo(other.Priority);
         }
