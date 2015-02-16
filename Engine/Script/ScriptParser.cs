@@ -202,6 +202,7 @@ namespace Engine.Script
                         if (_codes[_currentIndex].IsGoto &&
                             _codes[_currentIndex].Name == gotoPosition)
                         {
+                            Globals.TheMessageSender.SendFunctionCallMessage(ToMessageString(_codes[_currentIndex]));
                             break;
                         }
                         else _currentIndex++;
@@ -210,6 +211,11 @@ namespace Engine.Script
             }
             IsEnd = (_currentIndex == count);
             return !IsEnd;
+        }
+
+        private static string ToMessageString(Code code)
+        {
+            return DateTime.Now.ToString("T") + "    " + code.Literal + "    [" + code.LineNumber + "]";
         }
 
         public class Code
@@ -318,8 +324,7 @@ namespace Engine.Script
                     var parameters = _currentCode.Parameters;
 
                     //Send message to register
-                    Globals.TheMessageSender.SendFunctionCallMessage(DateTime.Now.ToString("T") +
-                        "\t" + _currentCode.Literal + "\t[" + _currentCode.LineNumber + "]");
+                    Globals.TheMessageSender.SendFunctionCallMessage(ToMessageString(_currentCode));
 
                     switch (_currentCode.Name)
                     {
