@@ -11,6 +11,7 @@ namespace Engine
         public enum PathType
         {
             PathOneStep,
+            SimpleMaxNpcTry,
             PerfectMaxNpcTry,
             PerfectMaxPlayerTry,
             PathStraightLine
@@ -47,6 +48,8 @@ namespace Engine
             {
                 case PathType.PathOneStep:
                     return FindPathStep(finder, startTile, endTile, 10);
+                case PathType.SimpleMaxNpcTry:
+                    return FindPathSimple(finder, startTile, endTile, 100);
                 case PathType.PerfectMaxNpcTry:
                     return FindPathPerfect(finder, startTile, endTile, 100);
                 case PathType.PerfectMaxPlayerTry:

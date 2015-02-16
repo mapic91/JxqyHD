@@ -92,6 +92,8 @@ namespace Engine
         protected int _currentFixedPosIndex;
         protected Magic MagicUse;
 
+        protected bool IsInLoopWalk;
+
         protected bool IsSitted;
 
         #endregion Field
@@ -875,6 +877,8 @@ namespace Engine
             if (tilePositionList == null ||
                 tilePositionList.Count < 2 ||
                 _isInInteract) return;
+
+            IsInLoopWalk = true;
 
             if (IsStanding() &&
                 Globals.TheRandom.Next(0, randMaxValue) == 0)

@@ -37,9 +37,13 @@ namespace Engine
                 {
                     return Engine.PathFinder.PathType.PerfectMaxNpcTry;
                 }
-                else
+                else if(IsInLoopWalk)
                 {
                     return Engine.PathFinder.PathType.PathOneStep;
+                }
+                else
+                {
+                    return Engine.PathFinder.PathType.SimpleMaxNpcTry;
                 }
             }
         }

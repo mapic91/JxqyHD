@@ -479,6 +479,7 @@ namespace Engine.Gui
             {
                 BottomInterface.Position = new Vector2(BottomInterface.Position.X, 
                     windowHeight - BottomInterface.Height);
+                UpdateGoodsView();
             }
 
             if (ColumnInterface != null)
