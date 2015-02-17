@@ -37,7 +37,7 @@ namespace Engine
                 {
                     return Engine.PathFinder.PathType.PerfectMaxNpcTry;
                 }
-                else if(IsInLoopWalk)
+                else if(IsInLoopWalk || IsEnemy)
                 {
                     return Engine.PathFinder.PathType.PathOneStep;
                 }
