@@ -694,8 +694,6 @@ namespace Engine.Gui
             {
                 TimerInterface.Draw(spriteBatch);
                 TopInterface.Draw(spriteBatch);
-                BottomInterface.Draw(spriteBatch);
-                ColumnInterface.Draw(spriteBatch);
                 MagicInterface.Draw(spriteBatch);
                 XiuLianInterface.Draw(spriteBatch);
                 GoodsInterface.Draw(spriteBatch);
@@ -703,8 +701,9 @@ namespace Engine.Gui
                 MemoInterface.Draw(spriteBatch);
                 StateInterface.Draw(spriteBatch);
                 EquipInterface.Draw(spriteBatch);
+                ColumnInterface.Draw(spriteBatch);
+                BottomInterface.Draw(spriteBatch);
                 ToolTipInterface.Draw(spriteBatch);
-
                 MessageInterface.Draw(spriteBatch);
                 DialogInterface.Draw(spriteBatch);
 
