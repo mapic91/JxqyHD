@@ -4,6 +4,7 @@ using Engine.ListManager;
 using Engine.Script;
 using Engine.Weather;
 using IniParser;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
 
@@ -34,10 +35,30 @@ namespace Engine.Storage
                 {
                     WeatherManager.BeginRain(option["RainFile"]);
                 }
-                Globals.IsWaterEffectEnabled =
-                    int.Parse(option["Water"]) != 0;
-                Map.DrawColor = StorageBase.GetColorFromString(option["MpcStyle"]);
-                Sprite.DrawColor = StorageBase.GetColorFromString(option["AsfStyle"]);
+                if (string.IsNullOrEmpty(option["Water"]))
+                {
+                    Globals.IsWaterEffectEnabled = false;
+                }
+                else
+                {
+                    Globals.IsWaterEffectEnabled = int.Parse(option["Water"]) != 0;
+                }
+                if (string.IsNullOrEmpty(option["MpcStyle"]))
+                {
+                    Map.DrawColor = Color.White;
+                }
+                else
+                {
+                    Map.DrawColor = StorageBase.GetColorFromString(option["MpcStyle"]);
+                }
+                if (string.IsNullOrEmpty(option["AsfStyle"]))
+                {
+                    Sprite.DrawColor = Color.White;
+                }
+                else
+                {
+                    Sprite.DrawColor = StorageBase.GetColorFromString(option["AsfStyle"]);
+                }
 
                 //Timer
                 var timer = data["Timer"];
