@@ -218,10 +218,10 @@ namespace Engine
 
         public static void RemoveAllPartner()
         {
-            for (var node = _list.First; node != null;)
+            for (var node = _list.First; node != null; )
             {
                 var next = node.Next;
-                if (node.Value.Kind == (int) Character.CharacterKind.Follower)
+                if (node.Value.Kind == (int)Character.CharacterKind.Follower)
                 {
                     DeleteNpc(node);
                 }
@@ -234,7 +234,7 @@ namespace Engine
             var list = new List<Npc>();
             foreach (var npc in _list)
             {
-                if (npc.Kind == (int) Character.CharacterKind.Follower)
+                if (npc.Kind == (int)Character.CharacterKind.Follower)
                 {
                     list.Add(npc);
                 }
@@ -273,7 +273,6 @@ namespace Engine
 
         public static bool Load(string fileName, bool clearCurrentNpcs = true)
         {
-            if (string.IsNullOrEmpty(fileName)) return false;
             var success = true;
             var filePath = Utils.GetNpcObjFilePath(fileName);
             var partners = new List<Npc>();
@@ -286,10 +285,13 @@ namespace Engine
                     ClearAllNpc();
                 }
                 _fileName = fileName;
-                var list = Utils.GetAllKeyDataCollection(filePath, "NPC");
-                foreach (var keyDataCollection in list)
+                if (!string.IsNullOrEmpty(fileName))
                 {
-                    AddNpc(keyDataCollection);
+                    var list = Utils.GetAllKeyDataCollection(filePath, "NPC");
+                    foreach (var keyDataCollection in list)
+                    {
+                        AddNpc(keyDataCollection);
+                    }
                 }
             }
             catch (Exception exception)
@@ -312,7 +314,7 @@ namespace Engine
 
         public static void AddNpc(KeyDataCollection keyDataCollection)
         {
-            if(keyDataCollection == null) return;
+            if (keyDataCollection == null) return;
             var npc = new Npc(keyDataCollection);
             AddNpc(npc);
         }
@@ -458,7 +460,7 @@ namespace Engine
 
         public static void DeleteNpc(string npcName)
         {
-            for (var node = _list.First; node != null;)
+            for (var node = _list.First; node != null; )
             {
                 var next = node.Next;
                 if (node.Value.Name == npcName &&
@@ -572,7 +574,7 @@ namespace Engine
 
         public static Character GetPlayerKindCharacter()
         {
-            return _list.FirstOrDefault(npc => npc.Kind == (int) Character.CharacterKind.Player);
+            return _list.FirstOrDefault(npc => npc.Kind == (int)Character.CharacterKind.Player);
         }
     }
 }

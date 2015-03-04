@@ -89,8 +89,18 @@ namespace Engine.Script
             return NpcManager.GetNpc(name);
         }
 
-        private static List<Character> GetPlayerAndAllNpcs(string name)
+        private static List<Character> GetPlayerAndAllNpcs(string name, object defaultCharacter)
         {
+            if (string.IsNullOrEmpty(name))
+            {
+                var npc = defaultCharacter as Character;
+                if (npc == null)
+                {
+                    return new List<Character>();
+                }
+                return new List<Character>{npc};
+            }
+
             var list = NpcManager.GetAllNpcs(name);
             if (Globals.ThePlayer != null &&
                 Globals.ThePlayer.Name == name)
@@ -1121,7 +1131,7 @@ namespace Engine.Script
 
         public static void SetNpcKind(List<string> parameters, object belongObject)
         {
-            var list = GetPlayerAndAllNpcs(Utils.RemoveStringQuotes(parameters[0]));
+            var list = GetPlayerAndAllNpcs(Utils.RemoveStringQuotes(parameters[0]), belongObject);
             int value = int.Parse(parameters[1]);
             foreach (var character in list)
             {
@@ -1162,7 +1172,7 @@ namespace Engine.Script
 
         public static void SetNpcRelation(List<string> parameters, object belongObject)
         {
-            var list = GetPlayerAndAllNpcs(Utils.RemoveStringQuotes(parameters[0]));
+            var list = GetPlayerAndAllNpcs(Utils.RemoveStringQuotes(parameters[0]), belongObject);
             var value = int.Parse(parameters[1]);
             foreach (var character in list)
             {
