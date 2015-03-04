@@ -208,8 +208,13 @@ namespace Engine
                 var player = BelongCharacter as Player;
                 if (player != null)
                 {
-                    player.AddMagicExp(BelongMagic.ItemInfo, 
-                        Utils.GetMagicExp(character.Level));
+                    var amount = Utils.GetMagicExp(character.Level);
+                    player.AddMagicExp(BelongMagic.ItemInfo, amount);
+                    if (player.XiuLianMagic != null &&
+                        player.XiuLianMagic != BelongMagic.ItemInfo)
+                    {
+                        player.AddMagicExp(player.XiuLianMagic, amount);
+                    }
                 }
             }
 
