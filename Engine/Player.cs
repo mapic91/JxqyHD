@@ -763,9 +763,9 @@ namespace Engine
 
         public override void SetLevelTo(int level)
         {
-            Level = level;
             if (LevelIni == null)
             {
+                Level = level;
                 return;
             }
             Utils.LevelDetail detail = null, currentDetail = null;
@@ -797,6 +797,8 @@ namespace Engine
                 Exp = 0;
                 LevelUpExp = 0;
             }
+
+            Level = level;
         }
 
         #endregion Public method
