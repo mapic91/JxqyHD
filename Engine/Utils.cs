@@ -221,6 +221,8 @@ namespace Engine
             public int Defend;
             public int Evade;
             public string NewMagic;
+            public int Exp;
+            public int Life;
         }
         private static readonly Dictionary<int, Dictionary<int, LevelDetail>> LevelList =
             new Dictionary<int, Dictionary<int, LevelDetail>>();
@@ -252,11 +254,17 @@ namespace Engine
                             int.TryParse(nameValue[1], out value);
                             switch (nameValue[0])
                             {
+                                case "Exp":
+                                    detail.Exp = value;
+                                    break;
                                 case "LevelUpExp":
                                     detail.LevelUpExp = value;
                                     break;
                                 case "LifeMax":
                                     detail.LifeMax = value;
+                                    break;
+                                case "Life":
+                                    detail.Life = value;
                                     break;
                                 case "ThewMax":
                                     detail.ThewMax = value;

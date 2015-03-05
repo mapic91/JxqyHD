@@ -1996,40 +1996,28 @@ namespace Engine
         /// <param name="level">The level</param>
         public virtual void SetLevelTo(int level)
         {
+            Level = level;
             if (LevelIni == null)
             {
-                Level = level;
                 return;
             }
-            Utils.LevelDetail detail = null, currentDetail = null;
-            if (LevelIni.ContainsKey(level) &&
-                LevelIni.ContainsKey(Level))
+            Utils.LevelDetail detail = null;
+            if (LevelIni.ContainsKey(level))
             {
                 detail = LevelIni[level];
-                currentDetail = LevelIni[Level];
             }
             if (detail != null)
             {
-                LifeMax += (detail.LifeMax - currentDetail.LifeMax);
-                ThewMax += (detail.ThewMax - currentDetail.ThewMax);
-                ManaMax += (detail.ManaMax - currentDetail.ManaMax);
+                LifeMax = detail.Life;
+                ThewMax = detail.ThewMax;
+                ManaMax = detail.ManaMax;
                 Life = LifeMax;
                 Thew = ThewMax;
                 Mana = ManaMax;
-                Attack += (detail.Attack - currentDetail.Attack);
-                Defend += (detail.Defend - currentDetail.Defend);
-                Evade += (detail.Evade - currentDetail.Evade);
+                Attack = detail.Attack;
+                Defend = detail.Defend;
+                Evade = detail.Evade;
                 LevelUpExp = detail.LevelUpExp;
-                Level = level;
-                if (!string.IsNullOrEmpty(detail.NewMagic))
-                {
-                    AddMagic(detail.NewMagic);
-                }
-            }
-            else
-            {
-                Exp = 0;
-                LevelUpExp = 0;
             }
         }
 
