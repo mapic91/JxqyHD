@@ -264,20 +264,25 @@ namespace Engine
             }
         }
 
+        private void MoveToDirection(int direction)
+        {
+            var neighbers = Engine.PathFinder.FindNeighborInDirection(TilePosition, direction);
+            if (_isRun)
+            {
+                RunTo(neighbers);
+            }
+            else
+            {
+                WalkTo(neighbers);
+            }
+        }
+
         private void HandleMoveKeyboardInput()
         {
             var state = Keyboard.GetState();
             if (state.IsKeyDown(Keys.Up))
             {
-                var neighbers = Engine.PathFinder.FindNeighborInDirection(TilePosition, CurrentDirection);
-                if (_isRun)
-                {
-                    RunTo(neighbers);
-                }
-                else
-                {
-                    WalkTo(neighbers);
-                }
+                MoveToDirection(CurrentDirection);
             }
             else if (state.IsKeyDown(Keys.Left) &&
                 _lastKeyboardState.IsKeyUp(Keys.Left))
@@ -293,6 +298,39 @@ namespace Engine
                      _lastKeyboardState.IsKeyUp(Keys.Down))
             {
                 SetDirection(CurrentDirection + 4);
+            }
+
+            if (state.IsKeyDown(Keys.NumPad2))
+            {
+                MoveToDirection(0);
+            }
+            else if (state.IsKeyDown(Keys.NumPad1))
+            {
+                MoveToDirection(1);
+            }
+            else if (state.IsKeyDown(Keys.NumPad4))
+            {
+                MoveToDirection(2);
+            }
+            else if (state.IsKeyDown(Keys.NumPad7))
+            {
+                MoveToDirection(3);
+            }
+            else if (state.IsKeyDown(Keys.NumPad8))
+            {
+                MoveToDirection(4);
+            }
+            else if (state.IsKeyDown(Keys.NumPad9))
+            {
+                MoveToDirection(5);
+            }
+            else if (state.IsKeyDown(Keys.NumPad6))
+            {
+                MoveToDirection(6);
+            }
+            else if (state.IsKeyDown(Keys.NumPad3))
+            {
+                MoveToDirection(7);
             }
         }
 
