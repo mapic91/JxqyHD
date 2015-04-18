@@ -1,9 +1,10 @@
 # 剑侠情缘外传 月影传说 高清版
 
-## 环境配置：
+## 环境配置
 ### 需要
 1. XNA
 2. Visual Studio 2013
+
 ###步骤
 1. 安装好Visual Studio 2013
 2. 安装XNA   [XNA 4.0 Refresh (Visual Studio 2013)](https://mxa.codeplex.com/releases/view/117230)
