@@ -417,13 +417,13 @@ namespace Engine
             }
         }
 
-        public Magic FlyIni
+        virtual public Magic FlyIni
         {
             get { return _flyIni; }
             set { _flyIni = value; }
         }
 
-        public Magic FlyIni2
+        virtual public Magic FlyIni2
         {
             get { return _flyIni2; }
             set { _flyIni2 = value; }

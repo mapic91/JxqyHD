@@ -27,9 +27,18 @@ namespace Engine
         private float _sittedMilliseconds;
         private bool _isRun;
         /// <summary>
-        /// Used when equiping special equipment
+        /// Used to add extra life restore when equiping special equipment
         /// </summary>
         private float _extraLifeRestorePercent;
+
+        /// <summary>
+        /// Used to override character's FlyIni when equiping special equipment 
+        /// </summary>
+        private Magic _flyIniReplace;
+        /// <summary>
+        ///  Used to override character's FlyIni2 when equiping special equipment 
+        /// </summary>
+        private Magic _flyIni2Replace;
         
 
         private MagicListManager.MagicItemInfo _currentMagicInUse;
@@ -38,6 +47,18 @@ namespace Engine
         private bool _isUseMagicByKeyborad;
 
         #region Public properties
+
+        public override Magic FlyIni
+        {
+            get { return _flyIniReplace ?? base.FlyIni; }
+            set { base.FlyIni = value; }
+        }
+
+        public override Magic FlyIni2
+        {
+            get { return _flyIni2Replace ?? base.FlyIni2; }
+            set { base.FlyIni2 = value; }
+        }
 
         public bool IsNotUseThewWhenRun { set; get; }
         public bool IsManaRestore { set; get; }
@@ -597,6 +618,15 @@ namespace Engine
                         _extraLifeRestorePercent = equip.SpecialEffectValue/100.0f;
                         break;
                 }
+
+                if (!string.IsNullOrEmpty(equip.FlyIni))
+                {
+                    _flyIniReplace = Utils.GetMagic(equip.FlyIni, MagicFromCache);
+                }
+                if (!string.IsNullOrEmpty(equip.FlyIni2))
+                {
+                    _flyIni2Replace = Utils.GetMagic(equip.FlyIni2, MagicFromCache);
+                }
             }
 
             //Restore
@@ -638,6 +668,15 @@ namespace Engine
                     case 1://不断恢复生命
                         _extraLifeRestorePercent = 0.0f;
                         break;
+                }
+
+                if (!string.IsNullOrEmpty(equip.FlyIni))
+                {
+                    _flyIniReplace = null;
+                }
+                if (!string.IsNullOrEmpty(equip.FlyIni2))
+                {
+                    _flyIni2Replace = null;
                 }
             }
         }
