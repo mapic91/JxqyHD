@@ -121,3 +121,18 @@ Magic文件各项即可以在[Init]下设置，也可已在[Level*]下设置
 ExplodeMagicFile 在 Init下设置，表示该Magic一直可以爆炸，不管在任何Level下。
 ExplodeMagicFile 不设置在 Init 下，设置在Level*下，表示该Magic不可爆炸，当升级到该Level时，可爆炸。
 各Level可设置不同的 ExplodeMagicFile， 达到 不同 的武功等级， 不同的爆炸 Magic的效果。
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+对Kind=13 的扩展
+13  图像跟随主角
+(FlyingImage使用方向0).
+根据 SpecialKind 的值分为 :
+[1] - 增加生命，增加Effect，LifeFrame完爆炸
+[2] - 增加体力，增加Effect，LifeFrame完爆炸
+[3] - 不受伤害，时间长度LifeFrame，LifeFrame完爆炸
+扩展
+[4] - 不断增加生命，SpecialKindValue设置每秒增加多少生命，LifeFrame后结束
+[5] - 不断增加内力，SpecialKindValue设置每秒增加多少内力，LifeFrame后结束
+[6] - 不断增加体力，SpecialKindValue设置每秒增加多少体力，LifeFrame后结束
+范例见：player-magic-13扩展.ini

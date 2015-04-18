@@ -18,6 +18,7 @@ namespace Engine
         private LinkedList<Sprite> _superModeDestroySprites;
         private List<Character> _leapedCharacters; 
         private Character _closedCharecter;
+        private float _kind13ElapsedMilliSeconds;
 
         private int _leftLeapTimes;
         private int _currentEffect;
@@ -466,6 +467,36 @@ namespace Engine
             if (BelongMagic.MoveKind == 13)
             {
                 PositionInWorld = BelongCharacter.PositionInWorld;
+
+                _kind13ElapsedMilliSeconds += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                var isOneSecond = false;
+                if (_kind13ElapsedMilliSeconds >= 1000)
+                {
+                    _kind13ElapsedMilliSeconds -= 1000;
+                    isOneSecond = true;
+                }
+
+                switch (BelongMagic.SpecialKind)
+                {
+                    case 4:
+                        if (isOneSecond)
+                        {
+                            BelongCharacter.AddLife(BelongMagic.SpecialKindValue);
+                        }
+                        break;
+                    case 5:
+                        if (isOneSecond)
+                        {
+                            BelongCharacter.AddMana(BelongMagic.SpecialKindValue);
+                        }
+                        break;
+                    case 6:
+                        if (isOneSecond)
+                        {
+                            BelongCharacter.AddThew(BelongMagic.SpecialKindValue);
+                        }
+                        break;
+                }
             }
 
             if (IsInDestroy)

@@ -7,6 +7,7 @@ namespace Engine
     public class Good
     {
         private int _cost;
+        private int _specialEffectValue = 1;
         public string FileName { set; get; }
         public string Name { set; get; }
         public GoodKind Kind { set; get; }
@@ -25,6 +26,13 @@ namespace Engine
         public int Defend { set; get; }
         public int Evade { set; get; }
         public int EffectType { set; get; }
+        public int SpecialEffect { set; get; }
+        public int SpecialEffectValue
+        {
+            get { return _specialEffectValue; }
+            set { _specialEffectValue = value; }
+        }
+
         public string Script { set; get; }
         public bool IsOk { private set; get; }
 

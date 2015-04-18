@@ -50,3 +50,12 @@ EffectType
 3-使敌人石化(Hand),解石化(Kind=0)
 
 Script 使用物品时运行的脚本,在script\goods文件夹
+
+扩展：（原版没有的）
+1. 当Kind=1（装备）
+>SpecialEffect
+ 0 - 无
+ 1 - 不断恢复生命（一秒恢复 SpecialEffectValue% 的体力）
+     比如：SpecialEffectValue 设置为5，则装备了该装备后，每秒恢复5%的体力（注意主角自身也会恢复体力）
+	 范例文件见：goods-n10-碧玉挂链增加体力.ini
+>SpecialEffectValue - 默认1

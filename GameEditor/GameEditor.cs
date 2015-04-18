@@ -316,5 +316,15 @@ namespace GameEditor
         {
             Globals.ThePlayer.AddLife(-1000);
         }
+
+        private void emptyManaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Globals.ThePlayer.Mana = 0;
+        }
+
+        private void emptyThewToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Globals.ThePlayer.Thew = 0;
+        }
     }
 }

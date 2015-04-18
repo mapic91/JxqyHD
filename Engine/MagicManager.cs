@@ -547,7 +547,7 @@ namespace Engine
                     user.Thew += (magic.Effect == 0 ? user.Attack : magic.Effect);
                     AddMagicSprite(sprite);
                     break;
-                case 3:
+                default:
                     {
                         MagicSprite spriteInEffect = null;
                         foreach (var item in user.MagicSpritesInEffect)

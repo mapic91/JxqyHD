@@ -26,6 +26,11 @@ namespace Engine
         private float _standingMilliseconds;
         private float _sittedMilliseconds;
         private bool _isRun;
+        /// <summary>
+        /// Used when equiping special equipment
+        /// </summary>
+        private float _extraLifeRestorePercent;
+        
 
         private MagicListManager.MagicItemInfo _currentMagicInUse;
         private MagicListManager.MagicItemInfo _xiuLianMagic;
@@ -585,6 +590,13 @@ namespace Engine
                         SetFlyIniAdditionalEffect(Magic.AddonEffect.Petrified);
                         break;
                 }
+
+                switch (equip.SpecialEffect)
+                {
+                    case 1://不断恢复生命
+                        _extraLifeRestorePercent = equip.SpecialEffectValue/100.0f;
+                        break;
+                }
             }
 
             //Restore
@@ -618,6 +630,13 @@ namespace Engine
                     case Good.GoodEffectType.EnemyPoisoned:
                     case Good.GoodEffectType.EnemyPetrified:
                         SetFlyIniAdditionalEffect(Magic.AddonEffect.None);
+                        break;
+                }
+
+                switch (equip.SpecialEffect)
+                {
+                    case 1://不断恢复生命
+                        _extraLifeRestorePercent = 0.0f;
                         break;
                 }
             }
@@ -992,10 +1011,12 @@ namespace Engine
                 _standingMilliseconds += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
                 if (_standingMilliseconds >= 1000)
                 {
-                    Life += (int)(ListRestorePercent * LifeMax);
+                    Life += (int)((ListRestorePercent + _extraLifeRestorePercent) * LifeMax);
                     Thew += (int)(ThewRestorePercent * ThewMax);
                     if (IsManaRestore)
+                    {
                         Mana += (int)(ManaMax * ManaRestorePercent);
+                    }
                     _standingMilliseconds = 0f;
                 }
             }
