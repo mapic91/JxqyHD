@@ -136,3 +136,16 @@ ExplodeMagicFile 不设置在 Init 下，设置在Level*下，表示该Magic不可爆炸，当升级到
 [5] - 不断增加内力，SpecialKindValue设置每秒增加多少内力，LifeFrame后结束
 [6] - 不断增加体力，SpecialKindValue设置每秒增加多少体力，LifeFrame后结束
 范例见：player-magic-13扩展.ini
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+反噬：
+
+反噬是当使用武功时有一定几率，受到所使用武功Effect一定比率的伤害
+
+**当SideEffectProbability大于0时，表示会有反噬
+
+详细：
+SideEffectProbability - 反噬几率 0 到 100，默认值0
+SideEffectPercent - 默认值0，武功Effect值的比率，比如Effect=200，SideEffectPercent为10，则反噬时受到伤害200 * 0.1 = 20
+SideEffectType - 受到的伤害类型，默认值0。0 生命， 1 内力， 2 体力

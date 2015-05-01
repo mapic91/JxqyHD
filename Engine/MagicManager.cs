@@ -666,6 +666,17 @@ namespace Engine
             _effectSprites.Clear();
         }
 
+        public static int GetEffectAmount(Magic magic, Character belongCharacter)
+        {
+            //If magic effect not set(equal 0) use belong character attack value as amount.
+            //Because npc just can use FlyIni FlyIni2, 
+            //so if belong character is a npc not a player use character attack value as amount also.
+            if (magic == null || belongCharacter == null) return 0;
+            return (magic.Effect == 0 || !belongCharacter.IsPlayer) ?
+                belongCharacter.Attack :
+                magic.Effect;
+        }
+
         /// <summary>
         /// Use magic.
         /// </summary>
@@ -678,7 +689,9 @@ namespace Engine
         {
             if (user == null || magic == null) return;
             if (magic.FlyingSound != null)
+            {
                 magic.FlyingSound.Play();
+            }
             switch (magic.MoveKind)
             {
                 case 1:
@@ -742,6 +755,27 @@ namespace Engine
                 case 17:
                     AddThrowMagicSprite(user, magic, origin, destination, true);
                     break;
+            }
+
+            //Magic side effect
+            if (magic.SideEffectProbability > 0 && 
+                Globals.TheRandom.Next(0, 100) < magic.SideEffectProbability)
+            {
+                var amount = (GetEffectAmount(magic, user) * magic.SideEffectPercent) / 100;
+                switch ((Magic.SideEffectDamageType)magic.SideEffectType)
+                {
+                    case Magic.SideEffectDamageType.Life:
+                        user.DecreaseLifeAddHurt(amount);
+                        break;
+                    case Magic.SideEffectDamageType.Mana:
+                        user.AddMana(-amount);
+                        break;
+                    case Magic.SideEffectDamageType.Thew:
+                        user.AddThew(-amount);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
             }
         }
 

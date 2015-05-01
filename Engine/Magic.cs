@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Engine.ListManager;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 
 namespace Engine
@@ -41,14 +42,19 @@ namespace Engine
         private int _levelupExp;
         private bool _isOk;
         private MagicListManager.MagicItemInfo _iteminfo;
-        #region Leap
 
+        #region Leap
         private int _leapTimes;
         private int _leapFrame;
         private int _effectReducePercentage;
         private Asf _leapImage;
-
         #endregion Leap
+
+        #region SideEffect
+        private int _sideEffectProbability;
+        private int _sideEffectPercent;
+        private int _SideEffectType;
+        #endregion SideEffect
 
         #region Public properties
         public AddonEffect AdditionalEffect { set; get; }
@@ -269,6 +275,31 @@ namespace Engine
             set { _leapImage = value; }
         }
 
+        public int SideEffectType
+        {
+            get { return _SideEffectType; }
+            set
+            {
+                if (!Enum.IsDefined(typeof (SideEffectDamageType), value))
+                {
+                    value = 0;
+                }
+                _SideEffectType = value;
+            }
+        }
+
+        public int SideEffectPercent
+        {
+            get { return _sideEffectPercent; }
+            set { _sideEffectPercent = value.Clamp(0, 100); }
+        }
+
+        public int SideEffectProbability
+        {
+            get { return _sideEffectProbability; }
+            set { _sideEffectProbability = value.Clamp(0, 100); }
+        }
+
         #endregion
 
         //noAttackFile - resolve recursive problem of AttackFile
@@ -414,6 +445,13 @@ namespace Engine
             Frozen,
             Poision,
             Petrified
+        }
+
+        public enum SideEffectDamageType
+        {
+            Life = 0,
+            Mana,
+            Thew
         }
     }
 }

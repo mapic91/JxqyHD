@@ -1949,10 +1949,10 @@ namespace Engine
         }
 
         /// <summary>
-        /// Add amount of life.Amount can be negative.
+        /// Add amount of life. Amount can be negative.
         /// If list is less than 0.Character is death and <see cref="Death"/> is invoked.
         /// </summary>
-        /// <param name="amount">Amount to add.If amount is nagetive, life is decreased.</param>
+        /// <param name="amount">Amount to add. If amount is nagetive, life is decreased.</param>
         public void AddLife(int amount)
         {
             Life += amount;
@@ -1960,7 +1960,7 @@ namespace Engine
         }
 
         /// <summary>
-        /// Decrease amount of life.If life is greater than 0, <see cref="Hurting"/> is invoked.
+        /// Decrease amount of life. If life is greater than 0, <see cref="Hurting"/> is invoked.
         /// Amount must be positive, oherwise no effect.
         /// </summary>
         /// <param name="amount">Amount must be positive, oherwise no effect.</param>
@@ -2356,13 +2356,15 @@ namespace Engine
                     base.Update(gameTime);
                     if (IsPlayCurrentDirOnceEnd())
                     {
+                        StandingImmediately();
                         if (NpcIni.ContainsKey((int)CharacterState.Magic))
                         {
                             PlaySoundEffect(NpcIni[(int)CharacterState.Magic].Sound);
                         }
                         if (CanUseMagic())
+                        {
                             MagicManager.UseMagic(this, MagicUse, PositionInWorld, _magicDestination, _magicTarget);
-                        StandingImmediately();
+                        }
                     }
                     break;
                 case CharacterState.Sit:

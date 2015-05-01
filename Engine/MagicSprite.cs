@@ -102,17 +102,6 @@ namespace Engine
         }
         #endregion Ctor
 
-        private static int GetEffectAmount(Magic magic, Character belongCharacter)
-        {
-            //If magic effect not set(equal 0) use belong character attack value as amount.
-            //Because npc just can use FlyIni FlyIni2, 
-            //so if belong character is a npc not a player use character attack value as amount also.
-            if (magic == null || belongCharacter == null) return 0;
-            return (magic.Effect == 0 || !belongCharacter.IsPlayer) ?
-                    belongCharacter.Attack :
-                    magic.Effect;
-        }
-
         private void CharacterHited(Character character)
         {
             if (character == null) return;
@@ -176,7 +165,7 @@ namespace Engine
                 const int minimalEffect = 5;
                 var effect = minimalEffect;
 
-                var amount = _canLeap ? _currentEffect : GetEffectAmount(BelongMagic, BelongCharacter);
+                var amount = _canLeap ? _currentEffect : MagicManager.GetEffectAmount(BelongMagic, BelongCharacter);
 
                 var offset = amount - character.Defend;
                 if (offset > minimalEffect) effect = offset;
@@ -259,7 +248,7 @@ namespace Engine
         private void Begin()
         {
             _leftLeapTimes = BelongMagic.LeapTimes;
-            _currentEffect = GetEffectAmount(BelongMagic, BelongCharacter);
+            _currentEffect = MagicManager.GetEffectAmount(BelongMagic, BelongCharacter);
 
             if (_leftLeapTimes > 0)
             {
