@@ -200,7 +200,8 @@ namespace Engine
                 character.DecreaseLifeAddHurt(effect);
 
                 //Restore
-                if (BelongMagic.RestoreProbability > 0)
+                if (BelongMagic.RestoreProbability > 0 && 
+                Globals.TheRandom.Next(0, 100) < BelongMagic.RestoreProbability)
                 {
                     var restoreAmount = (effect*BelongMagic.RestorePercent)/100;
                     switch ((Magic.RestorePropertyType)BelongMagic.RestoreType)
