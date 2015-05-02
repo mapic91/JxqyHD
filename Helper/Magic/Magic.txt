@@ -157,7 +157,7 @@ SideEffectType - 受到的伤害类型，默认值0。0 生命， 1 内力， 2 体力
 
 吸取是当武功造成对方伤害时（伤害值最大为对方当前生命值），有一定几率使攻击方获得伤害值一定比率的状态恢复
 
-**当RestoreProbability大于0时，表示会吸取生命
+**当RestoreProbability大于0时，表示会吸取
 
 详细：
 RestoreProbability - 吸取几率 0 到 100，默认值0
