@@ -216,6 +216,34 @@ namespace Engine
             return list;
         }
 
+        /// <summary>
+        /// Find enemys
+        /// </summary>
+        /// <param name="finder"></param>
+        /// <param name="tileDistance">The max tile distance form finder to enemy</param>
+        /// <returns>Finded enemies. If can't find list size is 0.</returns>
+        public static List<Character> FindEnemiesInTileDistance(Character finder, int tileDistance)
+        {
+            var enemies = new List<Character>();
+            if (finder == null) return enemies;
+
+            if (finder.IsEnemy)
+            {
+                enemies.AddRange(_list.Where(npc => npc.IsFighterFriend && PathFinder.GetViewTileDistance(finder.TilePosition, npc.TilePosition) <= tileDistance));
+                
+                if (PathFinder.GetViewTileDistance(finder.TilePosition, Globals.ThePlayer.TilePosition) <= tileDistance)
+                {
+                    enemies.Add(Globals.ThePlayer);
+                }
+            }
+            else if (finder.IsPlayer || finder.IsFighterFriend)
+            {
+                enemies.AddRange(_list.Where(npc => npc.IsEnemy && PathFinder.GetViewTileDistance(finder.TilePosition, npc.TilePosition) <= tileDistance));
+            }
+
+            return enemies;
+        }
+
         public static void RemoveAllPartner()
         {
             for (var node = _list.First; node != null; )

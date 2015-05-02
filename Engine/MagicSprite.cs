@@ -111,17 +111,26 @@ namespace Engine
             switch (BelongMagic.SpecialKind)
             {
                 case 1:
+                case 7:
                     if (!character.IsFrozened)
                         character.FrozenSeconds = BelongMagic.CurrentLevel + 1;
                     break;
                 case 2:
+                case 8:
                     if (!character.IsPoisoned)
                         character.PoisonSeconds = BelongMagic.CurrentLevel + 1;
                     break;
                 case 3:
+                case 9:
                     if (!character.IsPetrified)
                         character.PetrifiedSeconds = BelongMagic.CurrentLevel + 1;
                     break;
+            }
+
+            if (BelongMagic.MoveKind == 13)
+            {
+                //Kind 13 magic only have special effect
+                return;
             }
 
             //Additional attack effect added to magic when player equip special equipment
@@ -511,6 +520,14 @@ namespace Engine
                         if (isOneSecond)
                         {
                             BelongCharacter.AddThew(BelongMagic.SpecialKindValue);
+                        }
+                        break;
+                    case 7:
+                    case 8:
+                    case 9:
+                        foreach (var target in NpcManager.FindEnemiesInTileDistance(BelongCharacter, BelongMagic.SpecialKindValue))
+                        {
+                            CharacterHited(target);
                         }
                         break;
                 }
