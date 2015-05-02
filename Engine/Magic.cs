@@ -53,8 +53,14 @@ namespace Engine
         #region SideEffect
         private int _sideEffectProbability;
         private int _sideEffectPercent;
-        private int _SideEffectType;
+        private int _sideEffectType;
         #endregion SideEffect
+
+        #region Restore
+        private int _restoreProbability;
+        private int _restorePercent;
+        private int _restoreType;
+        #endregion Restore
 
         #region Public properties
         public AddonEffect AdditionalEffect { set; get; }
@@ -277,27 +283,52 @@ namespace Engine
 
         public int SideEffectType
         {
-            get { return _SideEffectType; }
+            get { return _sideEffectType; }
             set
             {
                 if (!Enum.IsDefined(typeof (SideEffectDamageType), value))
                 {
                     value = 0;
                 }
-                _SideEffectType = value;
+                _sideEffectType = value;
             }
         }
 
         public int SideEffectPercent
         {
             get { return _sideEffectPercent; }
-            set { _sideEffectPercent = value.Clamp(0, 100); }
+            set { _sideEffectPercent = value; }
         }
 
         public int SideEffectProbability
         {
             get { return _sideEffectProbability; }
             set { _sideEffectProbability = value.Clamp(0, 100); }
+        }
+
+        public int RestoreType
+        {
+            get { return _restoreType; }
+            set
+            {
+                if (!Enum.IsDefined(typeof (RestorePropertyType), value))
+                {
+                    value = 0;
+                }
+                _restoreType = value;
+            }
+        }
+
+        public int RestorePercent
+        {
+            get { return _restorePercent; }
+            set { _restorePercent = value; }
+        }
+
+        public int RestoreProbability
+        {
+            get { return _restoreProbability; }
+            set { _restoreProbability = value.Clamp(0, 100); }
         }
 
         #endregion
@@ -448,6 +479,13 @@ namespace Engine
         }
 
         public enum SideEffectDamageType
+        {
+            Life = 0,
+            Mana,
+            Thew
+        }
+
+        public enum RestorePropertyType
         {
             Life = 0,
             Mana,

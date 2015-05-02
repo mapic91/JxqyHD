@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Engine.Weather;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -177,7 +178,8 @@ namespace Engine
                         case 13:
                             if (magic.SpecialKind == 3)
                             {
-                                var manaReduce = magic.Effect;
+                                //Target character have protecter
+                                var manaReduce = MagicManager.GetEffectAmount(magic, character);
                                 if (effect < manaReduce) manaReduce = effect;
                                 manaReduce /= 2;
                                 if (character.Mana >= manaReduce)
@@ -190,7 +192,32 @@ namespace Engine
                             break;
                     }
                 }
+                if (effect > character.Life)
+                {
+                    //Effect amount should less than or equal target character current life amount.
+                    effect = character.Life;
+                }
                 character.DecreaseLifeAddHurt(effect);
+
+                //Restore
+                if (BelongMagic.RestoreProbability > 0)
+                {
+                    var restoreAmount = (effect*BelongMagic.RestorePercent)/100;
+                    switch ((Magic.RestorePropertyType)BelongMagic.RestoreType)
+                    {
+                        case Magic.RestorePropertyType.Life:
+                            BelongCharacter.AddLife(restoreAmount);
+                            break;
+                        case Magic.RestorePropertyType.Mana:
+                            BelongCharacter.AddMana(restoreAmount);
+                            break;
+                        case Magic.RestorePropertyType.Thew:
+                            BelongCharacter.AddThew(restoreAmount);
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                }
             }
 
             if (BelongCharacter.IsPlayer)

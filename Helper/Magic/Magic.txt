@@ -150,3 +150,17 @@ SideEffectProbability - 反噬几率 0 到 100，默认值0
 SideEffectPercent - 默认值0，武功Effect值的比率，比如Effect=200，SideEffectPercent为10，则反噬时受到伤害200 * 0.1 = 20
 SideEffectType - 受到的伤害类型，默认值0。0 生命， 1 内力， 2 体力
 范例见：player-magic-反噬.ini
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+吸取:
+
+吸取是当武功造成对方伤害时（伤害值最大为对方当前生命值），有一定几率使攻击方获得伤害值一定比率的状态恢复
+
+**当RestoreProbability大于0时，表示会吸取生命
+
+详细：
+RestoreProbability - 吸取几率 0 到 100，默认值0
+RestorePercent - 默认值0，对方伤害值的比率，比如对方受到的伤害为50，RestoreLifePercent为10，则恢复50 * 0.1 = 5
+RestoreType - 恢复类型，默认值0。0 生命， 1 内力， 2 体力
+范例见：player-magic-吸取.ini
