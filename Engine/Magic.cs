@@ -80,6 +80,10 @@ namespace Engine
                 {
                     _explodeMagicFile.ItemInfo = value;
                 }
+                if (_flyMagic != null)
+                {
+                    _flyMagic.ItemInfo = value;
+                }
             }
             get { return _iteminfo; }
         }
