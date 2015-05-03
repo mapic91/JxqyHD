@@ -35,6 +35,8 @@ namespace Engine
         private string _actionFile;
         private Magic _attackFile;
         private Magic _explodeMagicFile;
+        private Magic _flyMagic;
+        private int _flyInterval;
         private Dictionary<int, Magic> _level;
         private int _currentLevel;
         private int _effect;
@@ -86,6 +88,18 @@ namespace Engine
         {
             get { return _explodeMagicFile; }
             set { _explodeMagicFile = value; }
+        }
+
+        public Magic FlyMagic
+        {
+            get { return _flyMagic; }
+            set { _flyMagic = value; }
+        }
+
+        public int FlyInterval
+        {
+            get { return _flyInterval; }
+            set { _flyInterval = value; }
         }
 
         public string FileName { private set; get; }
@@ -370,6 +384,7 @@ namespace Engine
                         info.SetValue(this, Utils.GetSoundEffect(nameValue[1]), null);
                         break;
                     case "ExplodeMagicFile":
+                    case "FlyMagic":
                         info.SetValue(this, Utils.GetMagic(nameValue[1], false), null);
                         break;
                     default:
@@ -464,6 +479,11 @@ namespace Engine
             if (magic.ExplodeMagicFile != null)
             {
                 magic.ExplodeMagicFile = magic.ExplodeMagicFile.GetLevel(level);
+            }
+            //Assign FlyMagic level
+            if (magic.FlyMagic != null)
+            {
+                magic.FlyMagic = magic.FlyMagic.GetLevel(level);
             }
             //Assign item info to level magic
             magic.ItemInfo = ItemInfo;

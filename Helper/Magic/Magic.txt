@@ -84,6 +84,18 @@ FlyingImage使用方向0，碰到敌人就爆炸，LifeFrame完也爆炸.
 （原版没有的）：
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+MoveKind：
+18 释放武功
+放出一个直线运行，在飞行中每隔FlyInterval毫秒释放一次同等级的FlyMagic，LifeFrame完爆炸
+
+详细：
+FlyMagic - 飞行中释放的Magic文件名（释放的Magic等级跟原Magic相同）
+FlyInterval - 每隔多少毫秒释放FlyMagic
+
+范例见：magic-kind18.ini
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 爆炸：
 
 爆炸是当Magic爆炸时，在爆炸处释放ExplodeMagicFile。

@@ -755,6 +755,9 @@ namespace Engine
                 case 17:
                     AddThrowMagicSprite(user, magic, origin, destination, true);
                     break;
+                case 18:
+                    AddMagicSprite(GetMoveMagicSprite(user, magic, origin, destination, true, GetSpeedRatio(destination - origin)));
+                    break;
             }
 
             //Magic side effect

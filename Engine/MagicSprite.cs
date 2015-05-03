@@ -19,11 +19,16 @@ namespace Engine
         private LinkedList<Sprite> _superModeDestroySprites;
         private List<Character> _leapedCharacters; 
         private Character _closedCharecter;
-        private float _kind13ElapsedMilliSeconds;
+        private float _elapsedMilliSeconds;
+        private bool _isOneSecond;
 
         private int _leftLeapTimes;
         private int _currentEffect;
         private bool _canLeap;
+
+        #region Kind 18
+        private double _kind18elapsedMilliSeconds;
+        #endregion Kind18
 
 
         #region Public properties
@@ -411,6 +416,17 @@ namespace Engine
             _isDestroyed = true;
         }
 
+        private void UpdateTime(GameTime gameTime)
+        {
+            _isOneSecond = false;
+            _elapsedMilliSeconds += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            if (_elapsedMilliSeconds >= 1000)
+            {
+                _elapsedMilliSeconds -= 1000;
+                _isOneSecond = true;
+            }
+        }
+
         public void SetPath(LinkedList<Vector2> paths)
         {
             _paths = paths;
@@ -494,30 +510,23 @@ namespace Engine
             {
                 PositionInWorld = BelongCharacter.PositionInWorld;
 
-                _kind13ElapsedMilliSeconds += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-                var isOneSecond = false;
-                if (_kind13ElapsedMilliSeconds >= 1000)
-                {
-                    _kind13ElapsedMilliSeconds -= 1000;
-                    isOneSecond = true;
-                }
-
+                UpdateTime(gameTime);
                 switch (BelongMagic.SpecialKind)
                 {
                     case 4:
-                        if (isOneSecond)
+                        if (_isOneSecond)
                         {
                             BelongCharacter.AddLife(BelongMagic.SpecialKindValue);
                         }
                         break;
                     case 5:
-                        if (isOneSecond)
+                        if (_isOneSecond)
                         {
                             BelongCharacter.AddMana(BelongMagic.SpecialKindValue);
                         }
                         break;
                     case 6:
-                        if (isOneSecond)
+                        if (_isOneSecond)
                         {
                             BelongCharacter.AddThew(BelongMagic.SpecialKindValue);
                         }
@@ -565,9 +574,23 @@ namespace Engine
             }
             else
             {
-                if (BelongMagic.MoveKind != 13)
+                switch (BelongMagic.MoveKind)
                 {
-                    CheckCharacterHited();
+                    case 13:
+                        break;
+                    case 18://Fly magic
+                    {
+                        _kind18elapsedMilliSeconds += gameTime.ElapsedGameTime.TotalMilliseconds;
+                        if (_kind18elapsedMilliSeconds >= BelongMagic.FlyInterval)
+                        {
+                            _kind18elapsedMilliSeconds -= BelongMagic.FlyInterval;
+                            MagicManager.UseMagic(BelongCharacter, BelongMagic.FlyMagic, PositionInWorld, PositionInWorld + _moveDirection);
+                        }
+                    }
+                        break;
+                    default:
+                        CheckCharacterHited();
+                        break;
                 }
 
                 if (Globals.TheMap.IsObstacleForMagic(MapX, MapY))
