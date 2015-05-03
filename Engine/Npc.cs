@@ -9,6 +9,7 @@ namespace Engine
     public class Npc : Character
     {
         private List<Vector2> _actionPathTilePositionList;
+        private int _idledFrame;
 
         private List<Vector2> ActionPathTilePositionList
         {
@@ -112,8 +113,18 @@ namespace Engine
                 //so set MoveTargetChanged to true make sure character get new destination.
                 MoveTargetChanged = true;
 
-                if (attackCanReach) Attacking(FollowTarget.TilePosition);
-                else WalkTo(FollowTarget.TilePosition);
+                if (attackCanReach)
+                {
+                    if (_idledFrame >= Idle)
+                    {
+                        _idledFrame = 0;
+                        Attacking(FollowTarget.TilePosition);
+                    }
+                }
+                else
+                {
+                    WalkTo(FollowTarget.TilePosition);
+                }
             }
         }
 
@@ -169,6 +180,12 @@ namespace Engine
 
             //Follow target
             PerformeFollow();
+
+            //Attack interval
+            if (_idledFrame < Idle)
+            {
+                _idledFrame++;
+            }
 
             if (IsFollowTargetFound)
             {
