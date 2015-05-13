@@ -196,7 +196,7 @@ namespace Engine.Script
                 if (!string.IsNullOrEmpty(gotoPosition))
                 {
                     gotoPosition += ":";
-                    _currentIndex++;
+                    _currentIndex = 0;//Scan from begin
                     while (_currentIndex < count)
                     {
                         if (_codes[_currentIndex].IsGoto &&
