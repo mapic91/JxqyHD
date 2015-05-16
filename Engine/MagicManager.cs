@@ -14,6 +14,8 @@ namespace Engine
         private static Rectangle _lastViewRegion;
         private static bool _listChanged = true;
 
+        public static int MaxMagicUnit;
+
         public static LinkedList<MagicSprite> MagicSpritesList
         {
             get { return _magicSprites; }
@@ -138,6 +140,12 @@ namespace Engine
 
         private static void AddMagicSprite(MagicSprite sprite)
         {
+            if (MaxMagicUnit > 0 && _magicSprites.Count >= MaxMagicUnit)
+            {
+                //Restrict max magic sprites for performence
+                return;
+            }
+
             if (sprite != null)
             {
                 _magicSprites.AddLast(sprite);

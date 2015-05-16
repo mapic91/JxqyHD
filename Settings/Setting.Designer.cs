@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.label1 = new System.Windows.Forms.Label();
             this._resolutionList = new System.Windows.Forms.ComboBox();
             this._saveButton = new System.Windows.Forms.Button();
@@ -40,8 +41,14 @@
             this._musicVolume = new System.Windows.Forms.TrackBar();
             this._textSoundEffectVolume = new System.Windows.Forms.Label();
             this._textMusicVolume = new System.Windows.Forms.Label();
+            this._lblMaxMagicUnit = new System.Windows.Forms.Label();
+            this._maxMagicUintCtl = new System.Windows.Forms.NumericUpDown();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this._toolTip = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this._soundEffectVolume)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this._musicVolume)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this._maxMagicUintCtl)).BeginInit();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -63,7 +70,7 @@
             // 
             // _saveButton
             // 
-            this._saveButton.Location = new System.Drawing.Point(61, 210);
+            this._saveButton.Location = new System.Drawing.Point(61, 299);
             this._saveButton.Name = "_saveButton";
             this._saveButton.Size = new System.Drawing.Size(75, 23);
             this._saveButton.TabIndex = 2;
@@ -73,7 +80,7 @@
             // 
             // _beginGameButton
             // 
-            this._beginGameButton.Location = new System.Drawing.Point(261, 210);
+            this._beginGameButton.Location = new System.Drawing.Point(261, 302);
             this._beginGameButton.Name = "_beginGameButton";
             this._beginGameButton.Size = new System.Drawing.Size(75, 23);
             this._beginGameButton.TabIndex = 3;
@@ -153,11 +160,49 @@
             this._textMusicVolume.TabIndex = 16;
             this._textMusicVolume.Text = "100%";
             // 
+            // _lblMaxMagicUnit
+            // 
+            this._lblMaxMagicUnit.AutoSize = true;
+            this._lblMaxMagicUnit.Location = new System.Drawing.Point(6, 19);
+            this._lblMaxMagicUnit.Name = "_lblMaxMagicUnit";
+            this._lblMaxMagicUnit.Size = new System.Drawing.Size(205, 13);
+            this._lblMaxMagicUnit.TabIndex = 17;
+            this._lblMaxMagicUnit.Text = "武功单位个数限制（0表示不限制）：";
+            // 
+            // _maxMagicUintCtl
+            // 
+            this._maxMagicUintCtl.Increment = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this._maxMagicUintCtl.Location = new System.Drawing.Point(216, 17);
+            this._maxMagicUintCtl.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
+            this._maxMagicUintCtl.Name = "_maxMagicUintCtl";
+            this._maxMagicUintCtl.Size = new System.Drawing.Size(114, 20);
+            this._maxMagicUintCtl.TabIndex = 18;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this._lblMaxMagicUnit);
+            this.groupBox1.Controls.Add(this._maxMagicUintCtl);
+            this.groupBox1.Location = new System.Drawing.Point(39, 189);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(336, 94);
+            this.groupBox1.TabIndex = 19;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "性能";
+            // 
             // Setting
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(410, 252);
+            this.ClientSize = new System.Drawing.Size(410, 336);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this._textMusicVolume);
             this.Controls.Add(this._textSoundEffectVolume);
             this.Controls.Add(this._musicVolume);
@@ -174,6 +219,9 @@
             this.Text = "游戏设置";
             ((System.ComponentModel.ISupportInitialize)(this._soundEffectVolume)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this._musicVolume)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this._maxMagicUintCtl)).EndInit();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -193,5 +241,9 @@
         private System.Windows.Forms.TrackBar _musicVolume;
         private System.Windows.Forms.Label _textSoundEffectVolume;
         private System.Windows.Forms.Label _textMusicVolume;
+        private System.Windows.Forms.Label _lblMaxMagicUnit;
+        private System.Windows.Forms.NumericUpDown _maxMagicUintCtl;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.ToolTip _toolTip;
     }
 }

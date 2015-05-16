@@ -19,6 +19,8 @@ namespace Settings
         {
             InitializeComponent();
 
+            _toolTip.SetToolTip(_lblMaxMagicUnit, "限制能同时存在的最大武功单位个数\n比如一个球是一个武功单位，限制最多200\n则如果当前有200个武功单位，就不能再增加武功单位，即此时释放武功等于没释放武功");
+
             Globals.LoadSetting();
 
             _windowMode.Checked = !Globals.IsFullScreen;
@@ -37,6 +39,7 @@ namespace Settings
 
             _soundEffectVolume.Value = (int)(SoundEffect.MasterVolume*100);
             _musicVolume.Value = (int) (BackgroundMusic.GetVolume()*100);
+            _maxMagicUintCtl.Value = MagicManager.MaxMagicUnit;
             UpdateLabelText();
             CenterToScreen();
         }
@@ -50,6 +53,7 @@ namespace Settings
             Globals.IsFullScreen = !_windowMode.Checked;
             SoundEffect.MasterVolume = _soundEffectVolume.Value/100f;
             BackgroundMusic.SetVolume(_musicVolume.Value/100f);
+            MagicManager.MaxMagicUnit = (int)_maxMagicUintCtl.Value;
 
             Globals.SaveAllSetting();
         }

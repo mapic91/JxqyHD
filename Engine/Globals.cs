@@ -127,6 +127,8 @@ namespace Engine
                     WindowHeight = value;
                 if (int.TryParse(setting["SaveLoadSelectionIndex"], out value))
                     SaveLoadSelectionIndex = value;
+                if (int.TryParse(setting["MaxMagicUnit"], out value))
+                    MagicManager.MaxMagicUnit = value;
 
                 float fv;
                 if (float.TryParse(setting["SoundEffectVolume"], out fv))
@@ -185,6 +187,7 @@ namespace Engine
                     section["Height"] = WindowHeight.ToString();
                     section["SoundEffectVolume"] = SoundEffect.MasterVolume.ToString();
                     section["MusicVolume"] = BackgroundMusic.GetVolume().ToString();
+                    section["MaxMagicUnit"] = MagicManager.MaxMagicUnit.ToString();
                 }
                 File.WriteAllText(GameIniFilePath, data.ToString(), LocalEncoding);
             }
