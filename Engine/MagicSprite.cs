@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Engine.Weather;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -17,7 +18,7 @@ namespace Engine
         private bool _isInDestroy;
         private bool _destroyOnEnd;
         private LinkedList<Sprite> _superModeDestroySprites;
-        private List<Character> _leapedCharacters; 
+        private List<Character> _leapedCharacters;
         private Character _closedCharecter;
         private float _elapsedMilliSeconds;
         private bool _isOneSecond;
@@ -214,10 +215,10 @@ namespace Engine
                 character.DecreaseLifeAddHurt(effect);
 
                 //Restore
-                if (BelongMagic.RestoreProbability > 0 && 
+                if (BelongMagic.RestoreProbability > 0 &&
                 Globals.TheRandom.Next(0, 100) < BelongMagic.RestoreProbability)
                 {
-                    var restoreAmount = (effect*BelongMagic.RestorePercent)/100;
+                    var restoreAmount = (effect * BelongMagic.RestorePercent) / 100;
                     switch ((Magic.RestorePropertyType)BelongMagic.RestoreType)
                     {
                         case Magic.RestorePropertyType.Life:
@@ -335,16 +336,23 @@ namespace Engine
             {
                 Texture = null;
                 _superModeDestroySprites = new LinkedList<Sprite>();
-                foreach (var npc in NpcManager.NpcsInView)
+                List<Character> targets;
+                if (BelongCharacter.IsPlayer || BelongCharacter.IsFighterFriend)
                 {
-                    if (npc.IsEnemy)
-                    {
-                        AddDestroySprite(_superModeDestroySprites, 
-                            npc.PositionInWorld,
-                            BelongMagic.VanishImage,
-                            BelongMagic.VanishSound);
-                        CharacterHited(npc);
-                    }
+                    targets = NpcManager.NpcsInView.Where(npc => npc.IsEnemy).Cast<Character>().ToList();
+                }
+                else
+                {
+                    targets = NpcManager.NpcsInView.Where(npc => npc.IsFighterFriend).Cast<Character>().ToList();
+                    targets.Add(Globals.ThePlayer);
+                }
+                foreach (var character in targets)
+                {
+                    AddDestroySprite(_superModeDestroySprites,
+                        character.PositionInWorld,
+                        BelongMagic.VanishImage,
+                        BelongMagic.VanishSound);
+                    CharacterHited(character);
                 }
                 if (_superModeDestroySprites.Count == 0) _isDestroyed = true;
             }
@@ -381,7 +389,7 @@ namespace Engine
             if (_leftLeapTimes > 0)
             {
                 _leftLeapTimes--;
-                _currentEffect -= _currentEffect*BelongMagic.EffectReducePercentage/100;
+                _currentEffect -= _currentEffect * BelongMagic.EffectReducePercentage / 100;
             }
             else
             {
@@ -445,8 +453,8 @@ namespace Engine
             }
             else if (BelongMagic.MoveKind == 13)
             {
-                var interval = Interval == 0 ? 1000/60 : Interval;
-                framesToPlay = (int)(BelongMagic.LifeFrame * 10f/ interval);
+                var interval = Interval == 0 ? 1000 / 60 : Interval;
+                framesToPlay = (int)(BelongMagic.LifeFrame * 10f / interval);
             }
 
             PlayFrames(framesToPlay);
@@ -579,14 +587,14 @@ namespace Engine
                     case 13:
                         break;
                     case 18://Fly magic
-                    {
-                        _kind18elapsedMilliSeconds += gameTime.ElapsedGameTime.TotalMilliseconds;
-                        if (_kind18elapsedMilliSeconds >= BelongMagic.FlyInterval)
                         {
-                            _kind18elapsedMilliSeconds -= BelongMagic.FlyInterval;
-                            MagicManager.UseMagic(BelongCharacter, BelongMagic.FlyMagic, PositionInWorld, PositionInWorld + _moveDirection);
+                            _kind18elapsedMilliSeconds += gameTime.ElapsedGameTime.TotalMilliseconds;
+                            if (_kind18elapsedMilliSeconds >= BelongMagic.FlyInterval)
+                            {
+                                _kind18elapsedMilliSeconds -= BelongMagic.FlyInterval;
+                                MagicManager.UseMagic(BelongCharacter, BelongMagic.FlyMagic, PositionInWorld, PositionInWorld + _moveDirection);
+                            }
                         }
-                    }
                         break;
                     default:
                         CheckCharacterHited();
