@@ -55,6 +55,8 @@
             this._addMoney1000 = new System.Windows.Forms.ToolStripMenuItem();
             this._allEnemyDie = new System.Windows.Forms.ToolStripMenuItem();
             this._reducePlayerLifeMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.emptyManaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.emptyThewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.DebugMenu = new System.Windows.Forms.ToolStripMenuItem();
             this._changePlayerPos = new System.Windows.Forms.ToolStripMenuItem();
             this._runScriptMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -72,8 +74,6 @@
             this._fileText = new System.Windows.Forms.TextBox();
             this._scriptFilePath = new System.Windows.Forms.Button();
             this.TheToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.emptyManaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.emptyThewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -321,6 +321,24 @@
             this._reducePlayerLifeMenu.Text = "主角减血1000";
             this._reducePlayerLifeMenu.Click += new System.EventHandler(this._reducePlayerLifeMenu_Click);
             // 
+            // emptyManaToolStripMenuItem
+            // 
+            this.emptyManaToolStripMenuItem.Name = "emptyManaToolStripMenuItem";
+            this.emptyManaToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
+            | System.Windows.Forms.Keys.M)));
+            this.emptyManaToolStripMenuItem.Size = new System.Drawing.Size(236, 22);
+            this.emptyManaToolStripMenuItem.Text = "内力为零";
+            this.emptyManaToolStripMenuItem.Click += new System.EventHandler(this.emptyManaToolStripMenuItem_Click);
+            // 
+            // emptyThewToolStripMenuItem
+            // 
+            this.emptyThewToolStripMenuItem.Name = "emptyThewToolStripMenuItem";
+            this.emptyThewToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
+            | System.Windows.Forms.Keys.T)));
+            this.emptyThewToolStripMenuItem.Size = new System.Drawing.Size(236, 22);
+            this.emptyThewToolStripMenuItem.Text = "体力为零";
+            this.emptyThewToolStripMenuItem.Click += new System.EventHandler(this.emptyThewToolStripMenuItem_Click);
+            // 
             // DebugMenu
             // 
             this.DebugMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -353,7 +371,7 @@
             // _variablesMenu
             // 
             this._variablesMenu.Name = "_variablesMenu";
-            this._variablesMenu.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
+            this._variablesMenu.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.B)));
             this._variablesMenu.Size = new System.Drawing.Size(176, 22);
             this._variablesMenu.Text = "变量列表...";
             this._variablesMenu.Click += new System.EventHandler(this._variablesMenu_Click);
@@ -491,24 +509,6 @@
             this._scriptFilePath.Text = "文件路径";
             this._scriptFilePath.UseVisualStyleBackColor = true;
             this._scriptFilePath.Click += new System.EventHandler(this._scriptFilePath_Click);
-            // 
-            // emptyManaToolStripMenuItem
-            // 
-            this.emptyManaToolStripMenuItem.Name = "emptyManaToolStripMenuItem";
-            this.emptyManaToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
-            | System.Windows.Forms.Keys.M)));
-            this.emptyManaToolStripMenuItem.Size = new System.Drawing.Size(236, 22);
-            this.emptyManaToolStripMenuItem.Text = "内力为零";
-            this.emptyManaToolStripMenuItem.Click += new System.EventHandler(this.emptyManaToolStripMenuItem_Click);
-            // 
-            // emptyThewToolStripMenuItem
-            // 
-            this.emptyThewToolStripMenuItem.Name = "emptyThewToolStripMenuItem";
-            this.emptyThewToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
-            | System.Windows.Forms.Keys.T)));
-            this.emptyThewToolStripMenuItem.Size = new System.Drawing.Size(236, 22);
-            this.emptyThewToolStripMenuItem.Text = "体力为零";
-            this.emptyThewToolStripMenuItem.Click += new System.EventHandler(this.emptyThewToolStripMenuItem_Click);
             // 
             // GameEditor
             // 

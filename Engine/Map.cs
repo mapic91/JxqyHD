@@ -355,7 +355,8 @@ namespace Engine
             }
             var pos = x + y * _mapColumnCounts;
             if (idx[pos].MpcIndex == 0) return null;
-            return _mpcList[idx[pos].MpcIndex - 1].GetFrame(idx[pos].Frame);
+            var ts = _mpcList[idx[pos].MpcIndex - 1];
+            return (ts == null ? null : ts.GetFrame(idx[pos].Frame));
         }
 
         public Texture2D GetTileTextureAndRegion(int x, int y, int layer, ref Rectangle region)
@@ -724,7 +725,11 @@ namespace Engine
                 for (var x = (int)start.X; x < (int)end.X; x++)
                 {
                     Texture2D texture = GetTileTexture(x, y, layer);
-                    DrawTile(spriteBatch, texture, new Vector2(x, y), 1f);
+                    if(texture != null)
+                    {
+                        DrawTile(spriteBatch, texture, new Vector2(x, y), 1f);
+                    }
+                    
                 }
             }
         }
@@ -871,7 +876,7 @@ namespace Engine
                 for (var x = (int)start.X; x < (int)end.X; x++)
                 {
                     Texture2D texture = GetTileTexture(x, y, 1);
-                    if (IsLayerDraw(1)) DrawTile(spriteBatch, texture, new Vector2(x, y), 1f);
+                    if (IsLayerDraw(1) && texture != null) DrawTile(spriteBatch, texture, new Vector2(x, y), 1f);
                     foreach (var npc in npcs)
                     {
                         if (x == npc.MapX && y == npc.MapY && npc.Kind != 7)

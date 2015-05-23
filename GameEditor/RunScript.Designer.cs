@@ -32,7 +32,7 @@
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
-            this.ScriptContent = new System.Windows.Forms.RichTextBox();
+            this.ScriptContent = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
@@ -91,14 +91,15 @@
             // 
             // ScriptContent
             // 
+            this.ScriptContent.AcceptsReturn = true;
+            this.ScriptContent.AcceptsTab = true;
             this.ScriptContent.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ScriptContent.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.ScriptContent.ImeMode = System.Windows.Forms.ImeMode.On;
             this.ScriptContent.Location = new System.Drawing.Point(3, 3);
+            this.ScriptContent.Multiline = true;
             this.ScriptContent.Name = "ScriptContent";
             this.ScriptContent.Size = new System.Drawing.Size(559, 365);
             this.ScriptContent.TabIndex = 2;
-            this.ScriptContent.Text = "";
-            this.ScriptContent.WordWrap = false;
             // 
             // RunScript
             // 
@@ -109,6 +110,7 @@
             this.Name = "RunScript";
             this.Text = "运行脚本";
             this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel1.PerformLayout();
             this.tableLayoutPanel2.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -120,6 +122,6 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
-        public System.Windows.Forms.RichTextBox ScriptContent;
+        public System.Windows.Forms.TextBox ScriptContent;
     }
 }
