@@ -44,6 +44,7 @@ namespace Engine
         private int _levelupExp;
         private bool _isOk;
         private MagicListManager.MagicItemInfo _iteminfo;
+        private int _keepMilliseconds;
 
         #region Leap
         private int _leapTimes;
@@ -347,6 +348,12 @@ namespace Engine
         {
             get { return _restoreProbability; }
             set { _restoreProbability = value.Clamp(0, 100); }
+        }
+
+        public int KeepMilliseconds
+        {
+            get { return _keepMilliseconds; }
+            set { _keepMilliseconds = value; }
         }
 
         #endregion

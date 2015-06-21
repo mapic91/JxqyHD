@@ -10,6 +10,11 @@ namespace Engine.Script
         private static LinkedList<ScriptParser> _list = new LinkedList<ScriptParser>();
         private static string _lastFilePath = "";
 
+        public static bool IsInRunningScript
+        {
+            get { return _list.Count > 0; }
+        }
+
         public static ScriptParser RunScript(ScriptParser scriptParser)
         {
             if (scriptParser != null)

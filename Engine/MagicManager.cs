@@ -10,6 +10,7 @@ namespace Engine
         private static LinkedList<MagicSprite> _magicSprites = new LinkedList<MagicSprite>();
         private static LinkedList<WorkItem> _workList = new LinkedList<WorkItem>();
         private static LinkedList<Sprite> _effectSprites = new LinkedList<Sprite>(); 
+        private static LinkedList<Kind19MagicInfo> _kind19Magics = new LinkedList<Kind19MagicInfo>(); 
         private static List<MagicSprite> _magicSpritesInView = new List<MagicSprite>();
         private static Rectangle _lastViewRegion;
         private static bool _listChanged = true;
@@ -766,6 +767,12 @@ namespace Engine
                 case 18:
                     AddMagicSprite(GetMoveMagicSprite(user, magic, origin, destination, true, GetSpeedRatio(destination - origin)));
                     break;
+                case 19:
+                {
+                    var info = new Kind19MagicInfo(magic.KeepMilliseconds, magic, user);
+                    _kind19Magics.AddLast(info);
+                }
+                    break;
             }
 
             //Magic side effect
@@ -833,6 +840,23 @@ namespace Engine
                 }
                 node = next;
             }
+
+            for (var node = _kind19Magics.First; node != null;)
+            {
+                var info = node.Value;
+                var next = node.Next;
+                if (info.LastTilePosition != info.BelongCharacter.TilePosition)
+                {
+                    AddFixedPositionMagicSprite(info.BelongCharacter, info.TheMagic, Map.ToPixelPosition(info.LastTilePosition), true);
+                    info.LastTilePosition = info.BelongCharacter.TilePosition;
+                }
+                info.KeepMilliseconds -= elapsedMilliseconds;
+                if (info.KeepMilliseconds <= 0)
+                {
+                    _kind19Magics.Remove(node);
+                }
+                node = next;
+            }
         }
 
         public static void Draw(SpriteBatch spriteBatch)
@@ -857,6 +881,22 @@ namespace Engine
             {
                 LeftMilliseconds = leftMilliseconds;
                 TheSprite = theSprite;
+            }
+        }
+
+        public class Kind19MagicInfo
+        {
+            public double KeepMilliseconds;
+            public Magic TheMagic;
+            public Character BelongCharacter;
+            public Vector2 LastTilePosition;
+
+            public Kind19MagicInfo(double keepMilliseconds, Magic magic, Character belongCharacter)
+            {
+                KeepMilliseconds = keepMilliseconds;
+                TheMagic = magic;
+                BelongCharacter = belongCharacter;
+                LastTilePosition = belongCharacter.TilePosition;
             }
         }
     }

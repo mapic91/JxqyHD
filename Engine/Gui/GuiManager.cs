@@ -494,7 +494,8 @@ namespace Engine.Gui
         #region Handle key press
         private static bool IsEscKeyPressed(KeyboardState keyboardState)
         {
-            return (!Globals.IsInputDisabled &&
+            return (!Globals.IsInputDisabled && 
+                    !ScriptManager.IsInRunningScript &&
                     keyboardState.IsKeyDown(Keys.Escape) &&
                     Globals.TheGame.LastKeyboardState.IsKeyUp(Keys.Escape));
         }
