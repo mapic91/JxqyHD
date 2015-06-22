@@ -20,6 +20,7 @@ namespace Engine
         public const int MagicBasespeed = 100;
         public const float SoundMaxDistance = 1000f;
         public const float Sound3DMaxDistance = 8f;
+        public static int RunSpeedFold = 8;
 
         public const float DistanceOffset = 2f;
 
@@ -129,6 +130,8 @@ namespace Engine
                     SaveLoadSelectionIndex = value;
                 if (int.TryParse(setting["MaxMagicUnit"], out value))
                     MagicManager.MaxMagicUnit = value;
+                if (int.TryParse(setting["RunSpeedFold"], out value))
+                    RunSpeedFold = value;
 
                 float fv;
                 if (float.TryParse(setting["SoundEffectVolume"], out fv))
@@ -188,6 +191,7 @@ namespace Engine
                     section["SoundEffectVolume"] = SoundEffect.MasterVolume.ToString();
                     section["MusicVolume"] = BackgroundMusic.GetVolume().ToString();
                     section["MaxMagicUnit"] = MagicManager.MaxMagicUnit.ToString();
+                    section["RunSpeedFold"] = RunSpeedFold.ToString();
                 }
                 File.WriteAllText(GameIniFilePath, data.ToString(), LocalEncoding);
             }

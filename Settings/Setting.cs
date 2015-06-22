@@ -40,6 +40,7 @@ namespace Settings
             _soundEffectVolume.Value = (int)(SoundEffect.MasterVolume*100);
             _musicVolume.Value = (int) (BackgroundMusic.GetVolume()*100);
             _maxMagicUintCtl.Value = MagicManager.MaxMagicUnit;
+            _runSpeed.Value = Globals.RunSpeedFold;
             UpdateLabelText();
             CenterToScreen();
         }
@@ -54,6 +55,7 @@ namespace Settings
             SoundEffect.MasterVolume = _soundEffectVolume.Value/100f;
             BackgroundMusic.SetVolume(_musicVolume.Value/100f);
             MagicManager.MaxMagicUnit = (int)_maxMagicUintCtl.Value;
+            Globals.RunSpeedFold = _runSpeed.Value;
 
             Globals.SaveAllSetting();
         }
@@ -83,6 +85,17 @@ namespace Settings
         {
             _textSoundEffectVolume.Text = _soundEffectVolume.Value + "%";
             _textMusicVolume.Text = _musicVolume.Value + "%";
+            _textRunSpeed.Text = _runSpeed.Value.ToString();
+        }
+
+        private void trackBar1_Scroll(object sender, EventArgs e)
+        {
+            UpdateLabelText();
+        }
+
+        private void _runSpeed_Scroll(object sender, EventArgs e)
+        {
+            UpdateLabelText();
         }
     }
 }

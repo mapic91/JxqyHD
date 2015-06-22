@@ -45,10 +45,14 @@
             this._maxMagicUintCtl = new System.Windows.Forms.NumericUpDown();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this._toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.label5 = new System.Windows.Forms.Label();
+            this._runSpeed = new System.Windows.Forms.TrackBar();
+            this._textRunSpeed = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this._soundEffectVolume)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this._musicVolume)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this._maxMagicUintCtl)).BeginInit();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this._runSpeed)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -70,7 +74,7 @@
             // 
             // _saveButton
             // 
-            this._saveButton.Location = new System.Drawing.Point(61, 299);
+            this._saveButton.Location = new System.Drawing.Point(61, 343);
             this._saveButton.Name = "_saveButton";
             this._saveButton.Size = new System.Drawing.Size(75, 23);
             this._saveButton.TabIndex = 2;
@@ -80,7 +84,7 @@
             // 
             // _beginGameButton
             // 
-            this._beginGameButton.Location = new System.Drawing.Point(261, 302);
+            this._beginGameButton.Location = new System.Drawing.Point(261, 343);
             this._beginGameButton.Name = "_beginGameButton";
             this._beginGameButton.Size = new System.Drawing.Size(75, 23);
             this._beginGameButton.TabIndex = 3;
@@ -190,18 +194,51 @@
             // 
             this.groupBox1.Controls.Add(this._lblMaxMagicUnit);
             this.groupBox1.Controls.Add(this._maxMagicUintCtl);
-            this.groupBox1.Location = new System.Drawing.Point(39, 189);
+            this.groupBox1.Location = new System.Drawing.Point(39, 236);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(336, 94);
             this.groupBox1.TabIndex = 19;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "性能";
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(39, 197);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(67, 13);
+            this.label5.TabIndex = 20;
+            this.label5.Text = "跑步速度：";
+            // 
+            // _runSpeed
+            // 
+            this._runSpeed.LargeChange = 2;
+            this._runSpeed.Location = new System.Drawing.Point(109, 201);
+            this._runSpeed.Maximum = 8;
+            this._runSpeed.Minimum = 2;
+            this._runSpeed.Name = "_runSpeed";
+            this._runSpeed.Size = new System.Drawing.Size(227, 45);
+            this._runSpeed.TabIndex = 21;
+            this._runSpeed.Value = 2;
+            this._runSpeed.Scroll += new System.EventHandler(this._runSpeed_Scroll);
+            // 
+            // _textRunSpeed
+            // 
+            this._textRunSpeed.AutoSize = true;
+            this._textRunSpeed.Location = new System.Drawing.Point(342, 197);
+            this._textRunSpeed.Name = "_textRunSpeed";
+            this._textRunSpeed.Size = new System.Drawing.Size(13, 13);
+            this._textRunSpeed.TabIndex = 22;
+            this._textRunSpeed.Text = "2";
+            // 
             // Setting
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(410, 336);
+            this.ClientSize = new System.Drawing.Size(410, 378);
+            this.Controls.Add(this._textRunSpeed);
+            this.Controls.Add(this._runSpeed);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this._textMusicVolume);
             this.Controls.Add(this._textSoundEffectVolume);
@@ -222,6 +259,7 @@
             ((System.ComponentModel.ISupportInitialize)(this._maxMagicUintCtl)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this._runSpeed)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -245,5 +283,8 @@
         private System.Windows.Forms.NumericUpDown _maxMagicUintCtl;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.ToolTip _toolTip;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TrackBar _runSpeed;
+        private System.Windows.Forms.Label _textRunSpeed;
     }
 }

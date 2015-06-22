@@ -2312,7 +2312,7 @@ namespace Engine
                     break;
                 case CharacterState.Run:
                 case CharacterState.FightRun:
-                    MoveAlongPath((float)elapsedGameTime.TotalSeconds, 8);
+                    MoveAlongPath((float)elapsedGameTime.TotalSeconds, Globals.RunSpeedFold);
                     SoundManager.Apply3D(_sound,
                                     PositionInWorld - Globals.ListenerPosition);
                     base.Update(gameTime);
