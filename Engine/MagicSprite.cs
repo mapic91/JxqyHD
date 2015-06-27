@@ -383,7 +383,7 @@ namespace Engine
                     {
                         BelongCharacter.IsInTransport = false;
                         var tilePosition = Map.ToTilePosition(_destnationPixelPosition);
-                        if (!NpcManager.IsObstacle(tilePosition) &&
+                        if (!BelongCharacter.HasObstacle(tilePosition) &&
                             !Globals.TheMap.IsObstacleForCharacter(tilePosition))
                         {
                             //Destination has no obstacle, transport magic user.
