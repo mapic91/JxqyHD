@@ -150,6 +150,11 @@ namespace Engine
 
         public bool IsHide { get; set; }
 
+        /// <summary>
+        /// If true, character won't be drawed.
+        /// </summary>
+        public bool IsInTransport { get; set; } 
+
         public bool IsInStepMove
         {
             get { return _isInStepMove; }
@@ -2408,7 +2413,7 @@ namespace Engine
 
         public virtual void Draw(SpriteBatch spriteBatch, Texture2D texture)
         {
-            if (IsDeath || IsHide) return;
+            if (IsDeath || IsHide || IsInTransport) return;
             var color = DrawColor;
             if (FrozenSeconds > 0)
                 color = new Color(80, 80, 255);

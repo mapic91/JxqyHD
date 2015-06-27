@@ -773,6 +773,16 @@ namespace Engine
                     _kind19Magics.AddLast(info);
                 }
                     break;
+                case 20:
+                {
+                    //Can't use transport magic when in transport
+                    if (!user.IsInTransport)
+                    {
+                        user.IsInTransport = true;
+                        AddFixedPositionMagicSprite(user, magic, destination, true);
+                    }
+                }
+                    break;
             }
 
             //Magic side effect

@@ -13,6 +13,7 @@ namespace Engine
         private Character _belongCharacter;
         private Magic _belongMagic;
         private Vector2 _moveDirection;
+        private Vector2 _destnationPixelPosition;
         private LinkedList<Vector2> _paths;
         private bool _isDestroyed;
         private bool _isInDestroy;
@@ -74,40 +75,58 @@ namespace Engine
         public MagicSprite(Magic belongMagic, Character belongCharacter, Vector2 positionInWorld, float velocity,
             Vector2 moveDirection, bool destroyOnEnd)
         {
+            if (Init(belongMagic, belongCharacter, positionInWorld, velocity, moveDirection, destroyOnEnd))
+            {
+                Begin();
+            }
+        }
+
+
+        /// <summary>
+        /// Fixed position magic
+        /// </summary>
+        /// <param name="belongMagic"></param>
+        /// <param name="belongCharacter"></param>
+        /// <param name="positionInWorld"></param>
+        /// <param name="direction"></param>
+        /// <param name="destroyOnEnd"></param>
+        public MagicSprite(Magic belongMagic, Character belongCharacter, Vector2 positionInWorld, int direction, bool destroyOnEnd)
+        {
+            if (Init(belongMagic, belongCharacter, positionInWorld, 0, Vector2.Zero, destroyOnEnd))
+            {
+                SetDirection(direction);
+                Begin();
+            }
+        }
+        #endregion Ctor
+
+        private bool Init(Magic belongMagic, Character belongCharacter, Vector2 positionInWorld, float velocity,
+            Vector2 moveDirection, bool destroyOnEnd)
+        {
             if (belongMagic == null || belongCharacter == null)
             {
                 _isDestroyed = true;
-                return;
+                return false;
             }
+            _destnationPixelPosition = positionInWorld;
             var texture = belongMagic.FlyingImage;
-            if (belongMagic.MoveKind == 15)
-                texture = belongMagic.SuperModeImage;
+            switch (belongMagic.MoveKind)
+            {
+                case 15:
+                    texture = belongMagic.SuperModeImage;
+                    break;
+                case 20:
+                    positionInWorld = Map.ToPixelPosition(belongCharacter.TilePosition);
+                    break;
+            }
             Set(positionInWorld, velocity, texture, 0);
             BelongMagic = belongMagic;
             BelongCharacter = belongCharacter;
             MoveDirection = moveDirection;
             _destroyOnEnd = destroyOnEnd;
             SetDirection(MoveDirection);
-            Begin();
+            return true;
         }
-
-        public MagicSprite(Magic belongMagic, Character belongCharacter, Vector2 positionInWorld, int direction, bool destroyOnEnd)
-        {
-            if (belongMagic == null || belongCharacter == null)
-            {
-                _isDestroyed = true;
-                return;
-            }
-            var texture = belongMagic.FlyingImage;
-            if (belongMagic.MoveKind == 15)
-                texture = belongMagic.SuperModeImage;
-            Set(positionInWorld, 0, texture, direction);
-            BelongMagic = belongMagic;
-            BelongCharacter = belongCharacter;
-            _destroyOnEnd = destroyOnEnd;
-            Begin();
-        }
-        #endregion Ctor
 
         private void CharacterHited(Character character)
         {
@@ -358,6 +377,23 @@ namespace Engine
             }
             else
             {
+                switch (BelongMagic.MoveKind)
+                {
+                    case 20:
+                    {
+                        BelongCharacter.IsInTransport = false;
+                        var tilePosition = Map.ToTilePosition(_destnationPixelPosition);
+                        if (!NpcManager.IsObstacle(tilePosition) &&
+                            !Globals.TheMap.IsObstacleForCharacter(tilePosition))
+                        {
+                            //Destination has no obstacle, transport magic user.
+                            TilePosition = tilePosition;
+                            BelongCharacter.SetTilePosition(tilePosition);
+                        }
+                    }
+                        break;
+                }
+
                 if (BelongMagic.VanishImage != null)
                 {
                     Texture = BelongMagic.VanishImage;
@@ -585,6 +621,7 @@ namespace Engine
                 switch (BelongMagic.MoveKind)
                 {
                     case 13:
+                    case 20: //transport
                         break;
                     case 18://Fly magic
                         {
