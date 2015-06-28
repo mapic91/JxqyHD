@@ -7,7 +7,7 @@ namespace Engine.Gui
 {
     public class StateGui : GuiItem
     {
-        private bool _isFemale;
+        private int _index;
         private TextGui[] _items;
         private bool _isShow;
 
@@ -22,15 +22,15 @@ namespace Engine.Gui
             get { return _isShow; }
         }
 
-        public bool IsFemale
+        public int Index
         {
-            get { return _isFemale; }
+            get { return _index; }
             set
             {
-                _isFemale = value;
+                _index = value;
                 var fileName = "panel5.asf";
-                if (value)
-                    fileName = "panel5b.asf";
+                if (value > 0)
+                    fileName = "panel5" + (char)('a' + value) + ".asf"; ;
                 BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\", fileName));
             }
         }

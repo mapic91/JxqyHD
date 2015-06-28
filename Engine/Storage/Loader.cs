@@ -106,9 +106,7 @@ namespace Engine.Storage
             {
                 Log.LogFileLoadError("Player", path, exception);
             }
-            var isFemale = Globals.PlayerIndex != 0;
-            GuiManager.StateInterface.IsFemale =
-                GuiManager.EquipInterface.IsFemale = isFemale;
+            GuiManager.StateInterface.Index = GuiManager.EquipInterface.Index = Globals.PlayerIndex;
         }
 
         private static void LoadPartner()
@@ -203,7 +201,7 @@ namespace Engine.Storage
             Saver.SaveMagicGoodMemoList();
 
             Globals.PlayerIndex = index;
-            GuiManager.StateInterface.IsFemale = (index == 1);
+            GuiManager.StateInterface.Index = GuiManager.EquipInterface.Index = index;
             LoadMagicGoodList();
             LoadPlayer();
         }

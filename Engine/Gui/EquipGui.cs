@@ -8,7 +8,7 @@ namespace Engine.Gui
 {
     public sealed class EquipGui : GuiItem
     {
-        private bool _isFemale;
+        private int _index;
         private DragDropItem[] _items = new DragDropItem[7];
         private DragDropItem _head;
         private DragDropItem _neck;
@@ -18,15 +18,17 @@ namespace Engine.Gui
         private DragDropItem _wrist;
         private DragDropItem _foot;
 
-        public bool IsFemale
+        public int Index
         {
-            get { return _isFemale; }
+            get { return _index; }
             set
             {
-                _isFemale = value;
+                _index = value;
                 var fileName = "panel7.asf";
-                if (value)
-                    fileName = "panel7b.asf";
+                if (value > 0)
+                {
+                    fileName = "panel7" + (char)('a' + value) + ".asf";
+                }
                 BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\", fileName));
             }
         }
