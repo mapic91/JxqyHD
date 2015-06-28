@@ -193,6 +193,8 @@ namespace Engine
             set { _doing = value; }
         }
 
+        public Character ControledCharacter;
+
         #endregion
 
         public Player() { }
@@ -897,6 +899,18 @@ namespace Engine
             Level = level;
         }
 
+        public void EndControlCharacter()
+        {
+            if (ControledCharacter != null)
+            {
+                //Clear others follow target, because controled character Releation value change
+                NpcManager.CleartFollowTargetIfEqual(ControledCharacter);
+
+                ControledCharacter.ControledMagicSprite = null;
+                ControledCharacter = null;
+            }
+        }
+
         #endregion Public method
 
         public override void Update(GameTime gameTime)
@@ -961,6 +975,12 @@ namespace Engine
                     }
                 }
 
+
+                var character = this as Character;
+                if (ControledCharacter != null)
+                {
+                    character = ControledCharacter;
+                }
                 if (!IsPetrified)
                 {
                     if (mouseState.LeftButton == ButtonState.Pressed)
@@ -969,55 +989,60 @@ namespace Engine
                             Globals.OutEdgeNpc != null &&
                             Globals.OutEdgeNpc.IsEnemy)
                         {
-                            Attacking(Globals.OutEdgeNpc.TilePosition, _isRun);
+                            character.Attacking(Globals.OutEdgeNpc.TilePosition, _isRun);
                         }
                         else if (Globals.OutEdgeNpc != null &&
+                            Globals.OutEdgeNpc != ControledCharacter &&
                             Globals.OutEdgeNpc.HasInteractScript)
                         {
                             if (_lastMouseState.LeftButton == ButtonState.Released)
-                                InteractWith(Globals.OutEdgeNpc, _isRun);
+                                character.InteractWith(Globals.OutEdgeNpc, _isRun);
                         }
                         else if (Globals.OutEdgeObj != null &&
                                  Globals.OutEdgeObj.HasInteractScript)
                         {
                             if (_lastMouseState.LeftButton == ButtonState.Released)
-                                InteractWith(Globals.OutEdgeObj, _isRun);
+                                character.InteractWith(Globals.OutEdgeObj, _isRun);
                         }
                         else if (_isRun)
                         {
                             if (CanRun())
                             {
-                                RunTo(mouseTilePosition);
+                                character.RunTo(mouseTilePosition);
                             }
                             else
                             {
-                                WalkTo(mouseTilePosition);
+                                character.WalkTo(mouseTilePosition);
                             }
                         }
                         else if (keyboardState.IsKeyDown(Keys.LeftAlt) ||
                                  keyboardState.IsKeyDown(Keys.RightAlt))
                         {
-                            JumpTo(mouseTilePosition);
+                            character.JumpTo(mouseTilePosition);
                         }
                         else if (keyboardState.IsKeyDown(Keys.LeftControl) ||
                                  keyboardState.IsKeyDown(Keys.RightControl))
                         {
                             if (!IsFightDisabled)
                             {
-                                PerformeAttack(mouseWorldPosition);
+                                character.PerformeAttack(mouseWorldPosition);
                             }
                         }
-                        else WalkTo(mouseTilePosition);
+                        else character.WalkTo(mouseTilePosition);
                     }
                     else
                     {
-                        HandleMoveKeyboardInput();
+                        if (ControledCharacter == null)
+                        {
+                            HandleMoveKeyboardInput();
+                        }
                     }
-
-                    if ((!IsFightDisabled &&
-                        mouseState.RightButton == ButtonState.Pressed &&
-                        _lastMouseState.RightButton == ButtonState.Released) ||
-                        _isUseMagicByKeyborad)
+                    var rightButtonPressed = (mouseState.RightButton == ButtonState.Pressed &&
+                                              _lastMouseState.RightButton == ButtonState.Released);
+                    if (!IsFightDisabled &&
+                        ControledCharacter == null && //Can't use magic when controling other character
+                        (rightButtonPressed || _isUseMagicByKeyborad)
+                       )
                     {
                         if (CurrentMagicInUse == null)
                         {
@@ -1038,7 +1063,8 @@ namespace Engine
 
                 if (keyboardState.IsKeyDown(Keys.V) &&
                 _lastKeyboardState.IsKeyUp(Keys.V) &&
-                !IsPetrified)
+                !IsPetrified &&
+                ControledCharacter == null)
                 {
                     if (IsSitting()) StandingImmediately();
                     else Sitdown();

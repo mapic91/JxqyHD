@@ -45,6 +45,7 @@ namespace Engine
         private bool _isOk;
         private MagicListManager.MagicItemInfo _iteminfo;
         private int _keepMilliseconds;
+        private int _maxLevel;
 
         #region Leap
         private int _leapTimes;
@@ -354,6 +355,12 @@ namespace Engine
         {
             get { return _keepMilliseconds; }
             set { _keepMilliseconds = value; }
+        }
+
+        public int MaxLevel
+        {
+            get { return _maxLevel; }
+            set { _maxLevel = value; }
         }
 
         #endregion

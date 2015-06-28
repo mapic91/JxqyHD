@@ -141,14 +141,23 @@ namespace Engine
 
         private static void AddMagicSprite(MagicSprite sprite)
         {
-            if (MaxMagicUnit > 0 && _magicSprites.Count >= MaxMagicUnit)
-            {
-                //Restrict max magic sprites for performence
-                return;
-            }
-
             if (sprite != null)
             {
+                if (MaxMagicUnit > 0 && _magicSprites.Count >= MaxMagicUnit)
+                {
+                    switch (sprite.BelongMagic.MoveKind)
+                    {
+                        case 13:
+                        case 20:
+                        case 21:
+                            //Skip those
+                            break;
+                        default:
+                            //Restrict max magic sprites for performence
+                            return;
+                    }   
+                }
+
                 _magicSprites.AddLast(sprite);
                 _listChanged = true;
             }
@@ -780,6 +789,20 @@ namespace Engine
                     {
                         user.IsInTransport = true;
                         AddFixedPositionMagicSprite(user, magic, destination, true);
+                    }
+                }
+                    break;
+                case 21:
+                {
+                    var player = user as Player;
+                    if (player != null && 
+                        target != null &&
+                        !target.IsDeathInvoked && // Can't control dead people
+                        target.Level <= magic.MaxLevel
+                        )
+                    {
+                        player.ControledCharacter = target;
+                        AddFixedPositionMagicSprite(user, magic, user.PositionInWorld, true);
                     }
                 }
                     break;

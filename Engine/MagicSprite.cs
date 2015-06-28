@@ -118,6 +118,20 @@ namespace Engine
                 case 20:
                     positionInWorld = Map.ToPixelPosition(belongCharacter.TilePosition);
                     break;
+                case 21:
+                {
+                    var player = belongCharacter as Player;
+                    if (player != null &&
+                        player.ControledCharacter != null)
+                    {
+                        player.ControledCharacter.ControledMagicSprite = this;
+                    }
+                    else
+                    {
+                        throw new Exception("Magic kind 21 internal error.");
+                    }
+                }
+                    break;
             }
             Set(positionInWorld, velocity, texture, 0);
             BelongMagic = belongMagic;
@@ -392,6 +406,16 @@ namespace Engine
                         }
                     }
                         break;
+                    case 21:
+                    {
+                        var player = BelongCharacter as Player;
+                        if (player == null)
+                        {
+                            throw new Exception("Magic kind 21 internal error.");
+                        }
+                        player.EndControlCharacter();
+                    }
+                        break;
                 }
 
                 if (BelongMagic.VanishImage != null)
@@ -622,6 +646,7 @@ namespace Engine
                 {
                     case 13:
                     case 20: //transport
+                    case 21: //Controling others
                         break;
                     case 18://Fly magic
                         {

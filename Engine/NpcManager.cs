@@ -270,6 +270,21 @@ namespace Engine
             return list;
         }
 
+        /// <summary>
+        /// Clear all npcs follow target if equal target.
+        /// </summary>
+        /// <param name="target">Target be cleared</param>
+        public static void CleartFollowTargetIfEqual(Character target)
+        {
+            foreach (var npc in _list)
+            {
+                if (npc.FollowTarget == target)
+                {
+                    npc.ClearFollowTarget();
+                }
+            }
+        }
+
         public static void PartnersMoveTo(Vector2 destinationTilePosition)
         {
             var partners = GetAllPartner();

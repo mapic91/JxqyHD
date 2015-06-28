@@ -91,6 +91,7 @@ namespace Engine
         protected List<Vector2> FixedPathTilePositionList;
         protected int _currentFixedPosIndex;
         protected Magic MagicUse;
+        protected MagicSprite _controledMagicSprite;
 
         protected bool IsInLoopWalk;
 
@@ -116,6 +117,12 @@ namespace Engine
         {
             get { return _levelIni; }
             set { _levelIni = value; }
+        }
+
+        public MagicSprite ControledMagicSprite
+        {
+            get { return _controledMagicSprite; }
+            set { _controledMagicSprite = value; }
         }
 
         public bool IsFightDisabled { protected set; get; }
@@ -233,7 +240,17 @@ namespace Engine
 
         public int Relation
         {
-            get { return _relation; }
+            get
+            {
+                if (_controledMagicSprite != null)
+                {
+                    if (_relation == (int)RelationType.Enemy)
+                    {
+                        return (int)RelationType.Friend;
+                    }
+                }
+                return _relation;
+            }
             set { _relation = value; }
         }
 
@@ -1502,6 +1519,18 @@ namespace Engine
         public virtual void Death()
         {
             if (State == (int)CharacterState.Death) return;
+
+            if (ControledMagicSprite != null)
+            {
+                //End control by other
+                var player = ControledMagicSprite.BelongCharacter as Player;
+                if (player == null)
+                {
+                    throw new Exception("Magic kind 21 internal error.");
+                }
+                player.EndControlCharacter();
+            }
+
             IsDeathInvoked = true;
             StateInitialize();
             if (NpcIni.ContainsKey((int)CharacterState.Death))
@@ -2073,16 +2102,16 @@ namespace Engine
         {
 
             if (
-                (Relation == (int)RelationType.Friend &&
+                (_relation == (int)RelationType.Friend &&
                 relation == (int)RelationType.Enemy) ||
-                (Relation == (int)RelationType.Enemy &&
+                (_relation == (int)RelationType.Enemy &&
                  relation != (int)RelationType.Enemy)
                 )
             {
                 //Character can't follow current target now
                 FollowTarget = null;
             }
-            Relation = relation;
+            _relation = relation;
         }
 
         /// <summary>
@@ -2236,6 +2265,11 @@ namespace Engine
             EndPlayCurrentDirOnce();
             Texture = Utils.GetCharacterAsf(asfFileName);
             PlayCurrentDirOnce();
+        }
+
+        public void ClearFollowTarget()
+        {
+            FollowTarget = null;
         }
         #endregion Character state set and get method
 

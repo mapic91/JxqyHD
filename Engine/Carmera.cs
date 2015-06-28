@@ -184,7 +184,9 @@ namespace Engine
         {
             var player = Globals.PlayerKindCharacter;
             var position = player.PositionInWorld;
-            if(player.Kind != (int)Character.CharacterKind.Player)
+            if(player.Kind != (int)Character.CharacterKind.Player &&
+                Globals.ThePlayer.ControledCharacter == null // Update view when in controling other
+                )
             {
                 //Don't update when player kind character is missing.
                 _lastPlayerPosition = position;

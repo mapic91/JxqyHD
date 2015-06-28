@@ -152,6 +152,12 @@ namespace Engine
 
         public override void Update(GameTime gameTime)
         {
+            if (_controledMagicSprite != null)
+            {
+                base.Update(gameTime);
+                return;
+            }
+
             //Find follow target
             if (!IsFollowTargetFound || // Not find target.
                 FollowTarget == null || // Follow target not assign.

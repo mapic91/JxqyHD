@@ -65,7 +65,7 @@ namespace Engine
             get
             {
                 var charcter = NpcManager.GetPlayerKindCharacter();
-                return charcter ?? ThePlayer;
+                return charcter ?? (ThePlayer.ControledCharacter ?? ThePlayer);
             }
         }
 
