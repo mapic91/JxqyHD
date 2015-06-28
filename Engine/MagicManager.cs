@@ -150,7 +150,7 @@ namespace Engine
                         case 13:
                         case 20:
                         case 21:
-                            //Skip those
+                            //Can or must skip those
                             break;
                         default:
                             //Restrict max magic sprites for performence
