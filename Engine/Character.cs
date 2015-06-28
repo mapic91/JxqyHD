@@ -1123,7 +1123,7 @@ namespace Engine
 
         protected virtual bool CanJump()
         {
-            return !IsJumpDisabled;
+            return !IsJumpDisabled && NpcIni.ContainsKey((int)CharacterState.Jump);
         }
 
         protected void AddKey(KeyDataCollection keyDataCollection, string key, float value)
@@ -1416,6 +1416,10 @@ namespace Engine
             if (PerformActionOk() &&
                 destinationTilePosition != TilePosition)
             {
+                if (!NpcIni.ContainsKey((int) CharacterState.Run))
+                {
+                    return;
+                }
                 if (IsRuning())
                     DestinationMoveTilePosition = destinationTilePosition;
                 else
