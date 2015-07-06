@@ -212,3 +212,14 @@ RestoreProbability - 吸取几率 0 到 100，默认值0
 RestorePercent - 默认值0，对方伤害值的比率，比如对方受到的伤害为50，RestoreLifePercent为10，则恢复50 * 0.1 = 5
 RestoreType - 恢复类型，默认值0。0 生命， 1 内力， 2 体力
 范例见：player-magic-吸取.ini
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+震动屏幕：
+
+武功效果，爆炸时震动屏幕
+
+**当VibratingScreen大于0时，表示爆炸时会震动屏幕
+
+详细：
+VibratingScreen - 震动屏幕的幅度，默认0

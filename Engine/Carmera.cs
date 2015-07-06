@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 
 namespace Engine
 {
@@ -16,6 +17,11 @@ namespace Engine
         private Vector2 _moveDirection = Vector2.Zero;
         private Vector2 _lastPlayerPosition;
         private Vector2 _moveToBeginDestination;
+        //Vibrating screen begin
+        private int _vibratingDegree;
+        private int _xVibratingSum;
+        private int _yVibratingSum;
+        //Vibrating screen end
 
         #region Properties
         public bool IsInMove { get { return _leftMoveFrames > 0; } }
@@ -216,12 +222,42 @@ namespace Engine
             _lastPlayerPosition = position;
         }
 
+        void UpdateVibratingScreen()
+        {
+            if (_vibratingDegree <= 0) return;
+
+            var xSign = (Globals.TheRandom.Next(2) == 0 ? -1 : 1);
+            var ySign = (Globals.TheRandom.Next(2) == 0 ? -1 : 1);
+            var xAdd = xSign*Globals.TheRandom.Next(_vibratingDegree + 1);
+            var yAdd = ySign*Globals.TheRandom.Next(_vibratingDegree + 1);
+            if (Math.Abs(_xVibratingSum) > _vibratingDegree)
+            {
+                xAdd = -(_xVibratingSum/Math.Abs(_xVibratingSum))*Math.Abs(xAdd);
+            }
+            if (Math.Abs(_yVibratingSum) > _vibratingDegree)
+            {
+                yAdd = -(_yVibratingSum/Math.Abs(_yVibratingSum))*Math.Abs(yAdd);
+            }
+            CarmeraBeginPositionInWorld += new Vector2(xAdd, yAdd);
+            _xVibratingSum += xAdd;
+            _yVibratingSum += yAdd;
+            _vibratingDegree--;
+            if (_vibratingDegree == 0)
+            {
+                //Vibration finsh, minus back
+                CarmeraBeginPositionInWorld -= new Vector2(_xVibratingSum, _yVibratingSum);
+                _xVibratingSum = 0;
+                _yVibratingSum = 0;
+            }
+        }
+
         #region Public method
         public void Update(GameTime gameTime)
         {
             UpdateMove();
             UpdateMoveTo();
             UpdatePlayerView();
+            UpdateVibratingScreen();
         }
 
         public void CenterPlayerInCamera()
@@ -259,6 +295,15 @@ namespace Engine
                 GetHalfViewSize();
             _moveSpeed = speed;
             IsInMoveTo = true;
+        }
+
+        /// <summary>
+        /// Vibrating screen.
+        /// </summary>
+        /// <param name="degree"></param>
+        public void VibaratingScreen(int degree)
+        {
+            _vibratingDegree = degree;
         }
 
         public Vector2 ToViewPosition(Vector2 worldPosition)

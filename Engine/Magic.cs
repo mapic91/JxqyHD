@@ -46,6 +46,7 @@ namespace Engine
         private MagicListManager.MagicItemInfo _iteminfo;
         private int _keepMilliseconds;
         private int _maxLevel;
+        private int _vibratingScreen;
 
         #region Leap
         private int _leapTimes;
@@ -361,6 +362,12 @@ namespace Engine
         {
             get { return _maxLevel; }
             set { _maxLevel = value; }
+        }
+
+        public int VibratingScreen
+        {
+            get { return _vibratingScreen; }
+            set { _vibratingScreen = value; }
         }
 
         #endregion

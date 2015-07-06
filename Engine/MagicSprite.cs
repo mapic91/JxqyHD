@@ -440,6 +440,11 @@ namespace Engine
                             : PositionInWorld + MoveDirection);
                 }
 
+                if (BelongMagic.VibratingScreen > 0)
+                {
+                    Globals.TheCarmera.VibaratingScreen(BelongMagic.VibratingScreen);
+                }
+
                 MoveDirection = Vector2.Zero;
             }
         }
