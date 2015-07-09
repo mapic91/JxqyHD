@@ -47,6 +47,8 @@ namespace Engine
         private int _keepMilliseconds;
         private int _maxLevel;
         private int _vibratingScreen;
+        private int _maxCount;
+        private string _npcFile;
 
         #region Leap
         private int _leapTimes;
@@ -370,6 +372,18 @@ namespace Engine
             set { _vibratingScreen = value; }
         }
 
+        public int MaxCount
+        {
+            get { return _maxCount; }
+            set { _maxCount = value; }
+        }
+
+        public string NpcFile
+        {
+            get { return _npcFile; }
+            set { _npcFile = value; }
+        }
+
         #endregion
 
         //noAttackFile - resolve recursive problem of AttackFile
@@ -388,6 +402,7 @@ namespace Engine
                     case "Name":
                     case "Intro":
                     case "ActionFile":
+                    case "NpcFile":
                         info.SetValue(this, nameValue[1], null);
                         break;
                     case "Image":

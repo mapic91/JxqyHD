@@ -505,7 +505,39 @@ namespace Engine
 
             return list;
         }
+
+        /// <summary>
+        /// Find one nonobstacle neighbor at destinationTilePosition. 
+        /// If destinationTilePosition is not obstacle, destinationTilePosition is not changed, return ture.
+        /// Otherwise return ture if finded one nonobstacle neighbor and destinationTilePosition is assigned to that neighbor's tile position.
+        /// Return false if not finded.
+        /// </summary>
+        /// <param name="finder">The finder</param>
+        /// <param name="destinationTilePosition"></param>
+        /// <returns></returns>
+        public static bool FindNonobstacleNeighborOrItself(Character finder, ref Vector2 destinationTilePosition)
+        {
+            if (finder.HasObstacle(destinationTilePosition) ||
+                Globals.TheMap.IsObstacleForCharacter(destinationTilePosition))
+            {
+                var neighbors = FindAllNeighbors(destinationTilePosition);
+                foreach (var neighbor in neighbors)
+                {
+                    if (!finder.HasObstacle(neighbor) &&
+                        !Globals.TheMap.IsObstacleForCharacter(neighbor))
+                    {
+                        destinationTilePosition = neighbor;
+                        return true;
+                    }
+                }
+                return false;
+            }
+            return true;
+        }
+
     }
+
+
 
     public struct Node<T> : IComparable<Node<T>>
     {

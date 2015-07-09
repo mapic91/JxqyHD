@@ -88,7 +88,8 @@ namespace Engine
                 foreach (var npc in _list)
                 {
                     if ((isSaveParter && !npc.IsPartner) ||
-                        (!isSaveParter && npc.IsPartner)) continue;
+                        (!isSaveParter && npc.IsPartner) ||
+                        npc.SummonedByMagicSprite != null) continue;
                     var sectionName = "NPC" + string.Format("{0:000}", index++);
                     data.Sections.AddSection(sectionName);
                     npc.Save(data[sectionName]);
@@ -371,13 +372,14 @@ namespace Engine
             }
         }
 
-        public static void AddNpc(string fileName, int tileX, int tileY, int direction)
+        public static Npc AddNpc(string fileName, int tileX, int tileY, int direction)
         {
             var path = @"ini\npc\" + fileName;
             var npc = new Npc(path);
             npc.TilePosition = new Vector2(tileX, tileY);
             npc.SetDirection(direction);
             AddNpc(npc);
+            return npc;
         }
 
         public static void ClearAllNpc()
@@ -582,7 +584,8 @@ namespace Engine
                 if (npc.IsDeath)
                 {
                     if (npc.IsBodyIniOk &&
-                        !npc.IsNodAddBody)
+                        !npc.IsNodAddBody &&
+                        npc.SummonedByMagicSprite == null) //Not summoned npc
                     {
                         npc.BodyIni.PositionInWorld = npc.PositionInWorld;
                         npc.BodyIni.CurrentDirection = npc.CurrentDirection;

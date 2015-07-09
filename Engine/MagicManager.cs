@@ -806,6 +806,11 @@ namespace Engine
                     }
                 }
                     break;
+                case 22:
+                {
+                    AddFixedPositionMagicSprite(user, magic, destination, true);
+                }
+                    break;
             }
 
             //Magic side effect

@@ -28,10 +28,7 @@ namespace Engine
         private int _currentEffect;
         private bool _canLeap;
 
-        #region Kind 18
-        private double _kind18elapsedMilliSeconds;
-        #endregion Kind18
-
+        private Npc _summonedNpc;
 
         #region Public properties
         public Magic BelongMagic
@@ -130,6 +127,42 @@ namespace Engine
                     {
                         throw new Exception("Magic kind 21 internal error.");
                     }
+                }
+                    break;
+                case 22://Summon
+                {
+                    var tilePosition = Map.ToTilePosition(positionInWorld);
+                    var finded = PathFinder.FindNonobstacleNeighborOrItself(belongCharacter, ref tilePosition);
+                    if (finded)
+                    {
+                        positionInWorld = Map.ToPixelPosition(tilePosition);
+                    }
+                    else
+                    {
+                        _isDestroyed = true;
+                        break;
+                    }
+                    if (belongCharacter.SummonedNpcsCount >= belongMagic.MaxCount)
+                    {
+                        //Reach max count
+                        belongCharacter.RemoveFirstSummonedNpc();
+                    }
+                    var npc = NpcManager.AddNpc(belongMagic.NpcFile, 
+                        (int)tilePosition.X, 
+                        (int)tilePosition.Y, 
+                        Utils.GetDirectionIndex(positionInWorld - belongCharacter.PositionInWorld, 8));
+                    belongCharacter.AddSummonedNpc(npc);
+                    if (belongCharacter.IsPlayer || belongCharacter.IsFighterFriend)
+                    {
+                        npc.Relation = (int)Character.RelationType.Friend;
+                    }
+                    else
+                    {
+                        npc.Kind = (int)Character.CharacterKind.Fighter;
+                        npc.Relation = (int)Character.RelationType.Enemy;
+                    }
+                    npc.SummonedByMagicSprite = this;
+                    _summonedNpc = npc;
                 }
                     break;
             }
@@ -360,7 +393,7 @@ namespace Engine
                 positionInWorld - Globals.ListenerPosition);
         }
 
-        private void Destroy()
+        public void Destroy()
         {
             if (IsInDestroy) return;
             _isInDestroy = true;
@@ -397,8 +430,8 @@ namespace Engine
                     {
                         BelongCharacter.IsInTransport = false;
                         var tilePosition = Map.ToTilePosition(_destnationPixelPosition);
-                        if (!BelongCharacter.HasObstacle(tilePosition) &&
-                            !Globals.TheMap.IsObstacleForCharacter(tilePosition))
+                        var finded = PathFinder.FindNonobstacleNeighborOrItself(BelongCharacter, ref tilePosition);
+                        if (finded)
                         {
                             //Destination has no obstacle, transport magic user.
                             TilePosition = tilePosition;
@@ -414,6 +447,15 @@ namespace Engine
                             throw new Exception("Magic kind 21 internal error.");
                         }
                         player.EndControlCharacter();
+                    }
+                        break;
+                    case 22:
+                    {
+                        PositionInWorld = _summonedNpc.PositionInWorld;
+                        if (_summonedNpc != null)
+                        {
+                            _summonedNpc.Death();
+                        }
                     }
                         break;
                 }
@@ -645,6 +687,18 @@ namespace Engine
             {
                 //do nothing
             }
+            else if (BelongMagic.MoveKind == 22) //Summon
+            {
+                if (_elapsedMilliSeconds < BelongMagic.KeepMilliseconds)
+                {
+                    _elapsedMilliSeconds += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                    if (!IsInPlaying) Texture = Asf.Empty;
+                }
+                else
+                {
+                    Destroy();
+                }
+            }
             else
             {
                 switch (BelongMagic.MoveKind)
@@ -652,13 +706,14 @@ namespace Engine
                     case 13:
                     case 20: //transport
                     case 21: //Controling others
+                    case 22:
                         break;
                     case 18://Fly magic
                         {
-                            _kind18elapsedMilliSeconds += gameTime.ElapsedGameTime.TotalMilliseconds;
-                            if (_kind18elapsedMilliSeconds >= BelongMagic.FlyInterval)
+                            _elapsedMilliSeconds += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                            if (_elapsedMilliSeconds >= BelongMagic.FlyInterval)
                             {
-                                _kind18elapsedMilliSeconds -= BelongMagic.FlyInterval;
+                                _elapsedMilliSeconds -= BelongMagic.FlyInterval;
                                 MagicManager.UseMagic(BelongCharacter, BelongMagic.FlyMagic, PositionInWorld, PositionInWorld + _moveDirection);
                             }
                         }

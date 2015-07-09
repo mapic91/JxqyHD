@@ -83,6 +83,7 @@ namespace Engine
         private int _specialActionLastDirection; //Direction before play special action
         private float _fixedPathDistanceToMove;
         private Vector2 _fixedPathMoveDestinationPixelPostion = Vector2.Zero;
+        private readonly LinkedList<Npc> _summonedNpcs = new LinkedList<Npc>();
 
         /// <summary>
         /// List of the fixed path tile position.
@@ -131,6 +132,31 @@ namespace Engine
         public Character FollowTarget { protected set; get; }
         public bool IsFollowTargetFound { protected set; get; }
         public bool IsInSpecialAction { protected set; get; }
+
+        //Summon begin
+        public MagicSprite SummonedByMagicSprite { set; get; }
+        public int SummonedNpcsCount { get { return _summonedNpcs.Count; } }
+
+        public void AddSummonedNpc(Npc npc)
+        {
+            if (npc == null)
+            {
+                return;
+            }
+            _summonedNpcs.AddLast(npc);
+        }
+
+        public void RemoveFirstSummonedNpc()
+        {
+            var node = _summonedNpcs.First;
+            if (node != null)
+            {
+                var npc = node.Value;
+                npc.Death();
+            }
+            _summonedNpcs.RemoveFirst();
+        }
+        //Summon end
 
         public bool IsInFighting
         {
@@ -1522,7 +1548,8 @@ namespace Engine
         private static Asf PetrifiedDie;
         public virtual void Death()
         {
-            if (State == (int)CharacterState.Death) return;
+            if (IsDeathInvoked) return;
+            IsDeathInvoked = true;
 
             if (ControledMagicSprite != null)
             {
@@ -1535,7 +1562,18 @@ namespace Engine
                 player.EndControlCharacter();
             }
 
-            IsDeathInvoked = true;
+            if (SummonedByMagicSprite != null)
+            {
+                //Npc is been summoned by others.
+                IsDeath = true;
+                if (!SummonedByMagicSprite.IsInDestroy && !SummonedByMagicSprite.IsDestroyed)
+                {
+                    //Character death before magic sprite destory
+                    SummonedByMagicSprite.Destroy();
+                }
+                return;
+            }
+
             StateInitialize();
             if (NpcIni.ContainsKey((int)CharacterState.Death))
             {
@@ -2280,6 +2318,17 @@ namespace Engine
         #region Update Draw
         public override void Update(GameTime gameTime)
         {
+            for (var node = _summonedNpcs.First; node != null;)
+            {
+                var next = node.Next;
+                var npc = node.Value;
+                if (npc.IsDeath)
+                {
+                    _summonedNpcs.Remove(node);
+                }
+                node = next;
+            }
+
             if (IsInSpecialAction)
             {
                 base.Update(gameTime);
