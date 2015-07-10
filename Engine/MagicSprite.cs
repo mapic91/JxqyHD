@@ -325,7 +325,7 @@ namespace Engine
                 if (player != null && info != null)
                 {
                     var amount = Utils.GetMagicExp(character.Level);
-                    player.AddMagicExp(BelongMagic.ItemInfo, amount);
+                    player.AddMagicExp(info, amount);
                     if (player.XiuLianMagic != null &&
                         player.XiuLianMagic != BelongMagic.ItemInfo)
                     {
