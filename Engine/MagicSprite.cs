@@ -303,8 +303,6 @@ namespace Engine
                 }
             }
 
-            if (BelongCharacter.IsPlayer || 
-                (BelongCharacter.SummonedByMagicSprite != null && BelongCharacter.SummonedByMagicSprite.BelongCharacter.IsPlayer))
             {
                 Player player = null;
                 MagicListManager.MagicItemInfo info = null;
@@ -313,7 +311,15 @@ namespace Engine
                     player = BelongCharacter as Player;
                     info = BelongMagic.ItemInfo;
                 }
-                else
+                else if (BelongCharacter.ControledMagicSprite != null)
+                {
+                    player = BelongCharacter.ControledMagicSprite.BelongCharacter as Player;
+                    if (player != null)
+                    {
+                        info = player.CurrentMagicInUse;
+                    }
+                }
+                else if(BelongCharacter.SummonedByMagicSprite != null && BelongCharacter.SummonedByMagicSprite.BelongCharacter.IsPlayer)
                 {
                     //Summoned by player, add player's exp
                     player = BelongCharacter.SummonedByMagicSprite.BelongCharacter as Player;
@@ -357,12 +363,15 @@ namespace Engine
                     var isSummonedByPlayerorPartner = (BelongCharacter.SummonedByMagicSprite != null &&
                                                        (BelongCharacter.SummonedByMagicSprite.BelongCharacter.IsPlayer ||
                                                         BelongCharacter.SummonedByMagicSprite.BelongCharacter.IsPartner));
+                    var isControledByPlayer = (BelongCharacter.ControledMagicSprite != null &&
+                                               BelongCharacter.ControledMagicSprite.BelongCharacter.IsPlayer);
                     //Hited character death
                     if (!isInDeath && //Alive before hited
                         target.IsInDeathing && //Death after hited
                         (BelongCharacter.IsPlayer ||
                         BelongCharacter.IsPartner ||
-                        isSummonedByPlayerorPartner))
+                        isSummonedByPlayerorPartner ||
+                        isControledByPlayer))
                     {
                         Globals.ThePlayer.AddExp(
                             Utils.GetCharacterDeathExp(Globals.ThePlayer, target));
