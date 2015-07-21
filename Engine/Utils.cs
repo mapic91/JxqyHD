@@ -516,18 +516,33 @@ namespace Engine
         public static int GetCharacterDeathExp(Character theKiller, Character theDead)
         {
             if (theDead == null || theKiller == null) return 1;
-            return theDead.Level * theDead.Level + 1;
+            var exp = theKiller.Level*theDead.Level;
+            return exp < 4 ? 4 : exp;
+        }
+
+        private static readonly Dictionary<int, int> MagicExp = new Dictionary<int, int>();
+
+        public static void LoadMagicExpList()
+        {
+            const string path = @"ini\level\MagicExp.ini";
+            try
+            {
+                var data = new FileIniDataParser().ReadFile(path, Globals.LocalEncoding);
+                var section = GetFirstSection(data);
+                foreach (var keyData in section)
+                {
+                    MagicExp[int.Parse(keyData.KeyName)] = int.Parse(keyData.Value);
+                }
+            }
+            catch (Exception e)
+            {
+                Log.LogFileLoadError("MagicExp.ini", path, e);
+            }
         }
 
         public static int GetMagicExp(int hitedCharacterLevel)
         {
-            var exp = Math.Pow(hitedCharacterLevel,
-                1.0 + 0.343 * hitedCharacterLevel / 100.0);
-            if (exp < 3)
-            {
-                exp = 3;
-            }
-            return (int)exp;
+            return MagicExp.ContainsKey(hitedCharacterLevel) ? MagicExp[hitedCharacterLevel] : MagicExp.Last().Value;
         }
 
         public static T Clamp<T>(this T val, T min, T max) where T : IComparable<T>

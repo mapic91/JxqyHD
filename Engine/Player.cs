@@ -785,11 +785,6 @@ namespace Engine
 
         public void AddMagicExp(MagicListManager.MagicItemInfo info, int amount)
         {
-            if (info == null)
-            {
-                //info is null, maybe attack magic(FlyIni,FlyIni2), add exp to current use magic
-                info = CurrentMagicInUse;
-            }
             if (info == null ||
                 info.TheMagic == null ||
                 info.TheMagic.LevelupExp == 0 //Max level

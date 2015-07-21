@@ -334,6 +334,9 @@ namespace Engine
             //Load partner name list
             PartnerList.Load();
 
+            //Load magic exp list
+            Utils.LoadMagicExpList();
+
             //Start gui
             GuiManager.Starting();
         }

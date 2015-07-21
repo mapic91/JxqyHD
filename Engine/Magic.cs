@@ -77,10 +77,6 @@ namespace Engine
             set
             {
                 _iteminfo = value;
-                if (_attackFile != null)
-                {
-                    _attackFile.ItemInfo = value;
-                }
                 if (_explodeMagicFile != null)
                 {
                     _explodeMagicFile.ItemInfo = value;

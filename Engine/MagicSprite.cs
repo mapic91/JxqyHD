@@ -332,11 +332,6 @@ namespace Engine
                 {
                     var amount = Utils.GetMagicExp(character.Level);
                     player.AddMagicExp(info, amount);
-                    if (player.XiuLianMagic != null &&
-                        player.XiuLianMagic != BelongMagic.ItemInfo)
-                    {
-                        player.AddMagicExp(player.XiuLianMagic, amount);
-                    }
                 }
             }
 
@@ -373,8 +368,17 @@ namespace Engine
                         isSummonedByPlayerorPartner ||
                         isControledByPlayer))
                     {
-                        Globals.ThePlayer.AddExp(
-                            Utils.GetCharacterDeathExp(Globals.ThePlayer, target));
+                        var player = Globals.ThePlayer;
+                        var exp = Utils.GetCharacterDeathExp(Globals.ThePlayer, target);
+                        player.AddExp(exp);
+                        if (player.XiuLianMagic != null)
+                        {
+                            player.AddMagicExp(player.XiuLianMagic, (exp*2)/3);
+                        }
+                        if (player.CurrentMagicInUse != null)
+                        {
+                            player.AddMagicExp(player.CurrentMagicInUse, (exp+9)/10);
+                        }
                     }
                 }
             }

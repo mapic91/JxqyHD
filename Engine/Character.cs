@@ -586,14 +586,7 @@ namespace Engine
         public bool IsDeath
         {
             get { return _isDeath; }
-            protected set
-            {
-                _isDeath = value;
-                if (value)
-                {
-                    _currentRunDeathScript = ScriptManager.RunScript(Utils.GetScriptParser(DeathScript, this));
-                }
-            }
+            protected set { _isDeath = value; }
         }
 
         /// <summary>
@@ -1550,6 +1543,9 @@ namespace Engine
         {
             if (IsDeathInvoked) return;
             IsDeathInvoked = true;
+
+            //Run death script
+            _currentRunDeathScript = ScriptManager.RunScript(Utils.GetScriptParser(DeathScript, this));
 
             if (ControledMagicSprite != null)
             {
