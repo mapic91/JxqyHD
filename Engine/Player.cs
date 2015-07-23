@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using Engine.Gui;
 using Engine.ListManager;
+using Engine.Script;
 using IniParser.Model;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -99,7 +100,7 @@ namespace Engine
         }
         public bool CanInput
         {
-            get { return !Globals.IsInputDisabled && MouseInBound(); }
+            get { return !Globals.IsInputDisabled && !ScriptManager.IsInRunningScript && MouseInBound(); }
         }
 
         public MagicListManager.MagicItemInfo CurrentMagicInUse
