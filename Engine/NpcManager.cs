@@ -559,7 +559,7 @@ namespace Engine
                 {
                     npc.Death();
                     Globals.ThePlayer.AddExp(
-                        Utils.GetCharacterDeathExp(Globals.ThePlayer, npc));
+                        Utils.GetCharacterDeathExp(Globals.ThePlayer, npc), true);
                 }
             }
         }

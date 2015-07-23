@@ -494,10 +494,15 @@ namespace Engine.Gui
         #region Handle key press
         private static bool IsEscKeyPressed(KeyboardState keyboardState)
         {
-            return (!Globals.IsInputDisabled && 
-                    !ScriptManager.IsInRunningScript &&
-                    keyboardState.IsKeyDown(Keys.Escape) &&
+            return (keyboardState.IsKeyDown(Keys.Escape) &&
                     Globals.TheGame.LastKeyboardState.IsKeyUp(Keys.Escape));
+        }
+
+        private static bool IsEscKeyPressedAndCanInput(KeyboardState keyboardState)
+        {
+            return (IsEscKeyPressed(keyboardState) &&
+                    !Globals.IsInputDisabled &&
+                    !ScriptManager.IsInRunningScript);
         }
 
         private static bool IsShowLittleMapKeyPressed(KeyboardState keyboardState)
@@ -628,7 +633,7 @@ namespace Engine.Gui
                         ShowAllPanels(false);
                         LittleMapInterface.IsShow = true;
                     }
-                    else if (IsEscKeyPressed(keyboardState))
+                    else if (IsEscKeyPressedAndCanInput(keyboardState))
                     {
                         if (HasPanelsShow())
                         {

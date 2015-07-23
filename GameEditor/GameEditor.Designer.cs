@@ -74,6 +74,8 @@
             this._fileText = new System.Windows.Forms.TextBox();
             this._scriptFilePath = new System.Windows.Forms.Button();
             this.TheToolTip = new System.Windows.Forms.ToolTip(this.components);
+            this._levelupCurrentMagicMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this._levelDownCurrentMagicMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -347,7 +349,9 @@
             this._variablesMenu,
             this._logMenu,
             this.disableNpcAIToolStripMenuItem,
-            this.enableNpcAIToolStripMenuItem});
+            this.enableNpcAIToolStripMenuItem,
+            this._levelupCurrentMagicMenuItem,
+            this._levelDownCurrentMagicMenuItem});
             this.DebugMenu.Name = "DebugMenu";
             this.DebugMenu.Size = new System.Drawing.Size(45, 20);
             this.DebugMenu.Text = "调试";
@@ -356,7 +360,7 @@
             // 
             this._changePlayerPos.Name = "_changePlayerPos";
             this._changePlayerPos.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-            this._changePlayerPos.Size = new System.Drawing.Size(176, 22);
+            this._changePlayerPos.Size = new System.Drawing.Size(191, 22);
             this._changePlayerPos.Text = "瞬移...";
             this._changePlayerPos.Click += new System.EventHandler(this._changePlayerPos_Click);
             // 
@@ -364,7 +368,7 @@
             // 
             this._runScriptMenu.Name = "_runScriptMenu";
             this._runScriptMenu.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this._runScriptMenu.Size = new System.Drawing.Size(176, 22);
+            this._runScriptMenu.Size = new System.Drawing.Size(191, 22);
             this._runScriptMenu.Text = "运行脚本...";
             this._runScriptMenu.Click += new System.EventHandler(this._runScriptMenu_Click);
             // 
@@ -372,7 +376,7 @@
             // 
             this._variablesMenu.Name = "_variablesMenu";
             this._variablesMenu.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.B)));
-            this._variablesMenu.Size = new System.Drawing.Size(176, 22);
+            this._variablesMenu.Size = new System.Drawing.Size(191, 22);
             this._variablesMenu.Text = "变量列表...";
             this._variablesMenu.Click += new System.EventHandler(this._variablesMenu_Click);
             // 
@@ -380,21 +384,21 @@
             // 
             this._logMenu.Name = "_logMenu";
             this._logMenu.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
-            this._logMenu.Size = new System.Drawing.Size(176, 22);
+            this._logMenu.Size = new System.Drawing.Size(191, 22);
             this._logMenu.Text = "日志...";
             this._logMenu.Click += new System.EventHandler(this._logMenu_Click);
             // 
             // disableNpcAIToolStripMenuItem
             // 
             this.disableNpcAIToolStripMenuItem.Name = "disableNpcAIToolStripMenuItem";
-            this.disableNpcAIToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.disableNpcAIToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.disableNpcAIToolStripMenuItem.Text = "DisableNpcAI";
             this.disableNpcAIToolStripMenuItem.Click += new System.EventHandler(this.disableNpcAIToolStripMenuItem_Click);
             // 
             // enableNpcAIToolStripMenuItem
             // 
             this.enableNpcAIToolStripMenuItem.Name = "enableNpcAIToolStripMenuItem";
-            this.enableNpcAIToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.enableNpcAIToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.enableNpcAIToolStripMenuItem.Text = "EnableNpcAI";
             this.enableNpcAIToolStripMenuItem.Click += new System.EventHandler(this.enableNpcAIToolStripMenuItem_Click);
             // 
@@ -510,6 +514,20 @@
             this._scriptFilePath.UseVisualStyleBackColor = true;
             this._scriptFilePath.Click += new System.EventHandler(this._scriptFilePath_Click);
             // 
+            // _levelupCurrentMagicMenuItem
+            // 
+            this._levelupCurrentMagicMenuItem.Name = "_levelupCurrentMagicMenuItem";
+            this._levelupCurrentMagicMenuItem.Size = new System.Drawing.Size(191, 22);
+            this._levelupCurrentMagicMenuItem.Text = "当前使用武功升一级";
+            this._levelupCurrentMagicMenuItem.Click += new System.EventHandler(this._levelupCurrentMagicMenuItem_Click);
+            // 
+            // _levelDownCurrentMagicMenuItem
+            // 
+            this._levelDownCurrentMagicMenuItem.Name = "_levelDownCurrentMagicMenuItem";
+            this._levelDownCurrentMagicMenuItem.Size = new System.Drawing.Size(191, 22);
+            this._levelDownCurrentMagicMenuItem.Text = "当前使用武功降一级";
+            this._levelDownCurrentMagicMenuItem.Click += new System.EventHandler(this._levelDownCurrentMagicMenuItem_Click);
+            // 
             // GameEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -593,5 +611,7 @@
         private System.Windows.Forms.ToolStripMenuItem _reducePlayerLifeMenu;
         private System.Windows.Forms.ToolStripMenuItem emptyManaToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem emptyThewToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem _levelupCurrentMagicMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem _levelDownCurrentMagicMenuItem;
     }
 }

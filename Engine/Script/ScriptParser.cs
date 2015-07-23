@@ -10,7 +10,8 @@ namespace Engine.Script
 {
     public class ScriptParser
     {
-        private List<Code> _codes;
+        private Code[] _codes;
+        private string[] _lines;
         private int _currentIndex;
         private Code _currentCode;
         private bool _isEnd = true;
@@ -38,21 +39,31 @@ namespace Engine.Script
         private static readonly Regex RegFunction = new Regex(@"^([a-zA-Z]+)(.*);*");
         private static readonly Regex RegParameter = new Regex(@"^\((.+)\)(.*)");
         private static readonly Regex RegResult = new Regex(@"^@[a-zA-Z0-9]+");
-        private void ParserLine(string line)
-        {
-            var code = new Code { LineNumber = _lineNumber };
-            line = line.Trim();
-            if (line.Length < 2) return;
 
-            if (RegGoto.IsMatch(line))
+        /// <summary>
+        /// Line string to Code
+        /// </summary>
+        /// <param name="lineNumber">Line index</param>
+        /// <param name="findGoto">Just find goto.</param>
+        /// <returns></returns>
+        private Code ParserLine(int lineNumber, bool findGoto)
+        {
+            var line = _lines[lineNumber];
+            var code = new Code { LineNumber = lineNumber, Literal = line};
+            line = line.Trim();
+            if (line.Length < 2) return code;
+
+            var isGoto = RegGoto.IsMatch(line);
+            if (isGoto || findGoto)
             {
+                if (!isGoto) return null;
                 var match = RegGoto.Match(line);
                 code.IsGoto = true;
                 code.Name = match.Value;
             }
             else if (RegComment.IsMatch(line))
             {
-                return;
+                //do nothing
             }
             else if (RegFunction.IsMatch(line))
             {
@@ -72,8 +83,12 @@ namespace Engine.Script
                 }
             }
 
-            code.Literal = line;
-            _codes.Add(code);
+            return code;
+        }
+
+        private Code GetCode(int lineIndex, bool findGoto = false)
+        {
+            return _codes[lineIndex] ?? (_codes[lineIndex] = ParserLine(lineIndex, findGoto));
         }
 
         private List<string> ParserParameter(string str)
@@ -139,13 +154,8 @@ namespace Engine.Script
 
         private bool ReadFromLines(string[] lines)
         {
-            _lineNumber = 1;
-            _codes = new List<Code>(lines.Count());
-            foreach (var line in lines)
-            {
-                ParserLine(line);
-                _lineNumber++;
-            }
+            _codes = new Code[lines.Count()];
+            _lines = lines;
             IsOk = true;
             return true;
         }
@@ -181,12 +191,12 @@ namespace Engine.Script
         public bool Continue()
         {
             if (IsEnd) return false;
-            var count = _codes.Count;
+            var count = _codes.Count();
             for (; _currentIndex < count; _currentIndex++)
             {
                 string gotoPosition;
                 bool scriptEnd;
-                if (!RunCode(_codes[_currentIndex], out gotoPosition, out scriptEnd)) break;
+                if (!RunCode(_currentIndex, out gotoPosition, out scriptEnd)) break;
                 if (scriptEnd)
                 {
                     IsEnd = true;
@@ -199,13 +209,15 @@ namespace Engine.Script
                     _currentIndex = 0;//Scan from begin
                     while (_currentIndex < count)
                     {
-                        if (_codes[_currentIndex].IsGoto &&
-                            _codes[_currentIndex].Name == gotoPosition)
+                        var code = GetCode(_currentIndex, true);
+                        if (code != null &&
+                            code.IsGoto &&
+                            code.Name == gotoPosition)
                         {
-                            Globals.TheMessageSender.SendFunctionCallMessage(ToMessageString(_codes[_currentIndex]));
+                            Globals.TheMessageSender.SendFunctionCallMessage(ToMessageString(code));
                             break;
                         }
-                        else _currentIndex++;
+                        _currentIndex++;
                     }
                 }
             }
@@ -215,7 +227,7 @@ namespace Engine.Script
 
         private static string ToMessageString(Code code)
         {
-            return DateTime.Now.ToString("T") + "    " + code.Literal + "    [" + code.LineNumber + "]";
+            return DateTime.Now.ToString("HH:mm:ss.fff") + "    " + code.Literal + "    [" + code.LineNumber + "]";
         }
 
         public class Code
@@ -246,10 +258,12 @@ namespace Engine.Script
         /// <param name="gotoPosition"></param>
         /// <param name="scriptEnd">Script is returned if true</param>
         /// <returns>True if code runed, false if code is running</returns>
-        private bool RunCode(Code code, out string gotoPosition, out bool scriptEnd)
+        private bool RunCode(int lineIndex, out string gotoPosition, out bool scriptEnd)
         {
             gotoPosition = null;
             scriptEnd = false;
+
+            var code = GetCode(lineIndex);
             if (code == null ||
                 code.IsGoto ||
                 string.IsNullOrEmpty(code.Name)) return true;

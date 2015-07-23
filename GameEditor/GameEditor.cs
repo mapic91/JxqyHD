@@ -326,5 +326,25 @@ namespace GameEditor
         {
             Globals.ThePlayer.Thew = 0;
         }
+
+        private void _levelupCurrentMagicMenuItem_Click(object sender, EventArgs e)
+        {
+            if (Globals.ThePlayer == null) return;
+            var info = Globals.ThePlayer.CurrentMagicInUse;
+            if (info == null || info.TheMagic == null) return;
+
+            Globals.ThePlayer.AddMagicExp(info, info.TheMagic.LevelupExp - info.Exp + 1);
+        }
+
+        private void _levelDownCurrentMagicMenuItem_Click(object sender, EventArgs e)
+        {
+            if (Globals.ThePlayer == null) return;
+            var info = Globals.ThePlayer.CurrentMagicInUse;
+            if (info == null || info.TheMagic == null || info.Level < 2) return;
+
+            info.Exp = info.Level > 2 ? info.TheMagic.GetLevel(info.Level - 2).LevelupExp : 0;
+            info.TheMagic = info.TheMagic.GetLevel(info.Level - 1);
+            GuiManager.ShowMessage("武功 " + info.TheMagic.Name + " 降级了");
+        }
     }
 }

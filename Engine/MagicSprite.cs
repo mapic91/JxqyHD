@@ -370,15 +370,7 @@ namespace Engine
                     {
                         var player = Globals.ThePlayer;
                         var exp = Utils.GetCharacterDeathExp(Globals.ThePlayer, target);
-                        player.AddExp(exp);
-                        if (player.XiuLianMagic != null)
-                        {
-                            player.AddMagicExp(player.XiuLianMagic, exp*2/9);
-                        }
-                        if (player.CurrentMagicInUse != null)
-                        {
-                            player.AddMagicExp(player.CurrentMagicInUse, (exp+29)/30);
-                        }
+                        player.AddExp(exp, true);
                     }
                 }
             }

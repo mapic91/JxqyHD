@@ -16,9 +16,9 @@ namespace Engine
 {
     static public class Utils
     {
-        public static Dictionary<int, Asf> AsfFiles = new Dictionary<int, Asf>();
-        public static Dictionary<int, Magic> Magics = new Dictionary<int, Magic>();
-        public static Dictionary<int, Good> Goods = new Dictionary<int, Good>();
+        public static Dictionary<string, Asf> AsfFiles = new Dictionary<string, Asf>();
+        public static Dictionary<string, Magic> Magics = new Dictionary<string, Magic>();
+        public static Dictionary<string, Good> Goods = new Dictionary<string, Good>();
 
         //static public int GetBigEndianIntegerFromByteArray(byte[] data, ref int startIndex)
         //{
@@ -90,15 +90,14 @@ namespace Engine
                 if (string.IsNullOrEmpty(basePath) || basePath[basePath.Length - 1] != '\\')
                     basePath += "\\";
                 var path = basePath + fileName;
-                var hashCode = path.GetHashCode();
-                if (AsfFiles.ContainsKey(hashCode))
-                    return AsfFiles[hashCode];
+                if (AsfFiles.ContainsKey(path))
+                    return AsfFiles[path];
                 else
                 {
                     var asf = new Asf(path);
                     if (asf.IsOk)
                     {
-                        AsfFiles[hashCode] = asf;
+                        AsfFiles[path] = asf;
                         return asf;
                     }
                     else
@@ -165,15 +164,14 @@ namespace Engine
             try
             {
                 var filePath = @"ini\magic\" + fileName;
-                var hashCode = filePath.GetHashCode();
-                if (shared && Magics.ContainsKey(hashCode))
-                    return Magics[hashCode];
+                if (shared && Magics.ContainsKey(filePath))
+                    return Magics[filePath];
                 else
                 {
                     var magic = new Magic(filePath);
                     if (magic.IsOk)
                     {
-                        if (shared) Magics[hashCode] = magic;
+                        if (shared) Magics[filePath] = magic;
                         return magic;
                     }
                 }
@@ -191,15 +189,14 @@ namespace Engine
             try
             {
                 var filePath = @"ini\goods\" + fileName;
-                var hashCode = filePath.GetHashCode();
-                if (Goods.ContainsKey(hashCode))
-                    return Goods[hashCode];
+                if (Goods.ContainsKey(filePath))
+                    return Goods[filePath];
                 else
                 {
                     var good = new Good(filePath);
                     if (good.IsOk)
                     {
-                        Goods[hashCode] = good;
+                        Goods[filePath] = good;
                         return good;
                     }
                 }
