@@ -373,11 +373,11 @@ namespace Engine
                         player.AddExp(exp);
                         if (player.XiuLianMagic != null)
                         {
-                            player.AddMagicExp(player.XiuLianMagic, (exp*2)/3);
+                            player.AddMagicExp(player.XiuLianMagic, exp*2/9);
                         }
                         if (player.CurrentMagicInUse != null)
                         {
-                            player.AddMagicExp(player.CurrentMagicInUse, (exp+9)/10);
+                            player.AddMagicExp(player.CurrentMagicInUse, (exp+29)/30);
                         }
                     }
                 }
