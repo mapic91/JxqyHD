@@ -49,6 +49,8 @@ namespace Engine
         private int _vibratingScreen;
         private int _maxCount;
         private string _npcFile;
+        private int _randomMoveDegree;
+        private int _followMouse;
 
         #region Leap
         private int _leapTimes;
@@ -378,6 +380,18 @@ namespace Engine
         {
             get { return _npcFile; }
             set { _npcFile = value; }
+        }
+
+        public int RandomMoveDegree
+        {
+            get { return _randomMoveDegree; }
+            set { _randomMoveDegree = value; }
+        }
+
+        public int FollowMouse
+        {
+            get { return _followMouse; }
+            set { _followMouse = value; }
         }
 
         #endregion

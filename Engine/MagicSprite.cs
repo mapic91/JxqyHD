@@ -6,6 +6,7 @@ using Engine.Weather;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Engine
 {
@@ -741,6 +742,22 @@ namespace Engine
                             {
                                 _elapsedMilliSeconds -= BelongMagic.FlyInterval;
                                 MagicManager.UseMagic(BelongCharacter, BelongMagic.FlyMagic, PositionInWorld, PositionInWorld + _moveDirection);
+                            }
+                            if (BelongMagic.FollowMouse > 0)
+                            {
+                                var mouseState = Mouse.GetState();
+                                var mouseScreenPosition = new Vector2(mouseState.X, mouseState.Y);
+                                var mouseWorldPosition = Globals.TheCarmera.ToWorldPosition(mouseScreenPosition);
+                                MoveDirection = mouseWorldPosition - PositionInWorld;
+                            }
+                            else if (BelongMagic.RandomMoveDegree > 0 && MoveDirection != Vector2.Zero)
+                            {
+                                var normal = Vector2.Normalize(MoveDirection);
+                                var perpendicular1 = new Vector2(normal.Y, -normal.X);
+                                var perpendicular2 = new Vector2(-normal.Y, normal.X);
+                                var random = (Globals.TheRandom.Next(2) == 0 ? perpendicular1 : perpendicular2) *
+                                                Globals.TheRandom.Next(BelongMagic.RandomMoveDegree);
+                                MoveDirection += random;
                             }
                         }
                         break;
