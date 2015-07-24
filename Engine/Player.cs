@@ -775,13 +775,16 @@ namespace Engine
 
         public void AddExp(int amount, bool addMagicExp = false)
         {
-            if (XiuLianMagic != null)
+            if (addMagicExp)
             {
-                AddMagicExp(XiuLianMagic, amount * 2 / 9);
-            }
-            if (CurrentMagicInUse != null)
-            {
-                AddMagicExp(CurrentMagicInUse, (amount + 29) / 30);
+                if (XiuLianMagic != null)
+                {
+                    AddMagicExp(XiuLianMagic, amount * 2 / 9);
+                }
+                if (CurrentMagicInUse != null)
+                {
+                    AddMagicExp(CurrentMagicInUse, (amount + 29) / 30);
+                }
             }
 
             if(LevelUpExp <= 0) return;

@@ -15,7 +15,6 @@ namespace Engine.Script
         private int _currentIndex;
         private Code _currentCode;
         private bool _isEnd = true;
-        private int _lineNumber;
         public string FilePath { get; private set; }
         public string FileName { get; private set; }
         public bool IsOk { private set; get; }
