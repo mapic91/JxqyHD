@@ -622,7 +622,7 @@ namespace Engine
             }
             else
             {
-                if (BelongMagic.FollowMouse > 0)
+                if (BelongMagic.FollowMouse > 0 && !IsInDestroy)
                 {
                     var mouseState = Mouse.GetState();
                     var mouseScreenPosition = new Vector2(mouseState.X, mouseState.Y);
