@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Engine;
 using Engine.Gui;
+using Engine.ListManager;
 using Engine.Script;
 using Engine.Storage;
 using Microsoft.Xna.Framework;
@@ -345,6 +346,13 @@ namespace GameEditor
             info.Exp = info.Level > 2 ? info.TheMagic.GetLevel(info.Level - 2).LevelupExp : 0;
             info.TheMagic = info.TheMagic.GetLevel(info.Level - 1);
             GuiManager.ShowMessage("武功 " + info.TheMagic.Name + " 降级了");
+        }
+
+        private void _reloadCurrentMagicMenuItem_Click(object sender, EventArgs e)
+        {
+            if (Globals.ThePlayer == null) return;
+            MagicListManager.SaveList(StorageBase.MagicListFilePath);
+            MagicListManager.LoadList(StorageBase.MagicListFilePath);
         }
     }
 }
