@@ -351,8 +351,10 @@ namespace GameEditor
         private void _reloadCurrentMagicMenuItem_Click(object sender, EventArgs e)
         {
             if (Globals.ThePlayer == null) return;
+            var index = Globals.ThePlayer.CurrentUseMagicIndex;
             MagicListManager.SaveList(StorageBase.MagicListFilePath);
             MagicListManager.LoadList(StorageBase.MagicListFilePath);
+            Globals.ThePlayer.CurrentUseMagicIndex = index;
         }
     }
 }
