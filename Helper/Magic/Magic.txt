@@ -91,8 +91,6 @@ MoveKind：
 详细：
 FlyMagic - 飞行中释放的Magic文件名（释放的Magic等级跟原Magic相同）
 FlyInterval - 每隔多少毫秒释放FlyMagic
-RandomMoveDegree - 随机移动的程度，默认0
-FollowMouse - 大于0表示朝鼠标的位置移动，而不随机移动（忽略RandomMove的值）。默认0
 
 范例见：magic-kind18.ini
 
@@ -242,3 +240,10 @@ RestoreType - 恢复类型，默认值0。0 生命， 1 内力， 2 体力
 
 详细：
 VibratingScreen - 震动屏幕的幅度，默认0
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+移动：
+
+RandomMoveDegree - 随机移动的程度，默认0
+FollowMouse - 大于0表示朝鼠标的位置移动，而不随机移动（忽略RandomMove的值）。默认0

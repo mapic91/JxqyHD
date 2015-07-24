@@ -24,6 +24,7 @@ namespace Engine
         private List<Character> _leapedCharacters;
         private Character _closedCharecter;
         private float _elapsedMilliSeconds;
+        private float _elapsedMilliSecondsUpdateTime;
         private bool _isOneSecond;
 
         private int _leftLeapTimes;
@@ -561,10 +562,10 @@ namespace Engine
         private void UpdateTime(GameTime gameTime)
         {
             _isOneSecond = false;
-            _elapsedMilliSeconds += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-            if (_elapsedMilliSeconds >= 1000)
+            _elapsedMilliSecondsUpdateTime += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            if (_elapsedMilliSecondsUpdateTime >= 1000)
             {
-                _elapsedMilliSeconds -= 1000;
+                _elapsedMilliSecondsUpdateTime -= 1000;
                 _isOneSecond = true;
             }
         }
@@ -621,6 +622,24 @@ namespace Engine
             }
             else
             {
+                if (BelongMagic.FollowMouse > 0)
+                {
+                    var mouseState = Mouse.GetState();
+                    var mouseScreenPosition = new Vector2(mouseState.X, mouseState.Y);
+                    var mouseWorldPosition = Globals.TheCarmera.ToWorldPosition(mouseScreenPosition);
+                    var direction = mouseWorldPosition - PositionInWorld;
+                    MoveDirection = direction.Length() > 25 ? direction : Vector2.Zero;
+                }
+                else if (BelongMagic.RandomMoveDegree > 0 && MoveDirection != Vector2.Zero)
+                {
+                    var normal = Vector2.Normalize(MoveDirection);
+                    var perpendicular1 = new Vector2(normal.Y, -normal.X);
+                    var perpendicular2 = new Vector2(-normal.Y, normal.X);
+                    var random = (Globals.TheRandom.Next(2) == 0 ? perpendicular1 : perpendicular2) *
+                                    Globals.TheRandom.Next(BelongMagic.RandomMoveDegree);
+                    MoveDirection += random;
+                }
+
                 if (BelongMagic.MoveKind == 16)
                 {
                     if (MovedDistance > 200f) //First move 200, than find target
@@ -742,22 +761,6 @@ namespace Engine
                             {
                                 _elapsedMilliSeconds -= BelongMagic.FlyInterval;
                                 MagicManager.UseMagic(BelongCharacter, BelongMagic.FlyMagic, PositionInWorld, PositionInWorld + _moveDirection);
-                            }
-                            if (BelongMagic.FollowMouse > 0)
-                            {
-                                var mouseState = Mouse.GetState();
-                                var mouseScreenPosition = new Vector2(mouseState.X, mouseState.Y);
-                                var mouseWorldPosition = Globals.TheCarmera.ToWorldPosition(mouseScreenPosition);
-                                MoveDirection = mouseWorldPosition - PositionInWorld;
-                            }
-                            else if (BelongMagic.RandomMoveDegree > 0 && MoveDirection != Vector2.Zero)
-                            {
-                                var normal = Vector2.Normalize(MoveDirection);
-                                var perpendicular1 = new Vector2(normal.Y, -normal.X);
-                                var perpendicular2 = new Vector2(-normal.Y, normal.X);
-                                var random = (Globals.TheRandom.Next(2) == 0 ? perpendicular1 : perpendicular2) *
-                                                Globals.TheRandom.Next(BelongMagic.RandomMoveDegree);
-                                MoveDirection += random;
                             }
                         }
                         break;
