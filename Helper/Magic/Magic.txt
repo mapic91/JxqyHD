@@ -248,3 +248,4 @@ VibratingScreen - 震动屏幕的幅度，默认0
 RandomMoveDegree - 随机移动的程度，默认0
 FollowMouse - 大于0表示朝鼠标的位置移动，（忽略RandomMove的值）。默认0
 MeteorMove - 大于0表示从空中砸向地面，值越大高度越高，（忽略RandomMove，FollowMouse的值）,默认0。范例见：MeteorMove.ini
+MeteorMoveDir - MeteorMove的运动方向，0-7，大于7表示随机，默认5.

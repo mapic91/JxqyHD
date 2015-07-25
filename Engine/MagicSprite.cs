@@ -180,13 +180,14 @@ namespace Engine
             if (BelongMagic.MeteorMove > 0)
             {
                 _waitMilliSeconds = Globals.TheRandom.Next(1000);
+                var dir = (BelongMagic.MeteorMoveDir > 7) ? Globals.TheRandom.Next(8) : BelongMagic.MeteorMoveDir;
                 var path = new LinkedList<Vector2>();
                 path.AddFirst(positionInWorld);
-                var tile = Map.ToTilePosition(positionInWorld);
+                var tile = Map.ToTilePosition(positionInWorld, false);
                 for (var i = 0; i <= BelongMagic.MeteorMove; i++)
                 {
-                    tile = PathFinder.FindNeighborInDirection(tile, 5);
-                    path.AddFirst(Map.ToPixelPosition(tile));
+                    tile = PathFinder.FindNeighborInDirection(tile, dir);
+                    path.AddFirst(Map.ToPixelPosition(tile, false));
                 }
                 SetPath(path);
                 PositionInWorld = path.First.Value;

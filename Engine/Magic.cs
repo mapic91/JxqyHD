@@ -52,6 +52,7 @@ namespace Engine
         private int _randomMoveDegree;
         private int _followMouse;
         private int _meteorMove;
+        private int _meteorMoveDir = 5;
 
         #region Leap
         private int _leapTimes;
@@ -399,6 +400,12 @@ namespace Engine
         {
             get { return _meteorMove; }
             set { _meteorMove = value; }
+        }
+
+        public int MeteorMoveDir
+        {
+            get { return _meteorMoveDir; }
+            set { _meteorMoveDir = value; }
         }
 
         #endregion

@@ -154,9 +154,9 @@ namespace Engine
         #endregion Public Properties
 
         #region public static method
-        public static Vector2 ToTilePosition(int pixelX, int pixelY)
+        public static Vector2 ToTilePosition(int pixelX, int pixelY, bool boundCheck = true)
         {
-            if (pixelX < 0f || pixelY < 0f) return new Vector2(0);
+            if ((pixelX < 0f || pixelY < 0f) && boundCheck) return new Vector2(0);
 
             var nx = pixelX / 64;
             var ny = 1 + (pixelY / 32) * 2;
@@ -191,15 +191,15 @@ namespace Engine
             return new Vector2(nx, ny);
         }
 
-        public static Vector2 ToTilePosition(Vector2 pixelPositionInWorld)
+        public static Vector2 ToTilePosition(Vector2 pixelPositionInWorld, bool boundCheck = true)
         {
-            return ToTilePosition((int)pixelPositionInWorld.X, (int)pixelPositionInWorld.Y);
+            return ToTilePosition((int)pixelPositionInWorld.X, (int)pixelPositionInWorld.Y, boundCheck);
         }
 
         //Return pixel position of tile center in world
-        public static Vector2 ToPixelPosition(int col, int row)
+        public static Vector2 ToPixelPosition(int col, int row, bool boundCheck = true)
         {
-            if (col < 0 || row < 0) return new Vector2(0);
+            if ((col < 0 || row < 0) && boundCheck) return new Vector2(0);
 
             var basex = (row % 2) * 32 + 64 * col;
             var basey = 16 * row;
@@ -207,9 +207,9 @@ namespace Engine
         }
 
         //Return pixel position of tile center in world
-        public static Vector2 ToPixelPosition(Vector2 tilePositon)
+        public static Vector2 ToPixelPosition(Vector2 tilePositon, bool boundCheck = true)
         {
-            return ToPixelPosition((int)tilePositon.X, (int)tilePositon.Y);
+            return ToPixelPosition((int)tilePositon.X, (int)tilePositon.Y, boundCheck);
         }
         #endregion public static method
 
