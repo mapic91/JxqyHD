@@ -355,6 +355,8 @@ namespace GameEditor
             MagicListManager.SaveList(StorageBase.MagicListFilePath);
             MagicListManager.LoadList(StorageBase.MagicListFilePath);
             Globals.ThePlayer.CurrentUseMagicIndex = index;
+            Globals.ThePlayer.XiuLianMagic = MagicListManager.GetItemInfo(
+                MagicListManager.XiuLianIndex);
         }
     }
 }
