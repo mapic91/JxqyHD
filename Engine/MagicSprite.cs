@@ -639,7 +639,7 @@ namespace Engine
                         PositionInWorld = endPosition;
                         if (_paths.Count < 2)
                         {
-                            if (_destroyOnEnd) Destroy();
+                            if (_destroyOnEnd || BelongMagic.MeteorMove > 0) Destroy();
                             CheckCharacterHited();
                         }
                     }

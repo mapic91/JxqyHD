@@ -710,6 +710,10 @@ namespace Engine
             {
                 magic.FlyingSound.Play();
             }
+            if (magic.MeteorMove > 0)
+            {
+                origin = destination;
+            }
             switch (magic.MoveKind)
             {
                 case 1:
