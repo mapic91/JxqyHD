@@ -245,6 +245,30 @@ namespace Engine
             return enemies;
         }
 
+        public static List<Character> FindFriendInTileDistance(Character finder, int tileDistance)
+        {
+            var friends = new List<Character>();
+            if (finder == null) return friends;
+            if (finder.IsEnemy)
+            {
+                friends.AddRange(_list.Where(npc => finder != npc && 
+                    npc.IsEnemy && 
+                    PathFinder.GetViewTileDistance(finder.TilePosition, npc.TilePosition) <= tileDistance));
+            }
+            else if (finder.IsPlayer || finder.IsFighterFriend)
+            {
+                friends.AddRange(_list.Where(npc => finder != npc && 
+                    npc.IsFighterFriend && 
+                    PathFinder.GetViewTileDistance(finder.TilePosition, npc.TilePosition) <= tileDistance));
+                if (finder != Globals.ThePlayer &&
+                    PathFinder.GetViewTileDistance(finder.TilePosition, Globals.ThePlayer.TilePosition) <= tileDistance)
+                {
+                    friends.Add(Globals.ThePlayer);
+                }
+            }
+            return friends;
+        } 
+
         public static void RemoveAllPartner()
         {
             for (var node = _list.First; node != null; )

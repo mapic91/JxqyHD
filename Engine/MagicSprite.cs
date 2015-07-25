@@ -702,19 +702,19 @@ namespace Engine
                     case 4:
                         if (_isOneSecond)
                         {
-                            BelongCharacter.AddLife(BelongMagic.SpecialKindValue);
+                            BelongCharacter.AddLife(BelongMagic.Effect);
                         }
                         break;
                     case 5:
                         if (_isOneSecond)
                         {
-                            BelongCharacter.AddMana(BelongMagic.SpecialKindValue);
+                            BelongCharacter.AddMana(BelongMagic.Effect);
                         }
                         break;
                     case 6:
                         if (_isOneSecond)
                         {
-                            BelongCharacter.AddThew(BelongMagic.SpecialKindValue);
+                            BelongCharacter.AddThew(BelongMagic.Effect);
                         }
                         break;
                     case 7:
@@ -723,6 +723,16 @@ namespace Engine
                         foreach (var target in NpcManager.FindEnemiesInTileDistance(BelongCharacter, BelongMagic.SpecialKindValue))
                         {
                             CharacterHited(target);
+                        }
+                        break;
+                    case 10:
+                        if (_isOneSecond)
+                        {
+                            foreach (var target in NpcManager.FindFriendInTileDistance(BelongCharacter, BelongMagic.SpecialKindValue))
+                            {
+                                target.AddLife(BelongMagic.Effect);
+                            }
+                            BelongCharacter.AddLife(BelongMagic.Effect);
                         }
                         break;
                 }

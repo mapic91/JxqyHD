@@ -193,12 +193,13 @@ ExplodeMagicFile 不设置在 Init 下，设置在Level*下，表示该Magic不可爆炸，当升级到
 [2] - 增加体力，增加Effect，LifeFrame完爆炸
 [3] - 不受伤害，时间长度LifeFrame，LifeFrame完爆炸
 扩展
-[4] - 不断增加生命，SpecialKindValue设置每秒增加多少生命，LifeFrame完爆炸，爆炸后结束
-[5] - 不断增加内力，SpecialKindValue设置每秒增加多少内力，LifeFrame完爆炸，爆炸后结束
-[6] - 不断增加体力，SpecialKindValue设置每秒增加多少体力，LifeFrame完爆炸，爆炸后结束
+[4] - 不断增加生命，Effect设置每秒增加多少生命，LifeFrame完爆炸，爆炸后结束
+[5] - 不断增加内力，Effect设置每秒增加多少内力，LifeFrame完爆炸，爆炸后结束
+[6] - 不断增加体力，Effect设置每秒增加多少体力，LifeFrame完爆炸，爆炸后结束
 [7] - 每秒使范围内的敌人冰冻，(Level+1秒)后解冻，SpecialKindValue设置半径，LifeFrame完爆炸，爆炸后结束
 [8] - 每秒使范围内的敌人中毒，(Level+1秒)后解毒，SpecialKindValue设置半径，LifeFrame完爆炸，爆炸后结束
 [9] - 每秒使范围内的敌人石化，(Level+1秒)后解石化，SpecialKindValue设置半径，LifeFrame完爆炸，爆炸后结束
+[10] - 不断增加自己和半径内友军的生命，Effect设置每秒增加多少生命，SpecialKindValue设置半径，LifeFrame完爆炸，爆炸后结束
 范例见：player-magic-13扩展-不断增加体力.ini
         player-magic-13扩展-范围石化.ini
 
