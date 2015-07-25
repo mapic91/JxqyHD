@@ -564,7 +564,7 @@ namespace Engine
             var partners = NpcManager.GetAllPartner();
             if (partners.Count == 0) return;
             var neighbors = Engine.PathFinder.FindAllNeighbors(TilePosition);
-            var index = 0;
+            var index = CurrentDirection + 4;
             foreach (var partner in partners)
             {
                 if (index == CurrentDirection) index++;
