@@ -51,6 +51,7 @@ namespace Engine
         private string _npcFile;
         private int _randomMoveDegree;
         private int _followMouse;
+        private int _meteorMove;
 
         #region Leap
         private int _leapTimes;
@@ -392,6 +393,12 @@ namespace Engine
         {
             get { return _followMouse; }
             set { _followMouse = value; }
+        }
+
+        public int MeteorMove
+        {
+            get { return _meteorMove; }
+            set { _meteorMove = value; }
         }
 
         #endregion

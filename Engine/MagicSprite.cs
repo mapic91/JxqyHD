@@ -26,6 +26,7 @@ namespace Engine
         private float _elapsedMilliSeconds;
         private float _elapsedMilliSecondsUpdateTime;
         private bool _isOneSecond;
+        private float _waitMilliSeconds;
 
         private int _leftLeapTimes;
         private int _currentEffect;
@@ -175,6 +176,23 @@ namespace Engine
             MoveDirection = moveDirection;
             _destroyOnEnd = destroyOnEnd;
             SetDirection(MoveDirection);
+
+            if (BelongMagic.MeteorMove > 0)
+            {
+                _waitMilliSeconds = Globals.TheRandom.Next(1000);
+                var path = new LinkedList<Vector2>();
+                path.AddFirst(positionInWorld);
+                var tile = Map.ToTilePosition(positionInWorld);
+                for (var i = 0; i <= BelongMagic.MeteorMove; i++)
+                {
+                    tile = PathFinder.FindNeighborInDirection(tile, 5);
+                    path.AddFirst(Map.ToPixelPosition(tile));
+                }
+                SetPath(path);
+                PositionInWorld = path.First.Value;
+                Velocity = belongMagic.Speed * Globals.MagicBasespeed;
+            }
+
             return true;
         }
 
@@ -599,6 +617,12 @@ namespace Engine
         {
             if (IsDestroyed) return;
 
+            if (_waitMilliSeconds > 0)
+            {
+                _waitMilliSeconds -= (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                return;
+            }
+
             if (_paths != null)
             {
                 if (_paths.Count > 1)
@@ -724,20 +748,20 @@ namespace Engine
                     if (!IsInPlaying) _isDestroyed = true;
                 }
             }
+            else if (_paths != null)
+            {
+                //do nothing
+            }
             else if (BelongMagic.MoveKind == 15)
             {
                 if (!IsInPlaying)
                     Destroy();
             }
-            else if (BelongMagic.MoveKind == 17)
-            {
-                //do nothing
-            }
             else if (BelongMagic.MoveKind == 22) //Summon
             {
                 if (_elapsedMilliSeconds < BelongMagic.KeepMilliseconds)
                 {
-                    _elapsedMilliSeconds += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                    _elapsedMilliSeconds += (float) gameTime.ElapsedGameTime.TotalMilliseconds;
                     if (!IsInPlaying) Texture = Asf.Empty;
                 }
                 else
@@ -754,15 +778,16 @@ namespace Engine
                     case 21: //Controling others
                     case 22:
                         break;
-                    case 18://Fly magic
+                    case 18: //Fly magic
+                    {
+                        _elapsedMilliSeconds += (float) gameTime.ElapsedGameTime.TotalMilliseconds;
+                        if (_elapsedMilliSeconds >= BelongMagic.FlyInterval)
                         {
-                            _elapsedMilliSeconds += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-                            if (_elapsedMilliSeconds >= BelongMagic.FlyInterval)
-                            {
-                                _elapsedMilliSeconds -= BelongMagic.FlyInterval;
-                                MagicManager.UseMagic(BelongCharacter, BelongMagic.FlyMagic, PositionInWorld, PositionInWorld + _moveDirection);
-                            }
+                            _elapsedMilliSeconds -= BelongMagic.FlyInterval;
+                            MagicManager.UseMagic(BelongCharacter, BelongMagic.FlyMagic, PositionInWorld,
+                                PositionInWorld + _moveDirection);
                         }
+                    }
                         break;
                     default:
                         CheckCharacterHited();
@@ -788,7 +813,7 @@ namespace Engine
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (IsDestroyed) return;
+            if (IsDestroyed || _waitMilliSeconds > 0) return;
             var color = DrawColor;
 
             //When rain make magic sprite has normal light
