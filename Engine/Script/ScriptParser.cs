@@ -48,7 +48,7 @@ namespace Engine.Script
         private Code ParserLine(int lineNumber, bool findGoto)
         {
             var line = _lines[lineNumber];
-            var code = new Code { LineNumber = lineNumber, Literal = line};
+            var code = new Code { LineNumber = lineNumber+1, Literal = line};
             line = line.Trim();
             if (line.Length < 2) return code;
 
