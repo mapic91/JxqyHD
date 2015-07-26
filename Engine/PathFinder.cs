@@ -41,23 +41,36 @@ namespace Engine
                     Globals.TheMap.IsObstacleForCharacter(tilePosition));
         }
 
+        /// <summary>
+        /// Temporary disable path find max try restrict.
+        /// Used once.
+        /// </summary>
+        public static bool TemporaryDisableRestrict;
+
         //Returned path is in pixel position
         public static LinkedList<Vector2> FindPath(Character finder, Vector2 startTile, Vector2 endTile, PathType type)
         {
+            LinkedList<Vector2> path = null;
             switch (type)
             {
                 case PathType.PathOneStep:
-                    return FindPathStep(finder, startTile, endTile, 10);
+                    path = FindPathStep(finder, startTile, endTile, 10);
+                    break;
                 case PathType.SimpleMaxNpcTry:
-                    return FindPathSimple(finder, startTile, endTile, 100);
+                    path = FindPathSimple(finder, startTile, endTile, 100);
+                    break;
                 case PathType.PerfectMaxNpcTry:
-                    return FindPathPerfect(finder, startTile, endTile, 100);
+                    path = FindPathPerfect(finder, startTile, endTile, 100);
+                    break;
                 case PathType.PerfectMaxPlayerTry:
-                    return FindPathPerfect(finder, startTile, endTile, 500);
+                    path = FindPathPerfect(finder, startTile, endTile, TemporaryDisableRestrict ? -1 : 500);
+                    break;
                 case PathType.PathStraightLine:
-                    return GetLinePath(startTile, endTile, 100);
+                    path = GetLinePath(startTile, endTile, 100);
+                    break;
             }
-            return null;
+            TemporaryDisableRestrict = false;//Used once
+            return path;
         }
 
         //Returned path is in pixel position
@@ -319,7 +332,7 @@ namespace Engine
 
             while (!frontier.IsEmpty)
             {
-                if (tryCount++ > maxTryCount) break;
+                if (maxTryCount != -1 && tryCount++ > maxTryCount) break;
                 var current = frontier.DeleteMin().Location;
                 if (current.Equals(endTile)) break;
                 if (finder.HasObstacle(current) && current != startTile) continue;

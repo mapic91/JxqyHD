@@ -5,7 +5,9 @@ using Engine.Gui.Base;
 using IniParser;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Color = Microsoft.Xna.Framework.Color;
+using Point = Microsoft.Xna.Framework.Point;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 using Texture = Engine.Gui.Base.Texture;
 
@@ -19,6 +21,8 @@ namespace Engine.Gui
         private GuiItem _downButton;
         private GuiItem _closeButton;
         private LineText _mapName;
+        private LineText _bottomTip;
+        private LineText _messageTip;
         private int _viewBeginX;
         private int _viewBeginY;
         private const int ViewWidth = 320;
@@ -38,6 +42,10 @@ namespace Engine.Gui
             set
             {
                 base.IsShow = value;
+                if (_messageTip != null)
+                {
+                    _messageTip.IsShow = false;
+                }
                 if (value)
                 {
                     var texture = Globals.TheMap.LittelMapTexture;
@@ -138,13 +146,59 @@ namespace Engine.Gui
             IsShow = false;
         }
 
+        private void Left()
+        {
+            ViewBeginX -= 32/Ratio;
+        }
+
+        private void Right()
+        {
+            ViewBeginX += 32/Ratio;
+        }
+
+        private void Up()
+        {
+            ViewBeginY -= 16/Ratio;
+        }
+
+        private void Down()
+        {
+            ViewBeginY += 16/Ratio;
+        }
+
         private void RegisterHadler()
         {
-            _leftButton.MouseLeftClicking += (arg1, arg2) => ViewBeginX -= 32/Ratio;
-            _rightButton.MouseLeftClicking += (arg1, arg2) => ViewBeginX += 32/Ratio;
-            _upButton.MouseLeftClicking += (arg1, arg2) => ViewBeginY -= 16/Ratio;
-            _downButton.MouseLeftClicking += (arg1, arg2) => ViewBeginY += 16/Ratio;
+            _leftButton.MouseLeftClicking += (arg1, arg2) => Left();
+            _rightButton.MouseLeftClicking += (arg1, arg2) => Right();
+            _upButton.MouseLeftClicking += (arg1, arg2) => Up();
+            _downButton.MouseLeftClicking += (arg1, arg2) => Down();
             _closeButton.Click += (arg1, arg2) => IsShow = false;
+            MouseLeftDown += (object arg1, MouseLeftDownEvent arg2) =>
+            {
+                if (DrawRegion.Contains(new Point((int)arg2.MouseScreenPosition.X, (int)arg2.MouseScreenPosition.Y)))
+                {
+                    var position = arg2.MousePosition - new Vector2(MapViewDrawBeginX, MapViewDrawBeginY);
+                    position += new Vector2(ViewBeginX, ViewBeginY);
+                    position *= Ratio;
+                    PathFinder.TemporaryDisableRestrict = true;
+                    if (Globals.ThePlayer.canRun(Keyboard.GetState()))
+                    {
+                        Globals.ThePlayer.RunTo(Map.ToTilePosition(position));
+                    }
+                    else
+                    {
+                        Globals.ThePlayer.WalkTo(Map.ToTilePosition(position));
+                    }
+                    if (Globals.ThePlayer.Path != null)
+                    {
+                        IsShow = false;
+                    }
+                    else
+                    {
+                        _messageTip.IsShow = true;
+                    }
+                }
+            };
         }
 
         private void LoadTexture()
@@ -240,6 +294,23 @@ namespace Engine.Gui
                 string.Empty,
                 new Color(76,56,48) * 0.8f,
                 Globals.FontSize12);
+            _bottomTip = new LineText(this, 
+                new Vector2(160, 370),
+                260,
+                30,
+                LineText.Align.Left,
+                "点击小地图进行移动",
+                new Color(76, 56, 48) * 0.8f,
+                Globals.FontSize10);
+            _messageTip = new LineText(this,
+                new Vector2(160, 370),
+                260,
+                30,
+                LineText.Align.Right,
+                "无法移动到目的地",
+                new Color(200, 0, 0) * 0.8f,
+                Globals.FontSize10);
+            _messageTip.IsShow = false;
         }
 
         private void DrawMapView(SpriteBatch spriteBatch)
@@ -306,6 +377,24 @@ namespace Engine.Gui
             base.Update(gameTime);
             GuiManager.IsMouseStateEated = true;
 
+            var state = Keyboard.GetState();
+            if (state.IsKeyDown(Keys.Up))
+            {
+                Up();
+            }
+            else if (state.IsKeyDown(Keys.Left))
+            {
+                Left();
+            }
+            else if (state.IsKeyDown(Keys.Right))
+            {
+                Right();
+            }
+            else if (state.IsKeyDown(Keys.Down))
+            {
+                Down();
+            }
+
             //Buttons
             _leftButton.Update(gameTime);
             _rightButton.Update(gameTime);
@@ -340,6 +429,8 @@ namespace Engine.Gui
             _downButton.Draw(spriteBatch);
             _closeButton.Draw(spriteBatch);
             _mapName.Draw(spriteBatch);
+            _bottomTip.Draw(spriteBatch);
+            _messageTip.Draw(spriteBatch);
         }
     }
 }

@@ -922,6 +922,13 @@ namespace Engine
             }
         }
 
+        public bool canRun(KeyboardState keyboardState)
+        {
+            return (keyboardState.IsKeyDown(Keys.LeftShift) ||
+                      keyboardState.IsKeyDown(Keys.RightShift)) &&
+                      !IsRunDisabled;;
+        }
+
         #endregion Public method
 
         public override void Update(GameTime gameTime)
@@ -933,9 +940,7 @@ namespace Engine
             var mouseTilePosition = Map.ToTilePosition(mouseWorldPosition);
             _isUseMagicByKeyborad = false;
 
-            _isRun = (keyboardState.IsKeyDown(Keys.LeftShift) ||
-                      keyboardState.IsKeyDown(Keys.RightShift)) &&
-                      !IsRunDisabled;
+            _isRun = canRun(keyboardState);
 
             Globals.ClearGlobalOutEdge();
 
