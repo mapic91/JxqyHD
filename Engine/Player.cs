@@ -782,11 +782,11 @@ namespace Engine
             {
                 if (XiuLianMagic != null)
                 {
-                    AddMagicExp(XiuLianMagic, amount * 2 / 9);
+                    AddMagicExp(XiuLianMagic, (int) (amount*Utils.XiuLianMagicExpFraction));
                 }
                 if (CurrentMagicInUse != null)
                 {
-                    AddMagicExp(CurrentMagicInUse, (amount + 29) / 30);
+                    AddMagicExp(CurrentMagicInUse, (int) (amount*Utils.UseMagicExpFraction));
                 }
             }
 

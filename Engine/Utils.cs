@@ -518,6 +518,8 @@ namespace Engine
         }
 
         private static readonly Dictionary<int, int> MagicExp = new Dictionary<int, int>();
+        public static float XiuLianMagicExpFraction;
+        public static float UseMagicExpFraction;
 
         public static void LoadMagicExpList()
         {
@@ -525,11 +527,13 @@ namespace Engine
             try
             {
                 var data = new FileIniDataParser().ReadFile(path, Globals.LocalEncoding);
-                var section = GetFirstSection(data);
+                var section = data["Exp"];
                 foreach (var keyData in section)
                 {
                     MagicExp[int.Parse(keyData.KeyName)] = int.Parse(keyData.Value);
                 }
+                XiuLianMagicExpFraction = float.Parse(data["XiuLianMagicExp"]["Fraction"]);
+                UseMagicExpFraction = float.Parse(data["UseMagicExp"]["Fraction"]);
             }
             catch (Exception e)
             {
