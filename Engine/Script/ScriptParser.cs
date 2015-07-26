@@ -513,6 +513,9 @@ namespace Engine.Script
                         case "ShowMessage":
                             ScriptExecuter.ShowMessage(parameters);
                             break;
+                        case "DisplayMessage":
+                            ScriptExecuter.DisplayMessage(parameters);
+                            break;
                         case "SetMagicLevel":
                             ScriptExecuter.SetMagicLevel(parameters);
                             break;

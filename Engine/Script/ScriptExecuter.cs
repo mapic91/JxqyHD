@@ -946,6 +946,11 @@ namespace Engine.Script
             }
         }
 
+        public static void DisplayMessage(List<string> parameters)
+        {
+            GuiManager.ShowMessage(Utils.RemoveStringQuotes(parameters[0]));
+        }
+
         public static void SetMagicLevel(List<string> parameters)
         {
             var fileName = Utils.RemoveStringQuotes(parameters[0]);
@@ -1798,5 +1803,7 @@ namespace Engine.Script
 
             Variables[variable] = value;
         }
+
+        
     }
 }
