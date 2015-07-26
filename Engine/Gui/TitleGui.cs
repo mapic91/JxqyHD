@@ -109,7 +109,6 @@ namespace Engine.Gui
             {
                 guiItem.Draw(spriteBatch);
             }
-            spriteBatch.DrawString(Globals.FontSize12, "By 小试刀剑", new Vector2(5,5), Color.Gold*0.8f);
         }
     }
 }
