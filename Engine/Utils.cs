@@ -513,7 +513,7 @@ namespace Engine
         public static int GetCharacterDeathExp(Character theKiller, Character theDead)
         {
             if (theDead == null || theKiller == null) return 1;
-            var exp = theKiller.Level*theDead.Level;
+            var exp = theKiller.Level*theDead.Level + theDead.ExpBonus;
             return exp < 4 ? 4 : exp;
         }
 
