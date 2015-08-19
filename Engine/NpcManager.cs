@@ -72,6 +72,10 @@ namespace Engine
                 }
                 fileName = _fileName;
             }
+            if (!isSaveParter)
+            {
+                _fileName = fileName;
+            }
             var path = @"save\game\" + fileName;
             try
             {

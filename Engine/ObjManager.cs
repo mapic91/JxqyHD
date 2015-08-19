@@ -225,6 +225,7 @@ namespace Engine
                 }
                 fileName = _fileName;
             }
+            _fileName = fileName;
             var path = @"save\game\" + fileName;
             try
             {

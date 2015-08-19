@@ -249,8 +249,8 @@ namespace Engine
             var belongCharacterEvade = BelongCharacter.Evade;
             const float maxOffset = 100f;
             const float baseHitRatio = 0.05f;
-            const float belowRatio = 0.3f;
-            const float upRatio = 0.65f;
+            const float belowRatio = 0.5f;
+            const float upRatio = 0.45f;
             var hitRatio = baseHitRatio;
             if (targetEvade >= belongCharacterEvade)
             {
