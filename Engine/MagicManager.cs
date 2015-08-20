@@ -548,6 +548,28 @@ namespace Engine
             }
         }
 
+        private static void AddVTypeFixedPOsitionMagicSprite(Character user, Magic magic, Vector2 origin, Vector2 destination, bool destroyOnEnd)
+        {
+            var direction = destination - origin;
+            var directionIndex = Utils.GetDirectionIndex(direction, 8);
+            var count = 3;
+            if (magic.CurrentLevel > 3) count += ((magic.CurrentLevel - 1) / 3) * 2;
+            var orgTile = PathFinder.FindNeighborInDirection(Map.ToTilePosition(origin), directionIndex);
+            AddMagicSprite(GetFixedPositionMagicSprite(user, magic, Map.ToPixelPosition(orgTile), destroyOnEnd));
+            const float magicDelayMilliseconds = 60f;
+            var leftVTile = orgTile;
+            var rightVTile = orgTile;
+            for (var i = 1; i < count; i++)
+            {
+                leftVTile = PathFinder.FindNeighborInDirection(leftVTile, (directionIndex + 7)%8);
+                rightVTile = PathFinder.FindNeighborInDirection(rightVTile, (directionIndex + 1) % 8);
+                AddWorkItem(new WorkItem(i*magicDelayMilliseconds,
+                    GetFixedPositionMagicSprite(user, magic, Map.ToPixelPosition(leftVTile), destroyOnEnd)));
+                AddWorkItem(new WorkItem(i*magicDelayMilliseconds,
+                    GetFixedPositionMagicSprite(user, magic, Map.ToPixelPosition(rightVTile), destroyOnEnd)));
+            }
+        }
+
         private static void AddFollowCharacterMagicSprite(Character user, Magic magic, Vector2 origin, bool destroyOnEnd, Character target)
         {
             if (target != null && user.Kind == (int) Character.CharacterKind.Player && target.IsFighterFriend)
@@ -761,6 +783,9 @@ namespace Engine
                                 break;
                             case 4:
                                 AddIsoscelesTriangleMagicSprite(user, magic, origin, destination, true);
+                                break;
+                            case 5:
+                                AddVTypeFixedPOsitionMagicSprite(user, magic, origin, destination, true);
                                 break;
                         }
                         break;

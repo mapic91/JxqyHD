@@ -131,7 +131,7 @@
             // 
             this.rpg1ToolStripMenuItem.Name = "rpg1ToolStripMenuItem";
             this.rpg1ToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D1)));
-            this.rpg1ToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.rpg1ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.rpg1ToolStripMenuItem.Text = "rpg1";
             this.rpg1ToolStripMenuItem.Click += new System.EventHandler(this.rpg1ToolStripMenuItem_Click);
             // 
@@ -139,7 +139,7 @@
             // 
             this.rpg2ToolStripMenuItem.Name = "rpg2ToolStripMenuItem";
             this.rpg2ToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D2)));
-            this.rpg2ToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.rpg2ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.rpg2ToolStripMenuItem.Text = "rpg2";
             this.rpg2ToolStripMenuItem.Click += new System.EventHandler(this.rpg2ToolStripMenuItem_Click);
             // 
@@ -147,7 +147,7 @@
             // 
             this.rpg3ToolStripMenuItem.Name = "rpg3ToolStripMenuItem";
             this.rpg3ToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D3)));
-            this.rpg3ToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.rpg3ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.rpg3ToolStripMenuItem.Text = "rpg3";
             this.rpg3ToolStripMenuItem.Click += new System.EventHandler(this.rpg3ToolStripMenuItem_Click);
             // 
@@ -155,7 +155,7 @@
             // 
             this.rpg4ToolStripMenuItem.Name = "rpg4ToolStripMenuItem";
             this.rpg4ToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D4)));
-            this.rpg4ToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.rpg4ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.rpg4ToolStripMenuItem.Text = "rpg4";
             this.rpg4ToolStripMenuItem.Click += new System.EventHandler(this.rpg4ToolStripMenuItem_Click);
             // 
@@ -163,7 +163,7 @@
             // 
             this.rpg5ToolStripMenuItem.Name = "rpg5ToolStripMenuItem";
             this.rpg5ToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D5)));
-            this.rpg5ToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.rpg5ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.rpg5ToolStripMenuItem.Text = "rpg5";
             this.rpg5ToolStripMenuItem.Click += new System.EventHandler(this.rpg5ToolStripMenuItem_Click);
             // 
@@ -171,7 +171,7 @@
             // 
             this.rpg6ToolStripMenuItem.Name = "rpg6ToolStripMenuItem";
             this.rpg6ToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D6)));
-            this.rpg6ToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.rpg6ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.rpg6ToolStripMenuItem.Text = "rpg6";
             this.rpg6ToolStripMenuItem.Click += new System.EventHandler(this.rpg6ToolStripMenuItem_Click);
             // 
@@ -179,7 +179,7 @@
             // 
             this.rpg7ToolStripMenuItem.Name = "rpg7ToolStripMenuItem";
             this.rpg7ToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D7)));
-            this.rpg7ToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.rpg7ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.rpg7ToolStripMenuItem.Text = "rpg7";
             this.rpg7ToolStripMenuItem.Click += new System.EventHandler(this.rpg7ToolStripMenuItem_Click);
             // 
@@ -201,7 +201,7 @@
             // 
             this.rpg1ToolStripMenuItem1.Name = "rpg1ToolStripMenuItem1";
             this.rpg1ToolStripMenuItem1.ShortcutKeys = System.Windows.Forms.Keys.F1;
-            this.rpg1ToolStripMenuItem1.Size = new System.Drawing.Size(117, 22);
+            this.rpg1ToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.rpg1ToolStripMenuItem1.Text = "rpg1";
             this.rpg1ToolStripMenuItem1.Click += new System.EventHandler(this.rpg1ToolStripMenuItem1_Click);
             // 
@@ -209,7 +209,7 @@
             // 
             this.rpg2ToolStripMenuItem1.Name = "rpg2ToolStripMenuItem1";
             this.rpg2ToolStripMenuItem1.ShortcutKeys = System.Windows.Forms.Keys.F2;
-            this.rpg2ToolStripMenuItem1.Size = new System.Drawing.Size(117, 22);
+            this.rpg2ToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.rpg2ToolStripMenuItem1.Text = "rpg2";
             this.rpg2ToolStripMenuItem1.Click += new System.EventHandler(this.rpg2ToolStripMenuItem1_Click);
             // 
@@ -217,7 +217,7 @@
             // 
             this.rpg3ToolStripMenuItem1.Name = "rpg3ToolStripMenuItem1";
             this.rpg3ToolStripMenuItem1.ShortcutKeys = System.Windows.Forms.Keys.F3;
-            this.rpg3ToolStripMenuItem1.Size = new System.Drawing.Size(117, 22);
+            this.rpg3ToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.rpg3ToolStripMenuItem1.Text = "rpg3";
             this.rpg3ToolStripMenuItem1.Click += new System.EventHandler(this.rpg3ToolStripMenuItem1_Click);
             // 
@@ -225,7 +225,7 @@
             // 
             this.rpg4ToolStripMenuItem1.Name = "rpg4ToolStripMenuItem1";
             this.rpg4ToolStripMenuItem1.ShortcutKeys = System.Windows.Forms.Keys.F4;
-            this.rpg4ToolStripMenuItem1.Size = new System.Drawing.Size(117, 22);
+            this.rpg4ToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.rpg4ToolStripMenuItem1.Text = "rpg4";
             this.rpg4ToolStripMenuItem1.Click += new System.EventHandler(this.rpg4ToolStripMenuItem1_Click);
             // 
@@ -233,7 +233,7 @@
             // 
             this.rpg5ToolStripMenuItem1.Name = "rpg5ToolStripMenuItem1";
             this.rpg5ToolStripMenuItem1.ShortcutKeys = System.Windows.Forms.Keys.F5;
-            this.rpg5ToolStripMenuItem1.Size = new System.Drawing.Size(117, 22);
+            this.rpg5ToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.rpg5ToolStripMenuItem1.Text = "rpg5";
             this.rpg5ToolStripMenuItem1.Click += new System.EventHandler(this.rpg5ToolStripMenuItem1_Click);
             // 
@@ -241,7 +241,7 @@
             // 
             this.rpg6ToolStripMenuItem1.Name = "rpg6ToolStripMenuItem1";
             this.rpg6ToolStripMenuItem1.ShortcutKeys = System.Windows.Forms.Keys.F6;
-            this.rpg6ToolStripMenuItem1.Size = new System.Drawing.Size(117, 22);
+            this.rpg6ToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.rpg6ToolStripMenuItem1.Text = "rpg6";
             this.rpg6ToolStripMenuItem1.Click += new System.EventHandler(this.rpg6ToolStripMenuItem1_Click);
             // 
@@ -249,7 +249,7 @@
             // 
             this.rpg7ToolStripMenuItem1.Name = "rpg7ToolStripMenuItem1";
             this.rpg7ToolStripMenuItem1.ShortcutKeys = System.Windows.Forms.Keys.F7;
-            this.rpg7ToolStripMenuItem1.Size = new System.Drawing.Size(117, 22);
+            this.rpg7ToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.rpg7ToolStripMenuItem1.Text = "rpg7";
             this.rpg7ToolStripMenuItem1.Click += new System.EventHandler(this.rpg7ToolStripMenuItem1_Click);
             // 
@@ -362,7 +362,7 @@
             // 
             this._changePlayerPos.Name = "_changePlayerPos";
             this._changePlayerPos.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-            this._changePlayerPos.Size = new System.Drawing.Size(221, 22);
+            this._changePlayerPos.Size = new System.Drawing.Size(255, 22);
             this._changePlayerPos.Text = "瞬移...";
             this._changePlayerPos.Click += new System.EventHandler(this._changePlayerPos_Click);
             // 
@@ -370,7 +370,7 @@
             // 
             this._runScriptMenu.Name = "_runScriptMenu";
             this._runScriptMenu.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this._runScriptMenu.Size = new System.Drawing.Size(221, 22);
+            this._runScriptMenu.Size = new System.Drawing.Size(255, 22);
             this._runScriptMenu.Text = "运行脚本...";
             this._runScriptMenu.Click += new System.EventHandler(this._runScriptMenu_Click);
             // 
@@ -378,7 +378,7 @@
             // 
             this._variablesMenu.Name = "_variablesMenu";
             this._variablesMenu.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.B)));
-            this._variablesMenu.Size = new System.Drawing.Size(221, 22);
+            this._variablesMenu.Size = new System.Drawing.Size(255, 22);
             this._variablesMenu.Text = "变量列表...";
             this._variablesMenu.Click += new System.EventHandler(this._variablesMenu_Click);
             // 
@@ -386,35 +386,39 @@
             // 
             this._logMenu.Name = "_logMenu";
             this._logMenu.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
-            this._logMenu.Size = new System.Drawing.Size(221, 22);
+            this._logMenu.Size = new System.Drawing.Size(255, 22);
             this._logMenu.Text = "日志...";
             this._logMenu.Click += new System.EventHandler(this._logMenu_Click);
             // 
             // disableNpcAIToolStripMenuItem
             // 
             this.disableNpcAIToolStripMenuItem.Name = "disableNpcAIToolStripMenuItem";
-            this.disableNpcAIToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
+            this.disableNpcAIToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
             this.disableNpcAIToolStripMenuItem.Text = "DisableNpcAI";
             this.disableNpcAIToolStripMenuItem.Click += new System.EventHandler(this.disableNpcAIToolStripMenuItem_Click);
             // 
             // enableNpcAIToolStripMenuItem
             // 
             this.enableNpcAIToolStripMenuItem.Name = "enableNpcAIToolStripMenuItem";
-            this.enableNpcAIToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
+            this.enableNpcAIToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
             this.enableNpcAIToolStripMenuItem.Text = "EnableNpcAI";
             this.enableNpcAIToolStripMenuItem.Click += new System.EventHandler(this.enableNpcAIToolStripMenuItem_Click);
             // 
             // _levelupCurrentMagicMenuItem
             // 
             this._levelupCurrentMagicMenuItem.Name = "_levelupCurrentMagicMenuItem";
-            this._levelupCurrentMagicMenuItem.Size = new System.Drawing.Size(221, 22);
+            this._levelupCurrentMagicMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
+            | System.Windows.Forms.Keys.J)));
+            this._levelupCurrentMagicMenuItem.Size = new System.Drawing.Size(255, 22);
             this._levelupCurrentMagicMenuItem.Text = "当前使用武功升一级";
             this._levelupCurrentMagicMenuItem.Click += new System.EventHandler(this._levelupCurrentMagicMenuItem_Click);
             // 
             // _levelDownCurrentMagicMenuItem
             // 
             this._levelDownCurrentMagicMenuItem.Name = "_levelDownCurrentMagicMenuItem";
-            this._levelDownCurrentMagicMenuItem.Size = new System.Drawing.Size(221, 22);
+            this._levelDownCurrentMagicMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
+            | System.Windows.Forms.Keys.K)));
+            this._levelDownCurrentMagicMenuItem.Size = new System.Drawing.Size(255, 22);
             this._levelDownCurrentMagicMenuItem.Text = "当前使用武功降一级";
             this._levelDownCurrentMagicMenuItem.Click += new System.EventHandler(this._levelDownCurrentMagicMenuItem_Click);
             // 
@@ -422,7 +426,7 @@
             // 
             this._reloadCurrentMagicMenuItem.Name = "_reloadCurrentMagicMenuItem";
             this._reloadCurrentMagicMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this._reloadCurrentMagicMenuItem.Size = new System.Drawing.Size(221, 22);
+            this._reloadCurrentMagicMenuItem.Size = new System.Drawing.Size(255, 22);
             this._reloadCurrentMagicMenuItem.Text = "重新读取武功列表";
             this._reloadCurrentMagicMenuItem.ToolTipText = "调试武功时，修改了武功文件，重新读取，使修改生效";
             this._reloadCurrentMagicMenuItem.Click += new System.EventHandler(this._reloadCurrentMagicMenuItem_Click);
@@ -438,7 +442,7 @@
             // _aboutMeun
             // 
             this._aboutMeun.Name = "_aboutMeun";
-            this._aboutMeun.Size = new System.Drawing.Size(100, 22);
+            this._aboutMeun.Size = new System.Drawing.Size(152, 22);
             this._aboutMeun.Text = "关于";
             this._aboutMeun.Click += new System.EventHandler(this._aboutMeun_Click);
             // 
