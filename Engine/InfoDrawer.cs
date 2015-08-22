@@ -16,10 +16,19 @@ namespace Engine
         public static Color FriendLifeColor = new Color(16, 165, 28)*0.9f;
         public static Color LifeLoseColor = Color.Black * 0.7f;
         public static Color NameColor = Color.White*0.8f;
+        public static Color EnemyBossNameColor = new Color(200, 200, 10) * 0.9f;
         public static void DrawLife(SpriteBatch spriteBatch, Npc npc)
         {
             Color drawColor;
-            if (npc.IsEnemy) drawColor = EnemyLifeColor;
+            Color nameColor = NameColor;
+            if (npc.IsEnemy) 
+            {
+                drawColor = EnemyLifeColor;
+                if (npc.ExpBonus > 0)
+                {
+                    nameColor = EnemyBossNameColor;
+                }
+            }
             else if (npc.IsFighterFriend) drawColor = FriendLifeColor;
             else return;
 
@@ -47,7 +56,7 @@ namespace Engine
                 var measure = Globals.FontSize12.MeasureString(npc.Name);
                 var namePosition = new Vector2((float)Globals.WindowWidth / 2 - measure.X / 2,
                     topLeftY + (height - measure.Y) / 2 + 1);
-                spriteBatch.DrawString(Globals.FontSize12, npc.Name, namePosition, NameColor);
+                spriteBatch.DrawString(Globals.FontSize12, npc.Name, namePosition, nameColor);
             }
         }
     }

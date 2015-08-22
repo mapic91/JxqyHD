@@ -28,7 +28,24 @@ namespace Engine
             }
             var obj = new Obj(@"ini\obj\" + fileName);
             obj.TilePosition = character.TilePosition;
-            obj.ScriptFile = GetScriptFileName(type, character.Level);
+            var level = character.Level;
+            if (character.ExpBonus > 0)
+            {
+                var rand = Globals.TheRandom.Next(100);
+                if (rand < 10)
+                {
+                    level += 0;
+                }
+                else if(rand < 60)
+                {
+                    level += 12;
+                }
+                else
+                {
+                    level += 24;
+                }
+            }
+            obj.ScriptFile = GetScriptFileName(type, level);
             return obj;
         }
 
@@ -89,6 +106,13 @@ namespace Engine
         {
             //Just enemy can drop
             if (!character.IsEnemy) return null;
+
+            if (character.ExpBonus > 0)
+            {
+                //Boss
+                return GetObj(Globals.TheRandom.Next(0, 2) == 0 ? GoodType.Weapon : GoodType.Armor,
+                    character);
+            }
 
             var goodType = (GoodType) Globals.TheRandom.Next(0, (int) GoodType.MaxType);
             var maxRandValue = 2;
