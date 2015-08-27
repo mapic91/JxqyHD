@@ -34,6 +34,8 @@ namespace Engine
 
         private Npc _summonedNpc;
 
+        private bool _isInMoveBack;
+
         #region Public properties
         public Magic BelongMagic
         {
@@ -360,6 +362,14 @@ namespace Engine
             {
                 LeapToNextTarget(character);
             }
+            else if (BelongMagic.PassThrough > 0)
+            {
+                if (Velocity > 0 && MoveDirection != Vector2.Zero)
+                {
+                    //Hit once, move magic sprite to neighber tile
+                    TilePosition = PathFinder.FindNeighborInDirection(TilePosition, MoveDirection);
+                }
+            }
             else
             {
                 Destroy();
@@ -665,6 +675,17 @@ namespace Engine
                     MoveDirection += random;
                 }
 
+                if (_isInMoveBack && !_isInDestroy)
+                {
+                    //Move back to magic user.
+                    MoveDirection = BelongCharacter.PositionInWorld - PositionInWorld;
+                    if (MoveDirection.Length() < 20)
+                    {
+                        _isInMoveBack = false;
+                        _isDestroyed = true;
+                    }
+                }
+
                 if (BelongMagic.MoveKind == 16)
                 {
                     if (MovedDistance > 200f) //First move 200, than find target
@@ -811,7 +832,15 @@ namespace Engine
                 }
                 else if (!IsInPlaying)
                 {
-                    if (_destroyOnEnd)
+                    if (BelongMagic.MoveBack > 0)
+                    {
+                        if (Velocity == 0.0f)
+                        {
+                            Velocity = Globals.MagicBasespeed*BelongMagic.Speed;
+                        }
+                        _isInMoveBack = true;
+                    }
+                    else if (_destroyOnEnd)
                     {
                         Destroy();
                     }
