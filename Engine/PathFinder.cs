@@ -35,7 +35,7 @@ namespace Engine
             return null;
         }
 
-        private static bool HasObstacle(Character finder, Vector2 tilePosition)
+        public static bool HasObstacle(Character finder, Vector2 tilePosition)
         {
             return (finder.HasObstacle(tilePosition) ||
                     Globals.TheMap.IsObstacleForCharacter(tilePosition));

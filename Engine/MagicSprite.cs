@@ -172,6 +172,10 @@ namespace Engine
                 }
                     break;
             }
+            if (belongMagic.TakeUser > 0)
+            {
+                belongCharacter.MovedByMagicSprite = this;
+            }
             Set(positionInWorld, velocity, texture, 0);
             BelongMagic = belongMagic;
             BelongCharacter = belongCharacter;
@@ -202,6 +206,13 @@ namespace Engine
         private void CharacterHited(Character character)
         {
             if (character == null) return;
+
+            if (BelongMagic.Bounce > 0)
+            {
+                character.BouncedDirection = MoveDirection;
+                character.BouncedVelocity = BelongMagic.Bounce;
+                character.StandingImmediately();
+            }
 
             //Apply magic special effect
             switch (BelongMagic.SpecialKind)

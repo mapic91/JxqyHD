@@ -186,7 +186,26 @@ namespace Engine
         /// <summary>
         /// If true, character won't be drawed.
         /// </summary>
-        public bool IsInTransport { get; set; } 
+        public bool IsInTransport { get; set; }
+
+        public MagicSprite MovedByMagicSprite { set; get; }
+
+
+        public float BouncedVelocity { set; get; }
+        private Vector2 _bouncedDirection;
+
+        public Vector2 BouncedDirection
+        {
+            get { return _bouncedDirection; }
+            set
+            {
+                if (value != Vector2.Zero)
+                {
+                    value.Normalize();
+                }
+                _bouncedDirection = value;
+            }
+        }
 
         public bool IsInStepMove
         {
@@ -1306,6 +1325,10 @@ namespace Engine
         #region Perform action
         public void StandingImmediately()
         {
+            if (IsDeathInvoked || IsDeath)
+            {
+                return;
+            }
             StateInitialize(false);
             if (_isInFighting && NpcIni.ContainsKey((int)CharacterState.FightStand)) SetState(CharacterState.FightStand);
             else
@@ -1340,7 +1363,10 @@ namespace Engine
                 State == (int)CharacterState.Hurt ||
                 State == (int)CharacterState.Death ||
                 State == (int)CharacterState.FightJump ||
-                IsPetrified) return false;
+                IsPetrified ||
+                IsInTransport ||
+                MovedByMagicSprite != null ||
+                BouncedVelocity > 0) return false;
             return true;
         }
 
@@ -2486,6 +2512,46 @@ namespace Engine
                 if (magicSprite.IsDestroyed)
                     MagicSpritesInEffect.Remove(node);
                 node = next;
+            }
+
+            if (MovedByMagicSprite != null)
+            {
+                if (MovedByMagicSprite.IsInDestroy || MovedByMagicSprite.IsDestroyed)
+                {
+                    MovedByMagicSprite = null;
+                }
+                else
+                {
+                    if (TilePosition == MovedByMagicSprite.TilePosition || !Engine.PathFinder.HasObstacle(this, MovedByMagicSprite.TilePosition))
+                    {
+                        PositionInWorld = MovedByMagicSprite.PositionInWorld;
+                        SetDirection(MovedByMagicSprite.MoveDirection);
+                    }
+                    else
+                    {
+                        MovedByMagicSprite = null;
+                    }
+                }
+            }
+
+            const float friction = 4;
+            if (BouncedVelocity > 0)
+            {
+                var newPosition = PositionInWorld + BouncedDirection * (BouncedVelocity * (float)elapsedGameTime.TotalSeconds);
+                var newTilePosition = Map.ToTilePosition(newPosition);
+                if (TilePosition != newTilePosition && Engine.PathFinder.HasObstacle(this, newTilePosition))
+                {
+                    BouncedVelocity = 0;
+                }
+                else
+                {
+                    PositionInWorld = newPosition;
+                    BouncedVelocity -= friction;
+                    if (BouncedVelocity <= 0)
+                    {
+                        BouncedVelocity = 0;
+                    }
+                }
             }
         }
 

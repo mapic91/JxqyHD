@@ -55,6 +55,8 @@ namespace Engine
         private int _meteorMoveDir = 5;
         private int _moveBack;
         private int _passThrough;
+        private int _takeUser;
+        private int _bounce;
 
         #region Leap
         private int _leapTimes;
@@ -420,6 +422,18 @@ namespace Engine
         {
             get { return _passThrough; }
             set { _passThrough = value; }
+        }
+
+        public int TakeUser
+        {
+            get { return _takeUser; }
+            set { _takeUser = value; }
+        }
+
+        public int Bounce
+        {
+            get { return _bounce; }
+            set { _bounce = value; }
         }
 
         #endregion

@@ -267,9 +267,16 @@ FollowMouse - 大于0表示朝鼠标的位置移动，（忽略RandomMoveDegree的值）。默认0
 MeteorMove - 大于0表示从空中砸向地面，值越大高度越高，（忽略RandomMoveDegree，FollowMouse的值）,默认0。范例见：MeteorMove.ini
 MeteorMoveDir - MeteorMove的运动方向，0-7，大于7表示随机，默认5.
 MoveBack - 大于零当LifeFrame结束，返回到释放者处。结合PassThrough可以模拟回旋镖。
+TakeUser - 大于0表示释放者也跟着武功单位一起移动
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 穿透性：
 PassThrough - 大于0表示碰到敌人，对敌人造成伤害后，不会爆炸，而是穿透，继续运动
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+冲撞性：
+
+Bounce - 大于0表示有弹性，可以弹开敌人，值越大弹性越高。
 
