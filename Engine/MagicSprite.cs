@@ -207,19 +207,23 @@ namespace Engine
         {
             if (character == null) return;
 
-            if (BelongMagic.Bounce > 0 && MoveDirection != Vector2.Zero)
+            if (BelongMagic.Bounce > 0)
             {
-                var direction = MoveDirection;
-                var velocity = BelongMagic.Bounce;
-                if (character.BouncedVelocity > 0)
+                var direction = (MoveDirection == Vector2.Zero) ? (character.PositionInWorld - PositionInWorld) : MoveDirection;
+                if (direction != Vector2.Zero)
                 {
-                    direction.Normalize();
-                    direction = (character.BouncedDirection * character.BouncedVelocity + direction * BelongMagic.Bounce);
-                    velocity = (int)direction.Length();
+                    var velocity = BelongMagic.Bounce;
+                    if (character.BouncedVelocity > 0)
+                    {
+                        direction.Normalize();
+                        direction = (character.BouncedDirection * character.BouncedVelocity + direction * BelongMagic.Bounce);
+                        velocity = (int)direction.Length();
+                    }
+                    character.BouncedDirection = direction;
+                    character.BouncedVelocity = velocity;
+                    character.StandingImmediately();
                 }
-                character.BouncedDirection = direction;
-                character.BouncedVelocity = velocity;
-                character.StandingImmediately();
+                
             }
 
             //Apply magic special effect
