@@ -2522,7 +2522,7 @@ namespace Engine
                 }
                 else
                 {
-                    if (TilePosition == MovedByMagicSprite.TilePosition || !Engine.PathFinder.HasObstacle(this, MovedByMagicSprite.TilePosition))
+                    if (Engine.PathFinder.CanLinearlyMove(this, TilePosition, MovedByMagicSprite.TilePosition))
                     {
                         PositionInWorld = MovedByMagicSprite.PositionInWorld;
                         SetDirection(MovedByMagicSprite.MoveDirection);
@@ -2539,11 +2539,7 @@ namespace Engine
             {
                 var newPosition = PositionInWorld + BouncedDirection * (BouncedVelocity * (float)elapsedGameTime.TotalSeconds);
                 var newTilePosition = Map.ToTilePosition(newPosition);
-                if (TilePosition != newTilePosition && Engine.PathFinder.HasObstacle(this, newTilePosition))
-                {
-                    BouncedVelocity = 0;
-                }
-                else
+                if (Engine.PathFinder.CanLinearlyMove(this, TilePosition, newTilePosition))
                 {
                     PositionInWorld = newPosition;
                     BouncedVelocity -= friction;
@@ -2551,6 +2547,10 @@ namespace Engine
                     {
                         BouncedVelocity = 0;
                     }
+                }
+                else
+                {
+                    BouncedVelocity = 0;
                 }
             }
         }

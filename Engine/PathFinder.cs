@@ -548,6 +548,25 @@ namespace Engine
             return true;
         }
 
+        /// <summary>
+        /// Test finder can move linearly.
+        /// </summary>
+        /// <param name="finder"></param>
+        /// <param name="fromTilePosition"></param>
+        /// <param name="toTilePosition"></param>
+        /// <returns></returns>
+        public static bool CanLinearlyMove(Character finder, Vector2 fromTilePosition, Vector2 toTilePosition)
+        {
+            if(fromTilePosition == toTilePosition) return true;
+            var tileDistance = GetPathTileDistance(fromTilePosition, toTilePosition);
+            var path = FindPathPerfect(finder, fromTilePosition, toTilePosition, tileDistance*16);
+            if (path != null && (path.Count - 1) == tileDistance)
+            {
+                return true;
+            }
+            return false;
+        }
+
     }
 
 

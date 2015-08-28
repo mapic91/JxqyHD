@@ -172,7 +172,7 @@ namespace Engine
                 }
                     break;
             }
-            if (belongMagic.TakeUser > 0)
+            if (belongMagic.CarryUser > 0)
             {
                 belongCharacter.MovedByMagicSprite = this;
             }
