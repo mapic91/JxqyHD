@@ -207,10 +207,18 @@ namespace Engine
         {
             if (character == null) return;
 
-            if (BelongMagic.Bounce > 0)
+            if (BelongMagic.Bounce > 0 && MoveDirection != Vector2.Zero)
             {
-                character.BouncedDirection = MoveDirection;
-                character.BouncedVelocity = BelongMagic.Bounce;
+                var direction = MoveDirection;
+                var velocity = BelongMagic.Bounce;
+                if (character.BouncedVelocity > 0)
+                {
+                    direction.Normalize();
+                    direction = (character.BouncedDirection * character.BouncedVelocity + direction * BelongMagic.Bounce);
+                    velocity = (int)direction.Length();
+                }
+                character.BouncedDirection = direction;
+                character.BouncedVelocity = velocity;
                 character.StandingImmediately();
             }
 
