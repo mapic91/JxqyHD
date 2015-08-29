@@ -558,6 +558,7 @@ namespace Engine
         public static bool CanLinearlyMove(Character finder, Vector2 fromTilePosition, Vector2 toTilePosition)
         {
             if(fromTilePosition == toTilePosition) return true;
+            if (finder.HasObstacle(toTilePosition)) return false;
             var tileDistance = GetPathTileDistance(fromTilePosition, toTilePosition);
             var path = FindPathPerfect(finder, fromTilePosition, toTilePosition, tileDistance*16);
             if (path != null && (path.Count - 1) == tileDistance)

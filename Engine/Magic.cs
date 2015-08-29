@@ -57,6 +57,7 @@ namespace Engine
         private int _passThrough;
         private int _carryUser;
         private int _bounce;
+        private int _sticky;
 
         #region Leap
         private int _leapTimes;
@@ -434,6 +435,12 @@ namespace Engine
         {
             get { return _bounce; }
             set { _bounce = value; }
+        }
+
+        public int Sticky
+        {
+            get { return _sticky; }
+            set { _sticky = value; }
         }
 
         #endregion

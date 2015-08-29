@@ -36,6 +36,8 @@ namespace Engine
 
         private bool _isInMoveBack;
 
+        private Character _stickedCharacter;
+
         #region Public properties
         public Magic BelongMagic
         {
@@ -206,6 +208,7 @@ namespace Engine
         private void CharacterHited(Character character)
         {
             if (character == null) return;
+            var destroy = true;
 
             if (BelongMagic.Bounce > 0)
             {
@@ -224,6 +227,18 @@ namespace Engine
                     character.StandingImmediately();
                 }
                 
+            }
+
+            if (BelongMagic.Sticky > 0)
+            {
+                destroy = false;
+                character.StandingImmediately();
+                character.MovedByMagicSprite = this;
+                _stickedCharacter = character;
+                if (BelongMagic.MoveBack > 0 && _isInMoveBack == false)
+                {
+                    _isInMoveBack = true;
+                }
             }
 
             //Apply magic special effect
@@ -393,7 +408,7 @@ namespace Engine
                     TilePosition = PathFinder.FindNeighborInDirection(TilePosition, MoveDirection);
                 }
             }
-            else
+            else if (destroy)
             {
                 Destroy();
             }
@@ -401,6 +416,17 @@ namespace Engine
 
         private void CheckCharacterHited()
         {
+            if (_stickedCharacter != null && _stickedCharacter.MovedByMagicSprite == this)
+            {
+                //No character hited checking when sticking character
+                return;
+            }
+            else
+            {
+                //Clear sticked character
+                _stickedCharacter = null;
+            }
+
             if (BelongCharacter.IsPlayer || BelongCharacter.IsFriend)
             {
                 var target = NpcManager.GetEnemy(TilePosition);
