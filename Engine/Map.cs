@@ -371,13 +371,6 @@ namespace Engine
             return texture;
         }
 
-        public static bool HasNpcObjObstacleInMap(Vector2 tilePositon)
-        {
-            return (NpcManager.IsObstacle(tilePositon) ||
-                    ObjManager.IsObstacle(tilePositon) ||
-                    Globals.ThePlayer.TilePosition == tilePositon);
-        }
-
         public bool IsObstacle(int col, int row)
         {
             if (IsTileInMapViewRange(col, row))

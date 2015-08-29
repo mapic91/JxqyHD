@@ -92,6 +92,7 @@ namespace Engine
 
             return (NpcManager.IsObstacle(tilePosition) ||
                     ObjManager.IsObstacle(tilePosition) ||
+                    MagicManager.IsObstacle(tilePosition) ||
                     Globals.ThePlayer.TilePosition == tilePosition);
         }
 

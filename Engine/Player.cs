@@ -373,7 +373,8 @@ namespace Engine
         public override bool HasObstacle(Vector2 tilePosition)
         {
             return (NpcManager.IsObstacle(tilePosition) ||
-                        ObjManager.IsObstacle(tilePosition));
+                        ObjManager.IsObstacle(tilePosition) ||
+                        MagicManager.IsObstacle(tilePosition));
         }
 
         protected override void PlaySoundEffect(SoundEffect soundEffect)

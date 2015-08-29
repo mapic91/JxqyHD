@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -11,6 +12,7 @@ namespace Engine
         private static LinkedList<WorkItem> _workList = new LinkedList<WorkItem>();
         private static LinkedList<Sprite> _effectSprites = new LinkedList<Sprite>(); 
         private static LinkedList<Kind19MagicInfo> _kind19Magics = new LinkedList<Kind19MagicInfo>(); 
+        private static LinkedList<MagicSprite> _solideMagicSprites = new LinkedList<MagicSprite>(); 
         private static List<MagicSprite> _magicSpritesInView = new List<MagicSprite>();
         private static Rectangle _lastViewRegion;
         private static bool _listChanged = true;
@@ -160,6 +162,11 @@ namespace Engine
 
                 _magicSprites.AddLast(sprite);
                 _listChanged = true;
+
+                if (sprite.BelongMagic.Solid > 0)
+                {
+                    _solideMagicSprites.AddLast(sprite);
+                }
             }
         }
 
@@ -864,6 +871,11 @@ namespace Engine
             }
         }
 
+        public static bool IsObstacle(Vector2 tilePosition)
+        {
+            return _solideMagicSprites.Any(sprite => sprite.TilePosition == tilePosition);
+        }
+
         public static void Update(GameTime gameTime)
         {
             var elapsedMilliseconds = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
@@ -892,6 +904,17 @@ namespace Engine
                 else
                 {
                     sprite.Update(gameTime);
+                }
+                node = next;
+            }
+
+            for (var node = _solideMagicSprites.First; node != null;)
+            {
+                var sprite = node.Value;
+                var next = node.Next;
+                if (sprite.IsInDestroy || sprite.IsDestroyed)
+                {
+                    _solideMagicSprites.Remove(node);
                 }
                 node = next;
             }
