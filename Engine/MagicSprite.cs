@@ -23,7 +23,8 @@ namespace Engine
         private LinkedList<Sprite> _superModeDestroySprites;
         private List<Character> _leapedCharacters;
         private Character _closedCharecter;
-        private float _elapsedMilliSeconds;
+        private float _flyMagicElapsedMilliSeconds;
+        private float _summonElapsedMilliseconds;
         private float _elapsedMilliSecondsUpdateTime;
         private bool _isOneSecond;
         private float _waitMilliSeconds;
@@ -410,6 +411,10 @@ namespace Engine
                     //Hit once, move magic sprite to neighber tile
                     TilePosition = PathFinder.FindNeighborInDirection(TilePosition, MoveDirection);
                 }
+                if (BelongMagic.PassThroughWithDestroyEffect > 0)
+                {
+                    AddDestroySprite(MagicManager.EffectSprites, PositionInWorld, BelongMagic.VanishImage, BelongMagic.VanishSound);
+                }
             }
             else if (destroy)
             {
@@ -486,7 +491,7 @@ namespace Engine
             else
             {
                 // can't put fixed position magic sprite in obstacle
-                if (Globals.TheMap.IsObstacleForMagic(MapX, MapY))
+                if (IsDestroyForObstacleInMap())
                     _isDestroyed = true;
             }
         }
@@ -500,6 +505,11 @@ namespace Engine
             list.AddLast(sprite);
             SoundManager.Play3DSoundOnece(sound,
                 positionInWorld - Globals.ListenerPosition);
+        }
+
+        private bool IsDestroyForObstacleInMap()
+        {
+            return (Globals.TheMap.IsObstacleForMagic(TilePosition) && BelongMagic.PassThroughWall == 0);
         }
 
         public void Destroy()
@@ -817,6 +827,20 @@ namespace Engine
                 }
             }
 
+            if (BelongMagic.FlyMagic != null && !_isInDestroy)
+            {
+                _flyMagicElapsedMilliSeconds += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                if (_flyMagicElapsedMilliSeconds >= BelongMagic.FlyInterval)
+                {
+                    _flyMagicElapsedMilliSeconds -= BelongMagic.FlyInterval;
+                    var dir = _moveDirection == Vector2.Zero
+                        ? PositionInWorld - BelongCharacter.PositionInWorld
+                        : _moveDirection;
+                    MagicManager.UseMagic(BelongCharacter, BelongMagic.FlyMagic, PositionInWorld,
+                        PositionInWorld + dir);
+                }
+            }
+
             if (IsInDestroy)
             {
                 if (BelongMagic.MoveKind == 15)
@@ -849,9 +873,9 @@ namespace Engine
             }
             else if (BelongMagic.MoveKind == 22) //Summon
             {
-                if (_elapsedMilliSeconds < BelongMagic.KeepMilliseconds)
+                if (_summonElapsedMilliseconds < BelongMagic.KeepMilliseconds)
                 {
-                    _elapsedMilliSeconds += (float) gameTime.ElapsedGameTime.TotalMilliseconds;
+                    _summonElapsedMilliseconds += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
                     if (!IsInPlaying) Texture = Asf.Empty;
                 }
                 else
@@ -868,23 +892,12 @@ namespace Engine
                     case 21: //Controling others
                     case 22:
                         break;
-                    case 18: //Fly magic
-                    {
-                        _elapsedMilliSeconds += (float) gameTime.ElapsedGameTime.TotalMilliseconds;
-                        if (_elapsedMilliSeconds >= BelongMagic.FlyInterval)
-                        {
-                            _elapsedMilliSeconds -= BelongMagic.FlyInterval;
-                            MagicManager.UseMagic(BelongCharacter, BelongMagic.FlyMagic, PositionInWorld,
-                                PositionInWorld + _moveDirection);
-                        }
-                    }
-                        break;
                     default:
                         CheckCharacterHited();
                         break;
                 }
 
-                if (Globals.TheMap.IsObstacleForMagic(MapX, MapY))
+                if (IsDestroyForObstacleInMap())
                 {
                     Destroy();
                 }

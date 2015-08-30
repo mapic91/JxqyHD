@@ -55,6 +55,8 @@ namespace Engine
         private int _meteorMoveDir = 5;
         private int _moveBack;
         private int _passThrough;
+        private int _passThroughWithDestroyEffect;
+        private int _passThroughWall;
         private int _carryUser;
         private int _bounce;
         private int _sticky;
@@ -425,6 +427,18 @@ namespace Engine
         {
             get { return _passThrough; }
             set { _passThrough = value; }
+        }
+
+        public int PassThroughWithDestroyEffect
+        {
+            get { return _passThroughWithDestroyEffect; }
+            set { _passThroughWithDestroyEffect = value; }
+        }
+
+        public int PassThroughWall
+        {
+            get { return _passThroughWall; }
+            set { _passThroughWall = value; }
         }
 
         public int CarryUser
