@@ -406,14 +406,14 @@ namespace Engine
             }
             else if (BelongMagic.PassThrough > 0)
             {
+                if (BelongMagic.PassThroughWithDestroyEffect > 0)
+                {
+                    AddDestroySprite(MagicManager.EffectSprites, PositionInWorld, BelongMagic.VanishImage, BelongMagic.VanishSound);
+                }
                 if (Velocity > 0 && MoveDirection != Vector2.Zero)
                 {
                     //Hit once, move magic sprite to neighber tile
                     TilePosition = PathFinder.FindNeighborInDirection(TilePosition, MoveDirection);
-                }
-                if (BelongMagic.PassThroughWithDestroyEffect > 0)
-                {
-                    AddDestroySprite(MagicManager.EffectSprites, PositionInWorld, BelongMagic.VanishImage, BelongMagic.VanishSound);
                 }
             }
             else if (destroy)
