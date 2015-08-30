@@ -268,6 +268,7 @@ MeteorMove - 大于0表示从空中砸向地面，值越大高度越高，（忽略RandomMoveDegree，Fo
 MeteorMoveDir - MeteorMove的运动方向，0-7，大于7表示随机，默认5.
 MoveBack - 大于零当LifeFrame结束，返回到释放者处。结合PassThrough可以模拟回旋镖。
 CarryUser - 大于0表示释放者也跟着武功单位一起移动
+MoveImitateUser - 大于0表示释放者移动多少距离，相应的武功单位也会相应的移动一样的距离。
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

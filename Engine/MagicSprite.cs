@@ -38,6 +38,8 @@ namespace Engine
 
         private Character _stickedCharacter;
 
+        private Vector2 _lastUserWorldPosition;
+
         #region Public properties
         public Magic BelongMagic
         {
@@ -184,6 +186,7 @@ namespace Engine
             MoveDirection = moveDirection;
             _destroyOnEnd = destroyOnEnd;
             SetDirection(MoveDirection);
+            _lastUserWorldPosition = belongCharacter.PositionInWorld;
 
             if (BelongMagic.MeteorMove > 0)
             {
@@ -722,6 +725,12 @@ namespace Engine
                     var random = (Globals.TheRandom.Next(2) == 0 ? perpendicular1 : perpendicular2) *
                                     Globals.TheRandom.Next(BelongMagic.RandomMoveDegree);
                     MoveDirection += random;
+                }
+
+                if (BelongMagic.MoveImitateUser > 0 && !_isInDestroy)
+                {
+                    PositionInWorld += (BelongCharacter.PositionInWorld - _lastUserWorldPosition);
+                    _lastUserWorldPosition = BelongCharacter.PositionInWorld;
                 }
 
                 if (_isInMoveBack && !_isInDestroy)
