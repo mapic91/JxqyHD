@@ -64,6 +64,7 @@ namespace Engine
         private int _bounce;
         private int _sticky;
         private int _solid;
+        private int _noExplodeWhenLifeFrameEnd;
 
         #region Leap
         private int _leapTimes;
@@ -483,6 +484,12 @@ namespace Engine
         {
             get { return _solid; }
             set { _solid = value; }
+        }
+
+        public int NoExplodeWhenLifeFrameEnd
+        {
+            get { return _noExplodeWhenLifeFrameEnd; }
+            set { _noExplodeWhenLifeFrameEnd = value; }
         }
 
         #endregion
