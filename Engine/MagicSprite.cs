@@ -128,10 +128,16 @@ namespace Engine
                 _isDestroyed = true;
                 return false;
             }
+
             if (belongMagic.NoExplodeWhenLifeFrameEnd > 0)
             {
                 destroyOnEnd = false;
             }
+            else if (belongMagic.ExplodeWhenLifeFrameEnd > 0)
+            {
+                destroyOnEnd = true;
+            }
+
             _destnationPixelPosition = positionInWorld;
             var texture = belongMagic.FlyingImage;
             switch (belongMagic.MoveKind)
