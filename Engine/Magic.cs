@@ -54,6 +54,9 @@ namespace Engine
         private int _meteorMove;
         private int _meteorMoveDir = 5;
         private int _moveBack;
+        private int _moveImitateUser;
+        private int _circleMoveColockwise;
+        private int _circleMoveAnticlockwise;
         private int _passThrough;
         private int _passThroughWithDestroyEffect;
         private int _passThroughWall;
@@ -61,7 +64,6 @@ namespace Engine
         private int _bounce;
         private int _sticky;
         private int _solid;
-        private int _moveImitateUser;
 
         #region Leap
         private int _leapTimes;
@@ -423,6 +425,24 @@ namespace Engine
             set { _moveBack = value; }
         }
 
+        public int MoveImitateUser
+        {
+            get { return _moveImitateUser; }
+            set { _moveImitateUser = value; }
+        }
+
+        public int CircleMoveColockwise
+        {
+            get { return _circleMoveColockwise; }
+            set { _circleMoveColockwise = value; }
+        }
+
+        public int CircleMoveAnticlockwise
+        {
+            get { return _circleMoveAnticlockwise; }
+            set { _circleMoveAnticlockwise = value; }
+        }
+
         public int PassThrough
         {
             get { return _passThrough; }
@@ -463,12 +483,6 @@ namespace Engine
         {
             get { return _solid; }
             set { _solid = value; }
-        }
-
-        public int MoveImitateUser
-        {
-            get { return _moveImitateUser; }
-            set { _moveImitateUser = value; }
         }
 
         #endregion

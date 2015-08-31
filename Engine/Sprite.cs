@@ -262,12 +262,17 @@ namespace Engine
         {
             if (direction != Vector2.Zero)
             {
-                SetDirection(direction);
                 direction.Normalize();
-                var move = direction * _velocity * elapsedSeconds * speedRatio;
-                PositionInWorld += move;
-                MovedDistance += move.Length();
+                MoveToNoNormalizeDirection(direction, elapsedSeconds, speedRatio);
             }
+        }
+
+        public void MoveToNoNormalizeDirection(Vector2 direction, float elapsedSeconds, float speedRatio = 1.0f)
+        {
+            SetDirection(direction);
+            var move = direction * _velocity * elapsedSeconds * speedRatio;
+            PositionInWorld += move;
+            MovedDistance += move.Length();
         }
 
         /// <summary>

@@ -41,6 +41,8 @@ namespace Engine
 
         private Vector2 _lastUserWorldPosition;
 
+        private Vector2 _circleMoveDir;
+
         #region Public properties
         public Magic BelongMagic
         {
@@ -54,10 +56,20 @@ namespace Engine
             set { _belongCharacter = value; }
         }
 
+        /// <summary>
+        /// Normalized or Zero
+        /// </summary>
         public Vector2 MoveDirection
         {
             get { return _moveDirection; }
-            set { _moveDirection = value; }
+            set
+            {
+                if (value != Vector2.Zero)
+                {
+                    value.Normalize();
+                }
+                _moveDirection = value;
+            }
         }
 
         public bool IsLive
@@ -100,7 +112,7 @@ namespace Engine
         /// <param name="destroyOnEnd"></param>
         public MagicSprite(Magic belongMagic, Character belongCharacter, Vector2 positionInWorld, int direction, bool destroyOnEnd)
         {
-            if (Init(belongMagic, belongCharacter, positionInWorld, 0, Vector2.Zero, destroyOnEnd))
+            if (Init(belongMagic, belongCharacter, positionInWorld, belongMagic.Speed*Globals.MagicBasespeed, Vector2.Zero, destroyOnEnd))
             {
                 SetDirection(direction);
                 Begin();
@@ -486,7 +498,7 @@ namespace Engine
             if (Velocity != 0)//Move 30
             {
                 var second = 30f / Velocity;
-                MoveTo(MoveDirection, second);
+                MoveToNoNormalizeDirection(MoveDirection, second);
             }
             else
             {
@@ -496,15 +508,20 @@ namespace Engine
             }
         }
 
-        private static void AddDestroySprite(LinkedList<Sprite> list, Vector2 positionInWorld, Asf image, SoundEffect sound)
+        private void AddDestroySprite(LinkedList<Sprite> list, Vector2 positionInWorld, Asf image, SoundEffect sound)
         {
-            var sprite = new Sprite(positionInWorld,
-                            0f,
-                            image);
-            sprite.PlayFrames(sprite.FrameCountsPerDirection);
-            list.AddLast(sprite);
+            if (image != null)
+            {
+                var sprite = new Sprite(positionInWorld,
+                           0f,
+                           image);
+                sprite.PlayFrames(sprite.FrameCountsPerDirection);
+                list.AddLast(sprite);
+            }
             SoundManager.Play3DSoundOnece(sound,
                 positionInWorld - Globals.ListenerPosition);
+
+            UseExplodeMagic();
         }
 
         private bool IsDestroyForObstacleInMap()
@@ -591,22 +608,25 @@ namespace Engine
                 SoundManager.Play3DSoundOnece(BelongMagic.VanishSound,
                     PositionInWorld - Globals.ListenerPosition);
 
-                if (BelongMagic.ExplodeMagicFile != null)
-                {
-                    MagicManager.UseMagic(BelongCharacter,
-                        BelongMagic.ExplodeMagicFile,
-                        PositionInWorld,
-                        MoveDirection == Vector2.Zero
-                            ? PositionInWorld + (PositionInWorld - BelongCharacter.PositionInWorld)
-                            : PositionInWorld + MoveDirection);
-                }
+                UseExplodeMagic();
 
                 if (BelongMagic.VibratingScreen > 0)
                 {
                     Globals.TheCarmera.VibaratingScreen(BelongMagic.VibratingScreen);
                 }
+            }
+        }
 
-                MoveDirection = Vector2.Zero;
+        private void UseExplodeMagic()
+        {
+            if (BelongMagic.ExplodeMagicFile != null)
+            {
+                MagicManager.UseMagic(BelongCharacter,
+                    BelongMagic.ExplodeMagicFile,
+                    PositionInWorld,
+                    MoveDirection == Vector2.Zero
+                        ? PositionInWorld + (PositionInWorld - BelongCharacter.PositionInWorld)
+                        : PositionInWorld + MoveDirection);
             }
         }
 
@@ -622,10 +642,7 @@ namespace Engine
                 EndLeap();
             }
 
-            if (BelongMagic.VanishImage != null)
-            {
-                AddDestroySprite(MagicManager.EffectSprites, PositionInWorld, BelongMagic.VanishImage, BelongMagic.VanishSound);
-            }
+            AddDestroySprite(MagicManager.EffectSprites, PositionInWorld, BelongMagic.VanishImage, BelongMagic.VanishSound);
 
             var closedEnemy = NpcManager.GetClosedEnemy(BelongCharacter, hitedCharacter.PositionInWorld, _leapedCharacters);
             if (closedEnemy == null)
@@ -719,38 +736,56 @@ namespace Engine
             }
             else
             {
-                if (BelongMagic.FollowMouse > 0 && !IsInDestroy)
+                if (!IsInDestroy)
                 {
-                    var mouseState = Mouse.GetState();
-                    var mouseScreenPosition = new Vector2(mouseState.X, mouseState.Y);
-                    var mouseWorldPosition = Globals.TheCarmera.ToWorldPosition(mouseScreenPosition);
-                    var direction = mouseWorldPosition - PositionInWorld;
-                    MoveDirection = direction.Length() > 25 ? direction : Vector2.Zero;
-                }
-                else if (BelongMagic.RandomMoveDegree > 0 && MoveDirection != Vector2.Zero)
-                {
-                    var normal = Vector2.Normalize(MoveDirection);
-                    var perpendicular1 = new Vector2(normal.Y, -normal.X);
-                    var perpendicular2 = new Vector2(-normal.Y, normal.X);
-                    var random = (Globals.TheRandom.Next(2) == 0 ? perpendicular1 : perpendicular2) *
-                                    Globals.TheRandom.Next(BelongMagic.RandomMoveDegree);
-                    MoveDirection += random;
-                }
-
-                if (BelongMagic.MoveImitateUser > 0 && !_isInDestroy)
-                {
-                    PositionInWorld += (BelongCharacter.PositionInWorld - _lastUserWorldPosition);
-                    _lastUserWorldPosition = BelongCharacter.PositionInWorld;
-                }
-
-                if (_isInMoveBack && !_isInDestroy)
-                {
-                    //Move back to magic user.
-                    MoveDirection = BelongCharacter.PositionInWorld - PositionInWorld;
-                    if (MoveDirection.Length() < 20)
+                    if (BelongMagic.FollowMouse > 0)
                     {
-                        _isInMoveBack = false;
-                        _isDestroyed = true;
+                        var mouseState = Mouse.GetState();
+                        var mouseScreenPosition = new Vector2(mouseState.X, mouseState.Y);
+                        var mouseWorldPosition = Globals.TheCarmera.ToWorldPosition(mouseScreenPosition);
+                        var direction = mouseWorldPosition - PositionInWorld;
+                        MoveDirection = direction.Length() > 25 ? direction : Vector2.Zero;
+                    }
+                    else if (BelongMagic.RandomMoveDegree > 0)
+                    {
+                        while (MoveDirection == Vector2.Zero)
+                        {
+                            MoveDirection = new Vector2((float)Globals.TheRandom.Next(-100, 100) / 100.0f, (float)Globals.TheRandom.Next(-100, 100) / 100.0f);
+                        }
+                        var perpendicular1 = new Vector2(MoveDirection.Y, -MoveDirection.X);
+                        var perpendicular2 = new Vector2(-MoveDirection.Y, MoveDirection.X);
+                        var random = (Globals.TheRandom.Next(2) == 0 ? perpendicular1 : perpendicular2) *
+                                        Globals.TheRandom.Next(BelongMagic.RandomMoveDegree);
+                        MoveDirection += random;
+                    }
+
+                    if (BelongMagic.MoveImitateUser > 0)
+                    {
+                        PositionInWorld += (BelongCharacter.PositionInWorld - _lastUserWorldPosition);
+                        _lastUserWorldPosition = BelongCharacter.PositionInWorld;
+                    }
+
+                    if (BelongMagic.CircleMoveColockwise > 0 || BelongMagic.CircleMoveAnticlockwise > 0)
+                    {
+                        var dir = PositionInWorld - BelongCharacter.PositionInWorld;
+                        if (dir != Vector2.Zero)
+                        {
+                            dir.Normalize();
+                            dir = BelongMagic.CircleMoveColockwise > 0 ? new Vector2(-dir.Y, dir.X) : new Vector2(dir.Y, -dir.X);
+                            _circleMoveDir = dir;
+                        }
+                    }
+
+                    if (_isInMoveBack)
+                    {
+                        //Move back to magic user.
+                        var dir = BelongCharacter.PositionInWorld - PositionInWorld;
+                        MoveDirection = dir;
+                        if (dir.Length() < 20)
+                        {
+                            _isInMoveBack = false;
+                            _isDestroyed = true;
+                        }
                     }
                 }
 
@@ -774,11 +809,15 @@ namespace Engine
                             MoveDirection != Vector2.Zero)//When MoveDirecton equal zero, magic sprite is in destroying, destroyed or can't move
                             MoveDirection = _closedCharecter.PositionInWorld - PositionInWorld;
                     }
-                    MoveTo(MoveDirection,
+                    MoveToNoNormalizeDirection(MoveDirection,
                         (float)gameTime.ElapsedGameTime.TotalSeconds,
                         MagicManager.GetSpeedRatio(MoveDirection));
                 }
-                else MoveTo(MoveDirection, (float)gameTime.ElapsedGameTime.TotalSeconds);
+                else if (_isInDestroy)
+                {
+                    //Stop moving when in destroy.
+                }
+                else MoveToNoNormalizeDirection(MoveDirection + _circleMoveDir, (float) gameTime.ElapsedGameTime.TotalSeconds);
             }
 
             if (BelongMagic.MoveKind == 13)
@@ -833,9 +872,9 @@ namespace Engine
                 if (_flyMagicElapsedMilliSeconds >= BelongMagic.FlyInterval)
                 {
                     _flyMagicElapsedMilliSeconds -= BelongMagic.FlyInterval;
-                    var dir = _moveDirection == Vector2.Zero
+                    var dir = MoveDirection == Vector2.Zero
                         ? PositionInWorld - BelongCharacter.PositionInWorld
-                        : _moveDirection;
+                        : MoveDirection;
                     MagicManager.UseMagic(BelongCharacter, BelongMagic.FlyMagic, PositionInWorld,
                         PositionInWorld + dir);
                 }
