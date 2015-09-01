@@ -310,3 +310,13 @@ ExplodeWhenLifeFrameEnd   - 大于0表示当LifeFrame结束后会不会爆炸的武功单位会爆炸
 详细：
 FlyMagic - 飞行中释放的Magic文件名（释放的Magic等级跟原Magic相同）
 FlyInterval - 每隔多少毫秒释放FlyMagic
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+释放位置：
+
+BeginAtMouse - 大于0表示释放者在释放武功时，其释放位置看作在鼠标位置处
+BeginAtUser - 大于0表示释放者在释放武功时，其鼠标位置看作在释放者处
+
+注：优先度BeginAtMouse>BeginAtUser
+

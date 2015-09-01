@@ -12,22 +12,11 @@ namespace Engine
     {
         private static LinkedList<Npc> _list = new LinkedList<Npc>();
         private static List<Npc> _npcInView = new List<Npc>();
-        private static Rectangle _lastViewRegion;
-        private static bool _npcListChanged = true;
         private static string _fileName;
 
         public static List<Npc> NpcsInView
         {
-            get
-            {
-                if (!_lastViewRegion.Equals(Globals.TheCarmera.CarmerRegionInWorld) ||
-                    _npcListChanged)
-                {
-                    _npcInView = GetNpcsInView();
-                    _lastViewRegion = Globals.TheCarmera.CarmerRegionInWorld;
-                }
-                return _npcInView;
-            }
+            get{return _npcInView;}
         }
 
         public static LinkedList<Npc> NpcList
@@ -58,7 +47,6 @@ namespace Engine
         private static void DeleteNpc(LinkedListNode<Npc> node)
         {
             _list.Remove(node);
-            _npcListChanged = true;
         }
 
         private static void Save(string fileName = null, bool isSaveParter = false)
@@ -396,7 +384,6 @@ namespace Engine
             if (npc != null)
             {
                 _list.AddLast(npc);
-                _npcListChanged = true;
             }
         }
 
@@ -414,7 +401,6 @@ namespace Engine
         {
             _fileName = string.Empty;
             _list.Clear();
-            _npcListChanged = true;
         }
 
         public static bool IsEnemy(int tileX, int tileY)
@@ -624,6 +610,9 @@ namespace Engine
                 }
                 node = next;
             }
+
+            //Update the list of npcs in view.
+            _npcInView = GetNpcsInView();
         }
 
         public static void Draw(SpriteBatch spriteBatch)

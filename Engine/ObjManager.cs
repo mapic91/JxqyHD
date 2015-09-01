@@ -13,22 +13,11 @@ namespace Engine
     {
         private static LinkedList<Obj> _list = new LinkedList<Obj>();
         private static List<Obj> _objInView = new List<Obj>();
-        private static Rectangle _lastViewRegion;
-        private static bool _objListChanged = true;
         private static string _fileName;
 
         public static List<Obj> ObjsInView
         {
-            get
-            {
-                if (!_lastViewRegion.Equals(Globals.TheCarmera.CarmerRegionInWorld) ||
-                    _objListChanged)
-                {
-                    _objInView = GetObjsInView();
-                    _lastViewRegion = Globals.TheCarmera.CarmerRegionInWorld;
-                }
-                return _objInView;
-            }
+            get { return _objInView; }
         }
 
         public static LinkedList<Obj> ObjList
@@ -107,7 +96,6 @@ namespace Engine
             if (obj != null)
             {
                 _list.AddLast(obj);
-                _objListChanged = true;
             }
         }
 
@@ -123,14 +111,12 @@ namespace Engine
         private static void DeleteObj(LinkedListNode<Obj> node)
         {
             _list.Remove(node);
-            _objListChanged = true;
         }
 
         public static void ClearAllObjAndFileName()
         {
             _fileName = string.Empty;
             _list.Clear();
-            _objListChanged = true;
         }
 
         public static void ClearBody()
@@ -264,6 +250,8 @@ namespace Engine
                 }
                 node = next;
             }
+
+            _objInView = GetObjsInView();
         }
 
         public static void Draw(SpriteBatch spriteBatch)

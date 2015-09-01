@@ -66,6 +66,8 @@ namespace Engine
         private int _solid;
         private int _noExplodeWhenLifeFrameEnd;
         private int _explodeWhenLifeFrameEnd;
+        private int _beginAtMouse;
+        private int _beginAtUser;
 
         #region Leap
         private int _leapTimes;
@@ -497,6 +499,18 @@ namespace Engine
         {
             get { return _explodeWhenLifeFrameEnd; }
             set { _explodeWhenLifeFrameEnd = value; }
+        }
+
+        public int BeginAtMouse
+        {
+            get { return _beginAtMouse; }
+            set { _beginAtMouse = value; }
+        }
+
+        public int BeginAtUser
+        {
+            get { return _beginAtUser; }
+            set { _beginAtUser = value; }
         }
 
         #endregion

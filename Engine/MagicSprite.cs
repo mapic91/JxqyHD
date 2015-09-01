@@ -72,6 +72,9 @@ namespace Engine
             }
         }
 
+        public Vector2 RealMoveDirection
+        { get { return _moveDirection + _circleMoveDir; } }
+
         public bool IsLive
         {
             get { return (!IsDestroyed && !IsInDestroy); }
@@ -238,7 +241,7 @@ namespace Engine
 
             if (BelongMagic.Bounce > 0)
             {
-                var direction = (MoveDirection == Vector2.Zero) ? (character.PositionInWorld - PositionInWorld) : MoveDirection;
+                var direction = (RealMoveDirection == Vector2.Zero) ? (character.PositionInWorld - PositionInWorld) : RealMoveDirection;
                 if (direction != Vector2.Zero)
                 {
                     var velocity = BelongMagic.Bounce;
@@ -432,10 +435,10 @@ namespace Engine
                 {
                     AddDestroySprite(MagicManager.EffectSprites, PositionInWorld, BelongMagic.VanishImage, BelongMagic.VanishSound);
                 }
-                if (Velocity > 0 && MoveDirection != Vector2.Zero)
+                if (Velocity > 0 && RealMoveDirection != Vector2.Zero)
                 {
                     //Hit once, move magic sprite to neighber tile
-                    TilePosition = PathFinder.FindNeighborInDirection(TilePosition, MoveDirection);
+                    TilePosition = PathFinder.FindNeighborInDirection(TilePosition, RealMoveDirection);
                 }
             }
             else if (destroy)
@@ -536,7 +539,7 @@ namespace Engine
 
         private bool IsDestroyForObstacleInMap()
         {
-            return (Globals.TheMap.IsObstacleForMagic(TilePosition) && BelongMagic.PassThroughWall == 0);
+            return (BelongMagic.PassThroughWall == 0 && Globals.TheMap.IsObstacleForMagic(TilePosition));
         }
 
         public void Destroy()
@@ -634,9 +637,9 @@ namespace Engine
                 MagicManager.UseMagic(BelongCharacter,
                     BelongMagic.ExplodeMagicFile,
                     PositionInWorld,
-                    MoveDirection == Vector2.Zero
+                    RealMoveDirection == Vector2.Zero
                         ? PositionInWorld + (PositionInWorld - BelongCharacter.PositionInWorld)
-                        : PositionInWorld + MoveDirection);
+                        : PositionInWorld + RealMoveDirection);
             }
         }
 
@@ -815,19 +818,18 @@ namespace Engine
                             _closedCharecter = Globals.ThePlayer;
                         }
 
-                        if (_closedCharecter != null &&
-                            MoveDirection != Vector2.Zero)//When MoveDirecton equal zero, magic sprite is in destroying, destroyed or can't move
+                        if (_closedCharecter != null)
                             MoveDirection = _closedCharecter.PositionInWorld - PositionInWorld;
                     }
-                    MoveToNoNormalizeDirection(MoveDirection,
+                    MoveToNoNormalizeDirection(RealMoveDirection,
                         (float)gameTime.ElapsedGameTime.TotalSeconds,
-                        MagicManager.GetSpeedRatio(MoveDirection));
+                        MagicManager.GetSpeedRatio(RealMoveDirection));
                 }
                 else if (_isInDestroy)
                 {
                     //Stop moving when in destroy.
                 }
-                else MoveToNoNormalizeDirection(MoveDirection + _circleMoveDir, (float) gameTime.ElapsedGameTime.TotalSeconds);
+                else MoveToNoNormalizeDirection(RealMoveDirection, (float) gameTime.ElapsedGameTime.TotalSeconds);
             }
 
             if (BelongMagic.MoveKind == 13)
@@ -882,9 +884,9 @@ namespace Engine
                 if (_flyMagicElapsedMilliSeconds >= BelongMagic.FlyInterval)
                 {
                     _flyMagicElapsedMilliSeconds -= BelongMagic.FlyInterval;
-                    var dir = MoveDirection == Vector2.Zero
+                    var dir = RealMoveDirection == Vector2.Zero
                         ? PositionInWorld - BelongCharacter.PositionInWorld
-                        : MoveDirection;
+                        : RealMoveDirection;
                     MagicManager.UseMagic(BelongCharacter, BelongMagic.FlyMagic, PositionInWorld,
                         PositionInWorld + dir);
                 }

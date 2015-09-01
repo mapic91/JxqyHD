@@ -851,7 +851,6 @@ namespace Engine
             var start = GetStartTileInView();
             var end = GetEndTileInView();
             var magicSprites = MagicManager.MagicSpritesInView;
-            var magicEffectSprites = MagicManager.EffectSprites;
             var npcs = NpcManager.NpcsInView;
             var objs = ObjManager.ObjsInView;
 
@@ -884,13 +883,6 @@ namespace Engine
                     {
                         if (x == magicSprite.MapX && y == magicSprite.MapY)
                             magicSprite.Draw(spriteBatch);
-                    }
-                    foreach (var magicEffectSprite in magicEffectSprites)
-                    {
-                        if (x == magicEffectSprite.MapX && y == magicEffectSprite.MapY)
-                        {
-                            magicEffectSprite.Draw(spriteBatch);
-                        }
                     }
                 }
             }

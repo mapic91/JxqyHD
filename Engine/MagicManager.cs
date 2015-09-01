@@ -13,9 +13,7 @@ namespace Engine
         private static LinkedList<Sprite> _effectSprites = new LinkedList<Sprite>(); 
         private static LinkedList<Kind19MagicInfo> _kind19Magics = new LinkedList<Kind19MagicInfo>(); 
         private static LinkedList<MagicSprite> _solideMagicSprites = new LinkedList<MagicSprite>(); 
-        private static List<MagicSprite> _magicSpritesInView = new List<MagicSprite>();
-        private static Rectangle _lastViewRegion;
-        private static bool _listChanged = true;
+        private static List<Sprite> _magicSpritesInView = new List<Sprite>();
 
         public static int MaxMagicUnit;
 
@@ -34,36 +32,23 @@ namespace Engine
             get { return _effectSprites; }
         }
 
-        public static List<MagicSprite> MagicSpritesInView
+        public static List<Sprite> MagicSpritesInView
         {
-            get
-            {
-                if (!_lastViewRegion.Equals(Globals.TheCarmera.CarmerRegionInWorld) ||
-                    _listChanged) //magic sprite in view changed,renew cache
-                {
-                    _lastViewRegion = Globals.TheCarmera.CarmerRegionInWorld;
-                    _magicSpritesInView = GetMagicSpritesInView();
-                }
-                return _magicSpritesInView;
-            }
+            get { return _magicSpritesInView; }
         }
 
-        private static List<MagicSprite> GetMagicSpritesInView()
+        private static List<Sprite> GetMagicSpritesInView()
         {
             var viewRegion = Globals.TheCarmera.CarmerRegionInWorld;
-            var list = new List<MagicSprite>(_magicSprites.Count);
-            foreach (var sprite in _magicSprites)
-            {
-                if (viewRegion.Intersects(sprite.RegionInWorld))
-                    list.Add(sprite);
-            }
+            var list = new List<Sprite>(_magicSprites.Count + _effectSprites.Count);
+            list.AddRange(_magicSprites.Where(sprite => viewRegion.Intersects(sprite.RegionInWorld)));
+            list.AddRange(_effectSprites.Where(effectSprite => viewRegion.Intersects(effectSprite.RegionInWorld)));
             return list;
         }
 
         private static void RemoveMagicSprite(LinkedListNode<MagicSprite> node)
         {
             _magicSprites.Remove(node);
-            _listChanged = true;
         }
 
         private static void AddWorkItem(WorkItem item)
@@ -161,7 +146,6 @@ namespace Engine
                 }
 
                 _magicSprites.AddLast(sprite);
-                _listChanged = true;
 
                 if (sprite.BelongMagic.Solid > 0)
                 {
@@ -735,14 +719,31 @@ namespace Engine
         public static void UseMagic(Character user, Magic magic, Vector2 origin, Vector2 destination, Character target = null)
         {
             if (user == null || magic == null) return;
+
             if (magic.FlyingSound != null)
             {
                 magic.FlyingSound.Play();
             }
+
+            if (magic.BeginAtMouse > 0)
+            {
+                var dir = origin - destination;
+                if (dir != Vector2.Zero)
+                {
+                    dir.Normalize();
+                }
+                origin = destination + dir;
+            }
+            else if (magic.BeginAtUser > 0)
+            {
+                destination = origin;
+            }
+
             if (magic.MeteorMove > 0)
             {
                 origin = destination;
             }
+
             switch (magic.MoveKind)
             {
                 case 1:
@@ -947,6 +948,9 @@ namespace Engine
                 }
                 node = next;
             }
+
+            //Update list of magic sprites in view
+            _magicSpritesInView = GetMagicSpritesInView();
         }
 
         public static void Draw(SpriteBatch spriteBatch)
