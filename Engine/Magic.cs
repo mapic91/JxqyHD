@@ -68,6 +68,7 @@ namespace Engine
         private int _explodeWhenLifeFrameEnd;
         private int _beginAtMouse;
         private int _beginAtUser;
+        private int _beginAtUserAddDirectionOffset;
 
         #region Leap
         private int _leapTimes;
@@ -511,6 +512,12 @@ namespace Engine
         {
             get { return _beginAtUser; }
             set { _beginAtUser = value; }
+        }
+
+        public int BeginAtUserAddDirectionOffset
+        {
+            get { return _beginAtUserAddDirectionOffset; }
+            set { _beginAtUserAddDirectionOffset = value; }
         }
 
         #endregion

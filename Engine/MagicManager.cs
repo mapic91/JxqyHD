@@ -738,6 +738,15 @@ namespace Engine
             {
                 destination = origin;
             }
+            else if (magic.BeginAtUserAddDirectionOffset > 0)
+            {
+                var dir = destination - origin;
+                if (dir != Vector2.Zero)
+                {
+                    dir.Normalize();
+                }
+                destination = origin + dir;
+            }
 
             if (magic.MeteorMove > 0)
             {

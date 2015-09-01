@@ -317,6 +317,7 @@ FlyInterval - 每隔多少毫秒释放FlyMagic
 
 BeginAtMouse - 大于0表示释放者在释放武功时，其释放位置看作在鼠标位置处
 BeginAtUser - 大于0表示释放者在释放武功时，其鼠标位置看作在释放者处
+BeginAtUserAddDirectionOffset - 大于0表示释放者在释放武功时，其鼠标位置看作在释放者处加上长度为1的释放方向(因为使用BeginAtUser导致武功单位无运动方向，这个加上了运动方向)
 
-注：优先度BeginAtMouse>BeginAtUser
+注：优先度BeginAtMouse>BeginAtUser>BeginAtUserAddDirectionOffset
 
