@@ -2298,8 +2298,7 @@ namespace Engine
         /// <param name="target">The target</param>
         public void NotifyEnemyAndAllNeighbor(Character target)
         {
-            //If target is null or this character is not enemy return
-            if (target == null || !IsEnemy) return;
+            if (target == null || !IsEnemy || !IsStanding()) return;
             var characters = NpcManager.GetNeighborEnemy(this);
             characters.Add(this);
             foreach (var character in characters)

@@ -549,6 +549,7 @@ namespace Engine
                         BelongMagic.VanishImage,
                         BelongMagic.VanishSound);
                     CharacterHited(character);
+                    character.NotifyEnemyAndAllNeighbor(BelongCharacter);
                 }
                 if (_superModeDestroySprites.Count == 0) _isDestroyed = true;
             }
