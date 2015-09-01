@@ -70,6 +70,17 @@ namespace Engine
         private int _beginAtUser;
         private int _beginAtUserAddDirectionOffset;
 
+        private int _rangeEffect;
+        private int _rangeAddLife;
+        private int _rangeAddMana;
+        private int _rangeAddThew;
+        private int _rangeFreeze;
+        private int _rangePoison;
+        private int _rangePetrify;
+        private int _rangeDamage;
+        private int _rangeRadius;
+        private int _rangeTimeInerval;
+
         #region Leap
         private int _leapTimes;
         private int _leapFrame;
@@ -518,6 +529,66 @@ namespace Engine
         {
             get { return _beginAtUserAddDirectionOffset; }
             set { _beginAtUserAddDirectionOffset = value; }
+        }
+
+        public int RangeEffect
+        {
+            get { return _rangeEffect; }
+            set { _rangeEffect = value; }
+        }
+
+        public int RangeAddLife
+        {
+            get { return _rangeAddLife; }
+            set { _rangeAddLife = value; }
+        }
+
+        public int RangeAddMana
+        {
+            get { return _rangeAddMana; }
+            set { _rangeAddMana = value; }
+        }
+
+        public int RangeAddThew
+        {
+            get { return _rangeAddThew; }
+            set { _rangeAddThew = value; }
+        }
+
+        public int RangeFreeze
+        {
+            get { return _rangeFreeze; }
+            set { _rangeFreeze = value; }
+        }
+
+        public int RangePetrify
+        {
+            get { return _rangePetrify; }
+            set { _rangePetrify = value; }
+        }
+
+        public int RangePoison
+        {
+            get { return _rangePoison; }
+            set { _rangePoison = value; }
+        }
+
+        public int RangeDamage
+        {
+            get { return _rangeDamage; }
+            set { _rangeDamage = value; }
+        }
+
+        public int RangeRadius
+        {
+            get { return _rangeRadius; }
+            set { _rangeRadius = value; }
+        }
+
+        public int RangeTimeInerval
+        {
+            get { return _rangeTimeInerval; }
+            set { _rangeTimeInerval = value; }
         }
 
         #endregion

@@ -67,9 +67,10 @@ FlyingImage使用方向0，碰到敌人就爆炸，LifeFrame完也爆炸.
 13  图像跟随主角
 (FlyingImage使用方向0).
 根据 SpecialKind 的值分为 :
+[0] - 无效果
 [1] - 增加生命，增加Effect，LifeFrame完爆炸
 [2] - 增加体力，增加Effect，LifeFrame完爆炸
-[3] - 不受伤害，时间长度LifeFrame，LifeFrame完爆炸
+[3] - 减少Effect的伤害（即相当于提升了Effect的防御力），时间长度LifeFrame，LifeFrame完爆炸
 14 无
 15 全屏
 暂停游戏，在施放者处播放SuperModeImage，完后在全屏每个敌人处放VanishImage并受到伤害
@@ -82,27 +83,23 @@ FlyingImage使用方向0，碰到敌人就爆炸，LifeFrame完也爆炸.
 
 [扩展]
 （原版没有的）：
-
+        
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+范围效果：
 
-对Kind=13 的扩展
-13  图像跟随主角
-(FlyingImage使用方向0).
-根据 SpecialKind 的值分为 :
-[1] - 增加生命，增加Effect，LifeFrame完爆炸
-[2] - 增加体力，增加Effect，LifeFrame完爆炸
-[3] - 不受伤害，时间长度LifeFrame，LifeFrame完爆炸
-扩展
-[4] - 不断增加生命，Effect设置每秒增加多少生命，LifeFrame完爆炸，爆炸后结束
-[5] - 不断增加内力，Effect设置每秒增加多少内力，LifeFrame完爆炸，爆炸后结束
-[6] - 不断增加体力，Effect设置每秒增加多少体力，LifeFrame完爆炸，爆炸后结束
-[7] - 每秒使范围内的敌人冰冻，(Level+1秒)后解冻，SpecialKindValue设置半径，LifeFrame完爆炸，爆炸后结束
-[8] - 每秒使范围内的敌人中毒，(Level+1秒)后解毒，SpecialKindValue设置半径，LifeFrame完爆炸，爆炸后结束
-[9] - 每秒使范围内的敌人石化，(Level+1秒)后解石化，SpecialKindValue设置半径，LifeFrame完爆炸，爆炸后结束
-[10] - 不断增加自己和半径内友军的生命，Effect设置每秒增加多少生命，SpecialKindValue设置半径，LifeFrame完爆炸，爆炸后结束
-范例见：player-magic-13扩展-不断增加体力.ini
-        player-magic-13扩展-范围石化.ini
+RangeEffect - 如果大于0，表示有范围效果，具体效果如下：
+
+RangeAddLife - 表示在武功单位的RangeRadius范围内，每RangeTimeInerval，增加友军RangeAddLife的生命。
+RangeAddMana - 表示在武功单位的RangeRadius范围内，每RangeTimeInerval，增加友军RangeAddMana的内力。
+RangeAddThew - 表示在武功单位的RangeRadius范围内，每RangeTimeInerval，增加友军RangeAddThew的体力。
+RangeFreeze -  表示在武功单位的RangeRadius范围内，每RangeTimeInerval，冰冻敌人，RangeFreeze毫秒后解冻。
+RangePoison -  表示在武功单位的RangeRadius范围内，每RangeTimeInerval，使敌人中毒，RangeFreeze毫秒后解毒。
+RangePetrify - 表示在武功单位的RangeRadius范围内，每RangeTimeInerval，使敌人石化，RangeFreeze毫秒后解石化。
+RangeDamage -  表示在武功单位的RangeRadius范围内，每RangeTimeInerval，使敌人受到(RangeDamage - 敌人防御力)的伤害。
+
+RangeRadius - 范围半径
+RangeTimeInerval - 时间间隔（单位毫秒）
 		
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

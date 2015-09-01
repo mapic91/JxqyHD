@@ -213,47 +213,46 @@ namespace Engine
         /// Find enemys
         /// </summary>
         /// <param name="finder"></param>
+        /// <param name="beginTilePosition">Range center.</param>
         /// <param name="tileDistance">The max tile distance form finder to enemy</param>
         /// <returns>Finded enemies. If can't find list size is 0.</returns>
-        public static List<Character> FindEnemiesInTileDistance(Character finder, int tileDistance)
+        public static List<Character> FindEnemiesInTileDistance(Character finder, Vector2 beginTilePosition, int tileDistance)
         {
             var enemies = new List<Character>();
             if (finder == null) return enemies;
 
             if (finder.IsEnemy)
             {
-                enemies.AddRange(_list.Where(npc => npc.IsFighterFriend && PathFinder.GetViewTileDistance(finder.TilePosition, npc.TilePosition) <= tileDistance));
-                
-                if (PathFinder.GetViewTileDistance(finder.TilePosition, Globals.ThePlayer.TilePosition) <= tileDistance)
+                enemies.AddRange(_list.Where(npc => npc.IsFighterFriend && PathFinder.GetViewTileDistance(beginTilePosition, npc.TilePosition) <= tileDistance));
+
+                if (PathFinder.GetViewTileDistance(beginTilePosition, Globals.ThePlayer.TilePosition) <= tileDistance)
                 {
                     enemies.Add(Globals.ThePlayer);
                 }
             }
             else if (finder.IsPlayer || finder.IsFighterFriend)
             {
-                enemies.AddRange(_list.Where(npc => npc.IsEnemy && PathFinder.GetViewTileDistance(finder.TilePosition, npc.TilePosition) <= tileDistance));
+                enemies.AddRange(_list.Where(npc => npc.IsEnemy && PathFinder.GetViewTileDistance(beginTilePosition, npc.TilePosition) <= tileDistance));
             }
 
             return enemies;
         }
 
-        public static List<Character> FindFriendInTileDistance(Character finder, int tileDistance)
+        public static List<Character> FindFriendInTileDistance(Character finder, Vector2 beginTilePosition, int tileDistance)
         {
             var friends = new List<Character>();
             if (finder == null) return friends;
             if (finder.IsEnemy)
             {
-                friends.AddRange(_list.Where(npc => finder != npc && 
-                    npc.IsEnemy && 
-                    PathFinder.GetViewTileDistance(finder.TilePosition, npc.TilePosition) <= tileDistance));
+                friends.AddRange(_list.Where(npc =>  npc.IsEnemy &&
+                    PathFinder.GetViewTileDistance(beginTilePosition, npc.TilePosition) <= tileDistance));
             }
             else if (finder.IsPlayer || finder.IsFighterFriend)
             {
-                friends.AddRange(_list.Where(npc => finder != npc && 
-                    npc.IsFighterFriend && 
-                    PathFinder.GetViewTileDistance(finder.TilePosition, npc.TilePosition) <= tileDistance));
-                if (finder != Globals.ThePlayer &&
-                    PathFinder.GetViewTileDistance(finder.TilePosition, Globals.ThePlayer.TilePosition) <= tileDistance)
+                friends.AddRange(_list.Where(npc => npc.IsFighterFriend &&
+                    PathFinder.GetViewTileDistance(beginTilePosition, npc.TilePosition) <= tileDistance));
+                if (finder == Globals.ThePlayer &&
+                    PathFinder.GetViewTileDistance(beginTilePosition, Globals.ThePlayer.TilePosition) <= tileDistance)
                 {
                     friends.Add(Globals.ThePlayer);
                 }

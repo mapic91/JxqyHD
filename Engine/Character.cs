@@ -217,11 +217,9 @@ namespace Engine
             get { return _frozenSeconds; }
             set
             {
-                if (IsInDeathing) return;
+                if (IsInDeathing || IsPetrified) return;
                 if (value < 0) value = 0;
                 _frozenSeconds = value;
-                _poisonSeconds = 0;
-                _petrifiedSeconds = 0;
             }
         }
 
@@ -230,11 +228,9 @@ namespace Engine
             get { return _poisonSeconds; }
             set
             {
-                if (IsInDeathing) return;
+                if (IsInDeathing || IsPetrified) return;
                 if (value < 0) value = 0;
-                _frozenSeconds = 0;
                 _poisonSeconds = value;
-                _petrifiedSeconds = 0;
             }
         }
 
@@ -246,7 +242,6 @@ namespace Engine
                 if (IsInDeathing) return;
                 if (value < 0) value = 0;
                 _frozenSeconds = 0;
-                _poisonSeconds = 0;
                 _petrifiedSeconds = value;
             }
         }
@@ -254,6 +249,24 @@ namespace Engine
         public bool IsFrozened { get { return FrozenSeconds > 0; } }
         public bool IsPoisoned { get { return PoisonSeconds > 0; } }
         public bool IsPetrified { get { return PetrifiedSeconds > 0; } }
+
+        public void SetFrozenSeconds(float s)
+        {
+            if(_frozenSeconds > 0) return;
+            FrozenSeconds = s;
+        }
+
+        public void SetPoisonSeconds(float s)
+        {
+            if(_poisonSeconds > 0) return;
+            PoisonSeconds = s;
+        }
+
+        public void SetPetrifySeconds(float s)
+        {
+            if(_petrifiedSeconds > 0) return;
+            PetrifiedSeconds = s;
+        }
 
         public bool BodyFunctionWell
         {
