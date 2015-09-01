@@ -859,6 +859,7 @@ namespace Engine
                                 if (BelongMagic.RangeDamage > 0)
                                 {
                                     CharacterHited(target, BelongMagic.RangeDamage);
+                                    AddDestroySprite(MagicManager.EffectSprites, target.PositionInWorld, BelongMagic.VanishImage, BelongMagic.VanishSound);
                                 }
                                 target.NotifyEnemyAndAllNeighbor(BelongCharacter);
                             }
