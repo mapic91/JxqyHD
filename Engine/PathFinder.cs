@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Engine.Benchmark;
 using Microsoft.Xna.Framework;
 
@@ -362,12 +363,11 @@ namespace Engine
         /// <returns>Return in tile postiion</returns>
         public static Vector2 FindNeighborInDirection(Vector2 tilePosition, Vector2 direction)
         {
-            var neighbor = Vector2.Zero;
             if (direction != Vector2.Zero)
             {
-                neighbor = FindAllNeighbors(tilePosition)[Utils.GetDirectionIndex(direction, 8)];
+                return FindAllNeighbors(tilePosition)[Utils.GetDirectionIndex(direction, 8)];
             }
-            return neighbor;
+            return tilePosition;
         }
 
         /// <summary>
@@ -568,6 +568,56 @@ namespace Engine
             return false;
         }
 
+        /// <summary>
+        /// bounce at tile point.
+        /// </summary>
+        /// <param name="direction"></param>
+        /// <param name="worldPosition"></param>
+        /// <param name="targetWorldPosition"></param>
+        /// <returns>bouncing direction</returns>
+        public static Vector2 BouncingAtPoint(Vector2 direction, Vector2 worldPosition, Vector2 targetWorldPosition)
+        {
+            if (direction == Vector2.Zero || worldPosition == targetWorldPosition)
+            {
+                return worldPosition - targetWorldPosition;
+            }
+            var normal = Vector2.Normalize(worldPosition - targetWorldPosition);
+            return Vector2.Reflect(direction, normal);
+        }
+
+        /// <summary>
+        /// Bounce at wall, find wall tiles.
+        /// </summary>
+        /// <param name="direction"></param>
+        /// <param name="worldPosition"></param>
+        /// <param name="targetTilePosition"></param>
+        /// <returns>Bouncing direction</returns>
+        public static Vector2 BouncingAtWall(Vector2 direction, Vector2 worldPosition, Vector2 targetTilePosition)
+        {
+            if (direction == Vector2.Zero)
+            {
+                return direction;
+            }
+            var dir = Utils.GetDirectionIndex(direction, 8);
+            var checks = new[]{(dir + 2)%8, (dir + 6)%8, (dir + 1)%8, (dir + 7)%8};
+            var get = 8;
+            var neighbors = FindAllNeighbors(targetTilePosition);
+            for (var i = 0; i < checks.Count(); i++)
+            {
+                if (Globals.TheMap.IsObstacleForMagic(neighbors[checks[i]]))
+                {
+                    get = checks[i];
+                    break;
+                }
+            }
+            if (get == 8)
+            {
+                return BouncingAtPoint(direction, worldPosition, Map.ToPixelPosition(targetTilePosition));
+            }
+            var normal = Map.ToPixelPosition(targetTilePosition) - Map.ToPixelPosition(neighbors[get]);
+            normal = Vector2.Normalize(new Vector2(-normal.Y, normal.X));
+            return Vector2.Reflect(direction, normal);
+        }
     }
 
 

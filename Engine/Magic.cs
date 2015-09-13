@@ -62,6 +62,7 @@ namespace Engine
         private int _passThroughWall;
         private int _carryUser;
         private int _bounce;
+        private int _ball;
         private int _sticky;
         private int _solid;
         private int _noExplodeWhenLifeFrameEnd;
@@ -487,6 +488,12 @@ namespace Engine
         {
             get { return _bounce; }
             set { _bounce = value; }
+        }
+
+        public int Ball
+        {
+            get { return _ball; }
+            set { _ball = value; }
         }
 
         public int Sticky

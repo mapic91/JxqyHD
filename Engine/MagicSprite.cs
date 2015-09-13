@@ -259,6 +259,15 @@ namespace Engine
 
             }
 
+            if (BelongMagic.Ball > 0)
+            {
+                destroy = false;
+                MoveDirection = PathFinder.BouncingAtPoint(RealMoveDirection, PositionInWorld, character.PositionInWorld);
+                //Hitted once, Move magic sprite to neighber tile
+                TilePosition = PathFinder.FindNeighborInDirection(TilePosition, RealMoveDirection);
+                AddDestroySprite(MagicManager.EffectSprites, PositionInWorld, BelongMagic.VanishImage, BelongMagic.VanishSound);
+            }
+
             if (BelongMagic.Sticky > 0)
             {
                 destroy = false;
@@ -497,7 +506,7 @@ namespace Engine
             else
             {
                 // can't put fixed position magic sprite in obstacle
-                if (IsDestroyForObstacleInMap())
+                if (CheckDestroyForObstacleInMap())
                     _isDestroyed = true;
             }
         }
@@ -518,9 +527,17 @@ namespace Engine
             UseExplodeMagic();
         }
 
-        private bool IsDestroyForObstacleInMap()
+        private bool CheckDestroyForObstacleInMap()
         {
-            return (BelongMagic.PassThroughWall == 0 && Globals.TheMap.IsObstacleForMagic(TilePosition));
+            var destroy = (BelongMagic.PassThroughWall == 0 && Globals.TheMap.IsObstacleForMagic(TilePosition));
+            if (destroy && BelongMagic.Ball > 0)
+            {
+                MoveDirection = PathFinder.BouncingAtWall(RealMoveDirection, PositionInWorld, TilePosition);
+                //Hitted once, Move magic sprite to neighber tile
+                TilePosition = PathFinder.FindNeighborInDirection(TilePosition, RealMoveDirection);
+                return false;
+            }
+            return destroy;
         }
 
         public void Destroy()
@@ -649,7 +666,7 @@ namespace Engine
             PlayFrames(BelongMagic.LeapFrame);
             MoveDirection = closedEnemy.PositionInWorld - PositionInWorld;
             //Move magic sprite to neighber tile
-            TilePosition = PathFinder.FindNeighborInDirection(TilePosition, MoveDirection);
+            TilePosition = PathFinder.FindNeighborInDirection(TilePosition, RealMoveDirection);
             //Correct move direction
             MoveDirection = closedEnemy.PositionInWorld - PositionInWorld;
 
@@ -940,7 +957,7 @@ namespace Engine
                         break;
                 }
 
-                if (IsDestroyForObstacleInMap())
+                if (CheckDestroyForObstacleInMap())
                 {
                     Destroy();
                 }
