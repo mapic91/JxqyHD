@@ -265,6 +265,9 @@ namespace Engine
                 MoveDirection = PathFinder.BouncingAtPoint(RealMoveDirection, PositionInWorld, character.PositionInWorld);
                 //Hitted once, Move magic sprite to neighber tile
                 TilePosition = PathFinder.FindNeighborInDirection(TilePosition, RealMoveDirection);
+                PositionInWorld -= (RealMoveDirection == Vector2.Zero
+                    ? Vector2.Zero
+                    : Vector2.Normalize(RealMoveDirection));
                 AddDestroySprite(MagicManager.EffectSprites, PositionInWorld, BelongMagic.VanishImage, BelongMagic.VanishSound);
             }
 
@@ -535,6 +538,9 @@ namespace Engine
                 MoveDirection = PathFinder.BouncingAtWall(RealMoveDirection, PositionInWorld, TilePosition);
                 //Hitted once, Move magic sprite to neighber tile
                 TilePosition = PathFinder.FindNeighborInDirection(TilePosition, RealMoveDirection);
+                PositionInWorld -= (RealMoveDirection == Vector2.Zero
+                    ? Vector2.Zero
+                    : Vector2.Normalize(RealMoveDirection));
                 return false;
             }
             return destroy;
