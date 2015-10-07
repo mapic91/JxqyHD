@@ -20,7 +20,6 @@ namespace Engine
         private bool _isPlayReverse;
         private int _leftFrameToPlay;
         private float _movedDistance;
-        private bool _isTilePositionNew;
         private static Color _drawColor = Color.White;
         private static Color _rainDrawColor = Color.White;
         public int FrameAdvanceCount { protected set; get; }
