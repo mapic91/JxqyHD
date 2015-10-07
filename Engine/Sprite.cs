@@ -163,7 +163,9 @@ namespace Engine
             set
             {
                 _positionInWorld = value;
-                _isTilePositionNew = false;
+                var tilePosition = Map.ToTilePosition(value);
+                _mapX = (int) tilePosition.X;
+                _mapY = (int) tilePosition.Y;
             }
         }
 
@@ -171,17 +173,12 @@ namespace Engine
         {
             get
             {
-                if (IsTilePositionNew) return _mapX;
-                IsTilePositionNew = true;
-                var position = Map.ToTilePosition(PositionInWorld);
-                _mapX = (int)position.X;
-                _mapY = (int)position.Y;
                 return _mapX;
             }
             set
             {
                 _mapX = value;
-                PositionInWorld = Map.ToPixelPosition(value, MapY);
+                _positionInWorld = Map.ToPixelPosition(value, MapY);
             }
         }
 
@@ -189,17 +186,12 @@ namespace Engine
         {
             get
             {
-                if (IsTilePositionNew) return _mapY;
-                IsTilePositionNew = true;
-                var position = Map.ToTilePosition(PositionInWorld);
-                _mapX = (int)position.X;
-                _mapY = (int)position.Y;
                 return _mapY;
             }
             set
             {
                 _mapY = value;
-                PositionInWorld = Map.ToPixelPosition(MapX, value);
+                _positionInWorld = Map.ToPixelPosition(MapX, value);
             }
         }
 
@@ -208,16 +200,10 @@ namespace Engine
             get { return new Vector2(MapX, MapY); }
             set
             {
-                PositionInWorld = Map.ToPixelPosition(value);
+                _positionInWorld = Map.ToPixelPosition(value);
                 _mapX = (int)value.X;
                 _mapY = (int)value.Y;
             }
-        }
-
-        private bool IsTilePositionNew
-        {
-            get { return _isTilePositionNew; }
-            set { _isTilePositionNew = value; }
         }
 
         public int Width

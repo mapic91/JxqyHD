@@ -12,6 +12,7 @@ using Engine.ListManager;
 using Engine.Script;
 using Engine.Storage;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 
 namespace GameEditor
 {
@@ -357,6 +358,15 @@ namespace GameEditor
             Globals.ThePlayer.CurrentUseMagicIndex = index;
             Globals.ThePlayer.XiuLianMagic = MagicListManager.GetItemInfo(
                 MagicListManager.XiuLianIndex);
+        }
+
+        private void DrawSurface_MouseMove(object sender, MouseEventArgs e)
+        {
+            var mouseState = Mouse.GetState();
+            var mouseScreenPosition = new Vector2(mouseState.X, mouseState.Y);
+            var mouseWorldPosition = Globals.TheCarmera.ToWorldPosition(mouseScreenPosition);
+            var mouseTilePosition = Map.ToTilePosition(mouseWorldPosition);
+            toolStripStatusLabel1.Text = string.Format("{0}x{1}", mouseTilePosition.X, mouseTilePosition.Y);
         }
     }
 }

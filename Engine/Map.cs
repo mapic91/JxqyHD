@@ -392,7 +392,7 @@ namespace Engine
             if (IsTileInMapViewRange(col, row))
             {
                 var type = _tileInfos[col + row * MapColumnCounts].BarrierType;
-                if (type == None)
+                if ((type & (Obstacle + Trans)) == 0)
                     return false;
             }
             return true;
