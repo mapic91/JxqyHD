@@ -501,7 +501,7 @@ namespace Engine
             //Start play FlyingImage
             ResetPlay();
 
-            if (Velocity != 0)//Move 30
+            if (Velocity > 0 && MoveDirection != Vector2.Zero)//Move 30
             {
                 var second = 30f / Velocity;
                 MoveToNoNormalizeDirection(MoveDirection, second);

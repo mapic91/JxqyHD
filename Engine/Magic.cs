@@ -82,6 +82,8 @@ namespace Engine
         private int _rangeRadius;
         private int _rangeTimeInerval;
 
+        private Dictionary<int, List<MagicRegionFileReader.Item>> _regionFile;
+
         #region Leap
         private int _leapTimes;
         private int _leapFrame;
@@ -598,6 +600,12 @@ namespace Engine
             set { _rangeTimeInerval = value; }
         }
 
+        public Dictionary<int, List<MagicRegionFileReader.Item>> RegionFile
+        {
+            get { return _regionFile; }
+            set { _regionFile = value; }
+        }
+
         #endregion
 
         //noAttackFile - resolve recursive problem of AttackFile
@@ -640,6 +648,12 @@ namespace Engine
                     case "ExplodeMagicFile":
                     case "FlyMagic":
                         info.SetValue(this, Utils.GetMagic(nameValue[1], false), null);
+                        break;
+                    case "RegionFile":
+                        if (!string.IsNullOrEmpty(nameValue[1]))
+                        {
+                            info.SetValue(this, MagicRegionFileReader.Load(@"ini\magic\" + nameValue[1]), null);
+                        }
                         break;
                     default:
                         var integerValue = int.Parse(nameValue[1]);

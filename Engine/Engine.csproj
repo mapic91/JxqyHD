@@ -53,6 +53,7 @@
     <Reference Include="Microsoft.Xna.Framework.GamerServices, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="Microsoft.Xna.Framework.Video, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=MSIL" />
     <Reference Include="mscorlib" />
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -84,6 +85,7 @@
     <Compile Include="Gui\Base\ListItem.cs" />
     <Compile Include="Gui\Base\ListTextItem.cs" />
     <Compile Include="Gui\LittleHeadGui.cs" />
+    <Compile Include="MagicRegionFileReader.cs" />
     <Compile Include="MouseScrollHandler.cs" />
     <Compile Include="Gui\BottomGui.cs" />
     <Compile Include="Gui\BuyGui.cs" />

@@ -561,6 +561,31 @@ namespace Engine
             }
         }
 
+        private static void AddRegionFileMagicSprite(Character user, Magic magic, Vector2 origin, Vector2 destination, bool destroyOnEnd)
+        {
+            if (magic.RegionFile == null) return;
+            
+            var direction = destination - origin;
+            var directionIndex = Utils.GetDirectionIndex(direction, 8);
+            var items = magic.RegionFile.ContainsKey(directionIndex)
+                ? magic.RegionFile[directionIndex]
+                : magic.RegionFile[0];
+            //Make destination at tile center
+            destination = Map.ToPixelPosition(Map.ToTilePosition(destination));
+            foreach (var item in items)
+            {
+                var magicSprite = GetFixedPositionMagicSprite(user, magic, destination + item.Offset, destroyOnEnd);
+                if (item.Delay > 0)
+                {
+                    AddWorkItem(new WorkItem(item.Delay, magicSprite));
+                }
+                else
+                {
+                    AddMagicSprite(magicSprite);
+                }
+            }
+        }
+
         private static void AddFollowCharacterMagicSprite(Character user, Magic magic, Vector2 origin, bool destroyOnEnd, Character target)
         {
             if (target != null && user.Kind == (int) Character.CharacterKind.Player && target.IsFighterFriend)
@@ -803,6 +828,9 @@ namespace Engine
                                 break;
                             case 5:
                                 AddVTypeFixedPOsitionMagicSprite(user, magic, origin, destination, true);
+                                break;
+                            case 6:
+                                AddRegionFileMagicSprite(user, magic, origin, destination, true);
                                 break;
                         }
                         break;
