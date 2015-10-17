@@ -1804,6 +1804,11 @@ namespace Engine.Script
             Variables[variable] = value;
         }
 
-        
+
+        public static void GetPlayerExp(List<string> parameters)
+        {
+            var variable = parameters[0];
+            Variables[variable] = Globals.ThePlayer.Exp;
+        }
     }
 }

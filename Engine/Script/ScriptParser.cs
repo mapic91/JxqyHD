@@ -740,6 +740,9 @@ namespace Engine.Script
                         case "GetPartnerIdx":
                             ScriptExecuter.GetPartnerIdx(parameters);
                             break;
+                        case "GetExp":
+                            ScriptExecuter.GetPlayerExp(parameters);
+                            break;
                         default:
                             throw new Exception("无此函数");
                     }
