@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Linq;
 using System.Windows.Forms;
 using Engine.Benchmark;
@@ -328,8 +328,8 @@ namespace Engine
                 Globals.WindowWidth,
                 Globals.WindowHeight);
             Globals.FontSize7 = Content.Load<SpriteFont>(@"font\ASCII_Verdana_7_Bold");
-            Globals.FontSize10 = Content.Load<SpriteFont>(@"font\GB2312_ASCII_ÃÔÄã¼òÏ¸Ô²_10");
-            Globals.FontSize12 = Content.Load<SpriteFont>(@"font\GB2312_ASCII_ÃÔÄã¼òÏ¸Ô²_12");
+            Globals.FontSize10 = Content.Load<SpriteFont>(@"font\GB2312_ASCII_è¿·ä½ ç®€ç»†åœ†_10");
+            Globals.FontSize12 = Content.Load<SpriteFont>(@"font\GB2312_ASCII_è¿·ä½ ç®€ç»†åœ†_12");
 
             //Load partner name list
             PartnerList.Load();
