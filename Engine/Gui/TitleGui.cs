@@ -1,4 +1,5 @@
-﻿using Engine.Gui.Base;
+﻿using System.IO;
+using Engine.Gui.Base;
 using Engine.Script;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -15,8 +16,12 @@ namespace Engine.Gui
         private readonly GuiItem[] _guiItems;
         public TitleGui()
         {
-            BaseTexture = new Texture(new Asf(
-                Utils.LoadTexture2D(@"ui\title\title")));
+            using (var fs = File.Open(@"asf\ui\title\title.jpg", FileMode.Open))
+            {
+                BaseTexture = new Texture(new Asf(
+                Texture2D.FromStream(Globals.TheGame.GraphicsDevice, fs)));
+            }
+
             Width = BaseTexture.Width;
             Height = BaseTexture.Height;
             Position = new Vector2(
