@@ -7,6 +7,7 @@ namespace Engine
 {
     public abstract class TextureBase
     {
+        private string _filePath;
         private Texture2D[] _frames;
         private int _frameCountsPerDirection = 1;
 
@@ -60,12 +61,19 @@ namespace Engine
             private set { _frameCountsPerDirection = value < 1 ? 1 : value; }
         }
 
+        public string FilePath
+        {
+            get { return _filePath; }
+            protected set { _filePath = value; }
+        }
+
         #endregion Properties
 
         private void LoadTexture(string path)
         {
             try
             {
+                FilePath = path;
                 var buf = File.ReadAllBytes(path);
                 var offset = 0;
                 if (!LoadHead(buf, ref offset))
@@ -90,7 +98,7 @@ namespace Engine
                 Log.LogFileLoadError("Texture", path, e);
             }
         }
-        private void LoadPalette(byte[] buf, ref int offset)
+        protected virtual void LoadPalette(byte[] buf, ref int offset)
         {
             Palette = new Color[Head.ColourCounts];
             for (var i = 0; i < Head.ColourCounts; i++)

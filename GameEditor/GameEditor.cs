@@ -30,8 +30,15 @@ namespace GameEditor
             CenterToScreen();
         }
 
+        private void SaveSettings()
+        {
+            Settings.SaveFormPositionSize(this.Location.X, this.Location.Y, this.Size.Width, this.Size.Height, WindowState == FormWindowState.Maximized);
+            Settings.Save();
+        }
+
         private void GameEditor_FormClosed(object sender, FormClosedEventArgs e)
         {
+            SaveSettings();
             TheJxqyGame.ExitGame();
         }
 
@@ -286,6 +293,7 @@ namespace GameEditor
 
         private void _restartGameMenu_Click(object sender, EventArgs e)
         {
+            SaveSettings();
             Program.Restart = true;
             TheJxqyGame.ExitGame();
         }
@@ -367,6 +375,11 @@ namespace GameEditor
             var mouseWorldPosition = Globals.TheCarmera.ToWorldPosition(mouseScreenPosition);
             var mouseTilePosition = Map.ToTilePosition(mouseWorldPosition);
             toolStripStatusLabel1.Text = string.Format("{0}x{1}", mouseTilePosition.X, mouseTilePosition.Y);
+        }
+
+        private void GameEditor_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

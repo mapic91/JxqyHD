@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using IniParser;
 using Microsoft.Xna.Framework.Audio;
 
 namespace Engine
@@ -15,15 +16,14 @@ namespace Engine
             var info = new Dictionary<int, ResStateInfo>();
             try
             {
-                var enumerables = File.ReadLines(path, Globals.LocalEncoding);
-                var lines = enumerables as string[] ?? enumerables.ToArray();
-                var counts = lines.Count();
-                for (var i = 0; i < counts;)
+                var data = new FileIniDataParser().ReadFile(path, Globals.LocalEncoding);
+                foreach (var section in data.Sections)
                 {
-                    var state = GetState(lines[i++], type);
+                    var state = GetState(section.SectionName, type);
                     if (state != -1)
                     {
-                        var stateInfo = GetStateInfo(lines[i++], lines[i++], type);
+                        var keys = section.Keys;
+                        var stateInfo = GetStateInfo(keys["Image"], keys["Shade"], keys["Sound"], type);
                         info[state] = stateInfo;
                     }
                 }
@@ -43,7 +43,7 @@ namespace Engine
             {
                 list[(int)state] = new ResStateInfo();
             }
-            list[(int) state].Image = Utils.GetAsf(GetAsfFilePathBase(fileName, ResType.Npc), fileName);
+            list[(int) state].SetImageFilePath(ImageType.ASF, GetAsfFilePathBase(fileName, ResType.Npc), fileName, null);
         }
 
         public static string GetAsfFilePathBase(string asfFileName, ResType type)
@@ -65,21 +65,39 @@ namespace Engine
             return asfPathBase;
         }
 
-        private static ResStateInfo GetStateInfo(string image, string sound, ResType type)
+        public static string GetMpcFilePathBase(string fileName, ResType type)
+        {
+            string pathBase = string.Empty;
+            switch (type)
+            {
+                case ResType.Npc:
+                    return @"mpc\character\";
+                    break;
+                case ResType.Obj:
+                    return @"mpc\object\";
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+            }
+        }
+
+        private static ResStateInfo GetStateInfo(string image, string shd, string sound, ResType type)
         {
             var info = new ResStateInfo();
-            var groups = Regex.Match(image, "Image=(.+)").Groups;
-            if (groups[0].Success)
+
+            var ext = Path.GetExtension(image);
+            ext = string.IsNullOrEmpty(ext) ? "" : ext;
+            ext = ext.ToLower();
+            switch (ext)
             {
-                var asfFileName = groups[1].Value;
-                var filePathBase = GetAsfFilePathBase(asfFileName, type);
-                info.Image = Utils.GetAsf(filePathBase, asfFileName);
+                case ".asf":
+                    info.SetImageFilePath(ImageType.ASF, GetAsfFilePathBase(image, type), image, shd);
+                    break;
+                case ".mpc":
+                    info.SetImageFilePath(ImageType.MPC, GetMpcFilePathBase(image, type), image, shd);
+                    break;
             }
-            groups = Regex.Match(sound, "Sound=(.+)").Groups;
-            if (groups[0].Success)
-            {
-                info.Sound = Utils.GetSoundEffect(groups[1].Value);
-            }
+            info.SetSound(sound);
             return info;
         }
 
@@ -91,60 +109,60 @@ namespace Engine
                 case ResType.Npc:
                     switch (head)
                     {
-                        case "[Stand]":
-                            state = (int)CharacterState.Stand;
+                        case "Stand":
+                            state = (int) CharacterState.Stand;
                             break;
-                        case "[Stand1]":
-                            state = (int)CharacterState.Stand1;
+                        case "Stand1":
+                            state = (int) CharacterState.Stand1;
                             break;
-                        case "[Walk]":
-                            state = (int)CharacterState.Walk;
+                        case "Walk":
+                            state = (int) CharacterState.Walk;
                             break;
-                        case "[Run]":
-                            state = (int)CharacterState.Run;
+                        case "Run":
+                            state = (int) CharacterState.Run;
                             break;
-                        case "[Jump]":
-                            state = (int)CharacterState.Jump;
+                        case "Jump":
+                            state = (int) CharacterState.Jump;
                             break;
-                        case "[Attack]":
-                            state = (int)CharacterState.Attack;
+                        case "Attack":
+                            state = (int) CharacterState.Attack;
                             break;
-                        case "[Attack1]":
-                            state = (int)CharacterState.Attack1;
+                        case "Attack1":
+                            state = (int) CharacterState.Attack1;
                             break;
-                        case "[Attack2]":
-                            state = (int)CharacterState.Attack2;
+                        case "Attack2":
+                            state = (int) CharacterState.Attack2;
                             break;
-                        case "[Magic]":
-                            state = (int)CharacterState.Magic;
+                        case "Magic":
+                            state = (int) CharacterState.Magic;
                             break;
-                        case "[Sit]":
-                            state = (int)CharacterState.Sit;
+                        case "Sit":
+                            state = (int) CharacterState.Sit;
                             break;
-                        case "[Hurt]":
-                            state = (int)CharacterState.Hurt;
+                        case "Hurt":
+                            state = (int) CharacterState.Hurt;
                             break;
-                        case "[Death]":
-                            state = (int)CharacterState.Death;
+                        case "Death":
+                            state = (int) CharacterState.Death;
                             break;
-                        case "[FightStand]":
-                            state = (int)CharacterState.FightStand;
+                        case "FightStand":
+                            state = (int) CharacterState.FightStand;
                             break;
-                        case "[FightWalk]":
-                            state = (int)CharacterState.FightWalk;
+                        case "FightWalk":
+                            state = (int) CharacterState.FightWalk;
                             break;
-                        case "[FightRun]":
-                            state = (int)CharacterState.FightRun;
+                        case "FightRun":
+                            state = (int) CharacterState.FightRun;
                             break;
-                        case "[FightJump]":
-                            state = (int)CharacterState.FightJump;
+                        case "FightJump":
+                            state = (int) CharacterState.FightJump;
                             break;
                     }
                     break;
                 case ResType.Obj:
                     switch (head)
                     {
-                        case "[Common]":
+                        case "Common":
                             state = (int) ObjState.Common;
                             break;
                     }
@@ -185,9 +203,70 @@ namespace Engine
         Common
     }
 
+    public enum ImageType
+    {
+        ASF,
+        MPC
+    }
+
     public class ResStateInfo
     {
-        public Asf Image;
-        public SoundEffect Sound;
+        private string _basePath;
+        private string _fileName;
+        private string _shdFileName;
+        private TextureBase _image;
+        private ImageType _imageType;
+
+        private string _soundFileName;
+        private SoundEffect _soundEffect;
+
+        public void SetImageFilePath(ImageType type, string basePath, string fileName, string shdFileName)
+        {
+            _imageType = type;
+            _basePath = basePath;
+            _fileName = fileName;
+            _shdFileName = shdFileName;
+            _image = null;
+        }
+
+        public void SetSound(string fileName)
+        {
+            _soundFileName = fileName;
+            _soundEffect = null;
+        }
+
+        public TextureBase Image
+        {
+            get
+            {
+                if (_image == null)
+                {
+                    switch (_imageType)
+                    {
+                        case ImageType.ASF:
+                            _image = Utils.GetAsf(_basePath, _fileName);
+                            break;
+                        case ImageType.MPC:
+                            _image = Utils.GetMpc(_basePath, _fileName, _shdFileName);
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                }
+                return _image;
+            }
+        }
+
+        public SoundEffect Sound
+        {
+            get
+            {
+                if (_soundEffect == null)
+                {
+                    _soundEffect = Utils.GetSoundEffect(_soundFileName);
+                }
+                return _soundEffect;
+            }
+        }
     }
 }

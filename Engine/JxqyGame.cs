@@ -349,7 +349,7 @@ namespace Engine
         {
             // TODO: Unload any non ContentManager content here
             Content.Dispose();
-            Utils.ClearAsfCache();
+            Utils.ClearTextureCache();
         }
 
         /// <summary>

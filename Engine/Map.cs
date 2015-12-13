@@ -770,7 +770,7 @@ namespace Engine
 
             Free();
             //Clear asf cache, because normaly npcs objs will be cleared after map load.
-            Utils.ClearAsfCache();
+            Utils.ClearTextureCache();
             var offset = 0;
             try
             {

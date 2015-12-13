@@ -139,6 +139,7 @@
     <Compile Include="Script\ScriptExecuter.cs" />
     <Compile Include="Script\ScriptManager.cs" />
     <Compile Include="Script\ScriptParser.cs" />
+    <Compile Include="Shd.cs" />
     <Compile Include="SoundManager.cs" />
     <Compile Include="Sprite.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

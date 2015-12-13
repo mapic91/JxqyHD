@@ -17,6 +17,7 @@ namespace Engine
     static public class Utils
     {
         public static Dictionary<string, Asf> AsfFiles = new Dictionary<string, Asf>();
+        public static Dictionary<KeyValuePair<string, string>, Mpc> MpcFiles = new Dictionary<KeyValuePair<string, string>, Mpc>();
         public static Dictionary<string, Magic> Magics = new Dictionary<string, Magic>();
         public static Dictionary<string, Good> Goods = new Dictionary<string, Good>();
 
@@ -87,9 +88,7 @@ namespace Engine
             if (string.IsNullOrEmpty(fileName)) return null;
             try
             {
-                if (string.IsNullOrEmpty(basePath) || basePath[basePath.Length - 1] != '\\')
-                    basePath += "\\";
-                var path = basePath + fileName;
+                var path = string.IsNullOrEmpty(basePath) ? fileName : Path.Combine(basePath, fileName);
                 if (AsfFiles.ContainsKey(path))
                     return AsfFiles[path];
                 else
@@ -112,9 +111,39 @@ namespace Engine
             }
         }
 
-        static public void ClearAsfCache()
+        static public Mpc GetMpc(string basePath, string fileName, string shdFileName)
+        {
+            if (string.IsNullOrEmpty(fileName)) return null;
+            try
+            {
+                var path = string.IsNullOrEmpty(basePath) ? fileName : Path.Combine(basePath, fileName);
+                var pair = new KeyValuePair<string, string>(path, shdFileName);
+                if (MpcFiles.ContainsKey(pair))
+                    return MpcFiles[pair];
+                else
+                {
+                    var mpc = new Mpc(path, shdFileName);
+                    if (mpc.IsOk)
+                    {
+                        MpcFiles[pair] = mpc;
+                        return mpc;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        static public void ClearTextureCache()
         {
             AsfFiles.Clear();
+            MpcFiles.Clear();
         }
 
         static public Asf GetCharacterAsf(string fileName)

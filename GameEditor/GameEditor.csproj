@@ -101,6 +101,7 @@
     <Compile Include="RunScript.Designer.cs">
       <DependentUpon>RunScript.cs</DependentUpon>
     </Compile>
+    <Compile Include="Settings.cs" />
     <Compile Include="VariablesWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -144,6 +145,10 @@
     <ProjectReference Include="..\Jxqy\Jxqy.csproj">
       <Project>{f0c2e895-3d03-496b-a3a8-241a0acaa7fd}</Project>
       <Name>Jxqy</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\packages\ini-parser-2.1.2\src\IniFileParser\INIFileParser.csproj">
+      <Project>{5e46dcf4-c473-4171-9f9b-f3910b5ec407}</Project>
+      <Name>INIFileParser</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

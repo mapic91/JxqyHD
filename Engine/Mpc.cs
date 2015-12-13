@@ -1,14 +1,16 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.IO;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Engine
 {
     public class Mpc : TextureBase
     {
+        private Shd _shd;
         protected override bool LoadHead(byte[] buf, ref int offset)
         {
             var headinfo = Globals.LocalEncoding.GetString(buf, 0, "MPC File Ver".Length);
-            if (!headinfo.Equals("MPC File Ver")) return false;
+            if (!headinfo.Equals("MPC File Ver") && !headinfo.Equals("SHD File Ver")) return false;
             offset = 64;
             Head.FramesDataLengthSum = Utils.GetLittleEndianIntegerFromByteArray(buf, ref offset);
             Head.GlobleWidth = Utils.GetLittleEndianIntegerFromByteArray(buf, ref offset);
@@ -18,6 +20,18 @@ namespace Engine
             Head.ColourCounts = Utils.GetLittleEndianIntegerFromByteArray(buf, ref offset);
             Head.Interval = Utils.GetLittleEndianIntegerFromByteArray(buf, ref offset);
             Head.Bottom = Utils.GetLittleEndianIntegerFromByteArray(buf, ref offset);
+
+            //Transform to asf offset type
+            Head.Left = Head.GlobleWidth/2;
+            if (Head.GlobleHeight >= 16)
+            {
+                Head.Bottom = (Head.GlobleHeight - 16) - Head.Bottom;
+            }
+            else
+            {
+                Head.Bottom = (16 - Head.GlobleHeight) - Head.Bottom;
+            }
+
             offset += 32;
             return base.LoadHead(buf, ref offset);
         }       
@@ -33,7 +47,8 @@ namespace Engine
                 var datalen = Utils.GetLittleEndianIntegerFromByteArray(buf, ref datastart);
                 var width = Utils.GetLittleEndianIntegerFromByteArray(buf, ref datastart);
                 var height = Utils.GetLittleEndianIntegerFromByteArray(buf, ref datastart);
-                var data = new Color[width*height];
+                var hasShd = _shd?.GetFrameData(j) != null;
+                var data = hasShd ? _shd.GetFrameData(j) : new Color[width * height];
                 datastart += 8;
                 var dataidx = 0;
                 var dataend = datastart + datalen - 20;
@@ -42,10 +57,18 @@ namespace Engine
                     if (buf[datastart] > 0x80)
                     {
                         var transparentcount = buf[datastart] - 0x80;
-                        for (var ti = 0; ti < transparentcount; ti++)
+                        if (!hasShd)
                         {
-                            data[dataidx++] = Color.Transparent;
+                            for (var ti = 0; ti < transparentcount; ti++)
+                            {
+                                data[dataidx++] = Color.Transparent;
+                            }
                         }
+                        else
+                        {
+                            dataidx += transparentcount;
+                        }
+                        
                         datastart++;
                     }
                     else
@@ -70,7 +93,18 @@ namespace Engine
             Load(path);
         }
 
-        public new Texture2D GetFrame(int index)
+        public Mpc(string path, string shdFileName)
+        {
+            var dir = Path.GetDirectoryName(path);
+            if (!string.IsNullOrEmpty(dir) && !string.IsNullOrEmpty(shdFileName))
+            {
+                var shdPath = Path.Combine(dir, shdFileName);
+                _shd = new Shd(shdPath);
+            }
+            Load(path);
+        }
+
+        public override Texture2D GetFrame(int index)
         {
             if (index >= 0 && index < FrameCounts)
                 return Frames[index%FrameCounts];

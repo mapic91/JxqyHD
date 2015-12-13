@@ -16,7 +16,7 @@ namespace Engine
         private int _frameEnd;
         private int _elapsedMilliSecond;
         private int _currentDirection;
-        private Asf _texture = Asf.Empty;
+        private TextureBase _texture = Asf.Empty;
         private bool _isPlayReverse;
         private int _leftFrameToPlay;
         private float _movedDistance;
@@ -58,7 +58,7 @@ namespace Engine
             Set(positionInWorld, velocity, texture, direction);
         }
 
-        public void Set(Vector2 positionInWorld, float velocity, Asf texture, int direction = 0)
+        public void Set(Vector2 positionInWorld, float velocity, TextureBase texture, int direction = 0)
         {
             PositionInWorld = positionInWorld;
             Velocity = velocity;
@@ -73,7 +73,7 @@ namespace Engine
             get { return (_leftFrameToPlay > 0); }
         }
 
-        public Asf Texture
+        public TextureBase Texture
         {
             get { return _texture; }
             set

@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Drawing;
 using System.Windows.Forms;
 using Engine;
 
@@ -16,6 +17,30 @@ namespace GameEditor
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             var form = new GameEditor();
+
+            Settings.LoadSettings();
+            var x = Settings.GetInt("X", 0);
+            var y = Settings.GetInt("Y", 0);
+            var w = Settings.GetInt("Width", 0);
+            var h = Settings.GetInt("Height", 0);
+            var maximized = Settings.IsMaximized();
+
+            if (maximized)
+            {
+                form.WindowState = FormWindowState.Maximized;
+            }
+            else
+            {
+                if (x > 0 && y > 0)
+                {
+                    form.Location = new Point(x, y);
+                }
+                if (w > 0 && h > 0)
+                {
+                    form.Size = new Size(w, h);
+                }
+            }
+
             form.Show();
             form.TheJxqyGame = new JxqyGame(
                 form.DrawSurface.Handle,
