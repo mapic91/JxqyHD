@@ -5,12 +5,11 @@
 [剑二游戏目录]\mpc\character          [高清版游戏目录]\mpc\character
 [剑二游戏目录]\mpc\object             [高清版游戏目录]\mpc\object
 
-然后在，npc文件的NpcIni、BodyIni项目或obj文件里ObjFile项目设置相应的ini文件就可以了，比如：
+然后在，npc文件的NpcIni项目或obj文件里ObjFile项目设置相应的ini文件就可以了，比如：
 npc文件：
 ...
 ...
 NpcIni=npc-21-普通枪手.ini
-BodyIni=body-21-普通枪手.ini
 ...
 ...
 
