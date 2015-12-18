@@ -47,7 +47,7 @@ namespace Engine
                 var datalen = Utils.GetLittleEndianIntegerFromByteArray(buf, ref datastart);
                 var width = Utils.GetLittleEndianIntegerFromByteArray(buf, ref datastart);
                 var height = Utils.GetLittleEndianIntegerFromByteArray(buf, ref datastart);
-                var hasShd = _shd?.GetFrameData(j) != null;
+                var hasShd = (_shd != null) && (_shd.GetFrameData(j) != null);
                 var data = hasShd ? _shd.GetFrameData(j) : new Color[width * height];
                 datastart += 8;
                 var dataidx = 0;
