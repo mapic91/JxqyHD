@@ -1,0 +1,4 @@
+引擎分了几个模块：Gui是用户界面；ListManager管理一些列表，比如物品列表，对话列表；Message是注册和发送一些调试信息；Script是剑侠的脚本解析和执行；Storage用于存读档；Weather是一些天气效果；其它一些零散的没有归类的有：图像相关的-TextureBase，Mpc,Asf,Sprite等；Map是地图；人物相关的-Character，Npc，Player；尸体宝箱相关：Obj，ObjManager；物品相关：Good，GoodDrop；武功相关-Magic，MagicSprite，MagicManager，MagicRegionFileReader；Carmera用于控制在地图上的显示区域；BackgroundMusic播放背景音乐；SoundManager-用来播放声音特效；Collider-碰撞判定；Globals-存放一些全局变量；Utils-一些有用的的函数都放在这。
+引擎不足的方面有：
+1.一些图像方面的特效，比如下雨，下雪，绘制人物轮廓，可以使用Shader来完成，提升性能，因为对这方面还不太了解，用了代码来完成。
+2.地图和人物等应分批绘制，方便加特效，现在基本是一批（用一次_spriteBatch.begin和_spriteBatch.end）就绘制全部的，有些特效Shader不好加，比如石化特效。
