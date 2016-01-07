@@ -1009,11 +1009,31 @@ namespace Engine.Script
                 TalkTextList.GetTextDetail(int.Parse(parameters[2])).Text);
         }
 
+        public static void ChooseEx(List<string> parameters)
+        {
+            var selections = new List<string>();
+            for (int i = 1; i < parameters.Count - 1; i++)
+            {
+                selections.Add(Utils.RemoveStringQuotes(parameters[i]));
+            }
+            GuiManager.ChooseEx(Utils.RemoveStringQuotes(parameters[0]),selections);
+        }
+
         public static bool IsChooseEnd(List<string> parameters)
         {
             if (GuiManager.IsSelectionEnd())
             {
                 Variables[parameters[3]] = GuiManager.GetSelection();
+                return true;
+            }
+            return false;
+        }
+
+        public static bool IsChooseExEnd(List<string> parameters)
+        {
+            if (GuiManager.IsChooseExEnd())
+            {
+                Variables[parameters[parameters.Count-1]] = GuiManager.GetMultiSelectionResult();
                 return true;
             }
             return false;

@@ -41,6 +41,8 @@ namespace Engine.Gui
         public static DialogGui DialogInterface;
         public static LittleHeadGui LittleHeadInterface;
 
+        public static SelectionGui SelectionInterface;
+
         public static MouseGui MouseInterface;
 
         public static bool IsMouseStateEated;
@@ -135,6 +137,9 @@ namespace Engine.Gui
 
             LittleHeadInterface = new LittleHeadGui();
             _allGuiItems.AddLast(LittleHeadInterface);
+
+            SelectionInterface = new SelectionGui();
+            _allGuiItems.AddLast(SelectionInterface);
 
             MagicListManager.RenewList();
             GoodsListManager.RenewList();
@@ -373,14 +378,30 @@ namespace Engine.Gui
             DialogInterface.Select(message, selectA, selectionB);
         }
 
+        public static void ChooseEx(string message, List<string> selections)
+        {
+            ShowAllPanels(false);
+            SelectionInterface.Select(message,selections);
+        }
+
         public static bool IsSelectionEnd()
         {
             return !DialogInterface.IsInSelecting;
         }
 
+        public static bool IsChooseExEnd()
+        {
+            return !SelectionInterface.IsInSelecting;
+        }
+
         public static int GetSelection()
         {
             return DialogInterface.Selection;
+        }
+
+        public static int GetMultiSelectionResult()
+        {
+            return SelectionInterface.Selection;
         }
 
         public static bool IsDialogEnd()
@@ -580,6 +601,17 @@ namespace Engine.Gui
                 //Restore input
                 Globals.RestoreInputDisableState();
             }
+            else if (SelectionInterface.IsShow)
+            {
+                //Temporaty enable input
+                Globals.EnableInputTemporary();
+
+                IsMouseStateEated = true;
+                SelectionInterface.Update(gameTime);
+                
+                //Restore input
+                Globals.RestoreInputDisableState();
+            }
             else if (DialogInterface.IsShow)
             {
                 //Temporaty enable input
@@ -712,6 +744,7 @@ namespace Engine.Gui
                 ToolTipInterface.Draw(spriteBatch);
                 MessageInterface.Draw(spriteBatch);
                 DialogInterface.Draw(spriteBatch);
+                SelectionInterface.Draw(spriteBatch);
 
                 SystemInterface.Draw(spriteBatch);
 
