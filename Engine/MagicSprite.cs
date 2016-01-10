@@ -214,6 +214,7 @@ namespace Engine
             _destroyOnEnd = destroyOnEnd;
             SetDirection(MoveDirection);
             _lastUserWorldPosition = belongCharacter.PositionInWorld;
+            _rangeElapsedMilliseconds = belongMagic.RangeTimeInerval;
 
             if (BelongMagic.MeteorMove > 0)
             {
