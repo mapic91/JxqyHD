@@ -219,7 +219,7 @@ namespace Engine
         public static List<Character> FindEnemiesInTileDistance(Character finder, Vector2 beginTilePosition, int tileDistance)
         {
             var enemies = new List<Character>();
-            if (finder == null) return enemies;
+            if (finder == null || tileDistance < 1) return enemies;
 
             if (finder.IsEnemy)
             {
@@ -242,6 +242,13 @@ namespace Engine
         {
             var friends = new List<Character>();
             if (finder == null) return friends;
+
+            if (tileDistance == 0)
+            {
+                friends.Add(finder);
+                return friends;
+            }
+
             if (finder.IsEnemy)
             {
                 friends.AddRange(_list.Where(npc =>  npc.IsEnemy &&

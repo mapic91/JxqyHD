@@ -93,6 +93,7 @@ RangeEffect - 如果大于0，表示有范围效果，具体效果如下：
 RangeAddLife - 表示在武功单位的RangeRadius范围内，每RangeTimeInerval，增加友军RangeAddLife的生命。
 RangeAddMana - 表示在武功单位的RangeRadius范围内，每RangeTimeInerval，增加友军RangeAddMana的内力。
 RangeAddThew - 表示在武功单位的RangeRadius范围内，每RangeTimeInerval，增加友军RangeAddThew的体力。
+RangeSpeedUp - 表示在武功单位的RangeRadius范围内，每RangeTimeInerval，增加友军RangeSpeedUp百分比的速度提升，LifeFrame完加速消失，比如RangeSpeedUp是50，则速度是原来的1.5倍，人物速度加成只能有一个，不能重叠。
 RangeFreeze -  表示在武功单位的RangeRadius范围内，每RangeTimeInerval，冰冻敌人，RangeFreeze毫秒后解冻。
 RangePoison -  表示在武功单位的RangeRadius范围内，每RangeTimeInerval，使敌人中毒，RangeFreeze毫秒后解毒。
 RangePetrify - 表示在武功单位的RangeRadius范围内，每RangeTimeInerval，使敌人石化，RangeFreeze毫秒后解石化。
@@ -100,6 +101,11 @@ RangeDamage -  表示在武功单位的RangeRadius范围内，每RangeTimeInerval，使敌人受到
 
 RangeRadius - 范围半径
 RangeTimeInerval - 时间间隔（单位毫秒）
+
+注：
+1.友军也包括自己。RangeRadius等于0时，友军的效果只有自己。
+2.当RangeRadius大于0时，RangeTimeInerval不能设置过小，不然每RangeTimeInerval都要寻找在RangeRadius范围内的友军或敌人，消耗CPU会比较大。根据技能需要和性能，平衡考虑，设置个合适的值。
+
 		
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

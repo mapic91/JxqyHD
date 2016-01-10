@@ -628,6 +628,8 @@ namespace Engine
 
         public bool IsInDeathing { get { return State == (int)CharacterState.Death; } }
 
+        public MagicSprite SppedUpByMagicSprite { get; set; }
+
         #endregion Public properties
 
         #region Character Type and Relation
@@ -1583,6 +1585,9 @@ namespace Engine
             if (IsDeathInvoked) return;
             IsDeathInvoked = true;
 
+            //When death speedup is cancled
+            SppedUpByMagicSprite = null;
+
             //Run death script
             _currentRunDeathScript = ScriptManager.RunScript(Utils.GetScriptParser(DeathScript, this));
 
@@ -2352,6 +2357,22 @@ namespace Engine
         #region Update Draw
         public override void Update(GameTime gameTime)
         {
+            if (SppedUpByMagicSprite != null)
+            {
+                if (SppedUpByMagicSprite.IsInDestroy || SppedUpByMagicSprite.IsDestroyed)
+                {
+                    SppedUpByMagicSprite = null;
+                }
+                else
+                {
+                    var fold = (100 + SppedUpByMagicSprite.BelongMagic.RangeSpeedUp) / 100f;
+                    gameTime = new GameTime(new TimeSpan((long)(gameTime.TotalGameTime.Ticks * fold)), 
+                        new TimeSpan((long)(gameTime.ElapsedGameTime.Ticks * fold)), 
+                        gameTime.IsRunningSlowly);
+
+                }
+            }
+            
             for (var node = _summonedNpcs.First; node != null;)
             {
                 var next = node.Next;

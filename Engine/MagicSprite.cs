@@ -842,7 +842,8 @@ namespace Engine
 
                         if (BelongMagic.RangeAddLife > 0 ||
                             BelongMagic.RangeAddMana > 0 ||
-                            BelongMagic.RangeAddThew > 0)
+                            BelongMagic.RangeAddThew > 0 ||
+                            BelongMagic.RangeSpeedUp > 0)
                         {
                             foreach (var target in NpcManager.FindFriendInTileDistance(BelongCharacter, TilePosition, BelongMagic.RangeRadius))
                             {
@@ -857,6 +858,10 @@ namespace Engine
                                 if (BelongMagic.RangeAddThew > 0)
                                 {
                                     target.AddThew(BelongMagic.RangeAddThew);
+                                }
+                                if (BelongMagic.RangeSpeedUp > 0 && target.SppedUpByMagicSprite == null)
+                                {
+                                    target.SppedUpByMagicSprite = this;
                                 }
                             }
                         }

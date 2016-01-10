@@ -75,6 +75,7 @@ namespace Engine
         private int _rangeAddLife;
         private int _rangeAddMana;
         private int _rangeAddThew;
+        private int _rangeSpeedUp;
         private int _rangeFreeze;
         private int _rangePoison;
         private int _rangePetrify;
@@ -562,6 +563,12 @@ namespace Engine
         {
             get { return _rangeAddThew; }
             set { _rangeAddThew = value; }
+        }
+
+        public int RangeSpeedUp
+        {
+            get { return _rangeSpeedUp; }
+            set { _rangeSpeedUp = value; }
         }
 
         public int RangeFreeze
