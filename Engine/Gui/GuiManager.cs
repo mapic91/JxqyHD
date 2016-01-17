@@ -513,15 +513,15 @@ namespace Engine.Gui
         #endregion Functionail method
 
         #region Handle key press
-        private static bool IsEscKeyPressed(KeyboardState keyboardState)
+        private static bool IsKeyPressed(KeyboardState keyboardState, Keys key)
         {
-            return (keyboardState.IsKeyDown(Keys.Escape) &&
-                    Globals.TheGame.LastKeyboardState.IsKeyUp(Keys.Escape));
+            return (keyboardState.IsKeyDown(key) &&
+                    Globals.TheGame.LastKeyboardState.IsKeyUp(key));
         }
 
-        private static bool IsEscKeyPressedAndCanInput(KeyboardState keyboardState)
+        private static bool IsKeyPressedAndCanInput(KeyboardState keyboardState, Keys key)
         {
-            return (IsEscKeyPressed(keyboardState) &&
+            return (IsKeyPressed(keyboardState, key) &&
                     !Globals.IsInputDisabled &&
                     !ScriptManager.IsInRunningScript);
         }
@@ -561,7 +561,7 @@ namespace Engine.Gui
                 //Temporaty enable input
                 Globals.EnableInputTemporary();
                 SaveLoadInterface.Update(gameTime);
-                if (IsEscKeyPressed(keyboardState))
+                if (IsKeyPressedAndCanInput(keyboardState,Keys.Escape))
                 {
                     ShowSaveLoad(false);
                 }
@@ -581,7 +581,7 @@ namespace Engine.Gui
                 //Temporaty enable input
                 Globals.EnableInputTemporary();
                 SystemInterface.Update(gameTime);
-                if (IsEscKeyPressed(keyboardState))
+                if (IsKeyPressedAndCanInput(keyboardState,Keys.Escape))
                 {
                     ShowSystem(false);
                 }
@@ -594,7 +594,7 @@ namespace Engine.Gui
                 Globals.EnableInputTemporary();
                 LittleMapInterface.Update(gameTime);
                 if (IsShowLittleMapKeyPressed(keyboardState) ||
-                    IsEscKeyPressed(keyboardState))
+                    IsKeyPressedAndCanInput(keyboardState, Keys.Escape))
                 {
                     LittleMapInterface.IsShow = false;
                 }
@@ -651,7 +651,7 @@ namespace Engine.Gui
                     BottomInterface.Update(gameTime);
                     IsMouseStateEated = true;
 
-                    if (IsEscKeyPressed(keyboardState))
+                    if (IsKeyPressedAndCanInput(keyboardState, Keys.Escape))
                     {
                         EndBuyGoods();
                     }
@@ -665,7 +665,7 @@ namespace Engine.Gui
                         ShowAllPanels(false);
                         LittleMapInterface.IsShow = true;
                     }
-                    else if (IsEscKeyPressedAndCanInput(keyboardState))
+                    else if (IsKeyPressedAndCanInput(keyboardState, Keys.Escape))
                     {
                         if (HasPanelsShow())
                         {
@@ -675,6 +675,30 @@ namespace Engine.Gui
                         {
                             ShowSystem();
                         }
+                    }
+                    else if (IsKeyPressedAndCanInput(keyboardState, Keys.F1))
+                    {
+                        ToggleStateGuiShow();
+                    }
+                    else if (IsKeyPressedAndCanInput(keyboardState, Keys.F2))
+                    {
+                        ToggleEquipGuiShow();
+                    }
+                    else if (IsKeyPressedAndCanInput(keyboardState, Keys.F3))
+                    {
+                        ToggleXiuLianGuiShow();
+                    }
+                    else if (IsKeyPressedAndCanInput(keyboardState, Keys.F5))
+                    {
+                        ToggleGoodsGuiShow();
+                    }
+                    else if (IsKeyPressedAndCanInput(keyboardState, Keys.F6))
+                    {
+                        ToggleMagicGuiShow();
+                    }
+                    else if (IsKeyPressedAndCanInput(keyboardState, Keys.F7))
+                    {
+                        ToggleMemoGuiShow();
                     }
 
                     TopInterface.Update(gameTime);

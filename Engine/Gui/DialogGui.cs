@@ -51,8 +51,8 @@ namespace Engine.Gui
                 310,
                 70,
                 Globals.FontSize12,
-                1,
-                2,
+                -2,
+                0,
                 "",
                 _defaultTextColor);
             _selectA = new TextGui(this,

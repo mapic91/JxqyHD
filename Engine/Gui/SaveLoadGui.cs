@@ -70,7 +70,7 @@ namespace Engine.Gui
                 "进度七"
             };
             _list = new ListTextItem(this,
-                new Vector2(141, 118),
+                new Vector2(135, 118),
                 80,
                 189,
                 null,
