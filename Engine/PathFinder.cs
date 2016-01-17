@@ -339,7 +339,7 @@ namespace Engine
                 if (finder.HasObstacle(current) && current != startTile) continue;
                 foreach (var next in FindNeighbors(current))
                 {
-                    var newCost = costSoFar[current] + 1;
+                    var newCost = costSoFar[current] + GetTilePositionCost(current, next);
                     if (!costSoFar.ContainsKey(next) ||
                         newCost < costSoFar[next])
                     {
@@ -411,9 +411,9 @@ namespace Engine
             return Vector2.Distance(fromPosition, toPosition);
         }
 
-        public static int GetTilePositionCost(Vector2 fromTile, Vector2 toTile)
+        public static float GetTilePositionCost(Vector2 fromTile, Vector2 toTile)
         {
-            return GetPathTileDistance(fromTile, toTile);
+            return Vector2.Distance(Map.ToPixelPosition(fromTile), Map.ToPixelPosition(toTile));
         }
 
         /// <summary>
