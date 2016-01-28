@@ -23,6 +23,10 @@ namespace Engine
                     if (state != -1)
                     {
                         var keys = section.Keys;
+                        if (string.IsNullOrEmpty(keys["Image"]))
+                        {
+                            continue;
+                        }
                         var stateInfo = GetStateInfo(keys["Image"], keys["Shade"], keys["Sound"], type);
                         info[state] = stateInfo;
                     }
