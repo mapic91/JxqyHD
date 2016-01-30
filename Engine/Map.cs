@@ -771,6 +771,10 @@ namespace Engine
             Free();
             //Clear asf cache, because normaly npcs objs will be cleared after map load.
             Utils.ClearTextureCache();
+
+            //Destory magic sprite in current map
+            MagicManager.Renew();
+
             var offset = 0;
             try
             {

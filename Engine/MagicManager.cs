@@ -722,6 +722,20 @@ namespace Engine
             _effectSprites.Clear();
         }
 
+        /// <summary>
+        /// Clear work list. Destory all magic sprite.
+        /// </summary>
+        public static void Renew()
+        {
+            _workList.Clear();
+            _effectSprites.Clear();
+
+            foreach (var sprite in _magicSprites)
+            {
+                sprite.Destroy();
+            }
+        }
+
         public static int GetEffectAmount(Magic magic, Character belongCharacter)
         {
             //If magic effect not set(equal 0) use belong character attack value as amount.
