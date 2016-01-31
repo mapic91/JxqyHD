@@ -179,7 +179,7 @@ namespace Engine.Gui
                     }
 
                     var timeTxt = (info.RemainColdMilliseconds/1000f).ToString("0.0");
-                    var font = Globals.FontSize12;
+                    var font = Globals.FontSize10;
 
                     spriteBatch.Draw(
                      _coldTimeBackground,
@@ -188,7 +188,7 @@ namespace Engine.Gui
 
                     spriteBatch.DrawString(font,
                     timeTxt,
-                    item.CenterScreenPosition - font.MeasureString("0.0") / 2,
+                    item.CenterScreenPosition - font.MeasureString(timeTxt) / 2,
                     _colodTimeFontColor);
                 }
             }

@@ -29,7 +29,7 @@ namespace Engine.Gui
                 Globals.WindowHeight - 47 - Height);
             _message = new TextGui(this,
                 new Vector2(46, 32),
-                145,
+                148,
                 50,
                 Globals.FontSize12,
                 0,
