@@ -636,6 +636,11 @@ namespace Engine
             }
         }
 
+        public void SetDestroyed()
+        {
+            _isDestroyed = true;
+        }
+
         private void UseExplodeMagic()
         {
             if (BelongMagic.ExplodeMagicFile != null)

@@ -732,7 +732,7 @@ namespace Engine
 
             foreach (var sprite in _magicSprites)
             {
-                sprite.Destroy();
+                sprite.SetDestroyed();
             }
         }
 
