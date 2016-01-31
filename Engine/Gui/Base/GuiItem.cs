@@ -26,7 +26,8 @@ namespace Engine.Gui.Base
         public event Action<object, MouseLeftClickEvent> Click;
         public event Action<object, MouseRightClickEvent> RightClick;
         public event Action<object, MouseEvent> MouseScrollUp;
-        public event Action<object, MouseEvent> MouseScrollDown; 
+        public event Action<object, MouseEvent> MouseScrollDown;
+        public event Action<object, GameTime> OnUpdate;
 
         public virtual bool IsShow
         {
@@ -68,6 +69,11 @@ namespace Engine.Gui.Base
                 }
                 return Position;
             }
+        }
+
+        public Vector2 CenterScreenPosition
+        {
+            get { return ScreenPosition + new Vector2(Width/2f, Height/2f); }
         }
 
         public Vector2 Position { get; set; }
@@ -130,6 +136,11 @@ namespace Engine.Gui.Base
             var screenPosition = new Vector2(mouseState.X, mouseState.Y);
             var position = screenPosition - ScreenPosition;
             var lastPosition = new Vector2(_lastMouseState.X, _lastMouseState.Y) - ScreenPosition;
+
+            if (OnUpdate != null)
+            {
+                OnUpdate(this, gameTime);
+            }
 
             if (RegionInScreen.Contains(mouseState.X, mouseState.Y))
             {

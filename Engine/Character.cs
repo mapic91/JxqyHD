@@ -1533,6 +1533,11 @@ namespace Engine
             }
         }
 
+        protected virtual void MagicUsedHook(Magic magic)
+        {
+            
+        }
+
         public void UseMagic(Magic magicUse, Vector2 magicDestinationTilePosition, Character target = null)
         {
             if (PerformActionOk())
@@ -2511,6 +2516,7 @@ namespace Engine
                         if (CanUseMagic())
                         {
                             MagicManager.UseMagic(this, MagicUse, PositionInWorld, _magicDestination, _magicTarget);
+                            MagicUsedHook(MagicUse);
                         }
                     }
                     break;

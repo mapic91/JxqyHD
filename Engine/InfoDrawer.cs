@@ -7,9 +7,7 @@ namespace Engine
     {
         public static void DrawRectangle(SpriteBatch spriteBatch, Rectangle coords, Color color)
         {
-            var rect = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
-            rect.SetData(new[] { color });
-            spriteBatch.Draw(rect, coords, color);
+            spriteBatch.Draw(TextureGenerator.GetColorTexture(color,1,1), coords, color);
         }
 
         public static Color EnemyLifeColor = new Color(163, 18, 21)*0.9f;

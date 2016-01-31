@@ -9,6 +9,8 @@ namespace Engine.Gui
     public class BottomGui : GuiItem
     {
         private DragDropItem[] _items = new DragDropItem[8];
+        private Texture2D _coldTimeBackground;
+        private Color _colodTimeFontColor = Color.White;
 
         public BottomGui()
         {
@@ -56,10 +58,23 @@ namespace Engine.Gui
                 {
                     var data = (MagicGui.MagicItemData)(((DragDropItem)arg1).Data);
                     var info = MagicListManager.GetItemInfo(data.Index);
-                    Globals.ThePlayer.CurrentMagicInUse = info;
+                    if (info != null)
+                    {
+                        Globals.ThePlayer.CurrentMagicInUse = info;
+                    }
                 };
                 _items[i].MouseStayOver += MagicGui.MouseStayOverHandler;
                 _items[i].MouseLeave += MagicGui.MouseLeaveHandler;
+                _items[i].OnUpdate += (arg1, arg2) =>
+                {
+                    var data = (MagicGui.MagicItemData)(((DragDropItem)arg1).Data);
+                    var info = MagicListManager.GetItemInfo(data.Index);
+                    if (info != null)
+                    {
+                        var gameTime = (GameTime)arg2;
+                        info.RemainColdMilliseconds -= (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                    }
+                };
             }
         }
 
@@ -148,6 +163,34 @@ namespace Engine.Gui
             foreach (var dragDropItem in _items)
             {
                 dragDropItem.Draw(spriteBatch);
+            }
+
+            for (var i = 3; i < 8; i++) //Magic
+            {
+                var item = _items[i];
+                var data = (MagicGui.MagicItemData)item.Data;
+                var info = MagicListManager.GetItemInfo(data.Index);
+                if (info != null && info.RemainColdMilliseconds > 0)
+                {
+                    if (_coldTimeBackground == null)
+                    {
+                        _coldTimeBackground = TextureGenerator.GetColorTexture(new Color(0, 0, 0, 180), item.Width,
+                            item.Height);
+                    }
+
+                    var timeTxt = (info.RemainColdMilliseconds/1000f).ToString("0.0");
+                    var font = Globals.FontSize12;
+
+                    spriteBatch.Draw(
+                     _coldTimeBackground,
+                     item.ScreenPosition,
+                     Color.White);
+
+                    spriteBatch.DrawString(font,
+                    timeTxt,
+                    item.CenterScreenPosition - font.MeasureString("0.0") / 2,
+                    _colodTimeFontColor);
+                }
             }
         }
     }

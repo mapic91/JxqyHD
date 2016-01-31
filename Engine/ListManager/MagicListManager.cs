@@ -266,6 +266,7 @@ namespace Engine.ListManager
 
         public class MagicItemInfo
         {
+            private float _remainColdMilliseconds;
             public Magic TheMagic { set; get; }
 
             public int Level
@@ -274,6 +275,19 @@ namespace Engine.ListManager
             }
 
             public int Exp { set; get; }
+
+            public float RemainColdMilliseconds
+            {
+                get { return _remainColdMilliseconds; }
+                set
+                {
+                    if (value < 0)
+                    {
+                        value = 0;
+                    }
+                    _remainColdMilliseconds = value;
+                }
+            }
 
             public MagicItemInfo(string iniFile, int level, int exp)
             {

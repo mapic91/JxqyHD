@@ -132,15 +132,42 @@ namespace Engine
             return (color.A < 200);
         }
 
+        private class ColorTextureInfo
+        {
+            public Texture2D Texture;
+            public int Width;
+            public int Height;
+
+            public ColorTextureInfo(Texture2D texture, int width, int height)
+            {
+                Texture = texture;
+                Width = width;
+                Height = height;
+            }
+        }
+        static Dictionary<Color,ColorTextureInfo> _colorTextureCache = new Dictionary<Color,ColorTextureInfo>();  
         public static Texture2D GetColorTexture(Color color, int width, int height)
         {
             if (width <= 0 || height <= 0) return null;
+
+            if (_colorTextureCache.ContainsKey(color))
+            {
+                var info = _colorTextureCache[color];
+                if (info.Width == width && info.Height == height)
+                {
+                    return info.Texture;
+                }
+            }
+
             var size = width*height;
             var data = new Color[size];
             for (var i = 0; i < size; i++)
                 data[i] = color;
             var texture = new Texture2D(Globals.TheGame.GraphicsDevice, width, height);
             texture.SetData(data);
+
+            _colorTextureCache[color] = new ColorTextureInfo(texture,width,height);
+
             return texture;
         }
 

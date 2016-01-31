@@ -412,6 +412,14 @@ namespace Engine
             return true;
         }
 
+        protected override void MagicUsedHook(Magic magic)
+        {
+            if (magic.ItemInfo != null)
+            {
+                magic.ItemInfo.RemainColdMilliseconds = magic.ColdMilliSeconds;
+            }
+        }
+
         protected override bool CanRunning()
         {
             if (CanRun())
@@ -1067,6 +1075,10 @@ namespace Engine
                             {
                                 GuiManager.ShowMessage("请在武功栏使用鼠标右键选择武功");
                             }
+                        }
+                        else if (CurrentMagicInUse.RemainColdMilliseconds > 0)
+                        {
+                            GuiManager.ShowMessage("武功尚未冷却");
                         }
                         else
                         {
