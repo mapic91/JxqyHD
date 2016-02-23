@@ -406,7 +406,28 @@ namespace Engine
                     (int)PositionInWorld.Y - Texture.Bottom + offY,
                     texture.Width,
                     texture.Height));
-            spriteBatch.Draw(texture,
+
+            if (color == Color.Black)
+            {
+                spriteBatch.End();
+                JxqyGame.BeginSpriteBatch(spriteBatch, Globals.TheGame.GrayScaleEffect);
+
+
+                spriteBatch.Draw(texture,
+                    des,
+                    null,
+                    Color.White,
+                    0,
+                    new Vector2(0),
+                    SpriteEffects.None,
+                    0);
+
+                spriteBatch.End();
+                JxqyGame.BeginSpriteBatch(spriteBatch);
+            }
+            else
+            {
+                spriteBatch.Draw(texture,
                 des,
                 null,
                 color,
@@ -414,6 +435,7 @@ namespace Engine
                 new Vector2(0),
                 SpriteEffects.None,
                 0);
+            }
         }
     }
 }

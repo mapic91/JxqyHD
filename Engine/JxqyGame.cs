@@ -37,6 +37,8 @@ namespace Engine
         PictureBox _pictureBox;
         Control _gameForm;
 
+        public Effect GrayScaleEffect;
+
         public bool IsInEditMode { private set; get; }
         public bool IsPaused { get; set; }
         public bool IsGamePlayPaused { get; set; }
@@ -145,10 +147,28 @@ namespace Engine
         }
 
         #region Utils
+
+        public static void BeginSpriteBatch(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Begin(SpriteSortMode.Deferred, null);
+        }
+
+        public static void BeginSpriteBatch(SpriteBatch spriteBatch, Effect effect)
+        {
+            spriteBatch.Begin(SpriteSortMode.Deferred,
+                null,
+                null,
+                null,
+                null,
+                effect);
+        }
+
         private void LoadEffect()
         {
             _waterEffect = Content.Load<Effect>(@"effect\refraction");
             _waterfallTexture = Content.Load<Texture2D>(@"effect\waterfall");
+
+            GrayScaleEffect = Content.Load<Effect>(@"effect\grayscale");
         }
 
         private void WaterEffectBegin()

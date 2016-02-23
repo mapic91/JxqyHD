@@ -850,7 +850,20 @@ namespace Engine
         /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
-            DrawLayer(spriteBatch, 0);
+            if (DrawColor == Color.Black)
+            {
+                spriteBatch.End();
+                JxqyGame.BeginSpriteBatch(spriteBatch, Globals.TheGame.GrayScaleEffect);
+
+                DrawLayer(spriteBatch, 0);
+
+                spriteBatch.End();
+                JxqyGame.BeginSpriteBatch(spriteBatch);
+            }
+            else
+            {
+                DrawLayer(spriteBatch, 0);
+            }
 
             var start = GetStartTileInView();
             var end = GetEndTileInView();
@@ -872,7 +885,23 @@ namespace Engine
                 for (var x = (int)start.X; x < (int)end.X; x++)
                 {
                     Texture2D texture = GetTileTexture(x, y, 1);
-                    if (IsLayerDraw(1) && texture != null) DrawTile(spriteBatch, texture, new Vector2(x, y), 1f);
+                    if (IsLayerDraw(1) && texture != null)
+                    {
+                        if (DrawColor == Color.Black)
+                        {
+                            spriteBatch.End();
+                            JxqyGame.BeginSpriteBatch(spriteBatch, Globals.TheGame.GrayScaleEffect);
+
+                            DrawTile(spriteBatch, texture, new Vector2(x, y), 1f);
+
+                            spriteBatch.End();
+                            JxqyGame.BeginSpriteBatch(spriteBatch);
+                        }
+                        else
+                        {
+                            DrawTile(spriteBatch, texture, new Vector2(x, y), 1f);
+                        }
+                    }
                     foreach (var npc in npcs)
                     {
                         if (x == npc.MapX && y == npc.MapY && npc.Kind != 7)
@@ -891,7 +920,20 @@ namespace Engine
                 }
             }
 
-            DrawLayer(spriteBatch, 2);
+            if (DrawColor == Color.Black)
+            {
+                spriteBatch.End();
+                JxqyGame.BeginSpriteBatch(spriteBatch, Globals.TheGame.GrayScaleEffect);
+
+                DrawLayer(spriteBatch, 2);
+
+                spriteBatch.End();
+                JxqyGame.BeginSpriteBatch(spriteBatch);
+            }
+            else
+            {
+                DrawLayer(spriteBatch, 2);
+            }
 
             //Draw fly npc
             foreach (var npc in npcs)

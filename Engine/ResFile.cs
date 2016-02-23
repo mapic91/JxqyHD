@@ -76,10 +76,8 @@ namespace Engine
             {
                 case ResType.Npc:
                     return @"mpc\character\";
-                    break;
                 case ResType.Obj:
                     return @"mpc\object\";
-                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }

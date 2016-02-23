@@ -2608,8 +2608,16 @@ namespace Engine
             if (PoisonSeconds > 0)
                 color = new Color(50, 255, 50);
             if (PetrifiedSeconds > 0)
-                texture = TextureGenerator.ToGrayScale(texture);
+            {
+                spriteBatch.End();
+                JxqyGame.BeginSpriteBatch(spriteBatch,Globals.TheGame.GrayScaleEffect);
+            }
             base.Draw(spriteBatch, texture, color);
+            if (PetrifiedSeconds > 0)
+            {
+                spriteBatch.End();
+                JxqyGame.BeginSpriteBatch(spriteBatch);
+            }
         }
         #endregion Update Draw
 

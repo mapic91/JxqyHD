@@ -1193,6 +1193,7 @@ namespace Engine
             {
                 Globals.OutEdgeSprite.Draw(spriteBatch,
                     Globals.OutEdgeTexture,
+                    Color.White,
                     Globals.OffX,
                     Globals.OffY);
             }
