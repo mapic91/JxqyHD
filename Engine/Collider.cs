@@ -66,8 +66,9 @@ namespace Engine
         }
 
         //Make targetTexture's pixel transparent if collided with colliderTexture's pixel
-        public static void MakePixelCollidedTransparent(Rectangle targetRegion, Texture2D targetTexture, Rectangle colliderRegion, Texture2D colliderTexture, float transparentValue = 0.5f)
+        public static bool MakePixelCollidedTransparent(Rectangle targetRegion, Texture2D targetTexture, Rectangle colliderRegion, Texture2D colliderTexture, float transparentValue = 0.5f)
         {
+            var intersected = false;
             if (targetTexture != null && colliderTexture != null)
             {
                 var mask = 255*transparentValue;
@@ -96,13 +97,17 @@ namespace Engine
                                 var bX = x + targetRegion.Left - colliderRegion.Left;
                                 var bY = y + targetRegion.Top - colliderRegion.Top;
                                 if (dataB[bY*widthB + bX].A != 0)
+                                {
                                     dataA[index] *= transparentValue;
+                                    intersected = true;
+                                }
                             }
                         }
                     }
                     targetTexture.SetData(dataA);
                 }
             }
+            return intersected;
         }
     }
 }

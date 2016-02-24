@@ -38,6 +38,7 @@ namespace Engine
         Control _gameForm;
 
         public Effect GrayScaleEffect;
+        public Effect OutEdgeEffect;
 
         public bool IsInEditMode { private set; get; }
         public bool IsPaused { get; set; }
@@ -169,6 +170,7 @@ namespace Engine
             _waterfallTexture = Content.Load<Texture2D>(@"effect\waterfall");
 
             GrayScaleEffect = Content.Load<Effect>(@"effect\grayscale");
+            OutEdgeEffect = Content.Load<Effect>(@"effect\outedge");
         }
 
         private void WaterEffectBegin()

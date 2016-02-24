@@ -975,7 +975,7 @@ namespace Engine
                         var edgeColor = Globals.NpcEdgeColor;
                         if (one.IsEnemy) edgeColor = Globals.EnemyEdgeColor;
                         else if (one.IsFighterFriend) edgeColor = Globals.FriendEdgeColor;
-                        Globals.OutEdgeTexture = TextureGenerator.GetOuterEdge(texture, edgeColor);
+                        Globals.OutEdgeColor = edgeColor;
                         break;
                     }
                 }
@@ -992,7 +992,7 @@ namespace Engine
                         {
                             Globals.OutEdgeObj = one;
                             Globals.OutEdgeSprite = one;
-                            Globals.OutEdgeTexture = TextureGenerator.GetOuterEdge(texture, Globals.ObjEdgeColor);
+                            Globals.OutEdgeColor = Globals.ObjEdgeColor;
                             Globals.OffX = one.OffX;
                             Globals.OffY = one.OffY;
                             break;
@@ -1191,11 +1191,26 @@ namespace Engine
             if (Globals.OutEdgeSprite != null &&
                 !(Globals.OutEdgeNpc != null && Globals.OutEdgeNpc.IsHide))
             {
-                Globals.OutEdgeSprite.Draw(spriteBatch,
-                    Globals.OutEdgeTexture,
-                    Color.White,
-                    Globals.OffX,
-                    Globals.OffY);
+                var ct = Globals.OutEdgeSprite.GetCurrentTexture();
+                if (ct != null)
+                {
+                    spriteBatch.End();
+                    Globals.TheGame.OutEdgeEffect.Parameters["EdgeColor"].SetValue(new Vector4(
+                        Globals.OutEdgeColor.R/255.0f, 
+                        Globals.OutEdgeColor.G/255.0f,
+                        Globals.OutEdgeColor.B/255.0f,
+                        Globals.OutEdgeColor.A/255.0f));
+                    Globals.TheGame.OutEdgeEffect.Parameters["radiusx"].SetValue(1.0f / ct.Width);
+                    Globals.TheGame.OutEdgeEffect.Parameters["radiusy"].SetValue(1.0f/ ct.Height);
+                    JxqyGame.BeginSpriteBatch(spriteBatch, Globals.TheGame.OutEdgeEffect);
+                    Globals.OutEdgeSprite.Draw(spriteBatch,
+                        ct,
+                        Color.White,
+                        Globals.OffX,
+                        Globals.OffY);
+                    spriteBatch.End();
+                    JxqyGame.BeginSpriteBatch(spriteBatch);
+                }
             }
             if (Globals.OutEdgeNpc != null &&
                 !Globals.OutEdgeNpc.IsHide)

@@ -41,6 +41,7 @@ namespace Engine
         public static Obj OutEdgeObj;
         public static Sprite OutEdgeSprite;
         public static Texture2D OutEdgeTexture;
+        public static Color OutEdgeColor;
         public static int OffX;
         public static int OffY;
 
