@@ -37,6 +37,9 @@ namespace Engine
         PictureBox _pictureBox;
         Control _gameForm;
 
+        //Magic kind 23: stop world time
+        public MagicSprite TimeStoperMagicSprite;
+
         public Effect GrayScaleEffect;
         public Effect OutEdgeEffect;
 
@@ -190,18 +193,18 @@ namespace Engine
             // Set an effect parameter to make the
             // displacement texture scroll in a giant circle.
             _waterEffect.Parameters["DisplacementScroll"].SetValue(
-                                        MoveInCircle(gameTime, 0.2f));
-            // Set the displacement texture.
-            _graphics.GraphicsDevice.Textures[1] = _waterfallTexture;
+                                            MoveInCircle(gameTime, 0.2f));
+                // Set the displacement texture.
+                _graphics.GraphicsDevice.Textures[1] = _waterfallTexture;
 
-            _spriteBatch.Begin(SpriteSortMode.Deferred,
-                null,
-                null,
-                null,
-                null,
-                _waterEffect);
-            _spriteBatch.Draw(_renderTarget, Vector2.Zero, Color.White);
-            _spriteBatch.End();
+                _spriteBatch.Begin(SpriteSortMode.Deferred,
+                    null,
+                    null,
+                    null,
+                    null,
+                    _waterEffect);
+                _spriteBatch.Draw(_renderTarget, Vector2.Zero, Color.White);
+                _spriteBatch.End();       
             _spriteBatch.Begin(SpriteSortMode.Deferred, null);
         }
 
@@ -234,14 +237,27 @@ namespace Engine
                 }
                 return;//Just update super magic
             }
+            else if (TimeStoperMagicSprite != null)
+            {
+                TimeStoperMagicSprite.BelongCharacter.Update(gameTime);
+                TimeStoperMagicSprite.Update(gameTime);
+                Globals.TheMap.Update(gameTime);
+                MagicManager.UpdateMagicSpritesInView();
+                NpcManager.UpdateNpcsInView();
+                ObjManager.UpdateObjsInView();
+                return;
+            }
             //Player
             Globals.ThePlayer.Update(gameTime);
             //Magic list
             MagicManager.Update(gameTime);
+            MagicManager.UpdateMagicSpritesInView();
             //Npc list
             NpcManager.Update(gameTime);
+            NpcManager.UpdateNpcsInView();
             //Obj list
             ObjManager.Update(gameTime);
+            ObjManager.UpdateObjsInView();
             //Map
             Globals.TheMap.Update(gameTime);
             //Weather

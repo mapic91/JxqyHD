@@ -616,7 +616,10 @@ namespace Engine
                 }
                 node = next;
             }
+        }
 
+        public static void UpdateNpcsInView()
+        {
             //Update the list of npcs in view.
             _npcInView = GetNpcsInView();
         }

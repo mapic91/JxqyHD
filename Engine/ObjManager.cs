@@ -250,7 +250,10 @@ namespace Engine
                 }
                 node = next;
             }
+        }
 
+        public static void UpdateObjsInView()
+        {
             _objInView = GetObjsInView();
         }
 

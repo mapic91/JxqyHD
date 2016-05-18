@@ -137,6 +137,7 @@ namespace Engine
                         case 13:
                         case 20:
                         case 21:
+                        case 23:
                             //Can or must skip those
                             break;
                         default:
@@ -588,40 +589,52 @@ namespace Engine
 
         private static void AddFollowCharacterMagicSprite(Character user, Magic magic, Vector2 origin, bool destroyOnEnd, Character target)
         {
-            if (target != null && user.Kind == (int) Character.CharacterKind.Player && target.IsFighterFriend)
+            if (magic.MoveKind == 13)
             {
-                user = target;
+                if (target != null && user.Kind == (int)Character.CharacterKind.Player && target.IsFighterFriend)
+                {
+                    user = target;
+                }
+                var sprite = GetFixedPositionMagicSprite(user, magic, origin, destroyOnEnd);
+                switch (magic.SpecialKind)
+                {
+                    case 1:
+                        user.Life += (magic.Effect == 0 ? user.Attack : magic.Effect);
+                        AddMagicSprite(sprite);
+                        break;
+                    case 2:
+                        user.Thew += (magic.Effect == 0 ? user.Attack : magic.Effect);
+                        AddMagicSprite(sprite);
+                        break;
+                    default:
+                        {
+                            MagicSprite spriteInEffect = null;
+                            foreach (var item in user.MagicSpritesInEffect)
+                            {
+                                if (item.BelongMagic.Name == magic.Name)
+                                    spriteInEffect = item;
+                            }
+                            if (spriteInEffect != null && spriteInEffect.IsLive)
+                            {
+                                spriteInEffect.ResetPlay();
+                            }
+                            else
+                            {
+                                user.MagicSpritesInEffect.AddLast(sprite);
+                                AddMagicSprite(sprite);
+                            }
+                        }
+                        break;
+                }
             }
-            var sprite = GetFixedPositionMagicSprite(user, magic, origin, destroyOnEnd);
-            switch (magic.SpecialKind)
+            else if (magic.MoveKind == 23)
             {
-                case 1:
-                    user.Life += (magic.Effect == 0 ? user.Attack : magic.Effect);
+                if (Globals.TheGame.TimeStoperMagicSprite == null)
+                {
+                    var sprite = GetFixedPositionMagicSprite(user, magic, origin, destroyOnEnd);
+                    Globals.TheGame.TimeStoperMagicSprite = sprite;
                     AddMagicSprite(sprite);
-                    break;
-                case 2:
-                    user.Thew += (magic.Effect == 0 ? user.Attack : magic.Effect);
-                    AddMagicSprite(sprite);
-                    break;
-                default:
-                    {
-                        MagicSprite spriteInEffect = null;
-                        foreach (var item in user.MagicSpritesInEffect)
-                        {
-                            if (item.BelongMagic.Name == magic.Name)
-                                spriteInEffect = item;
-                        }
-                        if (spriteInEffect != null && spriteInEffect.IsLive)
-                        {
-                            spriteInEffect.ResetPlay();
-                        }
-                        else
-                        {
-                            user.MagicSpritesInEffect.AddLast(sprite);
-                            AddMagicSprite(sprite);
-                        }
-                    }
-                    break;
+                }
             }
         }
 
@@ -720,6 +733,7 @@ namespace Engine
             _magicSprites.Clear();
             _workList.Clear();
             _effectSprites.Clear();
+            Globals.TheGame.TimeStoperMagicSprite = null;
         }
 
         /// <summary>
@@ -734,6 +748,7 @@ namespace Engine
             {
                 sprite.SetDestroyed();
             }
+            Globals.TheGame.TimeStoperMagicSprite = null;
         }
 
         public static int GetEffectAmount(Magic magic, Character belongCharacter)
@@ -850,6 +865,7 @@ namespace Engine
                         break;
                     }
                 case 13:
+                case 23:
                     AddFollowCharacterMagicSprite(user, magic, origin, true, target);
                     break;
                 case 15:
@@ -999,7 +1015,10 @@ namespace Engine
                 }
                 node = next;
             }
+        }
 
+        public static void UpdateMagicSpritesInView()
+        {
             //Update list of magic sprites in view
             _magicSpritesInView = GetMagicSpritesInView();
         }

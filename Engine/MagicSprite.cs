@@ -577,6 +577,14 @@ namespace Engine
                 }
                 if (_superModeDestroySprites.Count == 0) _isDestroyed = true;
             }
+            else if (BelongMagic.MoveKind == 23)
+            {
+                //Time stop
+                if (Globals.TheGame.TimeStoperMagicSprite == this)
+                {
+                    Globals.TheGame.TimeStoperMagicSprite = null;
+                }
+            }
             else
             {
                 switch (BelongMagic.MoveKind)
@@ -832,7 +840,8 @@ namespace Engine
                 else MoveToNoNormalizeDirection(RealMoveDirection, (float)gameTime.ElapsedGameTime.TotalSeconds);
             }
 
-            if (BelongMagic.MoveKind == 13)
+            if (BelongMagic.MoveKind == 13 ||
+                BelongMagic.MoveKind == 23)
             {
                 PositionInWorld = BelongCharacter.PositionInWorld;
             }
