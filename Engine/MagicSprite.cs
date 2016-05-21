@@ -971,19 +971,22 @@ namespace Engine
             }
             else
             {
+                var checkHit = true;
                 switch (BelongMagic.MoveKind)
                 {
                     case 13:
                     case 20: //transport
                     case 21: //Controling others
                     case 22:
+                    case 23: //Time stoper
+                        checkHit = false;
                         break;
                     default:
                         CheckCharacterHited();
                         break;
                 }
 
-                if (CheckDestroyForObstacleInMap())
+                if (checkHit && CheckDestroyForObstacleInMap())
                 {
                     Destroy();
                 }
