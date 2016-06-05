@@ -1221,7 +1221,7 @@ namespace Engine
         {
             if (good == null) return;
             var cost = good.Cost;
-            if (Money > cost)
+            if (Money >= cost)
             {
                 Money -= cost;
                 GoodsListManager.AddGoodToList(good.FileName);
