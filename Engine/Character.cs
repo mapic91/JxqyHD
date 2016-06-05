@@ -1216,7 +1216,7 @@ namespace Engine
         /// </summary>
         protected void EndSpecialAction()
         {
-            SetState((CharacterState)State, true);
+            SetState((CharacterState)State, true, true);
         }
 
         /// <summary>
