@@ -363,7 +363,10 @@ namespace Engine
 
         public void StartInteract()
         {
-            ScriptManager.RunScript(Utils.GetScriptParser(ScriptFile, this));
+            if (!IsRemoved)
+            {
+                ScriptManager.RunScript(Utils.GetScriptParser(ScriptFile, this));
+            }
         }
 
         public override void Update(GameTime gameTime)
