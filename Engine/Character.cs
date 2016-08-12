@@ -791,10 +791,12 @@ namespace Engine
             //Sotre value in case of cleared in below code
             var interactTarget = _interactiveTarget;
 
-            if (TilePosition == tileFrom)
+            if (TilePosition == tileFrom && tileFrom != tileTo)
             {
                 if (HasObstacle(tileTo)) //Obstacle in the way
                 {
+                    MovedDistance = 0;
+
                     //PositionInWorld = from;
                     var path = Engine.PathFinder.FindPath(this, TilePosition, DestinationMoveTilePosition, PathType);
                     if (tileTo == DestinationMoveTilePosition || //Just one step, standing
@@ -808,6 +810,7 @@ namespace Engine
                     if (PositionInWorld != path.First.Value)
                         path.AddFirst(PositionInWorld);//Move back
                     Path = path;
+                    return;
                 }
             }
             MoveTo(direction, elapsedSeconds * speedFold);
