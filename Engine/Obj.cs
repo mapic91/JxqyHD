@@ -22,6 +22,9 @@ namespace Engine
         private StateMapList _objFile;
         private string _objFileName;
         private string _scriptFile;
+        private string _timerScriptFile;
+        private int _timerScriptInterval = Globals.DefaultNpcObjTimeScriptInterval;
+        private float _timerScriptIntervlElapsed;
         private SoundEffect _wavFileSoundEffect;
         private SoundEffectInstance _soundInstance;
         private string _wavFileName;
@@ -98,6 +101,18 @@ namespace Engine
         {
             get { return _scriptFile; }
             set { _scriptFile = value; }
+        }
+
+        public string TimerScriptFile
+        {
+            get { return _timerScriptFile; }
+            set { _timerScriptFile = value; }
+        }
+
+        public int TimerScriptInterval
+        {
+            get { return _timerScriptInterval; }
+            set { _timerScriptInterval = value; }
         }
 
         public string WavFile
@@ -299,6 +314,7 @@ namespace Engine
                     case "ObjName":
                     case "ScriptFile":
                     case "WavFile":
+                    case "TimerScriptFile":
                         info.SetValue(this, nameValue[1], null);
                         break;
                     case "ObjFile":
@@ -355,9 +371,17 @@ namespace Engine
             {
                 AddKey(keyDataCollection, "ScriptFile", _scriptFile);
             }
+            if (_timerScriptFile != null)
+            {
+                AddKey(keyDataCollection, "TimerScriptFile", _timerScriptFile);
+            }
             if (_wavFileSoundEffect != null)
             {
                 AddKey(keyDataCollection, "WavFile", _wavFileName);
+            }
+            if (_timerScriptInterval != Globals.DefaultNpcObjTimeScriptInterval)
+            {
+                AddKey(keyDataCollection, "TimerScriptInterval", _timerScriptInterval);
             }
         }
 
@@ -369,8 +393,23 @@ namespace Engine
             }
         }
 
+        private ScriptParser _timeScriptParserCache;
         public override void Update(GameTime gameTime)
         {
+            if (!string.IsNullOrEmpty(_timerScriptFile))
+            {
+                _timerScriptIntervlElapsed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                if (_timerScriptIntervlElapsed >= _timerScriptInterval)
+                {
+                    _timerScriptIntervlElapsed -= _timerScriptInterval;
+                    if (_timeScriptParserCache == null)
+                    {
+                        _timeScriptParserCache = Utils.GetScriptParser(_timerScriptFile, this);
+                    }
+                    ScriptManager.RunScript(_timeScriptParserCache);
+                }
+            }
+
             if ((Texture.FrameCounts > 1 && IsAutoPlay) ||
                 IsInPlaying)
                 base.Update(gameTime);

@@ -24,10 +24,14 @@ namespace Engine
 
         public const float DistanceOffset = 2f;
 
+        // Out edge color
         public static Color NpcEdgeColor = Color.Yellow*0.6f;
         public static Color FriendEdgeColor = Color.Green*0.6f;
         public static Color EnemyEdgeColor = Color.Red*0.6f;
         public static Color ObjEdgeColor = Color.Yellow*0.6f;
+
+        // NPC OBJ
+        public static int DefaultNpcObjTimeScriptInterval = 1000;
 
         public static Vector2 ListenerPosition
         {

@@ -7,7 +7,7 @@ namespace Engine.Script
 {
     public static class ScriptManager
     {
-        private static LinkedList<ScriptParser> _list = new LinkedList<ScriptParser>();
+        private static LinkedList<ScriptRunner> _list = new LinkedList<ScriptRunner>();
         private static string _lastFilePath = "";
 
         public static bool IsInRunningScript
@@ -15,14 +15,16 @@ namespace Engine.Script
             get { return _list.Count > 0; }
         }
 
-        public static ScriptParser RunScript(ScriptParser scriptParser)
+        public static ScriptRunner RunScript(ScriptParser scriptParser)
         {
+            ScriptRunner runner = null;
             if (scriptParser != null)
             {
-                scriptParser.Begin();
-                _list.AddLast(scriptParser);
+                runner = new ScriptRunner(scriptParser);
+                runner.Begin();
+                _list.AddLast(runner);
             }
-            return scriptParser;
+            return runner;
         }
 
         public static void Clear()
@@ -37,18 +39,18 @@ namespace Engine.Script
 
             for (var node = _list.First; node != null; )
             {
-                var script = node.Value;
-                if (script.FilePath != _lastFilePath)
+                var runner = node.Value;
+                if (runner.TargetScript.FilePath != _lastFilePath)
                 {
                     Globals.TheMessageSender.SendFunctionCallMessage(Environment.NewLine + 
                         "【" +
-                        script.FilePath + "】" +
-                        (script.IsOk ? "" : "  读取失败"));
-                    Globals.TheMessageSender.SendScriptFileChangeMessage(script.FilePath);
+                        runner.TargetScript.FilePath + "】" +
+                        (runner.TargetScript.IsOk ? "" : "  读取失败"));
+                    Globals.TheMessageSender.SendScriptFileChangeMessage(runner.TargetScript.FilePath);
                 }
-                _lastFilePath = script.FilePath;
+                _lastFilePath = runner.TargetScript.FilePath;
 
-                if (!script.Continue())
+                if (!runner.Continue())
                 {
                     //Remove current
                     _list.Remove(node);

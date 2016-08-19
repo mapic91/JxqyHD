@@ -83,10 +83,10 @@ Level
 文件在 ini\magic
 
 对话脚本--ScriptFile 
-文件在 script\map\[地图文件名]
+文件在 script\map\[地图文件名] 或者 script\common
 
 死亡脚本--DeathScript
-文件在 script\map\[地图文件名]
+文件在 script\map\[地图文件名] 或者 script\common
 
 额外经验值--ExpBonus
 玩家获得经验值 = 正常经验值 + ExpBonus
@@ -128,7 +128,7 @@ MapY
 文件在 ini\objres
 
 脚本文件----ScriptFile
-文件在 script\common 或者 script\map\[地图文件名]
+文件在 script\map\[地图文件名] 或者 script\common
 
 声音文件----WavFile
 文件在 sound\
@@ -138,8 +138,30 @@ MapY
 
 
 
+[[[[[[[[[[[[[[[[[[[[          ]]]]]]]]]]]]]]]]]]]]
+[[[[[[[[[[[[[[[[[[[[高清版扩展]]]]]]]]]]]]]]]]]]]]
+]]]]]]]]]]]]]]]]]]]]          ]]]]]]]]]]]]]]]]]]]]
+
+注：
+[NPC OBJ]文件适用 - 表示NPC OBJ 文件都可以设置
+[NPC]文件适用 -     表示 NPC 文件可以设置
+[OBJ]文件适用 -     表示 OBJ 文件可以设置
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+重复调用脚本：
+
+[NPC OBJ]文件适用
+
+TimerScriptFile - 要重复调用的脚本，脚本文件在 script\map\[地图文件名] 或者 script\common
+TimerScriptInterval - 隔多少毫秒调用一次脚本，默认1000
 
 
+比如：
+TimerScriptFile=RepeateScript.txt
+TimerScriptInterval=2000
+
+将每隔2秒运行一次脚本RepeateScript.txt
 
 
 

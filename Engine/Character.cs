@@ -49,8 +49,11 @@ namespace Engine
         private Magic _flyIni2;
         private string _scriptFile;
         private string _deathScript;
-        private ScriptParser _currentRunInteractScript;
-        private ScriptParser _currentRunDeathScript;
+        private string _timerScriptFile;
+        private int _timerScriptInterval = Globals.DefaultNpcObjTimeScriptInterval;
+        private float _timerScriptIntervlElapsed;
+        private ScriptRunner _currentRunInteractScript;
+        private ScriptRunner _currentRunDeathScript;
         private int _expBonus;
         private string _fixedPos;
         private int _idle;
@@ -513,6 +516,18 @@ namespace Engine
         {
             get { return _scriptFile; }
             set { _scriptFile = value; }
+        }
+
+        public string TimerScriptFile
+        {
+            get { return _timerScriptFile; }
+            set { _timerScriptFile = value; }
+        }
+
+        public int TimerScriptInterval
+        {
+            get { return _timerScriptInterval; }
+            set { _timerScriptInterval = value; }
         }
 
         public bool HasInteractScript
@@ -1067,6 +1082,7 @@ namespace Engine
                     case "Name":
                     case "ScriptFile":
                     case "DeathScript":
+                    case "TimerScriptFile":
                         info.SetValue(this, keyData.Value, null);
                         break;
                     case "NpcIni":
@@ -1335,6 +1351,14 @@ namespace Engine
             if (_deathScript != null)
             {
                 AddKey(keyDataCollection, "DeathScript", _deathScript);
+            }
+            if (_timerScriptFile != null)
+            {
+                AddKey(keyDataCollection, "TimerScriptFile", _timerScriptFile);
+            }
+            if (_timerScriptInterval != Globals.DefaultNpcObjTimeScriptInterval)
+            {
+                AddKey(keyDataCollection, "TimerScriptInterval", _timerScriptInterval);
             }
         }
 
@@ -2363,8 +2387,27 @@ namespace Engine
         #endregion Character state set and get method
 
         #region Update Draw
+
+        private ScriptParser _timeScriptParserCache;
         public override void Update(GameTime gameTime)
         {
+            if (!IsDeathInvoked && !IsDeath)
+            {
+                if (!string.IsNullOrEmpty(_timerScriptFile))
+                {
+                    _timerScriptIntervlElapsed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                    if (_timerScriptIntervlElapsed >= _timerScriptInterval)
+                    {
+                        _timerScriptIntervlElapsed -= _timerScriptInterval;
+                        if (_timeScriptParserCache == null)
+                        {
+                            _timeScriptParserCache = Utils.GetScriptParser(_timerScriptFile, this);
+                        }
+                        ScriptManager.RunScript(_timeScriptParserCache);
+                    }
+                }
+            }
+
             if (SppedUpByMagicSprite != null)
             {
                 if (SppedUpByMagicSprite.IsInDestroy || SppedUpByMagicSprite.IsDestroyed)

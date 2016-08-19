@@ -49,7 +49,7 @@ namespace Engine
         private readonly Dictionary<string, Dictionary<int, string>> _traps = new Dictionary<string, Dictionary<int, string>>();
         private readonly List<int> _ingnoredTrapsIndex = new List<int>();
         private bool _isInRunMapTrap;
-        private ScriptParser _currentRunTrapScript;
+        private ScriptRunner _currentRunTrapScript;
 
         private int _viewBeginX;
         private int _viewBeginY;
@@ -693,11 +693,10 @@ namespace Engine
                 Globals.ThePlayer.StandingImmediately();
 
                 _isInRunMapTrap = true;
-                _currentRunTrapScript = script;
                 // disable input prevet from unexpected result
-                Globals.IsInputDisabled = true; 
+                Globals.IsInputDisabled = true;
 
-                ScriptManager.RunScript(script);
+                _currentRunTrapScript = ScriptManager.RunScript(script);
                 
 
                 //Script is run, add to ignore list
