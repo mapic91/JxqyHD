@@ -402,7 +402,9 @@ namespace Engine
                 if (_timerScriptIntervlElapsed >= _timerScriptInterval)
                 {
                     _timerScriptIntervlElapsed -= _timerScriptInterval;
-                    if (_timeScriptParserCache == null)
+                    if (_timeScriptParserCache == null ||
+                            Globals.TheGame.IsInEditMode // Turn off cache script in edit mode
+                       )
                     {
                         _timeScriptParserCache = Utils.GetScriptParser(_timerScriptFile, this);
                     }
