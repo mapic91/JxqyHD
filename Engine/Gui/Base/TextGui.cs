@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -20,6 +21,7 @@ namespace Engine.Gui.Base
         {
             set
             {
+                CurrentColor = DefaultColor;
                 TextStream = new StringBuilder(value);
                 _startIndex = _endIndex = 0;
                 Caculate();
@@ -28,6 +30,7 @@ namespace Engine.Gui.Base
         }
         private StringBuilder TextStream { set; get; }
         public Color DefaultColor { get; set; }
+        protected Color CurrentColor { get; set; }
 
         public TextGui(GuiItem parent,
             Vector2 position,
@@ -106,6 +109,7 @@ namespace Engine.Gui.Base
             return Caculate();
         }
 
+        private static readonly Regex RegColor = new Regex(@"^color=([0-9]*),([0-9]*),([0-9]*)");
         public bool Caculate()
         {
             _drawInfo.Clear();
@@ -130,13 +134,17 @@ namespace Engine.Gui.Base
                             text.Append(TextStream[_endIndex]);
                         }
 
-                        switch (text.ToString())
+                        var textStr = text.ToString();
+                        switch (textStr)
                         {
                             case "color=Red":
-                                DefaultColor = Color.Red * 0.8f;
+                                CurrentColor = Color.Red * 0.8f;
                                 break;
                             case "color=Black":
-                                DefaultColor = Color.Black * 0.8f;
+                                CurrentColor = Color.Black * 0.8f;
+                                break;
+                            case "color=Default":
+                                CurrentColor = DefaultColor;
                                 break;
                             case "enter":
                                 AddLinespace(ref y);
@@ -145,6 +153,20 @@ namespace Engine.Gui.Base
                                 {
                                     _endIndex++;
                                     return true;
+                                }
+                                break;
+                            default:
+                                if (RegColor.IsMatch(textStr))
+                                {
+                                    var matchs = RegColor.Match(textStr);
+                                    var r = matchs.Groups[1].Value;
+                                    var g = matchs.Groups[2].Value;
+                                    var b = matchs.Groups[3].Value;
+                                    int rv = 0, gv = 0, bv = 0;
+                                    int.TryParse(r, out rv);
+                                    int.TryParse(g, out gv);
+                                    int.TryParse(b, out bv);
+                                    CurrentColor = new Color(rv,gv,bv) * 0.8f;
                                 }
                                 break;
                         }
@@ -186,7 +208,7 @@ namespace Engine.Gui.Base
                         _drawInfo.AddLast(new Info(
                             drawText,
                             ScreenPosition + new Vector2(x, y),
-                            DefaultColor));
+                            CurrentColor));
                         AddWdith(ref x, stringWidth);
                     }
                     _endIndex++;
@@ -209,6 +231,7 @@ namespace Engine.Gui.Base
         public void SetDrawColor(Color color)
         {
             DefaultColor = color;
+            CurrentColor = color;
             foreach (var info in _drawInfo)
             {
                 info.DrawColor = color;

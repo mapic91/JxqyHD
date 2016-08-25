@@ -44,10 +44,10 @@ namespace Engine
         //return string[0] is name, string[1] is value
         //nameValue patten is "name=value"
         //If failed return empty string array
-        static public string[] GetNameValue(string nameValue)
+        static public string[]  GetNameValue(string nameValue)
         {
             var result = new String[2];
-            var groups = Regex.Match(nameValue, "(.*)=(.*)").Groups;
+            var groups = Regex.Match(nameValue, "(.*?)=(.*)").Groups;
             if (groups[0].Success)
             {
                 result[0] = groups[1].Value;

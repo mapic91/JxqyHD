@@ -105,7 +105,6 @@ namespace Engine.Gui
         public void ShowText(string text, int portraitIndex = -1)
         {
             IsShow = true;
-            _text.DefaultColor = _defaultTextColor;//Reset color.
             _text.Text = text;
             if (portraitIndex != -1 && _portraitList.ContainsKey(portraitIndex))
             {
