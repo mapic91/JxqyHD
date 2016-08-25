@@ -550,18 +550,18 @@ namespace Engine
             FlyIni = Utils.GetMagic(fileName, false);
         }
 
-        public override void WalkTo(Vector2 destinationTilePosition)
+        public override void WalkTo(Vector2 destinationTilePosition, PathFinder.PathType pathType = Engine.PathFinder.PathType.End)
         {
-            base.WalkTo(destinationTilePosition);
+            base.WalkTo(destinationTilePosition, pathType);
             if (Path == null)
             {
                 NpcManager.PartnersMoveTo(destinationTilePosition);
             }
         }
 
-        public override void RunTo(Vector2 destinationTilePosition)
+        public override void RunTo(Vector2 destinationTilePosition, PathFinder.PathType pathType = Engine.PathFinder.PathType.End)
         {
-            base.RunTo(destinationTilePosition);
+            base.RunTo(destinationTilePosition, pathType);
             if (Path == null)
             {
                 NpcManager.PartnersMoveTo(destinationTilePosition);

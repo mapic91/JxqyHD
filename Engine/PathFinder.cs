@@ -15,7 +15,8 @@ namespace Engine
             SimpleMaxNpcTry,
             PerfectMaxNpcTry,
             PerfectMaxPlayerTry,
-            PathStraightLine
+            PathStraightLine,
+            End
         }
 
         private static LinkedList<Vector2> GetPath(Dictionary<Vector2, Vector2> cameFrom, Vector2 startTile,

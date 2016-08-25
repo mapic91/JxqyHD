@@ -44,7 +44,7 @@ namespace Engine
                 }
                 else
                 {
-                    return Engine.PathFinder.PathType.SimpleMaxNpcTry;
+                    return Engine.PathFinder.PathType.PerfectMaxNpcTry;
                 }
             }
         }

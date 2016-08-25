@@ -1471,7 +1471,8 @@ namespace Engine
         /// Walk to destination tile position.
         /// </summary>
         /// <param name="destinationTilePosition">Destination tile positon</param>
-        public virtual void WalkTo(Vector2 destinationTilePosition)
+        /// <param name="pathType">PathType to use, if type is End, use character defult.</param>
+        public virtual void WalkTo(Vector2 destinationTilePosition, PathFinder.PathType pathType = Engine.PathFinder.PathType.End)
         {
             if (PerformActionOk() &&
                 destinationTilePosition != TilePosition)
@@ -1485,7 +1486,7 @@ namespace Engine
                 else
                 {
                     StateInitialize();
-                    Path = Engine.PathFinder.FindPath(this, TilePosition, destinationTilePosition, PathType);
+                    Path = Engine.PathFinder.FindPath(this, TilePosition, destinationTilePosition, pathType == Engine.PathFinder.PathType.End ? PathType : pathType);
                     if (Path == null) StandingImmediately();
                     else
                     {
@@ -1498,7 +1499,7 @@ namespace Engine
 
         }
 
-        public virtual void RunTo(Vector2 destinationTilePosition)
+        public virtual void RunTo(Vector2 destinationTilePosition, PathFinder.PathType pathType = Engine.PathFinder.PathType.End)
         {
             if (PerformActionOk() &&
                 destinationTilePosition != TilePosition)
@@ -1512,7 +1513,7 @@ namespace Engine
                 else
                 {
                     StateInitialize();
-                    Path = Engine.PathFinder.FindPath(this, TilePosition, destinationTilePosition, PathType);
+                    Path = Engine.PathFinder.FindPath(this, TilePosition, destinationTilePosition, pathType == Engine.PathFinder.PathType.End ? PathType : pathType);
                     if (Path == null) StandingImmediately();
                     else
                     {
