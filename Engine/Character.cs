@@ -813,18 +813,33 @@ namespace Engine
                     MovedDistance = 0;
 
                     //PositionInWorld = from;
-                    var path = Engine.PathFinder.FindPath(this, TilePosition, DestinationMoveTilePosition, PathType);
-                    if (tileTo == DestinationMoveTilePosition || //Just one step, standing
-                        path == null //Can't find path
-                        )
+                    if (tileTo == DestinationMoveTilePosition) //Just one step, standing
                     {
                         Path = null;
                         StandingImmediately();
                         return;
                     }
-                    if (PositionInWorld != path.First.Value)
-                        path.AddFirst(PositionInWorld);//Move back
-                    Path = path;
+                    else if (PositionInWorld == Map.ToPixelPosition(TilePosition)) //At tile center, find new path
+                    {
+                        var path = Engine.PathFinder.FindPath(this, TilePosition, DestinationMoveTilePosition, PathType);
+                        if (path == null)
+                        {
+                            Path = null;
+                            StandingImmediately();
+                        }
+                        else
+                        {
+                            Path = path;
+                        }
+                    }
+                    else
+                    {
+                        // Move bact to tile center
+                        var path = new LinkedList<Vector2>();
+                        path.AddLast(PositionInWorld);
+                        path.AddLast(Map.ToPixelPosition(TilePosition));
+                        Path = path;
+                    }
                     return;
                 }
             }
@@ -842,7 +857,6 @@ namespace Engine
                     var correctDistance = distance / 2 + 1f; // half plus one
                     PositionInWorld = from + direction * correctDistance;
                     MovedDistance = correctDistance;
-                    var pos = TilePosition;
                 }
 
             }
