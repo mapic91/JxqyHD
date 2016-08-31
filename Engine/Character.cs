@@ -663,6 +663,8 @@ namespace Engine
             get { return Relation == (int)RelationType.Friend; }
         }
 
+        public bool IsRelationNeutral { get { return Relation == 2; } }
+
         public bool IsFighterFriend
         {
             get { return ((Kind == 1 || Kind == 3) && Relation == 0); }

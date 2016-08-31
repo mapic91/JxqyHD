@@ -42,6 +42,11 @@ namespace Engine
                 {
                     return Engine.PathFinder.PathType.PathOneStep;
                 }
+                else if (Kind == 0 || Kind == 5)
+                {
+                    // Normal npc
+                    return Engine.PathFinder.PathType.PerfectMaxPlayerTry;
+                }
                 else
                 {
                     return Engine.PathFinder.PathType.PerfectMaxNpcTry;

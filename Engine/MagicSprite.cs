@@ -454,7 +454,7 @@ namespace Engine
                 _stickedCharacter = null;
             }
 
-            if (BelongCharacter.IsPlayer || BelongCharacter.IsFriend)
+            if (BelongCharacter.IsPlayer || BelongCharacter.IsFighterFriend)
             {
                 var target = NpcManager.GetEnemy(TilePosition);
                 var isInDeath = target != null && target.IsDeathInvoked;
@@ -481,7 +481,7 @@ namespace Engine
                     }
                 }
             }
-            else
+            else if (BelongCharacter.IsEnemy)
             {
                 CharacterHited(NpcManager.GetPlayerOrFighterFriend(TilePosition));
             }
