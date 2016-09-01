@@ -197,7 +197,7 @@ namespace Engine
                 speedRatio = GetSpeedRatio(direction.Y);
                 AddWorkItem(new WorkItem(delay,
                     GetMoveMagicSpriteOnDirection(user, magic, origin, direction, destroyOnEnd, speedRatio)));
-                direction = list[32 - i];
+                direction = list[31 - i];
                 speedRatio = GetSpeedRatio(direction.Y);
                 AddWorkItem(new WorkItem(delay,
                     GetMoveMagicSpriteOnDirection(user, magic, origin, direction, destroyOnEnd, speedRatio)));
