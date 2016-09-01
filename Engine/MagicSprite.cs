@@ -342,6 +342,8 @@ namespace Engine
 
         private void CharacterHited(Character character, int damage)
         {
+            var isInDeath = character.IsDeathInvoked;
+
             //Hit ratio
             var targetEvade = character.Evade;
             var belongCharacterEvade = BelongCharacter.Evade;
@@ -439,6 +441,29 @@ namespace Engine
                     player.AddMagicExp(info, amount);
                 }
             }
+
+            //Exp
+            if (BelongCharacter.IsPlayer || BelongCharacter.IsFighterFriend)
+            {
+                character.NotifyEnemyAndAllNeighbor(BelongCharacter);
+                var isSummonedByPlayerorPartner = (BelongCharacter.SummonedByMagicSprite != null &&
+                                                   (BelongCharacter.SummonedByMagicSprite.BelongCharacter.IsPlayer ||
+                                                    BelongCharacter.SummonedByMagicSprite.BelongCharacter.IsPartner));
+                var isControledByPlayer = (BelongCharacter.ControledMagicSprite != null &&
+                                           BelongCharacter.ControledMagicSprite.BelongCharacter.IsPlayer);
+                //Hited character death
+                if (!isInDeath && //Alive before hited
+                    character.IsInDeathing && //Death after hited
+                    (BelongCharacter.IsPlayer ||
+                    BelongCharacter.IsPartner ||
+                    isSummonedByPlayerorPartner ||
+                    isControledByPlayer))
+                {
+                    var player = Globals.ThePlayer;
+                    var exp = Utils.GetCharacterDeathExp(Globals.ThePlayer, character);
+                    player.AddExp(exp, true);
+                }
+            }
         }
 
         private void CheckCharacterHited()
@@ -457,29 +482,7 @@ namespace Engine
             if (BelongCharacter.IsPlayer || BelongCharacter.IsFighterFriend)
             {
                 var target = NpcManager.GetEnemy(TilePosition);
-                var isInDeath = target != null && target.IsDeathInvoked;
                 CharacterHited(target);
-                if (target != null)
-                {
-                    target.NotifyEnemyAndAllNeighbor(BelongCharacter);
-                    var isSummonedByPlayerorPartner = (BelongCharacter.SummonedByMagicSprite != null &&
-                                                       (BelongCharacter.SummonedByMagicSprite.BelongCharacter.IsPlayer ||
-                                                        BelongCharacter.SummonedByMagicSprite.BelongCharacter.IsPartner));
-                    var isControledByPlayer = (BelongCharacter.ControledMagicSprite != null &&
-                                               BelongCharacter.ControledMagicSprite.BelongCharacter.IsPlayer);
-                    //Hited character death
-                    if (!isInDeath && //Alive before hited
-                        target.IsInDeathing && //Death after hited
-                        (BelongCharacter.IsPlayer ||
-                        BelongCharacter.IsPartner ||
-                        isSummonedByPlayerorPartner ||
-                        isControledByPlayer))
-                    {
-                        var player = Globals.ThePlayer;
-                        var exp = Utils.GetCharacterDeathExp(Globals.ThePlayer, target);
-                        player.AddExp(exp, true);
-                    }
-                }
             }
             else if (BelongCharacter.IsEnemy)
             {
@@ -905,7 +908,6 @@ namespace Engine
                                     CharacterHited(target, BelongMagic.RangeDamage);
                                     AddDestroySprite(MagicManager.EffectSprites, target.PositionInWorld, BelongMagic.VanishImage, BelongMagic.VanishSound);
                                 }
-                                target.NotifyEnemyAndAllNeighbor(BelongCharacter);
                             }
                         }
                         
