@@ -702,14 +702,35 @@ namespace Engine.Script
 
         public static void SetPlayerPos(List<string> parameters)
         {
-            var x = int.Parse(parameters[0]);
-            var y = int.Parse(parameters[1]);
-            var character = Globals.PlayerKindCharacter;
+            int x, y;
+            Character character = null;
+            if (parameters.Count == 3)
+            {
+                var name = Utils.RemoveStringQuotes(parameters[0]);
+                if (Globals.ThePlayer != null && Globals.ThePlayer.Name == name)
+                {
+                    character = Globals.ThePlayer;
+                }
+                else
+                {
+                    character = NpcManager.GetNpc(name);
+                }
+                            
+                x = int.Parse(parameters[1]);
+                y = int.Parse(parameters[2]);
+            }
+            else
+            {
+                character = Globals.PlayerKindCharacter;
+                x = int.Parse(parameters[0]);
+                y = int.Parse(parameters[1]);
+            }
+            
             if(character == null) return;
             character.SetPosition(new Vector2(x, y));
             Globals.TheCarmera.CenterPlayerInCamera();
             //Reset parter position relate to player position
-            Globals.ThePlayer.ResetPartnerPosition();
+            if (Globals.ThePlayer != null) Globals.ThePlayer.ResetPartnerPosition();
         }
 
         public static void SetPlayerDir(List<string> parameters)

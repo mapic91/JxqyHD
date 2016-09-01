@@ -575,7 +575,7 @@ namespace Engine
         {
             foreach (var npc in _list)
             {
-                if (npc.IsEnemy)
+                if (npc.IsEnemy && !(npc.IsInDeathing || npc.IsDeath))
                 {
                     npc.Death();
                     Globals.ThePlayer.AddExp(
