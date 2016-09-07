@@ -35,54 +35,67 @@ namespace Engine.Gui
 
         public EquipGui()
         {
-            BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\", "panel7.asf"));
+            var cfg = GuiManager.Setttings.Sections["Equip"];
+            BaseTexture = new Texture(Utils.GetAsf(null, cfg["Image"]));
             Width = BaseTexture.Width;
             Height = BaseTexture.Height;
             Position = new Vector2(
-                Globals.WindowWidth / 2f - Width,
-                0f);
+                Globals.WindowWidth / 2f - Width + int.Parse(cfg["LeftAdjust"]),
+                0f + int.Parse(cfg["TopAdjust"]));
 
+            cfg = GuiManager.Setttings.Sections["Equip_Head"];
             _items[0] = _head = new DragDropItem(this,//Head
-                new Vector2(47, 66),
-                60,
-                75,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 null,
                 new GoodsGui.GoodItemData(201));
-            
+
+            cfg = GuiManager.Setttings.Sections["Equip_Neck"];
             _items[1] = _neck = new DragDropItem(this, //Neck
-                new Vector2(193, 66),
-                60,
-                75,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 null,
                 new GoodsGui.GoodItemData(202));
+
+            cfg = GuiManager.Setttings.Sections["Equip_Body"];
             _items[2] = _body = new DragDropItem(this, //Body
-                new Vector2(121, 168),
-                60,
-                75,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 null,
                 new GoodsGui.GoodItemData(203));
+
+            cfg = GuiManager.Setttings.Sections["Equip_Back"];
             _items[3] = _back = new DragDropItem(this, //Back
-                new Vector2(193, 267),
-                60,
-                75,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 null,
                 new GoodsGui.GoodItemData(204));
+
+            cfg = GuiManager.Setttings.Sections["Equip_Hand"];
             _items[4] = _hand = new DragDropItem(this, //Hand
-                new Vector2(193, 168),
-                60,
-                75,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 null,
                 new GoodsGui.GoodItemData(205));
+
+            cfg = GuiManager.Setttings.Sections["Equip_Wrist"];
             _items[5] = _wrist = new DragDropItem(this, //Wrist
-                new Vector2(47, 168),
-                60,
-                75,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 null,
                 new GoodsGui.GoodItemData(206));
+
+            cfg = GuiManager.Setttings.Sections["Equip_Foot"];
             _items[6] = _foot = new DragDropItem(this, //Foot
-                new Vector2(47, 267),
-                60,
-                75,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 null,
                 new GoodsGui.GoodItemData(207));
             RegisterEventHandler();

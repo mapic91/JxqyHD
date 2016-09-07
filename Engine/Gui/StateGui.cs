@@ -37,98 +37,105 @@ namespace Engine.Gui
 
         public StateGui()
         {
+            var cfg = GuiManager.Setttings.Sections["State"];
             BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\", "panel5.asf"));
             Width = BaseTexture.Width;
             Height = BaseTexture.Height;
             Position = new Vector2(
-                Globals.WindowWidth / 2f - Width,
-                0f);
+                Globals.WindowWidth / 2f - Width + int.Parse(cfg["LeftAdjust"]),
+                0f + int.Parse(cfg["TopAdjust"]));
             _items = new TextGui[9];
-            const int Left = 144;
-            const int ItemWidth = 100;
-            const int ItemHeight = 12;
-            var color = Color.Black*0.7f;
+
+            cfg = GuiManager.Setttings.Sections["State_Level"];
             _items[0] = new TextGui(this, //Level
-                new Vector2(Left, 219),
-                ItemWidth,
-                ItemHeight,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 Globals.FontSize7,
                 0,
                 0,
                 "",
-                color);
+                Utils.GetColor(cfg["Color"]));
+            cfg = GuiManager.Setttings.Sections["State_Exp"];
             _items[1] = new TextGui(this, //Exp
-                new Vector2(Left, 234),
-                ItemWidth,
-                ItemHeight,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 Globals.FontSize7,
                 0,
                 0,
                 "",
-                color);
+                Utils.GetColor(cfg["Color"]));
+            cfg = GuiManager.Setttings.Sections["State_LevelUp"];
             _items[2] = new TextGui(this, //LevelUp
-                new Vector2(Left, 249),
-                ItemWidth,
-                ItemHeight,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 Globals.FontSize7,
                 0,
                 0,
                 "",
-                color);
+                Utils.GetColor(cfg["Color"]));
+            cfg = GuiManager.Setttings.Sections["State_Life"];
             _items[3] = new TextGui(this, //Life
-                new Vector2(Left, 264),
-                ItemWidth,
-                ItemHeight,
+               new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 Globals.FontSize7,
                 0,
                 0,
                 "",
-                color);
+                Utils.GetColor(cfg["Color"]));
+            cfg = GuiManager.Setttings.Sections["State_Thew"];
             _items[4] = new TextGui(this, //Thew
-                new Vector2(Left, 279),
-                ItemWidth,
-                ItemHeight,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 Globals.FontSize7,
                 0,
                 0,
                 "",
-                color);
+                Utils.GetColor(cfg["Color"]));
+            cfg = GuiManager.Setttings.Sections["State_Mana"];
             _items[5] = new TextGui(this, //Mana
-                new Vector2(Left, 294),
-                ItemWidth,
-                ItemHeight,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 Globals.FontSize7,
                 0,
                 0,
                 "",
-                color);
+                Utils.GetColor(cfg["Color"]));
+            cfg = GuiManager.Setttings.Sections["State_Attack"];
             _items[6] = new TextGui(this, //Attack
-                new Vector2(Left, 309),
-                ItemWidth,
-                ItemHeight,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 Globals.FontSize7,
                 0,
                 0,
                 "",
-                color);
+                Utils.GetColor(cfg["Color"]));
+            cfg = GuiManager.Setttings.Sections["State_Defend"];
             _items[7] = new TextGui(this, //Defend
-                new Vector2(Left, 324),
-                ItemWidth,
-                ItemHeight,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 Globals.FontSize7,
                 0,
                 0,
                 "",
-                color);
+                Utils.GetColor(cfg["Color"]));
+            cfg = GuiManager.Setttings.Sections["State_Evade"];
             _items[8] = new TextGui(this, // Evade
-                new Vector2(Left, 339),
-                ItemWidth,
-                ItemHeight,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 Globals.FontSize7,
                 0,
                 0,
                 "",
-                color);
+                Utils.GetColor(cfg["Color"]));
         }
 
         public void UpdateItems()

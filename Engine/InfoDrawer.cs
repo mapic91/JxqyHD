@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Engine.Gui;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Engine
@@ -15,8 +16,15 @@ namespace Engine
         public static Color LifeLoseColor = Color.Black * 0.7f;
         public static Color NameColor = Color.White*0.8f;
         public static Color EnemyBossNameColor = new Color(200, 200, 10) * 0.9f;
+        public static bool ListGuiConfigLoaded = false;
+        public static int LiftWidth;
+        public static int LiftHeight;
+        public static int LiftLeftAdjust;
+        public static int LiftTopAdjust;
         public static void DrawLife(SpriteBatch spriteBatch, Npc npc)
         {
+            if (GuiManager.Setttings == null) return;
+
             Color drawColor;
             Color nameColor = NameColor;
             if (npc.IsEnemy) 
@@ -30,10 +38,20 @@ namespace Engine
             else if (npc.IsFighterFriend) drawColor = FriendLifeColor;
             else return;
 
-            const int width = 300;
-            const int height = 25;
-            const int topLeftY = 50;
-            var topLeftX = Globals.WindowWidth / 2 - width / 2;
+            if (!ListGuiConfigLoaded)
+            {
+                ListGuiConfigLoaded = true;
+                var cfg = GuiManager.Setttings.Sections["NpcInfoShow"];
+                LiftWidth = int.Parse(cfg["Width"]);
+                LiftHeight = int.Parse(cfg["Height"]);
+                LiftLeftAdjust = int.Parse(cfg["LeftAdjust"]);
+                LiftTopAdjust = int.Parse(cfg["TopAdjust"]);
+            }
+
+            int width = LiftWidth;
+            int height = LiftHeight;
+            int topLeftY = 0 + LiftTopAdjust;
+            var topLeftX = Globals.WindowWidth / 2 - width / 2 + LiftLeftAdjust;
             float percent = 0f;
             if (npc.LifeMax > 0 && npc.Life >= 0)
             {

@@ -22,20 +22,23 @@ namespace Engine.Gui
 
         public MessageGui()
         {
-            BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\message\", "msgbox.asf"));
+            var cfg = GuiManager.Setttings.Sections["Message"];
+            BaseTexture = new Texture(Utils.GetAsf(null, cfg["Image"]));
             Width = BaseTexture.Width;
             Height = BaseTexture.Height;
-            Position = new Vector2((Globals.WindowWidth - Width) / 2 - 10,
-                Globals.WindowHeight - 47 - Height);
+            Position = new Vector2((Globals.WindowWidth - Width) / 2 + int.Parse(cfg["LeftAdjust"]),
+                Globals.WindowHeight - Height + int.Parse(cfg["TopAdjust"]));
+
+            cfg = GuiManager.Setttings.Sections["Message_Text"];
             _message = new TextGui(this,
-                new Vector2(46, 32),
-                148,
-                50,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 Globals.FontSize12,
-                0,
-                1,
+                int.Parse(cfg["CharSpace"]),
+                int.Parse(cfg["LineSpace"]),
                 "",
-                new Color(155, 34, 22) * 0.8f);
+                Utils.GetColor(cfg["Color"]));
 
             IsShow = false;
         }

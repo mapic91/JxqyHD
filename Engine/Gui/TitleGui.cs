@@ -16,7 +16,7 @@ namespace Engine.Gui
         private readonly GuiItem[] _guiItems;
         public TitleGui()
         {
-            using (var fs = File.Open(@"asf\ui\title\title.jpg", FileMode.Open))
+            using (var fs = File.Open(GuiManager.Setttings.Sections["Title"]["BackgroundImage"], FileMode.Open))
             {
                 BaseTexture = new Texture(new Asf(
                 Texture2D.FromStream(Globals.TheGame.GraphicsDevice, fs)));
@@ -27,39 +27,46 @@ namespace Engine.Gui
             Position = new Vector2(
                 (Globals.WindowWidth - Width)/2f,
                 (Globals.WindowHeight - Height)/2f);
-            var asf = Utils.GetAsf(@"asf\ui\title\", "InitBtn.asf");
-            var sound = Utils.GetSoundEffect("界-主菜单.wav");
+            var cfg = GuiManager.Setttings.Sections["Title_Btn_Begin"];
+            var asf = Utils.GetAsf(null, cfg["Image"]);
+            var sound = Utils.GetSoundEffect(cfg["Sound"]);
             _initButton = new GuiItem(this,
-                new Vector2(327, 112),
-                81,
-                66,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 new Texture(asf, 0, 1),
                 new Texture(asf, 1, 1),
                 null,
                 sound);
-            asf = Utils.GetAsf(@"asf\ui\title\", "LoadBtn.asf");
+            cfg = GuiManager.Setttings.Sections["Title_Btn_Load"];
+            asf = Utils.GetAsf(null, cfg["Image"]);
+            sound = Utils.GetSoundEffect(cfg["Sound"]);
             _loadButton = new GuiItem(this,
-                new Vector2(327, 177),
-                81,
-                66,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 new Texture(asf, 0, 1),
                 new Texture(asf, 1, 1),
                 null,
                 sound);
-            asf = Utils.GetAsf(@"asf\ui\title\", "TeamBtn.asf");
+            cfg = GuiManager.Setttings.Sections["Title_Btn_Team"];
+            asf = Utils.GetAsf(null, cfg["Image"]);
+            sound = Utils.GetSoundEffect(cfg["Sound"]);
             _teamButton = new GuiItem(this,
-                new Vector2(327, 240),
-                81,
-                66,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 new Texture(asf, 0, 1),
                 new Texture(asf, 1, 1),
                 null,
                 sound);
-            asf = Utils.GetAsf(@"asf\ui\title\", "ExitBtn.asf");
+            cfg = GuiManager.Setttings.Sections["Title_Btn_Exit"];
+            asf = Utils.GetAsf(null, cfg["Image"]);
+            sound = Utils.GetSoundEffect(cfg["Sound"]);
             _exitButton = new GuiItem(this,
-                new Vector2(327, 303),
-                81,
-                66,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 new Texture(asf, 0, 1),
                 new Texture(asf, 1, 1),
                 null,

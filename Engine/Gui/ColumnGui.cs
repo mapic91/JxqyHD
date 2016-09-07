@@ -13,31 +13,35 @@ namespace Engine.Gui
         private ColumnView[] _items = new ColumnView[3];
         public ColumnGui()
         {
-            BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\column\", "panel9.asf"));
+            var cfg = GuiManager.Setttings.Sections["BottomState"];
+            BaseTexture = new Texture(Utils.GetAsf(null, cfg["Image"]));
             Width = BaseTexture.Width;
             Height = BaseTexture.Height;
-            Position = new Vector2(Globals.WindowWidth/2f - 320, 
-                Globals.WindowHeight - BaseTexture.Height);
+            Position = new Vector2(Globals.WindowWidth/2f + int.Parse(cfg["LeftAdjust"]), 
+                Globals.WindowHeight - BaseTexture.Height + int.Parse(cfg["TopAdjust"]));
             InitializeItems();
         }
 
         private void InitializeItems()
         {
+            var cfg = GuiManager.Setttings.Sections["BottomState_Life"];
             _life = new ColumnView(this,
-                new Vector2(11, 22),
-                48, 
-                46,
-                new Texture(Utils.GetAsf(@"asf\ui\column\", "ColLife.asf")));
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
+                new Texture(Utils.GetAsf(null, cfg["Image"])));
+            cfg = GuiManager.Setttings.Sections["BottomState_Thew"];
             _thew = new ColumnView(this,
-                new Vector2(59, 22),
-                48,
-                46,
-                new Texture(Utils.GetAsf(@"asf\ui\column\", "ColThew.asf")));
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
+                new Texture(Utils.GetAsf(null, cfg["Image"])));
+            cfg = GuiManager.Setttings.Sections["BottomState_Mana"];
             _mana = new ColumnView(this,
-                new Vector2(113, 22),
-                48,
-                46,
-                new Texture(Utils.GetAsf(@"asf\ui\column\", "ColMana.asf")));
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
+                new Texture(Utils.GetAsf(null, cfg["Image"])));
             _items[0] = _life;
             _items[1] = _thew;
             _items[2] = _mana;

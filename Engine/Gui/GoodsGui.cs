@@ -103,17 +103,20 @@ namespace Engine.Gui
 
         public GoodsGui()
         {
-            var baseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\", "panel3.asf"));
+            var cfg = GuiManager.Setttings.Sections["Goods"];
+            var baseTexture = new Texture(Utils.GetAsf(null, cfg["Image"]));
             var position = new Vector2(
-                Globals.WindowWidth / 2f,
-                0f);
+                Globals.WindowWidth / 2f + int.Parse(cfg["LeftAdjust"]),
+                0f + int.Parse(cfg["TopAdjust"]));
             _listView = new ListView(null,
                 position,
-                new Vector2(294, 108),
+                new Vector2(int.Parse(cfg["ScrollBarLeft"]), int.Parse(cfg["ScrollBarRight"])),
                 baseTexture.Width,
                 baseTexture.Height,
                 baseTexture,
-                66);
+                66,
+                GuiManager.Setttings.Sections["Goods_List_Items"],
+                cfg["ScrollBarButton"]);
             _listView.Scrolled += delegate
             {
                 UpdateItems();
@@ -126,15 +129,17 @@ namespace Engine.Gui
             _listView.RegisterItemMouseRightClickeHandler(RightClickHandler);
             _listView.RegisterItemMouseStayOverHandler(MouseStayOverHandler);
             _listView.RegisterItemMouseLeaveHandler(MouseLeaveHandler);
+
+            cfg = GuiManager.Setttings.Sections["Goods_Money"];
             _money = new TextGui(_listView,
-                new Vector2(137, 363),
-                100,
-                12,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 Globals.FontSize7,
                 0,
                 0,
                 "",
-                Color.White*0.8f);
+                Utils.GetColor(cfg["Color"]));
 
             IsShow = false;
         }

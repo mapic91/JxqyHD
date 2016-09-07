@@ -89,6 +89,10 @@ namespace Engine
             try
             {
                 var path = string.IsNullOrEmpty(basePath) ? fileName : Path.Combine(basePath, fileName);
+                if (!string.IsNullOrEmpty(path) && path[0] == '\\')
+                {
+                    path = path.Substring(1);
+                }
                 if (AsfFiles.ContainsKey(path))
                     return AsfFiles[path];
                 else
@@ -573,6 +577,36 @@ namespace Engine
         public static int GetMagicExp(int hitedCharacterLevel)
         {
             return MagicExp.ContainsKey(hitedCharacterLevel) ? MagicExp[hitedCharacterLevel] : MagicExp.Last().Value;
+        }
+
+        private static readonly Regex RegColor = new Regex(@"^([0-9]*),([0-9]*),([0-9]*),([0-9]*)");
+        /// <summary>
+        /// Cast r,g,b color string to Color.
+        /// </summary>
+        /// <param name="rgb"></param>
+        /// <returns>Return casted color, if someting wrong at the rgb string, black is returned.</returns>
+        public static Color GetColor(string rgb)
+        {
+            Color color = Color.Black;
+            if (RegColor.IsMatch(rgb))
+            {
+                var matchs = RegColor.Match(rgb);
+
+                if (matchs.Groups.Count == 5)
+                {
+                    var r = matchs.Groups[1].Value;
+                    var g = matchs.Groups[2].Value;
+                    var b = matchs.Groups[3].Value;
+                    var a = matchs.Groups[4].Value;
+                    int rv = 0, gv = 0, bv = 0, av = 0;
+                    int.TryParse(r, out rv);
+                    int.TryParse(g, out gv);
+                    int.TryParse(b, out bv);
+                    int.TryParse(a, out av);
+                    color = new Color(rv, gv, bv) * (av/255f);
+                }
+            }
+            return color;
         }
 
         public static T Clamp<T>(this T val, T min, T max) where T : IComparable<T>

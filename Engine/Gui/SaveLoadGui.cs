@@ -51,72 +51,73 @@ namespace Engine.Gui
 
         public SaveLoadGui()
         {
-            BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\saveload", "panel.asf"));
+            var cfg = GuiManager.Setttings.Sections["SaveLoad"];
+            BaseTexture = new Texture(Utils.GetAsf(null, cfg["Image"]));
             Width = BaseTexture.Width;
             Height = BaseTexture.Height;
             Position = new Vector2(
-                (Globals.WindowWidth - Width) / 2f,
-                (Globals.WindowHeight - Height) / 2f);
+                (Globals.WindowWidth - Width) / 2f + int.Parse(cfg["LeftAdjust"]),
+                (Globals.WindowHeight - Height) / 2f + int.Parse(cfg["TopAdjust"]));
 
+            cfg = GuiManager.Setttings.Sections["SaveLoad_Text_List"];
             //Save load list
-            var itemText = new String[]
-            {
-                "进度一",
-                "进度二",
-                "进度三",
-                "进度四",
-                "进度五",
-                "进度六",
-                "进度七"
-            };
+            var itemText = cfg["Text"].Split('/');
             _list = new ListTextItem(this,
-                new Vector2(135, 118),
-                80,
-                189,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 null,
-                7,
+                itemText.Length,
                 itemText,
-                3,
-                0,
-                25,
-                new Color(91, 31, 27) * 0.8f,
-                new Color(102, 73, 212) * 0.8f,
-                Utils.GetSoundEffect("界-浏览.wav"));
+                int.Parse(cfg["CharSpace"]),
+                int.Parse(cfg["LineSpace"]),
+                int.Parse(cfg["ItemHeight"]),
+                Utils.GetColor(cfg["Color"]),
+                Utils.GetColor(cfg["SelectedColor"]),
+                Utils.GetSoundEffect(cfg["Sound"]));
 
             //Save snapshot
+            cfg = GuiManager.Setttings.Sections["Save_Snapshot"];
             _saveSnapshot = new Bmp(this,
-                new Vector2(256, 94),
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
                 "",
-                267,
-                200);
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]));
 
             //Buttons
-            var asf = Utils.GetAsf(@"asf\ui\saveload", "btnLoad.asf");
-            var clickedSound = Utils.GetSoundEffect("界-大按钮.wav");
+            cfg = GuiManager.Setttings.Sections["SaveLoad_Load_Btn"];
+            var asf = Utils.GetAsf(null, cfg["Image"]);
+            var clickedSound = Utils.GetSoundEffect(cfg["Sound"]);
             _loadButton = new GuiItem(this,
-                new Vector2(248, 355),
-                64, 
-                72,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 new Texture(asf, 0, 1),
                 null,
                 new Texture(asf, 1, 1),
                 null,
                 clickedSound);
-            asf = Utils.GetAsf(@"asf\ui\saveload", "btnSave.asf");
+
+            cfg = GuiManager.Setttings.Sections["SaveLoad_Save_Btn"];
+            asf = Utils.GetAsf(null, cfg["Image"]);
+            clickedSound = Utils.GetSoundEffect(cfg["Sound"]);
             _saveButton = new GuiItem(this,
-                new Vector2(366, 355),
-                64,
-                72,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 new Texture(asf, 0, 1),
                 null,
                 new Texture(asf, 1, 1),
                 null,
                 clickedSound);
-            asf = Utils.GetAsf(@"asf\ui\saveload", "btnExit.asf");
+
+            cfg = GuiManager.Setttings.Sections["SaveLoad_Exit_Btn"];
+            asf = Utils.GetAsf(null, cfg["Image"]);
+            clickedSound = Utils.GetSoundEffect(cfg["Sound"]);
             _exitButton = new GuiItem(this, 
-                new Vector2(464, 355),
-                64, 
-                72,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 new Texture(asf, 0, 1),
                 null,
                 new Texture(asf, 1, 1),
@@ -124,24 +125,26 @@ namespace Engine.Gui
                 clickedSound);
 
             //Save time
+            cfg = GuiManager.Setttings.Sections["SaveLoad_Save_Time_Text"];
             _saveTime = new TextGui(this, 
-                new Vector2(254, 310),
-                350,
-                30,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 Globals.FontSize10,
-                1,
-                0,
+                int.Parse(cfg["CharSpace"]),
+                int.Parse(cfg["LineSpace"]),
                 "",
-                new Color(182, 219, 189) * 0.7f);
+                Utils.GetColor(cfg["Color"]));
 
             //Message
+            cfg = GuiManager.Setttings.Sections["SaveLoad_Message_Line_Text"];
             _message = new LineText(this,
-                new Vector2(0, 440),
-                BaseTexture.Width,
-                40,
-                LineText.Align.Center, 
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
+                (LineText.Align)int.Parse(cfg["Align"]), 
                 string.Empty,
-                Color.Gold * 0.8f,
+                Utils.GetColor(cfg["Color"]),
                 Globals.FontSize12);
 
             RegisterEvent();

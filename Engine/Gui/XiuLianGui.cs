@@ -29,58 +29,66 @@ namespace Engine.Gui
 
         public XiuLianGui()
         {
-            BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\", "panel6.asf"));
+            var cfg = GuiManager.Setttings.Sections["XiuLian"];
+            BaseTexture = new Texture(Utils.GetAsf(null, cfg["Image"]));
             Width = BaseTexture.Width;
             Height = BaseTexture.Height;
             Position = new Vector2(
-                Globals.WindowWidth / 2f - Width,
-                0f);
+                Globals.WindowWidth / 2f - Width + int.Parse(cfg["LeftAdjust"]),
+                0f + int.Parse(cfg["TopAdjust"]));
+
+            cfg = GuiManager.Setttings.Sections["XiuLian_Magic_Image"];
             _infoItem = new DragDropItem(this,
-                new Vector2(115, 75),
-                60,
-                75,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 null,
                 new MagicGui.MagicItemData(ItemIndex));
             _infoItem.Drop += MagicGui.DropHandler;
             _infoItem.Drop += (arg1, arg2) => _isItemChange = true;
             _infoItem.MouseStayOver += MagicGui.MouseStayOverHandler;
             _infoItem.MouseLeave += MagicGui.MouseLeaveHandler;
+
+            cfg = GuiManager.Setttings.Sections["XiuLian_Level_Text"];
             _levelText = new TextGui(this,
-                new Vector2(126, 224),
-                80, 
-                12,
-                Globals.FontSize7, 
-                0,
-                0,
-                "",
-                Color.Black*0.8f);
-            _expText = new TextGui(this,
-                new Vector2(126, 243),
-                80,
-                12,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 Globals.FontSize7,
-                0,
-                0,
+                int.Parse(cfg["CharSpace"]),
+                int.Parse(cfg["LineSpace"]),
                 "",
-                Color.Black * 0.8f);
+                Utils.GetColor(cfg["Color"]));
+            cfg = GuiManager.Setttings.Sections["XiuLian_Exp_Text"];
+            _expText = new TextGui(this,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
+                Globals.FontSize7,
+                int.Parse(cfg["CharSpace"]),
+                int.Parse(cfg["LineSpace"]),
+                "",
+                Utils.GetColor(cfg["Color"]));
+            cfg = GuiManager.Setttings.Sections["XiuLian_Name_Text"];
             _nameText = new TextGui(this,
-                new Vector2(105, 256),
-                200,
-                20,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 Globals.FontSize12,
-                0,
-                0,
+                int.Parse(cfg["CharSpace"]),
+                int.Parse(cfg["LineSpace"]),
                 "",
-                new Color(88, 32, 32)*0.9f);
+                Utils.GetColor(cfg["Color"]));
+            cfg = GuiManager.Setttings.Sections["XiuLian_Intro_Text"];
             _introText = new TextGui(this,
-                new Vector2(75, 275),
-                145,
-                120,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 Globals.FontSize10,
-                2,
-                0,
+                int.Parse(cfg["CharSpace"]),
+                int.Parse(cfg["LineSpace"]),
                 "",
-                new Color(47, 32, 88)*0.9f);
+                Utils.GetColor(cfg["Color"]));
         }
 
         public void UpdateItem()

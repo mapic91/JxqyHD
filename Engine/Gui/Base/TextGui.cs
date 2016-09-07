@@ -138,10 +138,10 @@ namespace Engine.Gui.Base
                         switch (textStr)
                         {
                             case "color=Red":
-                                CurrentColor = Color.Red * 0.8f;
+                                CurrentColor = Color.Red * (DefaultColor.A / 255f);
                                 break;
                             case "color=Black":
-                                CurrentColor = Color.Black * 0.8f;
+                                CurrentColor = Color.Black * (DefaultColor.A / 255f);
                                 break;
                             case "color=Default":
                                 CurrentColor = DefaultColor;
@@ -166,7 +166,7 @@ namespace Engine.Gui.Base
                                     int.TryParse(r, out rv);
                                     int.TryParse(g, out gv);
                                     int.TryParse(b, out bv);
-                                    CurrentColor = new Color(rv,gv,bv) * 0.8f;
+                                    CurrentColor = new Color(rv,gv,bv) * (DefaultColor.A / 255f);
                                 }
                                 break;
                         }

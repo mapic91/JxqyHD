@@ -2,6 +2,8 @@
 using Engine.Gui.Base;
 using Engine.ListManager;
 using Engine.Script;
+using IniParser;
+using IniParser.Model;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -20,6 +22,7 @@ namespace Engine.Gui
         private static MouseState _lastMouseState;
         private static KeyboardState _lastKeyboardState;
 
+        public static IniData Setttings;
         public static TitleGui TitleInterface;
         public static SaveLoadGui SaveLoadInterface;
         public static SystemGui SystemInterface;
@@ -63,6 +66,8 @@ namespace Engine.Gui
 
         public static void Starting()
         {
+            Setttings = new FileIniDataParser().ReadFile(@"Content\ui\UI_Settings.ini", Globals.LocalEncoding);
+
             IsShow = true;
 
             _dropSound = Utils.GetSoundEffect("界-拖放.wav");

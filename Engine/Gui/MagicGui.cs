@@ -68,17 +68,20 @@ namespace Engine.Gui
 
         public MagicGui()
         {
-            var baseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\", "panel2.asf"));
+            var cfg = GuiManager.Setttings.Sections["Magics"];
+            var baseTexture = new Texture(Utils.GetAsf(null, cfg["Image"]));
             var position = new Vector2(
-                Globals.WindowWidth / 2f,
-                0f);
+                Globals.WindowWidth / 2f + int.Parse(cfg["LeftAdjust"]),
+                0f + int.Parse(cfg["TopAdjust"]));
             _listView = new ListView(null,
                 position,
                 new Vector2(294, 108),
                 baseTexture.Width,
                 baseTexture.Height,
                 baseTexture,
-                12);
+                12,
+                GuiManager.Setttings.Sections["Magics_List_Items"],
+                cfg["ScrollBarButton"]);
             _listView.Scrolled += delegate
             {
                 UpdateItems();

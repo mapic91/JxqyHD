@@ -1,4 +1,5 @@
 ﻿using System;
+using IniParser.Model;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -8,7 +9,7 @@ namespace Engine.Gui.Base
     {
         private ScrollBar _scrollBar;
         private DragDropItem[] _items = new DragDropItem[9];
-        private Vector2 _itemPositinOffset = Vector2.Zero;
+        private KeyDataCollection _config;
         public event Action<object, ListScrollEvent> Scrolled;
 
         public int CurrentScrollValue
@@ -27,32 +28,14 @@ namespace Engine.Gui.Base
             int width,
             int height,
             Texture baseTexture,
-            int rowCouunts)
-            :this(parent, 
-            position,
-            scrollBarPosition, 
-            width, 
-            height, 
-            baseTexture,
-            rowCouunts, 
-            Vector2.Zero)
-        {
-            
-        }
-
-        public ListView(GuiItem parent,
-            Vector2 position,
-            Vector2 scrollBarPosition,
-            int width,
-            int height,
-            Texture baseTexture,
             int rowCouunts,
-            Vector2 itemPositionOffset)
+            KeyDataCollection config,
+            string slideButtonImage)
             : base(parent, position, width, height, baseTexture)
         {
-            _itemPositinOffset = itemPositionOffset;
+            _config = config;
             InitializeItems();
-            var slideTexture = Utils.GetAsf(@"asf\ui\option\", "slidebtn.asf");
+            var slideTexture = Utils.GetAsf(null, slideButtonImage);
             var slideBaseTexture = new Texture(slideTexture);
             var slideClikedTexture = new Texture(slideTexture, 0, 1);
             var slideButton = new GuiItem(this,
@@ -86,15 +69,16 @@ namespace Engine.Gui.Base
 
         private void InitializeItems()
         {
-            _items[0] = new DragDropItem(this, new Vector2(72, 91) + _itemPositinOffset, 60, 75, null);
-            _items[1] = new DragDropItem(this, new Vector2(137, 91) + _itemPositinOffset, 60, 75, null);
-            _items[2] = new DragDropItem(this, new Vector2(201, 91) + _itemPositinOffset, 60, 75, null);
-            _items[3] = new DragDropItem(this, new Vector2(72, 170) + _itemPositinOffset, 60, 75, null);
-            _items[4] = new DragDropItem(this, new Vector2(137, 170) + _itemPositinOffset, 60, 75, null);
-            _items[5] = new DragDropItem(this, new Vector2(202, 170) + _itemPositinOffset, 60, 75, null);
-            _items[6] = new DragDropItem(this, new Vector2(72, 250) + _itemPositinOffset, 60, 75, null);
-            _items[7] = new DragDropItem(this, new Vector2(137, 250) + _itemPositinOffset, 60, 75, null);
-            _items[8] = new DragDropItem(this, new Vector2(202, 250) + _itemPositinOffset, 60, 75, null);
+            var c = _config;
+            _items[0] = new DragDropItem(this, new Vector2(int.Parse(c["Item_Left_1"]), int.Parse(c["Item_Top_1"])), int.Parse(c["Item_Width_1"]), int.Parse(c["Item_Height_1"]), null);
+            _items[1] = new DragDropItem(this, new Vector2(int.Parse(c["Item_Left_2"]), int.Parse(c["Item_Top_2"])), int.Parse(c["Item_Width_2"]), int.Parse(c["Item_Height_2"]), null);
+            _items[2] = new DragDropItem(this, new Vector2(int.Parse(c["Item_Left_3"]), int.Parse(c["Item_Top_3"])), int.Parse(c["Item_Width_3"]), int.Parse(c["Item_Height_3"]), null);
+            _items[3] = new DragDropItem(this, new Vector2(int.Parse(c["Item_Left_4"]), int.Parse(c["Item_Top_4"])), int.Parse(c["Item_Width_4"]), int.Parse(c["Item_Height_4"]), null);
+            _items[4] = new DragDropItem(this, new Vector2(int.Parse(c["Item_Left_5"]), int.Parse(c["Item_Top_5"])), int.Parse(c["Item_Width_5"]), int.Parse(c["Item_Height_5"]), null);
+            _items[5] = new DragDropItem(this, new Vector2(int.Parse(c["Item_Left_6"]), int.Parse(c["Item_Top_6"])), int.Parse(c["Item_Width_6"]), int.Parse(c["Item_Height_6"]), null);
+            _items[6] = new DragDropItem(this, new Vector2(int.Parse(c["Item_Left_7"]), int.Parse(c["Item_Top_7"])), int.Parse(c["Item_Width_7"]), int.Parse(c["Item_Height_7"]), null);
+            _items[7] = new DragDropItem(this, new Vector2(int.Parse(c["Item_Left_8"]), int.Parse(c["Item_Top_8"])), int.Parse(c["Item_Width_8"]), int.Parse(c["Item_Height_8"]), null);
+            _items[8] = new DragDropItem(this, new Vector2(int.Parse(c["Item_Left_9"]), int.Parse(c["Item_Top_9"])), int.Parse(c["Item_Width_9"]), int.Parse(c["Item_Height_9"]), null);
         }
 
         public void RegisterItemDragHandler(Action<object, DragDropItem.DragEvent> handler)

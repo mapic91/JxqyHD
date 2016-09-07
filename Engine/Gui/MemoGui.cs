@@ -14,24 +14,27 @@ namespace Engine.Gui
 
         public MemoGui()
         {
-            BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\", "panel4.asf"));
+            var cfg = GuiManager.Setttings.Sections["Memo"];
+            BaseTexture = new Texture(Utils.GetAsf(null, cfg["Image"]));
             Width = BaseTexture.Width;
             Height = BaseTexture.Height;
             Position = new Vector2(
-                Globals.WindowWidth / 2f,
-                0f);
+                Globals.WindowWidth / 2f + int.Parse(cfg["LeftAdjust"]),
+                0f + int.Parse(cfg["TopAdjust"]));
 
+            cfg = GuiManager.Setttings.Sections["Memo_Text"];
             _text = new TextGui(this, 
-                new Vector2(90, 155),
-                150,
-                180,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 Globals.FontSize10,
-                1,
-                1,
+                int.Parse(cfg["CharSpace"]),
+                int.Parse(cfg["LineSpace"]),
                 "",
-                new Color(40, 25, 15)*0.8f);
+                Utils.GetColor(cfg["Color"]));
 
-            var slideTexture = Utils.GetAsf(@"asf\ui\option\", "slidebtn.asf");
+            cfg = GuiManager.Setttings.Sections["Memo_Slider"];
+            var slideTexture = Utils.GetAsf(null, cfg["Image_Btn"]);
             var slideBaseTexture = new Texture(slideTexture);
             var slideClikedTexture = new Texture(slideTexture, 0, 1);
             var slideButton = new GuiItem(this,
@@ -42,14 +45,14 @@ namespace Engine.Gui
                 null,
                 slideClikedTexture,
                 null,
-                Utils.GetSoundEffect("界-大按钮.wav"));
+                Utils.GetSoundEffect(cfg["Sound_Btn"]));
             _scrollBar = new ScrollBar(this,
-                28,
-                190,
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 null,
                 ScrollBar.ScrollBarType.Vertical,
                 slideButton,
-                new Vector2(295, 108),
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
                 0,
                 1,
                 0);

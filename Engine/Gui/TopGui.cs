@@ -10,10 +10,12 @@ namespace Engine.Gui
         private GuiItem[] _buttons = new GuiItem[7];
         public TopGui()
         {
-            BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\top\", "window.asf"));
+            var cfg = GuiManager.Setttings.Sections["Top"];
+            BaseTexture = new Texture(Utils.GetAsf(null, cfg["Image"]));
             Width = BaseTexture.Width;
             Height = BaseTexture.Height;
-            Position = new Vector2((Globals.WindowWidth - BaseTexture.Width) / 2f, 0f);
+            Position = new Vector2((Globals.WindowWidth - BaseTexture.Width) / 2f + int.Parse(cfg["LeftAdjust"]),
+                0f + int.Parse(cfg["TopAdjust"]));
             InitializeItems();
         }
 
@@ -30,41 +32,31 @@ namespace Engine.Gui
 
         private void InitializeItems()
         {
-            string[] fileNames =
+            string[] sectionNames =
             {
-                "BtnState.asf", //0
-                "BtnEquip.asf", //1
-                "BtnXiuLian.asf", //2
-                "BtnGoods.asf", //3
-                "BtnMagic.asf", //4
-                "BtnNotes.asf", //5
-                "BtnOption.asf" //6
+                "Top_State_Btn",
+                "Top_Equip_Btn",
+                "Top_XiuLian_Btn",
+                "Top_Goods_Btn",
+                "Top_Magic_Btn",
+                "Top_Memo_Btn",
+                "Top_System_Btn",
             };
-            Vector2[] position =
-            {
-                new Vector2(52, 0),
-                new Vector2(80, 0),
-                new Vector2(107, 0),
-                new Vector2(135, 0),
-                new Vector2(162, 0),
-                new Vector2(189, 0),
-                new Vector2(216, 0)
-            };
-            var clickedSound = Utils.GetSoundEffect("界-大按钮.wav");
             for (var i = 0; i < 7; i++)
             {
-                var asf = Utils.GetAsf(@"asf\ui\top\", fileNames[i]);
+                var cfg = GuiManager.Setttings.Sections[sectionNames[i]];
+                var asf = Utils.GetAsf(null, cfg["Image"]);
                 var baseTexture = new Texture(asf, 0, 1);
                 var clickedTexture = new Texture(asf, 1, 1);
-                _buttons[i] = new GuiItem(this, 
-                position[i],
-                baseTexture.Width,
-                baseTexture.Height,
+                _buttons[i] = new GuiItem(this,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 baseTexture,
                 null,
                 clickedTexture,
                 null,
-                clickedSound);
+                Utils.GetSoundEffect(cfg["Sound"]));
             }
             RegisterClickHandler();
         }

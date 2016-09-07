@@ -19,19 +19,22 @@ namespace Engine.Gui
 
         public TimerGui()
         {
-            BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\timer\", "window.asf"));
+            var cfg = GuiManager.Setttings.Sections["Timer"];
+            BaseTexture = new Texture(Utils.GetAsf(null, cfg["Image"]));
             Width = BaseTexture.Width;
             Height = BaseTexture.Height;
-            Position = new Vector2(Globals.WindowWidth/2f + 103, 0);
+            Position = new Vector2(Globals.WindowWidth/ 2f + int.Parse(cfg["LeftAdjust"]), 0 + int.Parse(cfg["TopAdjust"]));
+
+            cfg = GuiManager.Setttings.Sections["Timer_Text"];
             _text = new TextGui(this, 
-                new Vector2(74, 44),
-                120, 
-                22,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 Globals.FontSize12,
-                1,
-                0,
+                int.Parse(cfg["CharSpace"]),
+                int.Parse(cfg["LineSpace"]),
                 "",
-                Color.Red*0.8f);
+                Utils.GetColor(cfg["Color"]));
 
             IsShow = false;
         }

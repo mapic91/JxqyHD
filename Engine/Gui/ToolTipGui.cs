@@ -13,61 +13,69 @@ namespace Engine.Gui
 
         public ToolTipGui()
         {
-            BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\", "tipbox.asf"));
+            var cfg = GuiManager.Setttings.Sections["ToolTip"];
+            BaseTexture = new Texture(Utils.GetAsf(null, cfg["Image"]));
             Width = BaseTexture.Width;
             Height = BaseTexture.Height;
-            Position = new Vector2((Globals.WindowWidth - Width)/2f,
-                27f);
+            Position = new Vector2((Globals.WindowWidth - Width)/ 2f + int.Parse(cfg["LeftAdjust"]),
+                0 + int.Parse(cfg["TopAdjust"]));
+
+            cfg = GuiManager.Setttings.Sections["ToolTip_Item_Image"];
             _image = new GuiItem(this,
-                new Vector2(132, 47),
-                60,
-                75,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 null);
+            cfg = GuiManager.Setttings.Sections["ToolTip_Item_Name"];
             _name = new TextGui(this,
-                new Vector2(67, 191),
-                100,
-                20,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 Globals.FontSize10,
-                0,
-                0,
+                int.Parse(cfg["CharSpace"]),
+                int.Parse(cfg["LineSpace"]),
                 "",
-                new Color(102, 73, 212)* 0.8f);
+                Utils.GetColor(cfg["Color"]));
+            cfg = GuiManager.Setttings.Sections["ToolTip_Item_PriceOrLevel"];
             _costOrLevel = new TextGui(this,
-                new Vector2(160, 191),
-                88,
-                20,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 Globals.FontSize10,
-                0,
-                0,
+                int.Parse(cfg["CharSpace"]),
+                int.Parse(cfg["LineSpace"]),
                 "",
-                new Color(91, 31, 27)*0.8f);
+                Utils.GetColor(cfg["Color"]));
+            cfg = GuiManager.Setttings.Sections["ToolTip_Item_Effect"];
             _goodEffect = new TextGui(this,
-                new Vector2(67,215),
-                188,
-                20,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 Globals.FontSize10,
-                0,
-                0,
+                int.Parse(cfg["CharSpace"]),
+                int.Parse(cfg["LineSpace"]),
                 "",
-                Color.Blue*0.8f);
+                Utils.GetColor(cfg["Color"]));
+            cfg = GuiManager.Setttings.Sections["ToolTip_Item_Magic_Intro"];
             _magicIntro = new TextGui(this,
-                new Vector2(67, 210),
-                196, 
-                120,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 Globals.FontSize10,
-                1,
-                0,
+                int.Parse(cfg["CharSpace"]),
+                int.Parse(cfg["LineSpace"]),
                 "",
-                new Color(52, 21, 14)*0.8f);
+                Utils.GetColor(cfg["Color"]));
+            cfg = GuiManager.Setttings.Sections["ToolTip_Item_Good_Intro"];
             _goodIntro = new TextGui(this,
-                new Vector2(67, 245),
-                196,
-                100,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 Globals.FontSize10,
-                1,
-                0,
+                int.Parse(cfg["CharSpace"]),
+                int.Parse(cfg["LineSpace"]),
                 "",
-                new Color(52, 21, 14) * 0.8f);
+                Utils.GetColor(cfg["Color"]));
             _items = new GuiItem[6];
             _items[0] = _image;
             _items[1] = _name;

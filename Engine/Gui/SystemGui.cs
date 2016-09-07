@@ -15,51 +15,61 @@ namespace Engine.Gui
 
         public SystemGui()
         {
-            BaseTexture = new Texture(Utils.GetAsf(
-                @"asf\ui\common", "panel.asf"));
+            var cfg = GuiManager.Setttings.Sections["System"];
+            BaseTexture = new Texture(Utils.GetAsf(null, cfg["Image"]));
             Width = BaseTexture.Width;
             Height = BaseTexture.Height;
             Position = new Vector2(
-                (Globals.WindowWidth - Width) / 2f,
-                26);
+                (Globals.WindowWidth - Width) / 2f + int.Parse(cfg["LeftAdjust"]),
+                0 + int.Parse(cfg["TopAdjust"]));
 
             //Button
+            cfg = GuiManager.Setttings.Sections["System_SaveLoad_Btn"];
             var asf = Utils.GetAsf(@"asf\ui\system", "saveload.asf");
-            var clickedSound = Utils.GetSoundEffect("界-大按钮.wav");
+            var clickedSound = Utils.GetSoundEffect(cfg["Sound"]);
             _saveloadButton = new GuiItem(this,
-                new Vector2(58, 86),
-                69, 
-                64,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 new Texture(asf, 0, 1),
                 null,
                 new Texture(asf, 1, 1),
                 null,
                 clickedSound);
+
+            cfg = GuiManager.Setttings.Sections["System_Option_Btn"];
             asf = Utils.GetAsf(@"asf\ui\system", "option.asf");
+            clickedSound = Utils.GetSoundEffect(cfg["Sound"]);
             _opetionButton = new GuiItem(this,
-                new Vector2(58, 150),
-                69,
-                54,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 new Texture(asf, 0, 1),
                 null,
                 new Texture(asf, 1, 1),
                 null,
                 clickedSound);
+
+            cfg = GuiManager.Setttings.Sections["System_Exit_Btn"];
             asf = Utils.GetAsf(@"asf\ui\system", "quit.asf");
+            clickedSound = Utils.GetSoundEffect(cfg["Sound"]);
             _exitButton = new GuiItem(this,
-                new Vector2(58, 213),
-                69,
-                54,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 new Texture(asf, 0, 1),
                 null,
                 new Texture(asf, 1, 1),
                 null,
                 clickedSound);
+
+            cfg = GuiManager.Setttings.Sections["System_Return_Btn"];
             asf = Utils.GetAsf(@"asf\ui\system", "return.asf");
+            clickedSound = Utils.GetSoundEffect(cfg["Sound"]);
             _returnButton = new GuiItem(this,
-                new Vector2(58, 276),
-                69,
-                54,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 new Texture(asf, 0, 1),
                 null,
                 new Texture(asf, 1, 1),
@@ -76,7 +86,7 @@ namespace Engine.Gui
             _saveloadButton.Click += (arg1, arg2) => GuiManager.ShowSaveLoad();
             _opetionButton.Click += (arg1, arg2) =>
             {
-
+                GuiManager.ShowMessage("请用游戏设置程序进行设置");
             };
             _exitButton.Click += (arg1, arg2) =>
             {

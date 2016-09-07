@@ -14,12 +14,13 @@ namespace Engine.Gui
 
         public BottomGui()
         {
-            BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\bottom\", "window.asf"));
+            var cfg = GuiManager.Setttings.Sections["Bottom"];
+            BaseTexture = new Texture(Utils.GetAsf(null, cfg["Image"]));
             Width = BaseTexture.Width;
             Height = BaseTexture.Height;
             Position = new Vector2(
-                (Globals.WindowWidth - BaseTexture.Width)/2f + 102,
-                Globals.WindowHeight - BaseTexture.Height);
+                (Globals.WindowWidth - BaseTexture.Width)/2f + int.Parse(cfg["LeftAdjust"]),
+                Globals.WindowHeight - BaseTexture.Height + int.Parse(cfg["TopAdjust"]));
 
             InitializeItems();
         }

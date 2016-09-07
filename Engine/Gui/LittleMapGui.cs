@@ -132,12 +132,13 @@ namespace Engine.Gui
 
         public LittleMapGui()
         {
+            var cfg = GuiManager.Setttings.Sections["LittleMap"];
             BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\littlemap\", "panel.asf"));
             Width = BaseTexture.Width;
             Height = BaseTexture.Height;
             Position = new Vector2(
-                (Globals.WindowWidth - Width) / 2f,
-                0f);
+                (Globals.WindowWidth - Width) / 2f + int.Parse(cfg["LeftAdjust"]),
+                0f + int.Parse(cfg["TopAdjust"]));
             LoadItems();
             RegisterHadler();
             LoadNameList();
@@ -230,10 +231,11 @@ namespace Engine.Gui
 
         private void LoadItems()
         {
-            var sound = Utils.GetSoundEffect("界-浏览.wav");
-            var asf = Utils.GetAsf(@"asf\ui\littlemap\", "btnleft.asf");
+            var cfg = GuiManager.Setttings.Sections["LittleMap_Left_Btn"];
+            var sound = Utils.GetSoundEffect(cfg["Sound"]);
+            var asf = Utils.GetAsf(null, cfg["Image"]);
             _leftButton = new GuiItem(this,
-                new Vector2(437, 379),
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
                 asf.Width,
                 asf.Height,
                 new Texture(asf, 0, 1),
@@ -242,9 +244,11 @@ namespace Engine.Gui
                 null,
                 sound);
 
-            asf = Utils.GetAsf(@"asf\ui\littlemap\", "btnright.asf");
+            cfg = GuiManager.Setttings.Sections["LittleMap_Right_Btn"];
+            asf = Utils.GetAsf(null, cfg["Image"]);
+            sound = Utils.GetSoundEffect(cfg["Sound"]);
             _rightButton = new GuiItem(this,
-                new Vector2(464, 379),
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
                 asf.Width,
                 asf.Height,
                 new Texture(asf, 0, 1),
@@ -253,9 +257,11 @@ namespace Engine.Gui
                 null,
                 sound);
 
-            asf = Utils.GetAsf(@"asf\ui\littlemap\", "btnup.asf");
+            cfg = GuiManager.Setttings.Sections["LittleMap_Up_Btn"];
+            asf = Utils.GetAsf(null, cfg["Image"]);
+            sound = Utils.GetSoundEffect(cfg["Sound"]);
             _upButton = new GuiItem(this,
-                new Vector2(448, 368),
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
                 asf.Width,
                 asf.Height,
                 new Texture(asf, 0, 1),
@@ -264,9 +270,11 @@ namespace Engine.Gui
                 null,
                 sound);
 
-            asf = Utils.GetAsf(@"asf\ui\littlemap\", "btndown.asf");
+            cfg = GuiManager.Setttings.Sections["LittleMap_Down_Btn"];
+            asf = Utils.GetAsf(null, cfg["Image"]);
+            sound = Utils.GetSoundEffect(cfg["Sound"]);
             _downButton = new GuiItem(this,
-                new Vector2(448, 395),
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
                 asf.Width,
                 asf.Height,
                 new Texture(asf, 0, 1),
@@ -275,9 +283,11 @@ namespace Engine.Gui
                 null,
                 sound);
 
-            asf = Utils.GetAsf(@"asf\ui\littlemap\", "btnclose.asf");
+            cfg = GuiManager.Setttings.Sections["LittleMap_Close_Btn"];
+            asf = Utils.GetAsf(null, cfg["Image"]);
+            sound = Utils.GetSoundEffect(cfg["Sound"]);
             _closeButton = new GuiItem(this,
-                new Vector2(448, 379),
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
                 asf.Width,
                 asf.Height,
                 new Texture(asf, 0, 1),
@@ -286,29 +296,34 @@ namespace Engine.Gui
                 null,
                 sound);
 
+            cfg = GuiManager.Setttings.Sections["LittleMap_Map_Name_Line_Text"];
             _mapName = new LineText(this, 
-                new Vector2(210, 92),
-                220,
-                30,
-                LineText.Align.Center, 
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
+                (LineText.Align)int.Parse(cfg["Align"]), 
                 string.Empty,
-                new Color(76,56,48) * 0.8f,
+                Utils.GetColor(cfg["Color"]),
                 Globals.FontSize12);
-            _bottomTip = new LineText(this, 
-                new Vector2(160, 370),
-                260,
-                30,
-                LineText.Align.Left,
+
+            cfg = GuiManager.Setttings.Sections["LittleMap_Bottom_Tip_Line_Text"];
+            _bottomTip = new LineText(this,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
+                (LineText.Align)int.Parse(cfg["Align"]),
                 "点击小地图进行移动",
-                new Color(76, 56, 48) * 0.8f,
+                Utils.GetColor(cfg["Color"]),
                 Globals.FontSize10);
+
+            cfg = GuiManager.Setttings.Sections["LittleMap_Message_Tip_Line_Text"];
             _messageTip = new LineText(this,
-                new Vector2(160, 370),
-                260,
-                30,
-                LineText.Align.Right,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
+                (LineText.Align)int.Parse(cfg["Align"]),
                 "无法移动到目的地",
-                new Color(200, 0, 0) * 0.8f,
+                Utils.GetColor(cfg["Color"]),
                 Globals.FontSize10);
             _messageTip.IsShow = false;
         }

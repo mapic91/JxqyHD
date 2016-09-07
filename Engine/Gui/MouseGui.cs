@@ -11,7 +11,8 @@ namespace Engine.Gui
         private GuiItem _drapImage;
         public MouseGui()
         {
-            BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\", "mouse.asf"));
+            var cfg = GuiManager.Setttings.Sections["Mouse"];
+            BaseTexture = new Texture(Utils.GetAsf(null, cfg["Image"]));
             Width = 0;
             Height = 0;
             _drapImage = new GuiItem(this, Vector2.Zero, 0, 0, null);

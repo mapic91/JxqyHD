@@ -17,29 +17,31 @@ namespace Engine.Gui
 
         public BuyGui()
         {
-            var baseTexture = new Texture(Utils.GetAsf(@"asf\ui\common\", "panel8.asf"));
+            var cfg = GuiManager.Setttings.Sections["BuySell"];
+            var baseTexture = new Texture(Utils.GetAsf(null, cfg["Image"]));
             var position = new Vector2(
-                Globals.WindowWidth/2f - baseTexture.Width,
-                0f);
+                Globals.WindowWidth/2f - baseTexture.Width + int.Parse(cfg["LeftAdjust"]),
+                0f + int.Parse(cfg["TopAdjust"]));
             _listView = new ListView(null,
                 position,
-                new Vector2(271, 108),
+                new Vector2(int.Parse(cfg["ScrollBarLeft"]), int.Parse(cfg["ScrollBarRight"])),
                 baseTexture.Width,
                 baseTexture.Height,
                 baseTexture,
                 27,
-                new Vector2(-17, 0));
-            var asf = Utils.GetAsf(@"asf\ui\buysell\", "CloseBtn.asf");
+                GuiManager.Setttings.Sections["BuySell_List_Items"],
+                cfg["ScrollBarButton"]);
+            var asf = Utils.GetAsf(null, cfg["CloseImage"]);
             baseTexture = new Texture(asf, 0, 1);
             _closeButton = new GuiItem(_listView,
-                new Vector2(117, 354),
+                new Vector2(int.Parse(cfg["CloseLeft"]), int.Parse(cfg["CloseTop"])),
                 baseTexture.Width,
                 baseTexture.Height,
                 baseTexture,
                 null,
                 new Texture(asf, 1, 1),
                 null,
-                Utils.GetSoundEffect("界-大按钮.wav"));
+                Utils.GetSoundEffect(cfg["CloseSound"]));
             _listView.Scrolled += (arg1, arg2) => UpdateItems();
             _listView.RegisterItemMouseStayOverHandler((arg1, arg2) =>
             {

@@ -41,42 +41,53 @@ namespace Engine.Gui
         public DialogGui()
         {
             LoadPortrait();
-            BaseTexture = new Texture(Utils.GetAsf(@"asf\ui\dialog\", "panel.asf"));
+
+            var cfg = GuiManager.Setttings.Sections["Dialog"];
+
+            BaseTexture = new Texture(Utils.GetAsf(null, cfg["Image"]));
             Width = BaseTexture.Width;
             Height = BaseTexture.Height;
-            Position = new Vector2((Globals.WindowWidth - BaseTexture.Width) / 2f,
-                Globals.WindowHeight - 208f);
+            Position = new Vector2((Globals.WindowWidth - BaseTexture.Width) / 2f + int.Parse(cfg["LeftAdjust"]),
+                Globals.WindowHeight + int.Parse(cfg["TopAdjust"]));
+
+            cfg = GuiManager.Setttings.Sections["Dialog_Txt"];
             _text = new TextGui(this,
-                new Vector2(65, 30),
-                310,
-                70,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 Globals.FontSize12,
-                -2,
-                0,
+                int.Parse(cfg["CharSpace"]),
+                int.Parse(cfg["LineSpace"]),
                 "",
-                _defaultTextColor);
+                Utils.GetColor(cfg["Color"]));
+
+            cfg = GuiManager.Setttings.Sections["Dialog_SelA"];
             _selectA = new TextGui(this,
-                new Vector2(65, 52),
-                310,
-                20,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 Globals.FontSize12,
-                1,
-                0,
+                int.Parse(cfg["CharSpace"]),
+                int.Parse(cfg["LineSpace"]),
                 "",
-                Color.Blue * 0.8f);
+                Utils.GetColor(cfg["Color"]));
+
+            cfg = GuiManager.Setttings.Sections["Dialog_SelB"];
             _selectB = new TextGui(this,
-                new Vector2(65, 74),
-                310,
-                20,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 Globals.FontSize12,
-                1,
-                0,
+                int.Parse(cfg["CharSpace"]),
+                int.Parse(cfg["LineSpace"]),
                 "",
-                Color.Blue * 0.8f);
+                Utils.GetColor(cfg["Color"]));
+
+            cfg = GuiManager.Setttings.Sections["Dialog_Portrait"];
             _portrait = new GuiItem(this,
-                new Vector2(5, -143),
-                200,
-                160,
+                new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
+                int.Parse(cfg["Width"]),
+                int.Parse(cfg["Height"]),
                 null);
             _selectA.MouseEnter += (arg1, arg2) => _selectA.SetDrawColor(Color.Red * 0.8f);
             _selectA.MouseLeave += (arg1, arg2) => _selectA.SetDrawColor(Color.Blue * 0.8f);
