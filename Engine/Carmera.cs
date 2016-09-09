@@ -16,6 +16,7 @@ namespace Engine
         private int _leftMoveFrames;
         private Vector2 _moveDirection = Vector2.Zero;
         private Vector2 _lastPlayerPosition;
+        private Character _lastPlayer;
         private Vector2 _moveToBeginDestination;
         //Vibrating screen begin
         private int _vibratingDegree;
@@ -198,6 +199,12 @@ namespace Engine
                 _lastPlayerPosition = position;
                 return;
             }
+
+            if (_lastPlayer != player)
+            {
+                //Player changed, reassign last player position
+                _lastPlayerPosition = position;
+            }
             
             if(position == Vector2.Zero) return;
             var halfView = GetHalfViewSize();
@@ -220,6 +227,7 @@ namespace Engine
             CarmeraBeginPositionInWorld = center - halfView;
 
             _lastPlayerPosition = position;
+            _lastPlayer = player;
         }
 
         void UpdateVibratingScreen()

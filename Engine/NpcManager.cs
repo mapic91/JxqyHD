@@ -285,7 +285,7 @@ namespace Engine
             var list = new List<Npc>();
             foreach (var npc in _list)
             {
-                if (npc.Kind == (int)Character.CharacterKind.Follower)
+                if (npc.IsPartner)
                 {
                     list.Add(npc);
                 }
@@ -341,14 +341,12 @@ namespace Engine
         {
             var success = true;
             var filePath = Utils.GetNpcObjFilePath(fileName);
-            var partners = new List<Npc>();
             try
             {
                 if (clearCurrentNpcs)
                 {
-                    //get partners for restore later
-                    partners = GetAllPartner();
-                    ClearAllNpc();
+                    //keep partners
+                    ClearAllNpcAndKeepPartner();
                 }
                 _fileName = fileName;
                 if (!string.IsNullOrEmpty(fileName))
@@ -364,11 +362,6 @@ namespace Engine
             {
                 Log.LogFileLoadError("NPC", filePath, exception);
                 success = false;
-            }
-            //restore partners
-            foreach (var npc in partners)
-            {
-                AddNpc(npc);
             }
             return success;
         }
@@ -403,10 +396,32 @@ namespace Engine
             return npc;
         }
 
-        public static void ClearAllNpc()
+        public static void ClearAllNpc(bool keepPartner = false)
         {
             _fileName = string.Empty;
-            _list.Clear();
+            if (keepPartner)
+            {
+                for (var node = _list.First; node != null;)
+                {
+                    var npc = node.Value;
+                    var next = node.Next;
+
+                    if (!npc.IsPartner)
+                    {
+                        _list.Remove(node);
+                    }
+                    node = next;
+                }
+            }
+            else
+            {
+                _list.Clear();
+            }
+        }
+
+        public static void ClearAllNpcAndKeepPartner()
+        {
+            ClearAllNpc(true);
         }
 
         public static bool IsEnemy(int tileX, int tileY)
@@ -529,7 +544,7 @@ namespace Engine
             {
                 var next = node.Next;
                 if (node.Value.Name == npcName &&
-                    node.Value.Kind != (int)Character.CharacterKind.Follower)
+                    !node.Value.IsPartner)
                 {
                     DeleteNpc(node);
                 }

@@ -742,6 +742,8 @@ namespace Engine.Script
         {
             WeatherManager.StopRain();
             Globals.TheMap.LoadMap(Utils.RemoveStringQuotes(parameters[0]));
+            NpcManager.ClearAllNpcAndKeepPartner();
+            ObjManager.ClearAllObjAndFileName();
         }
 
         public static void LoadNpc(List<string> parameters)
