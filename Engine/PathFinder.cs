@@ -520,6 +520,85 @@ namespace Engine
             return list;
         }
 
+
+        /// <summary>
+        /// Find all neighbors tile in radius.
+        /// </summary>
+        /// <param name="tilePosition">Begin tile position.</param>
+        /// <param name="radius">Radius to find.</param>
+        /// <returns>All finded neighbors.</returns>
+        public static LinkedList<Vector2> FindAllNeighborsInRadius(Vector2 tilePosition, int radius)
+        {
+            var list = new LinkedList<Vector2>();
+
+            if (radius > 0)
+            {
+                var workList1 = new LinkedList<Vector2>(FindAllNeighbors(tilePosition));
+                var workList2 = new LinkedList<Vector2>();
+                var visited = new LinkedList<Vector2>();
+                var is1 = true;
+
+                var maxRadius = radius + 2; // Adjust some offset
+
+                while (true)
+                {
+                    LinkedList<Vector2> workList, storeList;
+                    if (is1 && workList1.First != null)
+                    {
+                        workList = workList1;
+                        storeList = workList2;
+                    }
+                    else if (workList2.First != null)
+                    {
+                        is1 = false;
+                        workList = workList2;
+                        storeList = workList1;
+                    }
+                    else if (workList1.First != null)
+                    {
+                        is1 = true;
+                        workList = workList1;
+                        storeList = workList2;
+                    }
+                    else
+                    {
+                        break;
+                    }
+
+                    var item = workList.First.Value;
+                    var distance = GetViewTileDistance(tilePosition, item);
+                    if (distance <= radius)
+                    {
+                        if (!list.Contains(item))
+                        {
+                            list.AddLast(item);
+                            foreach (var neighbor in FindAllNeighbors(item))
+                            {
+                                if (!storeList.Contains(neighbor) && !visited.Contains(item))
+                                {
+                                    storeList.AddLast(neighbor);
+                                }
+                            }
+                        }
+                    }
+                    else if (distance <= maxRadius)
+                    {
+                        foreach (var neighbor in FindAllNeighbors(item))
+                        {
+                            if (!storeList.Contains(neighbor) && !visited.Contains(item))
+                            {
+                                storeList.AddLast(neighbor);
+                            }
+                        }
+                    }
+                    visited.AddLast(item);
+                    workList.RemoveFirst();
+                }
+            }
+
+            return list;
+        }
+
         /// <summary>
         /// Find one nonobstacle neighbor at destinationTilePosition. 
         /// If destinationTilePosition is not obstacle, destinationTilePosition is not changed, return ture.

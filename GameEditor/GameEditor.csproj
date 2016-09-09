@@ -75,6 +75,12 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RangeRadiusDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RangeRadiusDialog.Designer.cs">
+      <DependentUpon>RangeRadiusDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="GameEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -160,6 +166,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerPosDialog.resx">
       <DependentUpon>PlayerPosDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RangeRadiusDialog.resx">
+      <DependentUpon>RangeRadiusDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="RunScript.resx">
       <DependentUpon>RunScript.cs</DependentUpon>

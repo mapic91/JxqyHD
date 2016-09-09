@@ -87,6 +87,7 @@ namespace Engine
         private float _fixedPathDistanceToMove;
         private Vector2 _fixedPathMoveDestinationPixelPostion = Vector2.Zero;
         private readonly LinkedList<Npc> _summonedNpcs = new LinkedList<Npc>();
+        private int _rangeRadiusToShow;
 
         /// <summary>
         /// List of the fixed path tile position.
@@ -2401,6 +2402,11 @@ namespace Engine
         {
             FollowTarget = null;
         }
+
+        public void ShowRangeRadius(int radius)
+        {
+            _rangeRadiusToShow = radius;
+        }
         #endregion Character state set and get method
 
         #region Update Draw
@@ -2664,24 +2670,64 @@ namespace Engine
             Draw(spriteBatch, GetCurrentTexture());
         }
 
+
+        private Color _radiusTileColorCached = Color.Black;
+        private Vector2 _radiusRangeLastTilePosition;
+        private LinkedList<Vector2> _lastRadiusTileTilesCached;
         public virtual void Draw(SpriteBatch spriteBatch, Texture2D texture)
         {
-            if (IsDeath || IsHide || IsInTransport) return;
-            var color = DrawColor;
-            if (FrozenSeconds > 0)
-                color = new Color(80, 80, 255);
-            if (PoisonSeconds > 0)
-                color = new Color(50, 255, 50);
-            if (PetrifiedSeconds > 0)
+            if (!(IsDeath || IsHide || IsInTransport))
             {
-                spriteBatch.End();
-                JxqyGame.BeginSpriteBatch(spriteBatch,Globals.TheGame.GrayScaleEffect);
+                var color = DrawColor;
+                if (FrozenSeconds > 0)
+                    color = new Color(80, 80, 255);
+                if (PoisonSeconds > 0)
+                    color = new Color(50, 255, 50);
+                if (PetrifiedSeconds > 0)
+                {
+                    spriteBatch.End();
+                    JxqyGame.BeginSpriteBatch(spriteBatch, Globals.TheGame.GrayScaleEffect);
+                }
+                base.Draw(spriteBatch, texture, color);
+                if (PetrifiedSeconds > 0)
+                {
+                    spriteBatch.End();
+                    JxqyGame.BeginSpriteBatch(spriteBatch);
+                }
             }
-            base.Draw(spriteBatch, texture, color);
-            if (PetrifiedSeconds > 0)
+
+            if (_rangeRadiusToShow > 0)
             {
-                spriteBatch.End();
-                JxqyGame.BeginSpriteBatch(spriteBatch);
+                if (_radiusRangeLastTilePosition != TilePosition || _lastRadiusTileTilesCached == null)
+                {
+                    _lastRadiusTileTilesCached = Engine.PathFinder.FindAllNeighborsInRadius(
+                        TilePosition,
+                        _rangeRadiusToShow);
+                }
+
+                if (_radiusTileColorCached == Color.Black)
+                {
+                    _radiusTileColorCached = new Color(
+                        Globals.TheRandom.Next(80, 250),
+                        Globals.TheRandom.Next(0, 200),
+                        Globals.TheRandom.Next(70, 200),
+                        180);
+                }
+
+                const int width = 10;
+                const int height = 10;
+                foreach (var tilePositon in _lastRadiusTileTilesCached)
+                {
+                    var pixelPosition = Map.ToPixelPosition(tilePositon);
+                    var worldRegion = new Rectangle((int)pixelPosition.X - width / 2,
+                        (int)pixelPosition.Y - height / 2,
+                        width,
+                        height);
+                    var screenRegion = Globals.TheCarmera.ToViewRegion(worldRegion);
+                    InfoDrawer.DrawRectangle(spriteBatch,
+                        screenRegion,
+                        tilePositon == TilePosition ? Color.Gold : _radiusTileColorCached);
+                }
             }
         }
         #endregion Update Draw

@@ -381,5 +381,25 @@ namespace GameEditor
         {
 
         }
+
+        private void showRangeInRadiusToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (var posDialog = new RangeRadiusDialog())
+            {
+                if (posDialog.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        var radius = int.Parse(posDialog.RangeRadiusText.Text);
+
+                        Globals.PlayerKindCharacter.ShowRangeRadius(radius);
+                    }
+                    catch (Exception)
+                    {
+                        //Do nothing
+                    }
+                }
+            }
+        }
     }
 }
