@@ -27,14 +27,53 @@ namespace Engine.Gui
 
         private void InitializeItems()
         {
-            _items[0] = new DragDropItem(this, new Vector2(7, 20), 30, 40, null, new GoodsGui.GoodItemData(221));
-            _items[1] = new DragDropItem(this, new Vector2(44, 20), 30, 40, null, new GoodsGui.GoodItemData(222));
-            _items[2] = new DragDropItem(this, new Vector2(82, 20), 30, 40, null, new GoodsGui.GoodItemData(223));
-            _items[3] = new DragDropItem(this, new Vector2(199, 20), 30, 40, null, new MagicGui.MagicItemData(40));
-            _items[4] = new DragDropItem(this, new Vector2(238, 20), 30, 40, null, new MagicGui.MagicItemData(41));
-            _items[5] = new DragDropItem(this, new Vector2(277, 20), 30, 40, null, new MagicGui.MagicItemData(42));
-            _items[6] = new DragDropItem(this, new Vector2(316, 20), 30, 40, null, new MagicGui.MagicItemData(43));
-            _items[7] = new DragDropItem(this, new Vector2(354, 20), 30, 40, null, new MagicGui.MagicItemData(44));
+            var cfg = GuiManager.Setttings.Sections["Bottom_Items"];
+            _items[0] = new DragDropItem(this, 
+                new Vector2(int.Parse(cfg["Item_Left_1"]), int.Parse(cfg["Item_Top_1"])),
+                int.Parse(cfg["Item_Width_1"]),
+                int.Parse(cfg["Item_Height_1"]), 
+                null, 
+                new GoodsGui.GoodItemData(221));
+            _items[1] = new DragDropItem(this, 
+                new Vector2(int.Parse(cfg["Item_Left_2"]), int.Parse(cfg["Item_Top_2"])),
+                int.Parse(cfg["Item_Width_2"]),
+                int.Parse(cfg["Item_Height_2"]), null, new GoodsGui.GoodItemData(222));
+            _items[2] = new DragDropItem(this, 
+                new Vector2(int.Parse(cfg["Item_Left_3"]), int.Parse(cfg["Item_Top_3"])),
+                int.Parse(cfg["Item_Width_3"]),
+                int.Parse(cfg["Item_Height_3"]), 
+                null, 
+                new GoodsGui.GoodItemData(223));
+            _items[3] = new DragDropItem(this, 
+                new Vector2(int.Parse(cfg["Item_Left_4"]), int.Parse(cfg["Item_Top_4"])),
+                int.Parse(cfg["Item_Width_4"]),
+                int.Parse(cfg["Item_Height_4"]), 
+                null, 
+                new MagicGui.MagicItemData(40));
+            _items[4] = new DragDropItem(this, 
+                new Vector2(int.Parse(cfg["Item_Left_5"]), int.Parse(cfg["Item_Top_5"])),
+                int.Parse(cfg["Item_Width_5"]),
+                int.Parse(cfg["Item_Height_5"]), 
+                null, 
+                new MagicGui.MagicItemData(41));
+            _items[5] = new DragDropItem(this,
+                new Vector2(int.Parse(cfg["Item_Left_6"]), int.Parse(cfg["Item_Top_6"])),
+                int.Parse(cfg["Item_Width_6"]),
+                int.Parse(cfg["Item_Height_6"]), 
+                null, 
+                new MagicGui.MagicItemData(42));
+            _items[6] = new DragDropItem(this, 
+                new Vector2(int.Parse(cfg["Item_Left_7"]), int.Parse(cfg["Item_Top_7"])),
+                int.Parse(cfg["Item_Width_7"]),
+                int.Parse(cfg["Item_Height_7"]), 
+                null, 
+                new MagicGui.MagicItemData(43));
+            _items[7] = new DragDropItem(this, 
+                new Vector2(int.Parse(cfg["Item_Left_8"]), int.Parse(cfg["Item_Top_8"])),
+                int.Parse(cfg["Item_Width_8"]),
+                int.Parse(cfg["Item_Height_8"]), 
+                null, 
+                new MagicGui.MagicItemData(44));
 
             for (var i = 0; i < 3; i++)
             {
