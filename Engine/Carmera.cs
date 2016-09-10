@@ -15,6 +15,7 @@ namespace Engine
         private int _moveSpeed;
         private int _leftMoveFrames;
         private Vector2 _moveDirection = Vector2.Zero;
+        private Vector2 _totalMovedDistance = Vector2.Zero;
         private Vector2 _lastPlayerPosition;
         private Character _lastPlayer;
         private Vector2 _moveToBeginDestination;
@@ -161,8 +162,20 @@ namespace Engine
         {
             if (_leftMoveFrames > 0)
             {
-                CarmeraBeginPositionInWorld += _moveDirection*_moveSpeed;
-                _leftMoveFrames--;
+                _totalMovedDistance += _moveDirection*_moveSpeed*2;
+                var distance = Vector2.Zero;
+                if (_totalMovedDistance.X >= 1 || _totalMovedDistance.X <= -1)
+                {
+                    distance.X = (int)_totalMovedDistance.X;
+                    _totalMovedDistance.X -= distance.X;
+                }
+                if (_totalMovedDistance.Y >= 1 || _totalMovedDistance.Y <= -1)
+                {
+                    distance.Y = (int)_totalMovedDistance.Y;
+                    _totalMovedDistance.Y -= distance.Y;
+                }
+                CarmeraBeginPositionInWorld += distance;
+                _leftMoveFrames -= 1;
             }
         }
 
@@ -290,6 +303,7 @@ namespace Engine
             _leftMoveFrames = keepFrameCount;
             _moveSpeed = speed;
             _moveDirection = direction;
+            _totalMovedDistance = Vector2.Zero;
         }
 
         /// <summary>
