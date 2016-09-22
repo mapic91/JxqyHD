@@ -145,6 +145,14 @@ namespace Engine
             set { _offY = value; }
         }
 
+        public override Vector2 ReginInWorldBeginPosition
+        {
+            get
+            {
+                return base.ReginInWorldBeginPosition + new Vector2(_offX, _offY);
+            }
+        }
+
         public bool IsObstacle
         {
             get

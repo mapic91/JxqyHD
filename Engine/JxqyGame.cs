@@ -64,6 +64,7 @@ namespace Engine
             Content.RootDirectory = "Content";
             IsMouseVisible = false;
             _graphics.IsFullScreen = false;
+            _graphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
             GameState.State = GameState.StateType.Start;
         }
 
@@ -194,8 +195,9 @@ namespace Engine
             // displacement texture scroll in a giant circle.
             _waterEffect.Parameters["DisplacementScroll"].SetValue(
                                             MoveInCircle(gameTime, 0.2f));
-                // Set the displacement texture.
-                _graphics.GraphicsDevice.Textures[1] = _waterfallTexture;
+            // Set the displacement texture.
+            GraphicsDevice.SamplerStates[1] = SamplerState.LinearClamp;
+            _graphics.GraphicsDevice.Textures[1] = _waterfallTexture;
 
                 _spriteBatch.Begin(SpriteSortMode.Deferred,
                     null,

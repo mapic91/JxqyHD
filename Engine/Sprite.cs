@@ -223,10 +223,20 @@ namespace Engine
         {
             get
             {
-                return new Rectangle((int)PositionInWorld.X - Texture.Left,
-                    (int)PositionInWorld.Y - Texture.Bottom
+                var reginInWorldPosition = ReginInWorldBeginPosition;
+                return new Rectangle((int)reginInWorldPosition.X
+                    , (int)reginInWorldPosition.Y
                     , Width
                     , Height);
+            }
+        }
+
+        public virtual Vector2 ReginInWorldBeginPosition
+        {
+            get
+            {
+                return new Vector2((int)PositionInWorld.X - Texture.Left,
+                    (int)PositionInWorld.Y - Texture.Bottom);
             }
         }
 
