@@ -20,7 +20,6 @@ namespace Engine.Gui
         private const int IndexBegin = 1;
         private const int IndexEnd = 7;
 
-        public Texture2D Snapshot;
         public bool CanSave { set; get; }
 
         public override bool IsShow
@@ -40,11 +39,6 @@ namespace Engine.Gui
                 {
                     //Clear message.
                     _message.Text = string.Empty;
-                    if (Snapshot != null)
-                    {
-                        Snapshot.Dispose();
-                        Snapshot = null;
-                    }
                 }
             } 
         }
@@ -172,7 +166,15 @@ namespace Engine.Gui
                     }
 
                     var index = _list.SelectionIndex + 1;
-                    Saver.SaveGame(index, Snapshot);
+
+                    var show = GuiManager.IsShow;
+                    //Hide GUI when take snapshot
+                    GuiManager.IsShow = false;
+                    var snapshot = Globals.TheGame.TakeSnapShot();
+                    //Restore
+                    GuiManager.IsShow = show;
+
+                    Saver.SaveGame(index, snapshot);
 
                     IsShow = false;
                     GuiManager.ShowSystem(false);

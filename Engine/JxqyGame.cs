@@ -107,12 +107,7 @@ namespace Engine
                     _pictureBox.Height;
                 _graphics.ApplyChanges();
 
-                _renderTarget = new RenderTarget2D(GraphicsDevice,
-                Globals.WindowWidth,
-                Globals.WindowHeight,
-                false,
-                SurfaceFormat.Color,
-                DepthFormat.Depth24Stencil8);
+                ReCreateRenderTarget();
 
                 GuiManager.Adjust(_pictureBox.Width, _pictureBox.Height);
             }
@@ -368,6 +363,22 @@ namespace Engine
             base.Initialize();
         }
 
+        private void ReCreateRenderTarget()
+        {
+            _renderTarget = new RenderTarget2D(GraphicsDevice,
+                Globals.WindowWidth,
+                Globals.WindowHeight,
+                false,
+                SurfaceFormat.Color,
+                DepthFormat.Depth24Stencil8);
+            _snapShotRenderTarget = new RenderTarget2D(GraphicsDevice,
+                GraphicsDevice.PresentationParameters.BackBufferWidth,
+                GraphicsDevice.PresentationParameters.BackBufferHeight,
+                false,
+                SurfaceFormat.Color,
+                DepthFormat.Depth24Stencil8);
+        }
+
         /// <summary>
         /// LoadContent will be called once per game and is the place to load
         /// all of your content.
@@ -376,12 +387,7 @@ namespace Engine
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             LoadEffect();
-            _renderTarget = new RenderTarget2D(GraphicsDevice,
-                Globals.WindowWidth,
-                Globals.WindowHeight,
-                false,
-                SurfaceFormat.Color,
-                DepthFormat.Depth24Stencil8);
+            ReCreateRenderTarget();
             Globals.FontSize7 = Content.Load<SpriteFont>(@"font\ASCII_Verdana_7_Bold");
             Globals.FontSize10 = Content.Load<SpriteFont>(@"font\GB2312_ASCII_迷你简细圆_10");
             Globals.FontSize12 = Content.Load<SpriteFont>(@"font\GB2312_ASCII_迷你简细圆_12");
@@ -543,12 +549,6 @@ namespace Engine
         public Texture2D TakeSnapShot()
         {
             _isInSnapShot = true;
-            _snapShotRenderTarget = new RenderTarget2D(GraphicsDevice,
-                GraphicsDevice.PresentationParameters.BackBufferWidth,
-                GraphicsDevice.PresentationParameters.BackBufferHeight,
-                false,
-                SurfaceFormat.Color, 
-                DepthFormat.Depth24Stencil8);
             GraphicsDevice.SetRenderTarget(_snapShotRenderTarget);
             Draw(new GameTime());
             GraphicsDevice.SetRenderTarget(null);

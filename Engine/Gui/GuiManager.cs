@@ -327,15 +327,6 @@ namespace Engine.Gui
         {
             SaveLoadInterface.IsShow = isShow;
             SaveLoadInterface.CanSave = canSave;
-            if (isShow && canSave)
-            {
-                var show = IsShow;
-                //Hide GUI when take snapshot
-                IsShow = false;
-                SaveLoadInterface.Snapshot = Globals.TheGame.TakeSnapShot();
-                //Restore
-                IsShow = show;
-            }
 
             if (!isShow)
             {
