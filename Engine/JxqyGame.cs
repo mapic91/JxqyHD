@@ -42,12 +42,19 @@ namespace Engine
 
         public Effect GrayScaleEffect;
         public Effect OutEdgeEffect;
+        public Effect TransparentEffect;
+        public Effect AlphaTestEffect;
 
         public bool IsInEditMode { private set; get; }
         public bool IsPaused { get; set; }
         public bool IsGamePlayPaused { get; set; }
         public KeyboardState LastKeyboardState { private set; get; }
         public MouseState LastMouseState { private set; get; }
+
+        public GraphicsDeviceManager Graphics
+        {
+            get { return _graphics; }
+        }
 
         /// <summary>
         /// Indicates weather game window is lost focus.
@@ -102,7 +109,10 @@ namespace Engine
 
                 _renderTarget = new RenderTarget2D(GraphicsDevice,
                 Globals.WindowWidth,
-                Globals.WindowHeight);
+                Globals.WindowHeight,
+                false,
+                SurfaceFormat.Color,
+                DepthFormat.Depth24Stencil8);
 
                 GuiManager.Adjust(_pictureBox.Width, _pictureBox.Height);
             }
@@ -175,6 +185,8 @@ namespace Engine
 
             GrayScaleEffect = Content.Load<Effect>(@"effect\grayscale");
             OutEdgeEffect = Content.Load<Effect>(@"effect\outedge");
+            TransparentEffect = Content.Load<Effect>(@"effect\Transparent");
+            AlphaTestEffect = Content.Load<Effect>(@"effect\AlphaTest");
         }
 
         private void WaterEffectBegin()
@@ -366,7 +378,10 @@ namespace Engine
             LoadEffect();
             _renderTarget = new RenderTarget2D(GraphicsDevice,
                 Globals.WindowWidth,
-                Globals.WindowHeight);
+                Globals.WindowHeight,
+                false,
+                SurfaceFormat.Color,
+                DepthFormat.Depth24Stencil8);
             Globals.FontSize7 = Content.Load<SpriteFont>(@"font\ASCII_Verdana_7_Bold");
             Globals.FontSize10 = Content.Load<SpriteFont>(@"font\GB2312_ASCII_迷你简细圆_10");
             Globals.FontSize12 = Content.Load<SpriteFont>(@"font\GB2312_ASCII_迷你简细圆_12");
@@ -530,7 +545,10 @@ namespace Engine
             _isInSnapShot = true;
             _snapShotRenderTarget = new RenderTarget2D(GraphicsDevice,
                 GraphicsDevice.PresentationParameters.BackBufferWidth,
-                GraphicsDevice.PresentationParameters.BackBufferHeight);
+                GraphicsDevice.PresentationParameters.BackBufferHeight,
+                false,
+                SurfaceFormat.Color, 
+                DepthFormat.Depth24Stencil8);
             GraphicsDevice.SetRenderTarget(_snapShotRenderTarget);
             Draw(new GameTime());
             GraphicsDevice.SetRenderTarget(null);

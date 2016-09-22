@@ -1142,16 +1142,39 @@ namespace Engine
             base.Update(gameTime);
         }
 
+        private static readonly BlendState NoWriteColorBlendState = new BlendState()
+        {
+            ColorWriteChannels = ColorWriteChannels.None,
+        };
+
+        private static readonly DepthStencilState StencilStateMask = new DepthStencilState()
+        {
+            StencilEnable = true,
+            StencilFunction = CompareFunction.Always,
+            StencilPass = StencilOperation.Replace,
+            ReferenceStencil = 1,
+            //DepthBufferEnable = false,
+        };
+
+        private static readonly DepthStencilState StencilStateDrawOpaque = new DepthStencilState()
+        {
+            StencilEnable = true,
+            StencilFunction = CompareFunction.Equal,
+            ReferenceStencil = 0,
+            //DepthBufferEnable = false,
+        };
+
+        private static readonly DepthStencilState StencilStateDrawHalfTransparent = new DepthStencilState()
+        {
+            StencilEnable = true,
+            StencilFunction = CompareFunction.Equal,
+            ReferenceStencil = 1,
+        };
+
         public override void Draw(SpriteBatch spriteBatch)
         {
             var texture = GetCurrentTexture();
             if (texture == null) return;
-
-            //Make new texture is case of texture be locked after draw
-            var data = new Color[texture.Width * texture.Height];
-            texture.GetData(data);
-            texture = new Texture2D(texture.GraphicsDevice, texture.Width, texture.Height);
-            texture.SetData(data);
 
             var tilePosition = new Vector2(MapX, MapY);
             var start = tilePosition - new Vector2(3, 15);
@@ -1162,16 +1185,15 @@ namespace Engine
             if (end.Y > Globals.TheMap.MapRowCounts) end.Y = Globals.TheMap.MapRowCounts;
             var textureRegion = new Rectangle();
             var region = RegionInWorld;
-            foreach (var npc in NpcManager.NpcsInView)
-            {
-                if (npc.MapY > MapY && !npc.IsHide)
-                    Collider.MakePixelCollidedTransparent(region, texture, npc.RegionInWorld, npc.GetCurrentTexture());
-            }
-            foreach (var magicSprite in MagicManager.MagicSpritesInView)
-            {
-                if (magicSprite.MapY >= MapY)
-                    Collider.MakePixelCollidedTransparent(region, texture, magicSprite.RegionInWorld, magicSprite.GetCurrentTexture());
-            }
+            const int maxSamplerTextures = 10;
+            int currentCount = 0;
+
+            //Enable stencile
+            spriteBatch.End();
+            var alphaTestEffect = Globals.TheGame.AlphaTestEffect;
+            alphaTestEffect.Parameters["MinAlpha"].SetValue(0.0f);
+            spriteBatch.Begin(SpriteSortMode.Immediate, NoWriteColorBlendState, null, StencilStateMask,null, alphaTestEffect);
+
             for (var y = (int)start.Y; y < (int)end.Y; y++)
             {
                 for (var x = (int)start.X; x < (int)end.X; x++)
@@ -1180,13 +1202,66 @@ namespace Engine
                     if (y > MapY)
                     {
                         tileTexture = Globals.TheMap.GetTileTextureAndRegion(x, y, 1, ref textureRegion);
-                        Collider.MakePixelCollidedTransparent(region, texture, textureRegion, tileTexture);
+                        if (tileTexture != null && Collider.IsBoxCollide(region, textureRegion))
+                        {
+                            Globals.TheMap.DrawTile(spriteBatch, tileTexture, new Vector2(x,y));
+                            currentCount++;
+                        }
                     }
                     tileTexture = Globals.TheMap.GetTileTextureAndRegion(x, y, 2, ref textureRegion);
-                    Collider.MakePixelCollidedTransparent(region, texture, textureRegion, tileTexture);
+                    if (tileTexture != null && Collider.IsBoxCollide(region, textureRegion))
+                    {
+                        Globals.TheMap.DrawTile(spriteBatch, tileTexture, new Vector2(x, y));
+                        currentCount++;
+                    }
                 }
             }
-            base.Draw(spriteBatch, texture);
+            foreach (var npc in NpcManager.NpcsInView)
+            {
+                if (currentCount >= maxSamplerTextures) break;
+
+                if (npc.MapY > MapY && !npc.IsHide)
+                {
+                    if (Collider.IsBoxCollide(region, npc.RegionInWorld))
+                    {
+                        npc.Draw(spriteBatch);
+                        currentCount++;
+                    }
+                }
+            }
+            foreach (var magicSprite in MagicManager.MagicSpritesInView)
+            {
+                if (currentCount >= maxSamplerTextures) break;
+                if (magicSprite.MapY >= MapY)
+                {
+                    if (Collider.IsBoxCollide(region, magicSprite.RegionInWorld))
+                    {
+                        magicSprite.Draw(spriteBatch);
+                        currentCount++;
+                    }
+                }
+            }
+            spriteBatch.End();
+
+            if (currentCount > 0)
+            {
+                spriteBatch.Begin(SpriteSortMode.Immediate, null, null, StencilStateDrawOpaque, null);
+                base.Draw(spriteBatch, texture);
+                spriteBatch.End();
+                var halfTransparentEffect = Globals.TheGame.TransparentEffect;
+                halfTransparentEffect.Parameters["alpha"].SetValue(0.5f);
+                spriteBatch.Begin(SpriteSortMode.Immediate, null, null, StencilStateDrawHalfTransparent, null, halfTransparentEffect);
+                base.Draw(spriteBatch, texture);
+                spriteBatch.End();
+
+                Globals.TheGame.GraphicsDevice.Clear(ClearOptions.Stencil, Color.Black, 0, 0);
+                JxqyGame.BeginSpriteBatch(spriteBatch);
+            }
+            else
+            {
+                JxqyGame.BeginSpriteBatch(spriteBatch);
+                base.Draw(spriteBatch, texture);
+            }
 
             if (Globals.OutEdgeSprite != null &&
                 !(Globals.OutEdgeNpc != null && Globals.OutEdgeNpc.IsHide))

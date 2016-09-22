@@ -487,7 +487,7 @@ namespace Engine
             return GetTileTrapScriptParser((int)tilePosition.X, (int)tilePosition.Y, out trapIndex);
         }
 
-        public void DrawTile(SpriteBatch spriteBatch, Texture2D texture, Vector2 tilePos, float depth)
+        public void DrawTile(SpriteBatch spriteBatch, Texture2D texture, Vector2 tilePos, float depth = 1.0f)
         {
             if (texture == null) return;
             Vector2 tileBegPixelPos = ToPixelPosition(tilePos);
