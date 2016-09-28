@@ -7,6 +7,7 @@ namespace Engine
     public class Good
     {
         private int _cost;
+        private int _sellPrice;
         private int _specialEffectValue = 1;
         public string FileName { set; get; }
         public string Name { set; get; }
@@ -124,6 +125,12 @@ namespace Engine
                 }
                 return _cost;
             }
+        }
+
+        public int SellPrice
+        {
+            get { return _sellPrice > 0 ? _sellPrice : Cost / 2; }
+            set { _sellPrice = value; }
         }
 
         public Good(string filePath)

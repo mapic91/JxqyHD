@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text.RegularExpressions;
 using Engine.Gui;
 using Engine.ListManager;
@@ -1848,6 +1849,23 @@ namespace Engine.Script
         {
             var variable = parameters[0];
             Variables[variable] = Globals.ThePlayer.Exp;
+        }
+
+        public static void ClearAllVar(List<string> parameters)
+        {
+            var keeps = new Dictionary<string, int>();
+            foreach (var key in parameters)
+            {
+                if (Variables.ContainsKey(key))
+                {
+                    keeps[key] = Variables[key];
+                }
+            }
+            Variables.Clear();
+            foreach (var kv in keeps)
+            {
+                Variables[kv.Key] = kv.Value;
+            }
         }
     }
 }

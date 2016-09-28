@@ -63,9 +63,9 @@ namespace Engine.Gui
 
             if (GuiManager.BuyInterface.IsShow)
             {
-                if (good.Cost > 0)
+                if (good.SellPrice > 0)
                 {
-                    Globals.ThePlayer.AddMoneyValue(good.Cost/2);
+                    Globals.ThePlayer.AddMoneyValue(good.SellPrice);
                     GuiManager.DeleteGood(good.FileName);
                     GuiManager.BuyInterface.AddGood(good);
                 }

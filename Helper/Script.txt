@@ -432,10 +432,10 @@ GetPartnerIdx($PartnerNo);
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 扩展：
-DisplayMessage(a)
+DisplayMessage(a);
 DisplayMessage("消息");
 
-GetPlayerExp(a)
+GetPlayerExp(a);
 获取当前主角的经验值，并存入变量a，比如：
 GetPlayerExp($Exp)
 
@@ -444,6 +444,13 @@ Choose的扩展版本，Choose只可以2选1，ChooseEx可以多选1，比如：
 ChooseEx("请选择：","选择1","选择2","选择3",$XuanZhe);
 ChooseEx("请选择：","选择1","选择2","选择3","选择4","选择5",$XuanZhe);
 ChooseEx("请选择：","选择1","选择2","选择3","选择4","选择5","选择6",$XuanZhe);
+
+ClearAllVar($var1, $var2 ...);
+清除所有变量，除了 $var1, $var2 ...（可设置0-n个）
+比如：
+ClearAllVar();                  -   清除所有变量
+ClearAllVar($exp);              -   除了变量$exp，清除所有其它变量
+ClearAllVar($exp, $event);      -   除了变量$exp，$event，清除所有其它变量
 ///////////////////////////////////////////////////////////////////
 //////////////////    Implemented   End  /////////////////////////
 /////////////////////////////////////////////////////////////////

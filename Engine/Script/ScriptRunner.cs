@@ -582,6 +582,9 @@ namespace Engine.Script
                         case "GetExp":
                             ScriptExecuter.GetPlayerExp(parameters);
                             break;
+                        case "ClearAllVar":
+                            ScriptExecuter.ClearAllVar(parameters);
+                            break;
                         default:
                             throw new Exception("无此函数");
                     }
