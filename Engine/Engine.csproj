@@ -66,6 +66,10 @@
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Net" />
+    <Reference Include="TiledSharp, Version=0.15.5889.20321, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TiledSharp.0.15\lib\TiledSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Asf.cs" />
@@ -87,6 +91,8 @@
     <Compile Include="Gui\LittleHeadGui.cs" />
     <Compile Include="Gui\SelectionGui.cs" />
     <Compile Include="MagicRegionFileReader.cs" />
+    <Compile Include="Map\JxqyMap.cs" />
+    <Compile Include="Map\TiledMap.cs" />
     <Compile Include="MouseScrollHandler.cs" />
     <Compile Include="Gui\BottomGui.cs" />
     <Compile Include="Gui\BuyGui.cs" />
@@ -127,7 +133,7 @@
     <Compile Include="Magic.cs" />
     <Compile Include="MagicManager.cs" />
     <Compile Include="MagicSprite.cs" />
-    <Compile Include="Map.cs" />
+    <Compile Include="Map\MapBase.cs" />
     <Compile Include="Message\MessageDelegater.cs" />
     <Compile Include="Mpc.cs" />
     <Compile Include="Npc.cs" />

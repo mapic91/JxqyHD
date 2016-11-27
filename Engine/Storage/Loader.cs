@@ -1,6 +1,7 @@
 ﻿using System;
 using Engine.Gui;
 using Engine.ListManager;
+using Engine.Map;
 using Engine.Script;
 using Engine.Weather;
 using IniParser;
@@ -19,7 +20,7 @@ namespace Engine.Storage
 
                 //state
                 var state = data["State"];
-                Globals.TheMap.LoadMap(state["Map"]);
+                MapBase.OpenMap(state["Map"]);
                 NpcManager.Load(state["Npc"]);
                 ObjManager.Load(state["Obj"]);
                 BackgroundMusic.Play(state["Bgm"]);
@@ -27,7 +28,7 @@ namespace Engine.Storage
 
                 //option
                 var option = data["Option"];
-                Map.MapTime = int.Parse(option["MapTime"]);
+                MapBase.MapTime = int.Parse(option["MapTime"]);
                 WeatherManager.ShowSnow(int.Parse(option["SnowShow"]) != 0);
                 if (!string.IsNullOrEmpty(option["RainFile"]))
                 {
@@ -43,11 +44,11 @@ namespace Engine.Storage
                 }
                 if (string.IsNullOrEmpty(option["MpcStyle"]))
                 {
-                    Map.DrawColor = Color.White;
+                    MapBase.DrawColor = Color.White;
                 }
                 else
                 {
-                    Map.DrawColor = StorageBase.GetColorFromString(option["MpcStyle"]);
+                    MapBase.DrawColor = StorageBase.GetColorFromString(option["MpcStyle"]);
                 }
                 if (string.IsNullOrEmpty(option["AsfStyle"]))
                 {
@@ -132,12 +133,12 @@ namespace Engine.Storage
 
         private static void LoadTraps()
         {
-            Globals.TheMap.LoadTrap(StorageBase.TrapsFilePath);
+            MapBase.LoadTrap(StorageBase.TrapsFilePath);
         }
 
         private static void LoadTrapIgnoreList()
         {
-            Globals.TheMap.LoadTrapIndexIgnoreList(StorageBase.TrapIndexIgnoreListFilePath);
+            MapBase.LoadTrapIndexIgnoreList(StorageBase.TrapIndexIgnoreListFilePath);
         }
 
         /// <summary>
@@ -154,7 +155,7 @@ namespace Engine.Storage
                 MagicManager.Clear();
                 NpcManager.ClearAllNpc();
                 ObjManager.ClearAllObjAndFileName();
-                Globals.TheMap.Free();
+                MapBase.Free();
                 GuiManager.CloseTimeLimit();
                 GuiManager.EndDialog();
                 BackgroundMusic.Stop();

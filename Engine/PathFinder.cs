@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Engine.Benchmark;
+using Engine.Map;
 using Microsoft.Xna.Framework;
 
 namespace Engine
@@ -26,11 +27,11 @@ namespace Engine
             {
                 var path = new LinkedList<Vector2>();
                 var current = endTile;
-                path.AddFirst(Map.ToPixelPosition(current));
+                path.AddFirst(MapBase.ToPixelPosition(current));
                 while (current != startTile)
                 {
                     current = cameFrom[current];
-                    path.AddFirst(Map.ToPixelPosition(current));
+                    path.AddFirst(MapBase.ToPixelPosition(current));
                 }
                 return path;
             }
@@ -40,7 +41,7 @@ namespace Engine
         public static bool HasObstacle(Character finder, Vector2 tilePosition)
         {
             return (finder.HasObstacle(tilePosition) ||
-                    Globals.TheMap.IsObstacleForCharacter(tilePosition));
+                    MapBase.Instance.IsObstacleForCharacter(tilePosition));
         }
 
         /// <summary>
@@ -81,19 +82,19 @@ namespace Engine
             if (finder == null) return null;
             if (startTile == endTile) return null;
 
-            if (Globals.TheMap.IsObstacleForCharacter(endTile))
+            if (MapBase.Instance.IsObstacleForCharacter(endTile))
                 return null;
 
             var path = new LinkedList<Vector2>();
             var visted = new LinkedList<Vector2>();
 
-            var endPositon = Map.ToPixelPosition(endTile);
-            path.AddLast(Map.ToPixelPosition(startTile));
+            var endPositon = MapBase.ToPixelPosition(endTile);
+            path.AddLast(MapBase.ToPixelPosition(startTile));
             var current = startTile;
             var maxTry = 100;// For performance
             while (maxTry-- > 0)
             {
-                var direction = Utils.GetDirectionIndex(endPositon - Map.ToPixelPosition(current), 8);
+                var direction = Utils.GetDirectionIndex(endPositon - MapBase.ToPixelPosition(current), 8);
                 var neighbors = FindAllNeighbors(current);
                 var removeList = GetObstacleIndexList(neighbors);
                 var index = -1;
@@ -122,7 +123,7 @@ namespace Engine
                     break;
                 }
                 current = neighbors[index];
-                path.AddLast(Map.ToPixelPosition(current));
+                path.AddLast(MapBase.ToPixelPosition(current));
                 visted.AddLast(current);
 
                 if (path.Count > stepCount || current == endTile)
@@ -139,7 +140,7 @@ namespace Engine
         {
             if (startTile == endTile) return null;
 
-            if (Globals.TheMap.IsObstacleForCharacter(endTile))
+            if (MapBase.Instance.IsObstacleForCharacter(endTile))
                 return null;
 
             var cameFrom = new Dictionary<Vector2, Vector2>();
@@ -185,7 +186,7 @@ namespace Engine
             {
                 if(maxTry-- < 0) break;
                 var current = frontier.DeleteMin().Location;
-                path.AddLast(tilePositon? current : Map.ToPixelPosition(current));
+                path.AddLast(tilePositon? current : MapBase.ToPixelPosition(current));
                 if (current == endTile) break;
                 foreach (var neighbor in FindAllNeighbors(current))
                 {
@@ -200,7 +201,7 @@ namespace Engine
             if (tilePositionList == null) return true;
             foreach (var tilePostion in tilePositionList)
             {
-                if (Globals.TheMap.IsObstacleForCharacter(tilePostion))
+                if (MapBase.Instance.IsObstacleForCharacter(tilePostion))
                 {
                     return true;
                 }
@@ -276,7 +277,7 @@ namespace Engine
 
             if (startTile != endTile)
             {
-                if (Globals.TheMap.IsObstacleForMagic(endTile)) return false;
+                if (MapBase.Instance.IsObstacleForMagic(endTile)) return false;
 
                 var path = new LinkedList<Vector2>();
                 var frontier = new C5.IntervalHeap<Node<Vector2>>();
@@ -286,7 +287,7 @@ namespace Engine
                     var current = frontier.DeleteMin().Location;
                     if (current == endTile) return true;
 
-                    if (Globals.TheMap.IsObstacle(current) || visionRadius < 0) return false;
+                    if (MapBase.Instance.IsObstacle(current) || visionRadius < 0) return false;
 
                     path.AddLast(current);
                     foreach (var neighbor in FindAllNeighbors(current))
@@ -306,7 +307,7 @@ namespace Engine
         {
             if (startTile == endTile) return null;
 
-            if (Globals.TheMap.IsObstacleForCharacter(endTile))
+            if (MapBase.Instance.IsObstacleForCharacter(endTile))
                 return null;
 
             var cameFrom = new Dictionary<Vector2, Vector2>();
@@ -414,7 +415,7 @@ namespace Engine
 
         public static float GetTilePositionCost(Vector2 fromTile, Vector2 toTile)
         {
-            return Vector2.Distance(Map.ToPixelPosition(fromTile), Map.ToPixelPosition(toTile));
+            return Vector2.Distance(MapBase.ToPixelPosition(fromTile), MapBase.ToPixelPosition(toTile));
         }
 
         /// <summary>
@@ -456,10 +457,10 @@ namespace Engine
             var count = neighborList.Count;
             for (var i = 0; i < count; i++)
             {
-                if (Globals.TheMap.IsObstacleForCharacter(neighborList[i]))
+                if (MapBase.Instance.IsObstacleForCharacter(neighborList[i]))
                 {
                     removeList.Add(i);
-                    if (Globals.TheMap.IsObstacle(neighborList[i]))
+                    if (MapBase.Instance.IsObstacle(neighborList[i]))
                     {
                         switch (i)
                         {
@@ -611,13 +612,13 @@ namespace Engine
         public static bool FindNonobstacleNeighborOrItself(Character finder, ref Vector2 destinationTilePosition)
         {
             if (finder.HasObstacle(destinationTilePosition) ||
-                Globals.TheMap.IsObstacleForCharacter(destinationTilePosition))
+                MapBase.Instance.IsObstacleForCharacter(destinationTilePosition))
             {
                 var neighbors = FindAllNeighbors(destinationTilePosition);
                 foreach (var neighbor in neighbors)
                 {
                     if (!finder.HasObstacle(neighbor) &&
-                        !Globals.TheMap.IsObstacleForCharacter(neighbor))
+                        !MapBase.Instance.IsObstacleForCharacter(neighbor))
                     {
                         destinationTilePosition = neighbor;
                         return true;
@@ -684,7 +685,7 @@ namespace Engine
             var neighbors = FindAllNeighbors(targetTilePosition);
             for (var i = 0; i < checks.Count(); i++)
             {
-                if (Globals.TheMap.IsObstacleForMagic(neighbors[checks[i]]))
+                if (MapBase.Instance.IsObstacleForMagic(neighbors[checks[i]]))
                 {
                     get = checks[i];
                     break;
@@ -692,9 +693,9 @@ namespace Engine
             }
             if (get == 8)
             {
-                return BouncingAtPoint(direction, worldPosition, Map.ToPixelPosition(targetTilePosition));
+                return BouncingAtPoint(direction, worldPosition, MapBase.ToPixelPosition(targetTilePosition));
             }
-            var normal = Map.ToPixelPosition(targetTilePosition) - Map.ToPixelPosition(neighbors[get]);
+            var normal = MapBase.ToPixelPosition(targetTilePosition) - MapBase.ToPixelPosition(neighbors[get]);
             normal = Vector2.Normalize(new Vector2(-normal.Y, normal.X));
             return Vector2.Reflect(direction, normal);
         }

@@ -1,4 +1,3 @@
-float ColourAmount;
 Texture coloredTexture;
 
 sampler coloredTextureSampler = sampler_state
@@ -12,9 +11,7 @@ float4 GreyscalePixelShaderFunction(float2 textureCoordinate : TEXCOORD0) : COLO
 	float3 colrgb = color.rgb;
 	float greycolor = dot(colrgb, float3(0.3, 0.59, 0.11));
 
-	colrgb.rgb = lerp(dot(greycolor, float3(0.3, 0.59, 0.11)), colrgb, ColourAmount);
-
-	return float4(colrgb.rgb, color.a);
+	return float4(greycolor, greycolor, greycolor, color.a);
 }
 
 technique Grayscale

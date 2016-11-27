@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Engine.Map;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -52,7 +53,7 @@ namespace Engine.Weather
             GenerateRainDrops();
             if (_isRaining)
             {
-                Sprite.DrawColor = Map.DrawColor = RainMapColor;
+                Sprite.DrawColor = MapBase.DrawColor = RainMapColor;
                 _rainSound.IsLooped = true;
                 _rainSound.Play();
             }
@@ -75,12 +76,12 @@ namespace Engine.Weather
             {
                 rainDrop.Update();
             }
-            Sprite.DrawColor = Map.DrawColor = RainMapColor;
+            Sprite.DrawColor = MapBase.DrawColor = RainMapColor;
             if (Globals.TheRandom.Next(0, 300) == 50 && 
                 _thunderSound.State == SoundState.Stopped)
             {
                 _isInFlash = true;
-                Sprite.DrawColor = Map.DrawColor = Color.White;
+                Sprite.DrawColor = MapBase.DrawColor = Color.White;
                 _thunderSound.Play();
             }
 

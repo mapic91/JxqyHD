@@ -1,4 +1,5 @@
 ﻿using System;
+using Engine.Map;
 using Microsoft.Xna.Framework;
 
 namespace Engine
@@ -286,8 +287,8 @@ namespace Engine
             var position = Globals.PlayerPositionInWorld;
             CarmeraBeginPositionInWorld = position -
                                           GetHalfViewSize();
-            Globals.TheMap.ViewBeginX = ViewBeginX;
-            Globals.TheMap.ViewBeginY = ViewBeginY;
+            MapBase.Instance.ViewBeginX = ViewBeginX;
+            MapBase.Instance.ViewBeginY = ViewBeginY;
         }
 
         /// <summary>
@@ -313,7 +314,7 @@ namespace Engine
         /// <param name="speed"></param>
         public void MoveTo(Vector2 centerTilePosition, int speed)
         {
-            _moveToBeginDestination = Map.ToPixelPosition(centerTilePosition) -
+            _moveToBeginDestination = MapBase.ToPixelPosition(centerTilePosition) -
                 GetHalfViewSize();
             _moveSpeed = speed;
             IsInMoveTo = true;

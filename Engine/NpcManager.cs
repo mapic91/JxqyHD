@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Engine.Map;
 using IniParser.Model;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -73,7 +74,7 @@ namespace Engine
                 if (!isSaveParter)
                 {
                     data["Head"].AddKey("Map",
-                        Globals.TheMap.MapFileNameWithoutExtension + ".map");
+                        MapBase.MapFileName);
                 }
 
                 var index = 0;

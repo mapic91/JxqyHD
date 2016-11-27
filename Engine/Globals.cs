@@ -61,7 +61,6 @@ namespace Engine
 
         public static JxqyGame TheGame;
         public static readonly Carmera TheCarmera = new Carmera();
-        public static readonly Map TheMap = new Map();
         public static int PlayerIndex;
         public static Player ThePlayer;
 

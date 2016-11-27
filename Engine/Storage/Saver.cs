@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using Engine.Gui;
+using Engine.Map;
 using Engine.Script;
 using Engine.Weather;
 using IniParser.Model;
@@ -19,7 +20,7 @@ namespace Engine.Storage
             //State
             data.Sections.AddSection("State");
             var state = data["State"];
-            state.AddKey("Map", Globals.TheMap.MapFileNameWithoutExtension + ".map");
+            state.AddKey("Map", MapBase.MapFileName);
             state.AddKey("Npc", NpcManager.FileName);
             state.AddKey("Obj", ObjManager.FileName);
             state.AddKey("Bgm", BackgroundMusic.FileName);
@@ -35,11 +36,11 @@ namespace Engine.Storage
             //Option
             data.Sections.AddSection("Option");
             var option = data["Option"];
-            option.AddKey("MapTime", Map.MapTime.ToString());
+            option.AddKey("MapTime", MapBase.MapTime.ToString());
             option.AddKey("SnowShow", (WeatherManager.IsSnowing ? 1 : 0).ToString());
             option.AddKey("RainFile", WeatherManager.IsRaining ? WeatherManager.RainFileName : "");
             option.AddKey("Water", Globals.IsWaterEffectEnabled ? "1" : "0");
-            option.AddKey("MpcStyle", StorageBase.GetStringFromColor(Map.DrawColor));
+            option.AddKey("MpcStyle", StorageBase.GetStringFromColor(MapBase.DrawColor));
             option.AddKey("AsfStyle", StorageBase.GetStringFromColor(Sprite.DrawColor));
 
             //Timer
@@ -85,12 +86,12 @@ namespace Engine.Storage
 
         private static void SaveTraps()
         {
-            Globals.TheMap.SaveTrap(StorageBase.TrapsFilePath);
+            MapBase.SaveTrap(StorageBase.TrapsFilePath);
         }
 
         private static void SaveTrapIgnoreList()
         {
-            Globals.TheMap.SaveTrapIndexIgnoreList(StorageBase.TrapIndexIgnoreListFilePath);
+            MapBase.SaveTrapIndexIgnoreList(StorageBase.TrapIndexIgnoreListFilePath);
         }
 
         /// <summary>

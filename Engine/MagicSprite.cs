@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Engine.ListManager;
+using Engine.Map;
 using Engine.Weather;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -150,7 +151,7 @@ namespace Engine
                     texture = belongMagic.SuperModeImage;
                     break;
                 case 20:
-                    positionInWorld = Map.ToPixelPosition(belongCharacter.TilePosition);
+                    positionInWorld = MapBase.ToPixelPosition(belongCharacter.TilePosition);
                     break;
                 case 21:
                     {
@@ -168,11 +169,11 @@ namespace Engine
                     break;
                 case 22://Summon
                     {
-                        var tilePosition = Map.ToTilePosition(positionInWorld);
+                        var tilePosition = MapBase.ToTilePosition(positionInWorld);
                         var finded = PathFinder.FindNonobstacleNeighborOrItself(belongCharacter, ref tilePosition);
                         if (finded)
                         {
-                            positionInWorld = Map.ToPixelPosition(tilePosition);
+                            positionInWorld = MapBase.ToPixelPosition(tilePosition);
                         }
                         else
                         {
@@ -222,11 +223,11 @@ namespace Engine
                 var dir = (BelongMagic.MeteorMoveDir > 7) ? Globals.TheRandom.Next(8) : BelongMagic.MeteorMoveDir;
                 var path = new LinkedList<Vector2>();
                 path.AddFirst(positionInWorld);
-                var tile = Map.ToTilePosition(positionInWorld, false);
+                var tile = MapBase.ToTilePosition(positionInWorld, false);
                 for (var i = 0; i <= BelongMagic.MeteorMove; i++)
                 {
                     tile = PathFinder.FindNeighborInDirection(tile, dir);
-                    path.AddFirst(Map.ToPixelPosition(tile, false));
+                    path.AddFirst(MapBase.ToPixelPosition(tile, false));
                 }
                 SetPath(path);
                 PositionInWorld = path.First.Value;
@@ -536,7 +537,7 @@ namespace Engine
 
         private bool CheckDestroyForObstacleInMap()
         {
-            var destroy = (BelongMagic.PassThroughWall == 0 && Globals.TheMap.IsObstacleForMagic(TilePosition));
+            var destroy = (BelongMagic.PassThroughWall == 0 && MapBase.Instance.IsObstacleForMagic(TilePosition));
             if (destroy && BelongMagic.Ball > 0)
             {
                 MoveDirection = PathFinder.BouncingAtWall(RealMoveDirection, PositionInWorld, TilePosition);
@@ -595,7 +596,7 @@ namespace Engine
                     case 20:
                         {
                             BelongCharacter.IsInTransport = false;
-                            var tilePosition = Map.ToTilePosition(_destnationPixelPosition);
+                            var tilePosition = MapBase.ToTilePosition(_destnationPixelPosition);
                             var finded = PathFinder.FindNonobstacleNeighborOrItself(BelongCharacter, ref tilePosition);
                             if (finded)
                             {

@@ -1,4 +1,5 @@
 ﻿using System;
+using Engine.Map;
 using Engine.Weather;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -162,7 +163,7 @@ namespace Engine
             set
             {
                 _positionInWorld = value;
-                var tilePosition = Map.ToTilePosition(value);
+                var tilePosition = MapBase.ToTilePosition(value);
                 _mapX = (int) tilePosition.X;
                 _mapY = (int) tilePosition.Y;
             }
@@ -177,7 +178,7 @@ namespace Engine
             set
             {
                 _mapX = value;
-                _positionInWorld = Map.ToPixelPosition(value, MapY);
+                _positionInWorld = MapBase.ToPixelPosition(value, MapY);
             }
         }
 
@@ -190,7 +191,7 @@ namespace Engine
             set
             {
                 _mapY = value;
-                _positionInWorld = Map.ToPixelPosition(MapX, value);
+                _positionInWorld = MapBase.ToPixelPosition(MapX, value);
             }
         }
 
@@ -199,7 +200,7 @@ namespace Engine
             get { return new Vector2(MapX, MapY); }
             set
             {
-                _positionInWorld = Map.ToPixelPosition(value);
+                _positionInWorld = MapBase.ToPixelPosition(value);
                 _mapX = (int)value.X;
                 _mapY = (int)value.Y;
             }
@@ -421,7 +422,6 @@ namespace Engine
             {
                 spriteBatch.End();
                 JxqyGame.BeginSpriteBatch(spriteBatch, Globals.TheGame.GrayScaleEffect);
-
 
                 spriteBatch.Draw(texture,
                     des,

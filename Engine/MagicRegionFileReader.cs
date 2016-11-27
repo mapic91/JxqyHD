@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Engine.Map;
 using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -87,14 +88,14 @@ namespace Engine
 
         private static void FillItems(List<Item> items, Vector2 beginPos, Layer layer, Dictionary<int, List<int>> delayInfo)
         {
-            var beginPixelPosition = Map.ToPixelPosition(beginPos, false);
+            var beginPixelPosition = MapBase.ToPixelPosition(beginPos, false);
             for (var h = 0; h < layer.Height; h++)
             {
                 for (var w = 0; w < layer.Width; w++)
                 {
                     var tileIndex = layer.Data[w + h*layer.Width];
                     if(tileIndex == 0) continue;
-                    var offset = Map.ToPixelPosition(w, h, false) - beginPixelPosition;
+                    var offset = MapBase.ToPixelPosition(w, h, false) - beginPixelPosition;
                     if (delayInfo.ContainsKey(tileIndex))
                     {
                         items.AddRange(delayInfo[tileIndex].Select(delay => new Item(offset, delay)));

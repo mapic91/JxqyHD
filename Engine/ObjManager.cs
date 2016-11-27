@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Engine.Map;
 using IniParser.Model;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -219,7 +220,7 @@ namespace Engine
                 var data = new IniData();
                 data.Sections.AddSection("Head");
                 data["Head"].AddKey("Map",
-                    Globals.TheMap.MapFileNameWithoutExtension + ".map");
+                    MapBase.MapFileName);
                 data["Head"].AddKey("Count", count.ToString());
 
                 var node = _list.First;

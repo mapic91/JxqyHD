@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using Engine;
 using Engine.Gui;
 using Engine.ListManager;
+using Engine.Map;
 using Engine.Script;
 using Engine.Storage;
 using Microsoft.Xna.Framework;
@@ -373,7 +374,7 @@ namespace GameEditor
             var mouseState = Mouse.GetState();
             var mouseScreenPosition = new Vector2(mouseState.X, mouseState.Y);
             var mouseWorldPosition = Globals.TheCarmera.ToWorldPosition(mouseScreenPosition);
-            var mouseTilePosition = Map.ToTilePosition(mouseWorldPosition);
+            var mouseTilePosition = MapBase.ToTilePosition(mouseWorldPosition);
             toolStripStatusLabel1.Text = string.Format("{0}x{1}", mouseTilePosition.X, mouseTilePosition.Y);
         }
 

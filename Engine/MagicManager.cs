@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Engine.Map;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -546,8 +547,8 @@ namespace Engine
             var directionIndex = Utils.GetDirectionIndex(direction, 8);
             var count = 3;
             if (magic.CurrentLevel > 3) count += ((magic.CurrentLevel - 1) / 3) * 2;
-            var orgTile = PathFinder.FindNeighborInDirection(Map.ToTilePosition(origin), directionIndex);
-            AddMagicSprite(GetFixedPositionMagicSprite(user, magic, Map.ToPixelPosition(orgTile), destroyOnEnd));
+            var orgTile = PathFinder.FindNeighborInDirection(MapBase.ToTilePosition(origin), directionIndex);
+            AddMagicSprite(GetFixedPositionMagicSprite(user, magic, MapBase.ToPixelPosition(orgTile), destroyOnEnd));
             const float magicDelayMilliseconds = 60f;
             var leftVTile = orgTile;
             var rightVTile = orgTile;
@@ -556,9 +557,9 @@ namespace Engine
                 leftVTile = PathFinder.FindNeighborInDirection(leftVTile, (directionIndex + 7)%8);
                 rightVTile = PathFinder.FindNeighborInDirection(rightVTile, (directionIndex + 1) % 8);
                 AddWorkItem(new WorkItem(i*magicDelayMilliseconds,
-                    GetFixedPositionMagicSprite(user, magic, Map.ToPixelPosition(leftVTile), destroyOnEnd)));
+                    GetFixedPositionMagicSprite(user, magic, MapBase.ToPixelPosition(leftVTile), destroyOnEnd)));
                 AddWorkItem(new WorkItem(i*magicDelayMilliseconds,
-                    GetFixedPositionMagicSprite(user, magic, Map.ToPixelPosition(rightVTile), destroyOnEnd)));
+                    GetFixedPositionMagicSprite(user, magic, MapBase.ToPixelPosition(rightVTile), destroyOnEnd)));
             }
         }
 
@@ -572,7 +573,7 @@ namespace Engine
                 ? magic.RegionFile[directionIndex]
                 : magic.RegionFile[0];
             //Make destination at tile center
-            destination = Map.ToPixelPosition(Map.ToTilePosition(destination));
+            destination = MapBase.ToPixelPosition(MapBase.ToTilePosition(destination));
             foreach (var item in items)
             {
                 var magicSprite = GetFixedPositionMagicSprite(user, magic, destination + item.Offset, destroyOnEnd);
@@ -1005,7 +1006,7 @@ namespace Engine
                 var next = node.Next;
                 if (info.LastTilePosition != info.BelongCharacter.TilePosition)
                 {
-                    AddFixedPositionMagicSprite(info.BelongCharacter, info.TheMagic, Map.ToPixelPosition(info.LastTilePosition), true);
+                    AddFixedPositionMagicSprite(info.BelongCharacter, info.TheMagic, MapBase.ToPixelPosition(info.LastTilePosition), true);
                     info.LastTilePosition = info.BelongCharacter.TilePosition;
                 }
                 info.KeepMilliseconds -= elapsedMilliseconds;

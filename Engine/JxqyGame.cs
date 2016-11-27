@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using Engine.Benchmark;
 using Engine.Gui;
 using Engine.ListManager;
+using Engine.Map;
 using Engine.Script;
 using Engine.Weather;
 using Microsoft.Xna.Framework;
@@ -99,11 +100,11 @@ namespace Engine
                 _graphics.PreferredBackBufferHeight = _pictureBox.Height;
                 Globals.WindowWidth =
                     Globals.TheCarmera.ViewWidth =
-                    Globals.TheMap.ViewWidth =
+                    MapBase.ViewWidth =
                     _pictureBox.Width;
                 Globals.WindowHeight =
                     Globals.TheCarmera.ViewHeight =
-                    Globals.TheMap.ViewHeight =
+                    MapBase.ViewHeight =
                     _pictureBox.Height;
                 _graphics.ApplyChanges();
 
@@ -250,7 +251,7 @@ namespace Engine
             {
                 TimeStoperMagicSprite.BelongCharacter.Update(gameTime);
                 TimeStoperMagicSprite.Update(gameTime);
-                Globals.TheMap.Update(gameTime);
+                MapBase.Instance.Update(gameTime);
                 MagicManager.UpdateMagicSpritesInView();
                 NpcManager.UpdateNpcsInView();
                 ObjManager.UpdateObjsInView();
@@ -268,7 +269,7 @@ namespace Engine
             ObjManager.Update(gameTime);
             ObjManager.UpdateObjsInView();
             //Map
-            Globals.TheMap.Update(gameTime);
+            MapBase.Instance.Update(gameTime);
             //Weather
             WeatherManager.Update(gameTime);
         }
@@ -284,7 +285,7 @@ namespace Engine
                 WaterEffectBegin();
             }
             //Map npcs objs magic sprite
-            Globals.TheMap.Draw(_spriteBatch);
+            MapBase.Instance.Draw(_spriteBatch);
             //Player
             Globals.ThePlayer.Draw(_spriteBatch);
             //Weather
@@ -308,7 +309,7 @@ namespace Engine
         private void DrawGameInfo(SpriteBatch spriteBatch)
         {
             var text = "FPS=" + Fps.FpsValue + "\n" +
-                       Globals.TheMap.MapFileNameWithoutExtension + ".map\n" +
+                       MapBase.MapFileName + "\n" +
                        NpcManager.FileName + "\n" +
                        ObjManager.FileName + "\n";
             spriteBatch.DrawString(Globals.FontSize12, text, new Vector2(3, 3), Color.White*0.9f );
@@ -350,8 +351,8 @@ namespace Engine
 
             Globals.TheCarmera.ViewWidth = _graphics.PreferredBackBufferWidth;
             Globals.TheCarmera.ViewHeight = _graphics.PreferredBackBufferHeight;
-            Globals.TheMap.ViewWidth = _graphics.PreferredBackBufferWidth;
-            Globals.TheMap.ViewHeight = _graphics.PreferredBackBufferHeight;
+            MapBase.ViewWidth = _graphics.PreferredBackBufferWidth;
+            MapBase.ViewHeight = _graphics.PreferredBackBufferHeight;
 
             //Game run in editor
             if (_parentForm != null)
@@ -451,11 +452,15 @@ namespace Engine
             if (IsInEditMode)
             {
                 if (keyboardState.IsKeyDown(Keys.D1) && LastKeyboardState.IsKeyUp(Keys.D1))
-                    Globals.TheMap.SwitchLayerDraw(0);
+                    MapBase.SwitchLayerDraw(0);
                 if (keyboardState.IsKeyDown(Keys.D2) && LastKeyboardState.IsKeyUp(Keys.D2))
-                    Globals.TheMap.SwitchLayerDraw(1);
+                    MapBase.SwitchLayerDraw(1);
                 if (keyboardState.IsKeyDown(Keys.D3) && LastKeyboardState.IsKeyUp(Keys.D3))
-                    Globals.TheMap.SwitchLayerDraw(2);
+                    MapBase.SwitchLayerDraw(2);
+                if (keyboardState.IsKeyDown(Keys.D4) && LastKeyboardState.IsKeyUp(Keys.D4))
+                    MapBase.SwitchLayerDraw(3);
+                if (keyboardState.IsKeyDown(Keys.D5) && LastKeyboardState.IsKeyUp(Keys.D5))
+                    MapBase.SwitchLayerDraw(4);
             }
 
             if (ScriptExecuter.IsInPlayingMovie)

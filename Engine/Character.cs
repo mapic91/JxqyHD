@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using Engine.Gui;
 using Engine.ListManager;
+using Engine.Map;
 using Engine.Script;
 using IniParser;
 using IniParser.Model;
@@ -586,7 +587,7 @@ namespace Engine
             set
             {
                 _destinationMovePositionInWorld = value;
-                _destinationMoveTilePosition = Map.ToTilePosition(value);
+                _destinationMoveTilePosition = MapBase.ToTilePosition(value);
             }
         }
 
@@ -597,7 +598,7 @@ namespace Engine
             set
             {
                 _destinationMoveTilePosition = value;
-                _destinationMovePositionInWorld = Map.ToPixelPosition(value);
+                _destinationMovePositionInWorld = MapBase.ToPixelPosition(value);
             }
         }
 
@@ -607,7 +608,7 @@ namespace Engine
             set
             {
                 _destinationAttackTilePosition = value;
-                _destinationAttackPositionInWorld = Map.ToPixelPosition(value);
+                _destinationAttackPositionInWorld = MapBase.ToPixelPosition(value);
             }
         }
 
@@ -617,7 +618,7 @@ namespace Engine
             set
             {
                 _destinationAttackPositionInWorld = value;
-                _destinationAttackTilePosition = Map.ToTilePosition(value);
+                _destinationAttackTilePosition = MapBase.ToTilePosition(value);
             }
         }
 
@@ -707,7 +708,7 @@ namespace Engine
         {
             if (NpcIni.ContainsKey((int)CharacterState.Stand))
             {
-                Set(Map.ToPixelPosition(MapX, MapY),
+                Set(MapBase.ToPixelPosition(MapX, MapY),
                     Globals.BaseSpeed,
                     NpcIni[(int)CharacterState.Stand].Image, Dir);
             }
@@ -798,8 +799,8 @@ namespace Engine
 
             var from = Path.First.Value;
             var to = Path.First.Next.Value;
-            var tileFrom = Map.ToTilePosition(from);
-            var tileTo = Map.ToTilePosition(to);
+            var tileFrom = MapBase.ToTilePosition(from);
+            var tileTo = MapBase.ToTilePosition(to);
             var direction = to - from;
             if (direction != Vector2.Zero)
             {
@@ -822,7 +823,7 @@ namespace Engine
                         StandingImmediately();
                         return;
                     }
-                    else if (PositionInWorld == Map.ToPixelPosition(TilePosition)) //At tile center, find new path
+                    else if (PositionInWorld == MapBase.ToPixelPosition(TilePosition)) //At tile center, find new path
                     {
                         var path = Engine.PathFinder.FindPath(this, TilePosition, DestinationMoveTilePosition, PathType);
                         if (path == null)
@@ -840,7 +841,7 @@ namespace Engine
                         // Move bact to tile center
                         var path = new LinkedList<Vector2>();
                         path.AddLast(PositionInWorld);
-                        path.AddLast(Map.ToPixelPosition(TilePosition));
+                        path.AddLast(MapBase.ToPixelPosition(TilePosition));
                         Path = path;
                     }
                     return;
@@ -879,7 +880,7 @@ namespace Engine
                 {
                     var destination = DestinationMovePositionInWorld;
                     PositionInWorld = to;
-                    Path = Engine.PathFinder.FindPath(this, TilePosition, Map.ToTilePosition(destination), PathType);
+                    Path = Engine.PathFinder.FindPath(this, TilePosition, MapBase.ToTilePosition(destination), PathType);
                     if (Path == null) StandingImmediately();
 
                     if (MoveTargetChanged)
@@ -942,9 +943,9 @@ namespace Engine
                 bool isOver = false;
                 var nextTile = Engine.PathFinder.FindNeighborInDirection(
                     TilePosition, to - from);
-                if (Globals.TheMap.IsObstacleForCharacterJump(nextTile) ||
-                    (nextTile == Map.ToTilePosition(to) && HasObstacle(nextTile)) ||
-                    Globals.TheMap.HasTrapScript(TilePosition) ||
+                if (MapBase.Instance.IsObstacleForCharacterJump(nextTile) ||
+                    (nextTile == MapBase.ToTilePosition(to) && HasObstacle(nextTile)) ||
+                    MapBase.Instance.HasTrapScript(TilePosition) ||
                     NpcManager.GetEventer(nextTile) != null)
                 {
                     TilePosition = TilePosition;//Correcting position
@@ -1013,7 +1014,7 @@ namespace Engine
 
             if (tileDistance < minTileDistance && IsStanding())
             {
-                MoveAwayTarget(Map.ToPixelPosition(targetTilePosition), minTileDistance - tileDistance, false);
+                MoveAwayTarget(MapBase.ToPixelPosition(targetTilePosition), minTileDistance - tileDistance, false);
             }
         }
 
@@ -1055,7 +1056,7 @@ namespace Engine
                 {
                     if (--maxTry < 0) return path;
 
-                    tilePosition = Globals.TheMap.GetRandPositon(TilePosition, maxOffset);
+                    tilePosition = MapBase.Instance.GetRandPositon(TilePosition, maxOffset);
                 } while (tilePosition == Vector2.Zero ||
                     (!isFlyer && Engine.PathFinder.HasMapObstacalInTilePositionList(
                     Engine.PathFinder.GetLinePath(
@@ -1075,7 +1076,7 @@ namespace Engine
         /// <param name="destinationTilePosition">Move destination tile position.</param>
         protected void FixedPathMoveToDestination(Vector2 destinationTilePosition)
         {
-            _fixedPathMoveDestinationPixelPostion = Map.ToPixelPosition(destinationTilePosition);
+            _fixedPathMoveDestinationPixelPostion = MapBase.ToPixelPosition(destinationTilePosition);
             _fixedPathDistanceToMove = Vector2.Distance(PositionInWorld, _fixedPathMoveDestinationPixelPostion);
             MovedDistance = 0f;
             if (_fixedPathDistanceToMove < 1)
@@ -1547,7 +1548,7 @@ namespace Engine
         {
             if (PerformActionOk() &&
                 destinationTilePosition != TilePosition &&
-                !Globals.TheMap.IsObstacleForCharacter(destinationTilePosition) &&
+                !MapBase.Instance.IsObstacleForCharacter(destinationTilePosition) &&
                 !HasObstacle(destinationTilePosition))
             {
                 if (!CanJump()) return;
@@ -1591,7 +1592,7 @@ namespace Engine
                 ToFightingState();
 
                 MagicUse = magicUse;
-                _magicDestination = Map.ToPixelPosition(magicDestinationTilePosition);
+                _magicDestination = MapBase.ToPixelPosition(magicDestinationTilePosition);
                 _magicTarget = target;
                 SetState(CharacterState.Magic);
                 SetDirection(_magicDestination - PositionInWorld);
@@ -1858,14 +1859,14 @@ namespace Engine
                 {
                     return;
                 }
-                var destinationPositionInWorld = Map.ToPixelPosition(destinationTilePositon);
+                var destinationPositionInWorld = MapBase.ToPixelPosition(destinationTilePositon);
 
                 DestinationMoveTilePosition = Engine.PathFinder.FindDistanceTileInDirection(
                     destinationTilePositon,
                     PositionInWorld - destinationPositionInWorld,
                     interactDistance);
                 //if can't reach destination tile positon, find neighbor tile
-                if (Globals.TheMap.IsObstacleForCharacter(DestinationMoveTilePosition) ||
+                if (MapBase.Instance.IsObstacleForCharacter(DestinationMoveTilePosition) ||
                     HasObstacle(DestinationMoveTilePosition))
                 {
                     //Try all 8 direction
@@ -1877,7 +1878,7 @@ namespace Engine
                             destinationTilePositon,
                             dir,
                             interactDistance);
-                        if (!Globals.TheMap.IsObstacleForCharacter(DestinationMoveTilePosition) &&
+                        if (!MapBase.Instance.IsObstacleForCharacter(DestinationMoveTilePosition) &&
                             !HasObstacle(DestinationMoveTilePosition))
                         {
                             isFinded = true;
@@ -1989,7 +1990,7 @@ namespace Engine
         /// <param name="destinationTilePosition">Destination tile position</param>
         public void PartnerMoveTo(Vector2 destinationTilePosition)
         {
-            if (Globals.TheMap.IsObstacleForCharacter(destinationTilePosition))
+            if (MapBase.Instance.IsObstacleForCharacter(destinationTilePosition))
             {
                 //Destination is obstacle, can't move to destination, do nothing.
                 return;
@@ -2648,7 +2649,7 @@ namespace Engine
             if (BouncedVelocity > 0)
             {
                 var newPosition = PositionInWorld + BouncedDirection * (BouncedVelocity * (float)elapsedGameTime.TotalSeconds);
-                var newTilePosition = Map.ToTilePosition(newPosition);
+                var newTilePosition = MapBase.ToTilePosition(newPosition);
                 if (Engine.PathFinder.CanLinearlyMove(this, TilePosition, newTilePosition))
                 {
                     PositionInWorld = newPosition;
@@ -2718,7 +2719,7 @@ namespace Engine
                 const int height = 10;
                 foreach (var tilePositon in _lastRadiusTileTilesCached)
                 {
-                    var pixelPosition = Map.ToPixelPosition(tilePositon);
+                    var pixelPosition = MapBase.ToPixelPosition(tilePositon);
                     var worldRegion = new Rectangle((int)pixelPosition.X - width / 2,
                         (int)pixelPosition.Y - height / 2,
                         width,

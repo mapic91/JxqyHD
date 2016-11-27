@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Engine.Map;
 
 namespace Engine.Script
 {
@@ -327,7 +328,7 @@ namespace Engine.Script
                             ScriptExecuter.SetMapTrap(parameters);
                             break;
                         case "SetMapTime":
-                            Map.MapTime = int.Parse(parameters[0]);
+                            MapBase.MapTime = int.Parse(parameters[0]);
                             break;
                         case "FullLife":
                             ScriptExecuter.FullLife();

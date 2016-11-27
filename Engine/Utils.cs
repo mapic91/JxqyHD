@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Engine.Map;
 using Engine.Script;
 using IniParser;
 using IniParser.Model;
@@ -439,7 +440,7 @@ namespace Engine
                 case ScriptCategory.Normal:
                 {
                     if (string.IsNullOrEmpty(mapName))
-                        mapName = Globals.TheMap.MapFileNameWithoutExtension;
+                        mapName = MapBase.MapFileNameWithoutExtension;
                     var path = @"script\map\" + mapName + @"\" + fileName;
                     if (!File.Exists(path))
                     {

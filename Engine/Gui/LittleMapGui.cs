@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using Engine.Gui.Base;
+using Engine.Map;
 using IniParser;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -48,7 +49,7 @@ namespace Engine.Gui
                 }
                 if (value)
                 {
-                    var texture = Globals.TheMap.LittelMapTexture;
+                    var texture = MapBase.LittelMapTexture;
                     if (texture == null)
                     {
                         //Little map texture not exist, can't show little map.
@@ -56,8 +57,8 @@ namespace Engine.Gui
                         return;
                     }
 
-                    ViewBeginX = Globals.TheMap.ViewBeginX / Ratio;
-                    ViewBeginY = Globals.TheMap.ViewBeginY / Ratio;
+                    ViewBeginX = MapBase.Instance.ViewBeginX / Ratio;
+                    ViewBeginY = MapBase.Instance.ViewBeginY / Ratio;
                 }
             }
         }
@@ -89,7 +90,7 @@ namespace Engine.Gui
             get { return _viewBeginY; }
             set
             {
-                var texture = Globals.TheMap.LittelMapTexture;
+                var texture = MapBase.LittelMapTexture;
                 if (texture == null)
                 {
                     return;
@@ -112,7 +113,7 @@ namespace Engine.Gui
             get { return _viewBeginX; }
             set
             {
-                var texture = Globals.TheMap.LittelMapTexture;
+                var texture = MapBase.LittelMapTexture;
                 if (texture == null)
                 {
                     return;
@@ -184,11 +185,11 @@ namespace Engine.Gui
                     PathFinder.TemporaryDisableRestrict = true;
                     if (Globals.ThePlayer.canRun(Keyboard.GetState()))
                     {
-                        Globals.ThePlayer.RunTo(Map.ToTilePosition(position));
+                        Globals.ThePlayer.RunTo(MapBase.ToTilePosition(position));
                     }
                     else
                     {
-                        Globals.ThePlayer.WalkTo(Map.ToTilePosition(position));
+                        Globals.ThePlayer.WalkTo(MapBase.ToTilePosition(position));
                     }
                     if (Globals.ThePlayer.Path != null)
                     {
@@ -338,9 +339,9 @@ namespace Engine.Gui
             var drawRegion = DrawRegion;
             var drawBeginPosition = new Vector2(drawRegion.X, drawRegion.Y);
 
-            if (Globals.TheMap.LittelMapTexture != null)
+            if (MapBase.LittelMapTexture != null)
             {
-                spriteBatch.Draw(Globals.TheMap.LittelMapTexture,
+                spriteBatch.Draw(MapBase.LittelMapTexture,
                     new Rectangle((int)drawBeginPosition.X, (int)drawBeginPosition.Y, ViewWidth, ViewHeight),
                     new Rectangle(_viewBeginX, _viewBeginY, ViewWidth, ViewHeight),
                     Color.White);
@@ -423,9 +424,9 @@ namespace Engine.Gui
             _partner.Update(gameTime);
             _neutral.Update(gameTime);
 
-            if (_showNameDictionary.ContainsKey(Globals.TheMap.MapFileNameWithoutExtension))
+            if (_showNameDictionary.ContainsKey(MapBase.MapFileNameWithoutExtension))
             {
-                _mapName.Text = _showNameDictionary[Globals.TheMap.MapFileNameWithoutExtension];
+                _mapName.Text = _showNameDictionary[MapBase.MapFileNameWithoutExtension];
             }
             else
             {

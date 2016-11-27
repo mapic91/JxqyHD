@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using Engine.Gui;
 using Engine.ListManager;
+using Engine.Map;
 using Engine.Script;
 using IniParser.Model;
 using Microsoft.Xna.Framework;
@@ -468,7 +469,7 @@ namespace Engine
         /// </summary>
         protected override void CheckMapTrap()
         {
-            Globals.TheMap.RunTileTrapScript(TilePosition);
+            MapBase.Instance.RunTileTrapScript(TilePosition);
         }
 
         protected override void AssignToValue(KeyData keyData)
@@ -946,7 +947,7 @@ namespace Engine
             var keyboardState = Keyboard.GetState();
             var mouseScreenPosition = new Vector2(mouseState.X, mouseState.Y);
             var mouseWorldPosition = Globals.TheCarmera.ToWorldPosition(mouseScreenPosition);
-            var mouseTilePosition = Map.ToTilePosition(mouseWorldPosition);
+            var mouseTilePosition = MapBase.ToTilePosition(mouseWorldPosition);
             _isUseMagicByKeyborad = false;
 
             _isRun = canRun(keyboardState);
@@ -1181,9 +1182,9 @@ namespace Engine
             var end = tilePosition + new Vector2(3, 15);
             if (start.X < 0) start.X = 0;
             if (start.Y < 0) start.Y = 0;
-            if (end.X > Globals.TheMap.MapColumnCounts) end.X = Globals.TheMap.MapColumnCounts;
-            if (end.Y > Globals.TheMap.MapRowCounts) end.Y = Globals.TheMap.MapRowCounts;
-            var textureRegion = new Rectangle();
+            if (end.X > MapBase.Instance.MapColumnCounts) end.X = MapBase.Instance.MapColumnCounts;
+            if (end.Y > MapBase.Instance.MapRowCounts) end.Y = MapBase.Instance.MapRowCounts;
+            var textureWorldRegion = new Rectangle();
             var region = RegionInWorld;
             const int maxSamplerTextures = 10;
             int currentCount = 0;
@@ -1199,19 +1200,20 @@ namespace Engine
                 for (var x = (int)start.X; x < (int)end.X; x++)
                 {
                     Texture2D tileTexture;
+                    Nullable<Rectangle> sourceRegion;
                     if (y > MapY)
                     {
-                        tileTexture = Globals.TheMap.GetTileTextureAndRegion(x, y, 1, ref textureRegion);
-                        if (tileTexture != null && Collider.IsBoxCollide(region, textureRegion))
+                        tileTexture = MapBase.Instance.GetTileTextureAndRegionInWorld(x, y, 1, out sourceRegion, ref textureWorldRegion);
+                        if (tileTexture != null && Collider.IsBoxCollide(region, textureWorldRegion))
                         {
-                            Globals.TheMap.DrawTile(spriteBatch, tileTexture, new Vector2(x,y));
+                            MapBase.Instance.DrawTile(spriteBatch, Color.White, 1, new Vector2(x,y));
                             currentCount++;
                         }
                     }
-                    tileTexture = Globals.TheMap.GetTileTextureAndRegion(x, y, 2, ref textureRegion);
-                    if (tileTexture != null && Collider.IsBoxCollide(region, textureRegion))
+                    tileTexture = MapBase.Instance.GetTileTextureAndRegionInWorld(x, y, 2, out sourceRegion, ref textureWorldRegion);
+                    if (tileTexture != null && Collider.IsBoxCollide(region, textureWorldRegion))
                     {
-                        Globals.TheMap.DrawTile(spriteBatch, tileTexture, new Vector2(x, y));
+                        MapBase.Instance.DrawTile(spriteBatch, Color.White, 2, new Vector2(x, y));
                         currentCount++;
                     }
                 }
@@ -1224,7 +1226,7 @@ namespace Engine
                 {
                     if (Collider.IsBoxCollide(region, npc.RegionInWorld))
                     {
-                        npc.Draw(spriteBatch);
+                        npc.Draw(spriteBatch, Color.White);
                         currentCount++;
                     }
                 }
@@ -1236,7 +1238,7 @@ namespace Engine
                 {
                     if (Collider.IsBoxCollide(region, magicSprite.RegionInWorld))
                     {
-                        magicSprite.Draw(spriteBatch);
+                        magicSprite.Draw(spriteBatch, Color.White);
                         currentCount++;
                     }
                 }
@@ -1245,13 +1247,15 @@ namespace Engine
 
             if (currentCount > 0)
             {
-                spriteBatch.Begin(SpriteSortMode.Immediate, null, null, StencilStateDrawOpaque, null);
-                base.Draw(spriteBatch, texture);
+                var useGrayScale = DrawColor == Color.Black;
+                spriteBatch.Begin(SpriteSortMode.Immediate, null, null, StencilStateDrawOpaque, null, useGrayScale ? Globals.TheGame.GrayScaleEffect : null);
+                base.Draw(spriteBatch, texture, useGrayScale ? Color.White : DrawColor);
                 spriteBatch.End();
                 var halfTransparentEffect = Globals.TheGame.TransparentEffect;
                 halfTransparentEffect.Parameters["alpha"].SetValue(0.5f);
+                halfTransparentEffect.Parameters["useGrayScale"].SetValue(useGrayScale ? 1 : 0);
                 spriteBatch.Begin(SpriteSortMode.Immediate, null, null, StencilStateDrawHalfTransparent, null, halfTransparentEffect);
-                base.Draw(spriteBatch, texture);
+                base.Draw(spriteBatch, texture, useGrayScale ? Color.White : DrawColor);
                 spriteBatch.End();
 
                 Globals.TheGame.GraphicsDevice.Clear(ClearOptions.Stencil, Color.Black, 0, 0);

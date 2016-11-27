@@ -4,6 +4,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using Engine.Gui;
 using Engine.ListManager;
+using Engine.Map;
 using Engine.Storage;
 using Engine.Weather;
 using IniParser;
@@ -264,8 +265,8 @@ namespace Engine.Script
                 //Check moveable
                 if (character.Path == null ||
                     (character.Path.Count == 2 && 
-                    character.TilePosition != Map.ToTilePosition(character.Path.First.Next.Value) &&
-                    character.HasObstacle(Map.ToTilePosition(character.Path.First.Next.Value))))
+                    character.TilePosition != MapBase.ToTilePosition(character.Path.First.Next.Value) &&
+                    character.HasObstacle(MapBase.ToTilePosition(character.Path.First.Next.Value))))
                 {
                     character.StandingImmediately();
                 }
@@ -742,7 +743,7 @@ namespace Engine.Script
         public static void LoadMap(List<string> parameters)
         {
             WeatherManager.StopRain();
-            Globals.TheMap.LoadMap(Utils.RemoveStringQuotes(parameters[0]));
+            MapBase.OpenMap(Utils.RemoveStringQuotes(parameters[0]));
             NpcManager.ClearAllNpcAndKeepPartner();
             ObjManager.ClearAllObjAndFileName();
         }
@@ -895,22 +896,22 @@ namespace Engine.Script
 
         public static void FreeMap()
         {
-            if (Globals.TheMap != null)
+            if (MapBase.Instance != null)
             {
-                Globals.TheMap.Free();
+                MapBase.Free();
             }
         }
 
         public static void SetTrap(List<string> parameters)
         {
-            Globals.TheMap.SetMapTrap(int.Parse(parameters[1]),
+            MapBase.Instance.SetMapTrap(int.Parse(parameters[1]),
                 Utils.RemoveStringQuotes(parameters[2]),
                 Utils.RemoveStringQuotes(parameters[0]));
         }
 
         public static void SetMapTrap(List<string> parameters)
         {
-            Globals.TheMap.SetMapTrap(int.Parse(parameters[0]),
+            MapBase.Instance.SetMapTrap(int.Parse(parameters[0]),
                 Utils.RemoveStringQuotes(parameters[1]));
         }
 
@@ -1004,7 +1005,7 @@ namespace Engine.Script
             var color = new Color(int.Parse(parameters[0]),
                 int.Parse(parameters[1]),
                 int.Parse(parameters[2]));
-            Map.DrawColor = color;
+            MapBase.DrawColor = color;
         }
 
         public static void ChangeAsfColor(List<string> parameters)
@@ -1133,7 +1134,7 @@ namespace Engine.Script
 
         public static void SaveMapTrap()
         {
-            Globals.TheMap.SaveTrap(@"save\game\Traps.ini");
+            MapBase.SaveTrap(@"save\game\Traps.ini");
         }
 
         public static void SaveNpc(List<string> parameters)
@@ -1670,7 +1671,7 @@ namespace Engine.Script
         {
             if (Globals.TheCarmera == null) return;
             Globals.TheCarmera.CarmeraBeginPositionInWorld =
-                Map.ToPixelPosition(int.Parse(parameters[0]),
+                MapBase.ToPixelPosition(int.Parse(parameters[0]),
                     int.Parse(parameters[1]));
         }
 
@@ -1757,7 +1758,7 @@ namespace Engine.Script
             GetTargetAndValue3(parameters, belongObject, out target, out value);
             if (target != null)
             {
-                target.PerformeAttack(Map.ToPixelPosition(value));
+                target.PerformeAttack(MapBase.ToPixelPosition(value));
             }
         }
 
