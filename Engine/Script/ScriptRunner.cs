@@ -608,7 +608,7 @@ namespace Engine.Script
                     message += ("\nCode: " + _currentCode.Literal);
                 }
                 message += "\n" + exception.Message + "\n" + Log.GetLastLine(exception);
-                Log.LogMessageToFile(message);
+                Log.LogMessage(message);
                 if (Globals.TheGame.IsInEditMode)
                 {
                     MessageBox.Show(message);

@@ -218,7 +218,7 @@ namespace Engine.Gui.Base
             {
                 _drawInfo.Clear();
                 _endIndex = TextStream.Length;
-                Log.LogMessageToFile("String [" + TextStream + "] format is bad!");
+                Log.LogMessage("String [" + TextStream + "] format is bad!");
                 return false;
             }
             return true;

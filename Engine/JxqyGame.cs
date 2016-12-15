@@ -329,7 +329,7 @@ namespace Engine
             TalkTextList.Initialize();
             Log.Initialize();
 
-            Log.LogMessageToFile("Game is running...");
+            Log.LogMessage("Game is running...");
 
             if (IsInEditMode)
             {

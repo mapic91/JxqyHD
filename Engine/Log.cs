@@ -7,7 +7,7 @@ namespace Engine
     public static class Log
     {
         private const string LogFilename = "Log.txt";
-        private static bool LogOn = false;
+        public static bool LogToFileOn = false;
 
         private enum FileOpration
         {
@@ -41,7 +41,7 @@ namespace Engine
             {
                 fullPath = filePath;
             }
-            LogMessageToFile(msg +
+            LogMessage(msg +
                 " [" +
                 fullPath +
                 "] " + 
@@ -63,15 +63,26 @@ namespace Engine
 
         public static void Initialize()
         {
-            //File.Create(LogFilename).Dispose();
+
         }
 
         public static void LogMessageToFile(string msg)
         {
-            if(!LogOn && !Globals.TheGame.IsInEditMode) return;
+            if (!LogToFileOn && !Globals.TheGame.IsInEditMode) return;
             msg = string.Format("{0:G}: {1}{2}", DateTime.Now, msg, Environment.NewLine);
             Globals.TheMessageSender.SendLogMessage(msg);
-            if (LogOn)
+            if (LogToFileOn)
+            {
+                File.AppendAllText(LogFilename, msg);
+            }
+        }
+
+        public static void LogMessage(string msg)
+        {
+            if(!LogToFileOn && !Globals.TheGame.IsInEditMode) return;
+            msg = string.Format("{0:G}: {1}{2}", DateTime.Now, msg, Environment.NewLine);
+            Globals.TheMessageSender.SendLogMessage(msg);
+            if (LogToFileOn)
             {
                 File.AppendAllText(LogFilename, msg);
             }

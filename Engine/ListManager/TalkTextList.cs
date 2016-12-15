@@ -78,7 +78,7 @@ namespace Engine.ListManager
 
             if (idx != from)
             {
-                Log.LogMessageToFile("对话索引错误：" + from + " - " + to);
+                Log.LogMessage("对话索引错误：" + from + " - " + to);
                 return null;
             }
 

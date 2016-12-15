@@ -230,7 +230,7 @@ namespace Engine.Map
             }
             catch (Exception e)
             {
-                Log.LogMessageToFile("Map file is corrupted" + ": " + e);
+                Log.LogMessage("Map file is corrupted" + ": " + e);
             }
             return true;
         }

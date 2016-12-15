@@ -202,6 +202,7 @@ namespace Engine.Map
             LoadAllTexturesAndComputeTileTextureCount();
             LoadAllTileTextureInfos();
             LoadMapLayers();
+            FixError();
 
             return true;
         }
@@ -333,8 +334,35 @@ namespace Engine.Map
                         _obstacleLayer = layer;
                         break;
                     default:
-                        Log.LogMessageToFile(string.Format("Tmx map layer [{0}] ingnored.", layer.Name));
+                        Log.LogMessage(string.Format("Tmx map layer [{0}] ingnored.", layer.Name));
                         break;
+                }
+            }
+        }
+
+        private void FixError()
+        {
+            if (_trapLayer != null)
+            {
+                foreach (var tile in _trapLayer.Tiles)
+                {
+                    if (tile.Gid != 0 && !_trapGidToIndex.ContainsKey(tile.Gid))
+                    {
+                        Log.LogMessage(string.Format("地图文件陷阱层（T），x={0}，y={1}，设置错误", tile.X, tile.Y));
+                        _trapGidToIndex[tile.Gid] = 0;
+                    }
+                }
+            }
+
+            if (_obstacleLayer != null)
+            {
+                foreach (var tile in _obstacleLayer.Tiles)
+                {
+                    if (tile.Gid != 0 && !_obstacleGidToType.ContainsKey(tile.Gid))
+                    {
+                        Log.LogMessage(string.Format("地图文件障碍层（O），x={0}，y={1}，设置错误", tile.X, tile.Y));
+                        _obstacleGidToType[tile.Gid] = None;
+                    }
                 }
             }
         }
