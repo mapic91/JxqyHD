@@ -73,6 +73,7 @@ namespace Engine
             IsMouseVisible = false;
             _graphics.IsFullScreen = false;
             _graphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
+            _graphics.GraphicsProfile = GraphicsProfile.HiDef;
             GameState.State = GameState.StateType.Start;
         }
 
