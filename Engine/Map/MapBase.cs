@@ -505,23 +505,36 @@ namespace Engine.Map
                 mapName = _mapFileNameWithoutExtension;
             if (string.IsNullOrEmpty(mapName)) return null;//no map name
 
-            if (_traps.ContainsKey(mapName))
+            var trapFileName = GetMapTrapFileName(index, mapName);
+            if (!string.IsNullOrEmpty(trapFileName))
             {
-                var list = _traps[mapName];
-                if (list.ContainsKey(index))
-                {
-                    return Utils.GetScriptParser(list[index], null, mapName);
-                }
+                return Utils.GetScriptParser(trapFileName, null, mapName);
             }
 
             return null;
         }
 
+        public string GetMapTrapFileName(int index, string mapName = null)
+        {
+            if (string.IsNullOrEmpty(mapName))
+                mapName = _mapFileNameWithoutExtension;
+            if (string.IsNullOrEmpty(mapName)) return null;//no map name
+
+            if (_traps.ContainsKey(mapName))
+            {
+                var list = _traps[mapName];
+                if (list.ContainsKey(index))
+                {
+                    return list[index];
+                }
+            }
+            return null;
+        }
+
         public bool HasTrapScript(Vector2 tilePosition)
         {
-             int index;
-            var script = GetTileTrapScriptParser(tilePosition, out index);
-            if (script == null) return false;
+            int index = GetTileTrapIndex(tilePosition);
+            if (index == 0 || string.IsNullOrEmpty(GetMapTrapFileName(index))) return false;
             if (_ingnoredTrapsIndex.Any(i => index == i))
             {
                 //Script is ignored
