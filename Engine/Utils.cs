@@ -526,6 +526,7 @@ namespace Engine
 
         public static string GetNpcObjFilePath(string fileName)
         {
+            fileName = fileName == null ? "" : fileName;
             var path = @"save\game\" + fileName;
             if (!File.Exists(path))
             {
