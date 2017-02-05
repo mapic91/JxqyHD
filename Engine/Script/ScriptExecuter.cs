@@ -381,9 +381,7 @@ namespace Engine.Script
             {
                 if (_timeScriptSeconds == GuiManager.GetTimerCurrentSeconds())
                 {
-                    ScriptManager.RunScript(new ScriptParser(
-                        Utils.GetScriptFilePath(_timeScriptFileName),
-                        null));
+                    ScriptManager.RunScript(Utils.GetScriptParser(_timeScriptFileName));
                     _isTimeScriptSet = false;
                     _timeScriptFileName = string.Empty;
                 }
@@ -742,8 +740,14 @@ namespace Engine.Script
 
         public static void LoadMap(List<string> parameters)
         {
+            LoadMap(Utils.RemoveStringQuotes(parameters[0]));
+        }
+
+        public static void LoadMap(string filename)
+        {
             WeatherManager.StopRain();
-            MapBase.OpenMap(Utils.RemoveStringQuotes(parameters[0]));
+            MapBase.OpenMap(filename);
+            Utils.ClearScriptParserCache();
             NpcManager.ClearAllNpcAndKeepPartner();
             ObjManager.ClearAllObjAndFileName();
         }
@@ -1067,8 +1071,7 @@ namespace Engine.Script
 
         public static void RunScript(string fileName, object belongObject = null)
         {
-            ScriptManager.RunScript(new ScriptParser(
-                Utils.GetScriptFilePath(fileName), belongObject));
+            ScriptManager.RunScript(Utils.GetScriptParser(fileName), belongObject);
         }
 
         public static void PlayMovie(string fileName, Color drawColor)

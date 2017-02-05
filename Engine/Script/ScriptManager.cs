@@ -15,12 +15,12 @@ namespace Engine.Script
             get { return _list.Count > 0; }
         }
 
-        public static ScriptRunner RunScript(ScriptParser scriptParser)
+        public static ScriptRunner RunScript(ScriptParser scriptParser, object belongObject = null)
         {
             ScriptRunner runner = null;
             if (scriptParser != null)
             {
-                runner = new ScriptRunner(scriptParser);
+                runner = new ScriptRunner(scriptParser, belongObject);
                 runner.Begin();
                 _list.AddLast(runner);
             }

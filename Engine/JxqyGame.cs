@@ -481,8 +481,7 @@ namespace Engine
                 switch (GameState.State)
                 {
                     case GameState.StateType.Start:
-                        ScriptManager.RunScript(
-                            Utils.GetScriptParser("title.txt"));
+                        ScriptManager.RunScript(Utils.GetScriptParser("title.txt"));
                         GameState.State = GameState.StateType.Title;
                         break;
                     case GameState.StateType.Title:

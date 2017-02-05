@@ -16,6 +16,8 @@ namespace Engine.Script
         private ScriptParser.Code _currentCode;
         private bool _isEnd = true;
 
+        public object BelongObject { private set; get; }
+
         public ScriptParser TargetScript
         {
             get { return _targetScript; }
@@ -33,9 +35,10 @@ namespace Engine.Script
             return DateTime.Now.ToString("HH:mm:ss.fff") + "    " + code.Literal + "    [" + code.LineNumber + "]";
         }
 
-        public ScriptRunner(ScriptParser scriptParser)
+        public ScriptRunner(ScriptParser scriptParser, object belongObject = null)
         {
             _targetScript = scriptParser;
+            BelongObject = belongObject;
         }
 
         public void Begin()
@@ -143,11 +146,11 @@ namespace Engine.Script
                             break;
                         case "NpcGoto":
                             isEnd = ScriptExecuter.IsNpcGotoEnd(_currentCode.Parameters,
-                                _targetScript.BelongObject);
+                                BelongObject);
                             break;
                         case "NpcGotoDir":
                             isEnd = ScriptExecuter.IsNpcGotoDirEnd(_currentCode.Parameters,
-                                _targetScript.BelongObject);
+                                BelongObject);
                             break;
                         case "MoveScreen":
                             isEnd = ScriptExecuter.IsMoveScreenEnd();
@@ -160,7 +163,7 @@ namespace Engine.Script
                             isEnd = ScriptExecuter.IsBuyGoodsEnd();
                             break;
                         case "NpcSpecialActionEx":
-                            isEnd = ScriptExecuter.IsNpcSpecialActionExEnd(_currentCode.Parameters, _targetScript.BelongObject);
+                            isEnd = ScriptExecuter.IsNpcSpecialActionExEnd(_currentCode.Parameters, BelongObject);
                             break;
                         case "Sleep":
                             isEnd = ScriptExecuter.IsSleepEnd();
@@ -222,31 +225,31 @@ namespace Engine.Script
                             ScriptExecuter.PlayMusic(parameters);
                             break;
                         case "PlaySound":
-                            ScriptExecuter.PlaySound(parameters, _targetScript.BelongObject);
+                            ScriptExecuter.PlaySound(parameters, BelongObject);
                             break;
                         case "OpenBox":
-                            ScriptExecuter.OpenBox(parameters, _targetScript.BelongObject);
+                            ScriptExecuter.OpenBox(parameters, BelongObject);
                             break;
                         case "CloseBox":
-                            ScriptExecuter.CloseBox(parameters, _targetScript.BelongObject);
+                            ScriptExecuter.CloseBox(parameters, BelongObject);
                             break;
                         case "OpenObj":
-                            ScriptExecuter.OpenBox(parameters, _targetScript.BelongObject);
+                            ScriptExecuter.OpenBox(parameters, BelongObject);
                             break;
                         case "SetObjScript":
-                            ScriptExecuter.SetObjScript(parameters, _targetScript.BelongObject);
+                            ScriptExecuter.SetObjScript(parameters, BelongObject);
                             break;
                         case "SetNpcScript":
-                            ScriptExecuter.SetNpcScript(parameters, _targetScript.BelongObject);
+                            ScriptExecuter.SetNpcScript(parameters, BelongObject);
                             break;
                         case "SetNpcDeathScript":
-                            ScriptExecuter.SetNpcDeathScript(parameters, _targetScript.BelongObject);
+                            ScriptExecuter.SetNpcDeathScript(parameters, BelongObject);
                             break;
                         case "SetNpcLevel":
-                            ScriptExecuter.SetNpcLevel(parameters, _targetScript.BelongObject);
+                            ScriptExecuter.SetNpcLevel(parameters, BelongObject);
                             break;
                         case "SetLevelFile":
-                            ScriptExecuter.SetLevelFile(parameters, _targetScript.BelongObject);
+                            ScriptExecuter.SetLevelFile(parameters, BelongObject);
                             break;
                         case "AddRandMoney":
                             ScriptExecuter.AddRandMoney(parameters);
@@ -310,13 +313,13 @@ namespace Engine.Script
                             ScriptExecuter.AddToMemo(parameters);
                             break;
                         case "DelGoods":
-                            ScriptExecuter.DelGoods(parameters, _targetScript.BelongObject);
+                            ScriptExecuter.DelGoods(parameters, BelongObject);
                             break;
                         case "DelCurObj":
-                            ScriptExecuter.DelCurObj(_targetScript.BelongObject);
+                            ScriptExecuter.DelCurObj(BelongObject);
                             break;
                         case "DelObj":
-                            ScriptExecuter.DelObj(parameters, _targetScript.BelongObject);
+                            ScriptExecuter.DelObj(parameters, BelongObject);
                             break;
                         case "FreeMap":
                             ScriptExecuter.FreeMap();
@@ -383,7 +386,7 @@ namespace Engine.Script
                             isEnd = false;
                             break;
                         case "RunScript":
-                            ScriptExecuter.RunScript(parameters, _targetScript.BelongObject);
+                            ScriptExecuter.RunScript(parameters, BelongObject);
                             break;
                         case "PlayMovie":
                             ScriptExecuter.PlayMovie(parameters);
@@ -402,22 +405,22 @@ namespace Engine.Script
                             ScriptExecuter.GetRandNum(parameters);
                             break;
                         case "SetNpcDir":
-                            ScriptExecuter.SetNpcDir(parameters, _targetScript.BelongObject);
+                            ScriptExecuter.SetNpcDir(parameters, BelongObject);
                             break;
                         case "SetNpcKind":
-                            ScriptExecuter.SetNpcKind(parameters, _targetScript.BelongObject);
+                            ScriptExecuter.SetNpcKind(parameters, BelongObject);
                             break;
                         case "SetNpcMagicFile":
-                            ScriptExecuter.SetNpcMagicFile(parameters, _targetScript.BelongObject);
+                            ScriptExecuter.SetNpcMagicFile(parameters, BelongObject);
                             break;
                         case "SetNpcPos":
-                            ScriptExecuter.SetNpcPos(parameters, _targetScript.BelongObject);
+                            ScriptExecuter.SetNpcPos(parameters, BelongObject);
                             break;
                         case "SetNpcRelation":
-                            ScriptExecuter.SetNpcRelation(parameters, _targetScript.BelongObject);
+                            ScriptExecuter.SetNpcRelation(parameters, BelongObject);
                             break;
                         case "SetNpcRes":
-                            ScriptExecuter.SetNpcRes(parameters, _targetScript.BelongObject);
+                            ScriptExecuter.SetNpcRes(parameters, BelongObject);
                             break;
                         case "SetNpcAction":
                             ScriptExecuter.SetNpcAction(parameters);
@@ -426,13 +429,13 @@ namespace Engine.Script
                             ScriptExecuter.SetNpcActionFile(parameters);
                             break;
                         case "SetNpcActionType":
-                            ScriptExecuter.SetNpcActionType(parameters, _targetScript.BelongObject);
+                            ScriptExecuter.SetNpcActionType(parameters, BelongObject);
                             break;
                         case "Watch":
                             ScriptExecuter.Watch(parameters);
                             break;
                         case "SetObjOfs":
-                            ScriptExecuter.SetObjOfs(parameters, _targetScript.BelongObject);
+                            ScriptExecuter.SetObjOfs(parameters, BelongObject);
                             break;
                         case "DisableFight":
                             ScriptExecuter.DisableFight();
@@ -496,15 +499,15 @@ namespace Engine.Script
                             ScriptExecuter.PlayerRunToEx(parameters);
                             break;
                         case "NpcGoto":
-                            ScriptExecuter.NpcGoto(parameters, _targetScript.BelongObject);
-                            isEnd = ScriptExecuter.IsNpcGotoEnd(parameters, _targetScript.BelongObject);
+                            ScriptExecuter.NpcGoto(parameters, BelongObject);
+                            isEnd = ScriptExecuter.IsNpcGotoEnd(parameters, BelongObject);
                             break;
                         case "NpcGotoDir":
-                            ScriptExecuter.NpcGotoDir(parameters, _targetScript.BelongObject);
-                            isEnd = ScriptExecuter.IsNpcGotoDirEnd(parameters, _targetScript.BelongObject);
+                            ScriptExecuter.NpcGotoDir(parameters, BelongObject);
+                            isEnd = ScriptExecuter.IsNpcGotoDirEnd(parameters, BelongObject);
                             break;
                         case "NpcGotoEx":
-                            ScriptExecuter.NpcGotoEx(parameters, _targetScript.BelongObject);
+                            ScriptExecuter.NpcGotoEx(parameters, BelongObject);
                             break;
                         case "SetMoneyNum":
                             ScriptExecuter.SetMoneyNum(parameters);
@@ -556,17 +559,17 @@ namespace Engine.Script
                             ScriptExecuter.LimitMana(parameters);
                             break;
                         case "NpcAttack":
-                            ScriptExecuter.NpcAttack(parameters, _targetScript.BelongObject);
+                            ScriptExecuter.NpcAttack(parameters, BelongObject);
                             break;
                         case "FollowNpc":
-                            ScriptExecuter.FollowNpc(parameters, _targetScript.BelongObject);
+                            ScriptExecuter.FollowNpc(parameters, BelongObject);
                             break;
                         case "NpcSpecialAction":
-                            ScriptExecuter.NpcSpecialAction(parameters, _targetScript.BelongObject);
+                            ScriptExecuter.NpcSpecialAction(parameters, BelongObject);
                             break;
                         case "NpcSpecialActionEx":
-                            ScriptExecuter.NpcSpecialActionEx(parameters, _targetScript.BelongObject);
-                            isEnd = ScriptExecuter.IsNpcSpecialActionExEnd(parameters, _targetScript.BelongObject);
+                            ScriptExecuter.NpcSpecialActionEx(parameters, BelongObject);
+                            isEnd = ScriptExecuter.IsNpcSpecialActionExEnd(parameters, BelongObject);
                             break;
                         case "LoadGame":
                             ScriptExecuter.LoadGame(parameters);

@@ -508,7 +508,7 @@ namespace Engine.Map
             var trapFileName = GetMapTrapFileName(index, mapName);
             if (!string.IsNullOrEmpty(trapFileName))
             {
-                return Utils.GetScriptParser(trapFileName, null, mapName);
+                return Utils.GetScriptParser(trapFileName, mapName);
             }
 
             return null;

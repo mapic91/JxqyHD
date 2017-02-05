@@ -16,7 +16,6 @@ namespace Engine.Script
         public string FilePath { get; private set; }
         public string FileName { get; private set; }
         public bool IsOk { private set; get; }
-        public object BelongObject { private set; get; }
 
         public Code[] Codes
         {
@@ -25,9 +24,9 @@ namespace Engine.Script
 
         public ScriptParser() { }
 
-        public ScriptParser(string filePath, object belongObject)
+        public ScriptParser(string filePath)
         {
-            ReadFile(filePath, belongObject);
+            ReadFile(filePath);
         }
 
         private static readonly Regex RegGoto = new Regex(@"^@([a-zA-Z0-9]+):");
@@ -130,9 +129,8 @@ namespace Engine.Script
             return parameters;
         }
 
-        public bool ReadFile(string filePath, object belongObject)
+        public bool ReadFile(string filePath)
         {
-            BelongObject = belongObject;
             IsOk = false;
             FilePath = filePath;
             try
@@ -161,14 +159,12 @@ namespace Engine.Script
         /// </summary>
         /// <param name="lines">Script contents.</param>
         /// <param name="filePath">Script file path to set.</param>
-        /// <param name="belongObject">Script belong object.</param>
         /// <returns>Return ture if read success.Otherwise false.</returns>
-        public bool ReadFromLines(string[] lines, string filePath, object belongObject = null)
+        public bool ReadFromLines(string[] lines, string filePath)
         {
             try
             {
                 FilePath = filePath;
-                BelongObject = belongObject;
                 return ReadFromLines(lines);
             }
             catch (Exception)

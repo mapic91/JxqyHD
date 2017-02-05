@@ -461,18 +461,55 @@ namespace Engine
             Good
         }
 
+        private static Dictionary<string, ScriptParser> _scriptParserCache = new Dictionary<string, ScriptParser>();
+        private static Dictionary<string, DateTime> _scriptFileLastWriteTime = new Dictionary<string, DateTime>(); 
+
         /// <summary>
         /// Get ScriptParser from file name.
         /// </summary>
         /// <param name="fileName">Script file name</param>
-        /// <param name="belongObject">Belong object of returned ScriptParser</param>
         /// <param name="mapName">Map name used to get script path, use current map name if null or empty</param>
         /// <param name="category">Category of script belongs.</param>
         /// <returns></returns>
-        public static ScriptParser GetScriptParser(string fileName, object belongObject = null, string mapName = null, ScriptCategory category = ScriptCategory.Normal)
+        public static ScriptParser GetScriptParser(string fileName, string mapName = null, ScriptCategory category = ScriptCategory.Normal)
         {
             if (string.IsNullOrEmpty(fileName)) return null;
-            return new ScriptParser(GetScriptFilePath(fileName, mapName, category), belongObject);
+            var path = GetScriptFilePath(fileName, mapName, category);
+            if (!Globals.TheGame.IsInEditMode ||
+                (_scriptFileLastWriteTime.ContainsKey(path) && 
+                _scriptFileLastWriteTime[path].Equals(File.GetLastWriteTime(path))))
+            {
+                //Use cached script parser:
+                // *In play mode or
+                // *If file is cached and not modified in edit mode.
+                if (_scriptParserCache.ContainsKey(path))
+                {
+                    return _scriptParserCache[path];
+                }
+            }
+            else if (Globals.TheGame.IsInEditMode)
+            {
+                try
+                {
+                    // Update last write time
+                    _scriptFileLastWriteTime[path] = File.GetLastWriteTime(path);
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+
+            //No script parser in cache, create new and add to cache.
+            var parser = new ScriptParser(path);
+            _scriptParserCache[path] = parser;
+            return parser;
+        }
+
+        public static void ClearScriptParserCache()
+        {
+            _scriptParserCache.Clear();
+            _scriptFileLastWriteTime.Clear();
         }
 
         public static string RemoveStringQuotes(string str)

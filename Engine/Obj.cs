@@ -397,7 +397,7 @@ namespace Engine
         {
             if (!IsRemoved)
             {
-                ScriptManager.RunScript(Utils.GetScriptParser(ScriptFile, this));
+                ScriptManager.RunScript(Utils.GetScriptParser(ScriptFile), this);
             }
         }
 
@@ -414,9 +414,9 @@ namespace Engine
                             Globals.TheGame.IsInEditMode // Turn off cache script in edit mode
                        )
                     {
-                        _timeScriptParserCache = Utils.GetScriptParser(_timerScriptFile, this);
+                        _timeScriptParserCache = Utils.GetScriptParser(_timerScriptFile);
                     }
-                    ScriptManager.RunScript(_timeScriptParserCache);
+                    ScriptManager.RunScript(_timeScriptParserCache, this);
                 }
             }
 

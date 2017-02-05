@@ -329,7 +329,7 @@ namespace Engine.ListManager
                     case Good.GoodKind.Event:
                         {
                             ScriptManager.RunScript(Utils.GetScriptParser(
-                                good.Script, good, null, Utils.ScriptCategory.Good));
+                                good.Script, null, Utils.ScriptCategory.Good), good);
                         }
                         break;
                     default:

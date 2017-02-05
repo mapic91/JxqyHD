@@ -1640,7 +1640,7 @@ namespace Engine
             SppedUpByMagicSprite = null;
 
             //Run death script
-            _currentRunDeathScript = ScriptManager.RunScript(Utils.GetScriptParser(DeathScript, this));
+            _currentRunDeathScript = ScriptManager.RunScript(Utils.GetScriptParser(DeathScript), this);
 
             if (ControledMagicSprite != null)
             {
@@ -1969,7 +1969,7 @@ namespace Engine
                 _isInInteract = true;
                 _directionBeforInteract = CurrentDirection;
                 SetDirection(from.PositionInWorld - PositionInWorld);
-                _currentRunInteractScript = ScriptManager.RunScript(Utils.GetScriptParser(ScriptFile, this));
+                _currentRunInteractScript = ScriptManager.RunScript(Utils.GetScriptParser(ScriptFile), this);
             }
         }
 
@@ -2427,9 +2427,9 @@ namespace Engine
                             Globals.TheGame.IsInEditMode // Turn off cache script in edit mode
                             )
                         {
-                            _timeScriptParserCache = Utils.GetScriptParser(_timerScriptFile, this);
+                            _timeScriptParserCache = Utils.GetScriptParser(_timerScriptFile);
                         }
-                        ScriptManager.RunScript(_timeScriptParserCache);
+                        ScriptManager.RunScript(_timeScriptParserCache, this);
                     }
                 }
             }
