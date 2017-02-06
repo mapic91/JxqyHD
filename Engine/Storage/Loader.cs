@@ -152,6 +152,7 @@ namespace Engine.Storage
                 //Clear
                 ScriptManager.Clear();
                 ScriptExecuter.Init();
+                Utils.ClearScriptParserCache();
                 MagicManager.Clear();
                 NpcManager.ClearAllNpc();
                 ObjManager.ClearAllObjAndFileName();
