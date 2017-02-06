@@ -22,6 +22,7 @@ namespace GameEditor
         private RunScript _scriptDialog = new RunScript();
         private VariablesWindow _variablesWindow = new VariablesWindow();
         private LogWindow _log = new LogWindow();
+        private FileSystemWatcher _scriptFileWatcher;
         public JxqyGame TheJxqyGame;
 
         public GameEditor()
@@ -29,6 +30,15 @@ namespace GameEditor
             InitializeComponent();
             FunctionRunStateAppendLine("[时间]\t[函数]\t[行数]");
             CenterToScreen();
+
+            //Watch for script file change.
+            _scriptFileWatcher = new FileSystemWatcher();
+            _scriptFileWatcher.NotifyFilter = NotifyFilters.LastWrite;
+            _scriptFileWatcher.Changed += (sender, args) =>
+            {
+                var callBack = new SetScriptFileContentEvent(SetScriptFileContent);
+                Invoke(callBack, new object[] { _scriptFilePath.Text });
+            };
         }
 
         private void SaveSettings()
@@ -71,6 +81,8 @@ namespace GameEditor
             _functionText.AppendText(line + Environment.NewLine);
         }
 
+        delegate void SetScriptFileContentEvent(string path);
+
         public void SetScriptFileContent(string path)
         {
             SetScriptFilePath(path);
@@ -96,8 +108,25 @@ namespace GameEditor
 
         private void SetScriptFilePath(string path)
         {
+            var oldPath = _scriptFilePath.Text;
             _scriptFilePath.Text = path;
             TheToolTip.SetToolTip(_scriptFilePath, path);
+
+            if (oldPath != path)
+            {
+                //Watch new path
+                try
+                {
+                    var fullpath = Path.GetFullPath(path);
+                    _scriptFileWatcher.Path = Path.GetDirectoryName(fullpath);
+                    _scriptFileWatcher.Filter = Path.GetFileName(fullpath);
+                    _scriptFileWatcher.EnableRaisingEvents = true;
+                }
+                catch (Exception)
+                {
+                    // Do nothing
+                }
+            }
         }
 
         private void _scriptFilePath_Click(object sender, EventArgs e)
