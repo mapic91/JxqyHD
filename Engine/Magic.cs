@@ -40,6 +40,7 @@ namespace Engine
         private Dictionary<int, Magic> _level;
         private int _currentLevel;
         private int _effect;
+        private int _effectExt;
         private int _manaCost;
         private int _levelupExp;
         private bool _isOk;
@@ -298,6 +299,12 @@ namespace Engine
         {
             get { return _effect; }
             set { _effect = value; }
+        }
+
+        public int EffectExt
+        {
+            get { return _effectExt; }
+            set { _effectExt = value; }
         }
 
         public int ManaCost

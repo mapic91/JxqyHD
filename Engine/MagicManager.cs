@@ -600,11 +600,11 @@ namespace Engine
                 switch (magic.SpecialKind)
                 {
                     case 1:
-                        user.Life += (magic.Effect == 0 ? user.Attack : magic.Effect);
+                        user.Life += (magic.Effect == 0 ? user.Attack : magic.Effect) + magic.EffectExt;
                         AddMagicSprite(sprite);
                         break;
                     case 2:
-                        user.Thew += (magic.Effect == 0 ? user.Attack : magic.Effect);
+                        user.Thew += (magic.Effect == 0 ? user.Attack : magic.Effect) + magic.EffectExt;
                         AddMagicSprite(sprite);
                         break;
                     default:
@@ -758,9 +758,10 @@ namespace Engine
             //Because npc just can use FlyIni FlyIni2, 
             //so if belong character is a npc not a player use character attack value as amount also.
             if (magic == null || belongCharacter == null) return 0;
-            return (magic.Effect == 0 || !belongCharacter.IsPlayer) ?
+            var effect = (magic.Effect == 0 || !belongCharacter.IsPlayer) ?
                 belongCharacter.Attack :
                 magic.Effect;
+            return effect + magic.EffectExt;
         }
 
         /// <summary>
