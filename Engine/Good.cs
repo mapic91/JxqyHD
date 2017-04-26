@@ -38,6 +38,7 @@ namespace Engine
         public bool IsOk { private set; get; }
         public string FlyIni { set; get; }
         public string FlyIni2 { set; get; }
+        public string MagicIniWhenUse { set; get; }
 
         public GoodEffectType TheEffectType
         {
@@ -150,6 +151,7 @@ namespace Engine
                     case "Script":
                     case "FlyIni":
                     case "FlyIni2":
+                    case "MagicIniWhenUse":
                         info.SetValue(this, value, null);
                         break;
                     case "Kind":

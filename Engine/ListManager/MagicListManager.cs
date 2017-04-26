@@ -13,7 +13,9 @@ namespace Engine.ListManager
         private const int MagicListIndexBegin = 1;
         private const int StoreListStart = 1;
         private const int StoreListEnd = 36;
+        private const int HideStartIndex = 1000;
         private static readonly MagicItemInfo[] MagicList = new MagicItemInfo[MaxMagic + 1];
+        private static readonly MagicItemInfo[] MagicListHide = new MagicItemInfo[MaxMagic + 1];
 
         public const int XiuLianIndex = 49;
         public const int BottomMagicIndexStart = 40;
@@ -32,11 +34,19 @@ namespace Engine.ListManager
                     if (int.TryParse(sectionData.SectionName, out head))
                     {
                         var section = data[sectionData.SectionName];
-                        MagicList[head] = new MagicItemInfo(
+                        var info = new MagicItemInfo(
                             section["IniFile"],
                             int.Parse(section["Level"]),
                             int.Parse(section["Exp"])
                             );
+                        if (head >= HideStartIndex)
+                        {
+                            MagicListHide[head - HideStartIndex] = info;
+                        }
+                        else
+                        {
+                            MagicList[head] = info;
+                        }
                     }
                 }
             }
@@ -63,6 +73,17 @@ namespace Engine.ListManager
                         count++;
                         data.Sections.AddSection(i.ToString());
                         var section = data[i.ToString()];
+                        section.AddKey("IniFile", item.TheMagic.FileName);
+                        section.AddKey("Level", item.Level.ToString());
+                        section.AddKey("Exp", item.Exp.ToString());
+                    }
+
+                    item = MagicListHide[i];
+                    if (item != null && item.TheMagic != null)
+                    {
+                        var index = HideStartIndex + i;
+                        data.Sections.AddSection(index.ToString());
+                        var section = data[index.ToString()];
                         section.AddKey("IniFile", item.TheMagic.FileName);
                         section.AddKey("Level", item.Level.ToString());
                         section.AddKey("Exp", item.Exp.ToString());
@@ -98,6 +119,7 @@ namespace Engine.ListManager
             for (var i = 1; i <= MaxMagic; i++)
             {
                 MagicList[i] = null;
+                MagicListHide[i] = null;
             }
         }
 
@@ -150,6 +172,26 @@ namespace Engine.ListManager
             return (itemInfo != null) ?
                 itemInfo.TheMagic :
                 null;
+        }
+
+        public static int GetIndex(string fileName)
+        {
+            for (var i = 1; i <= MaxMagic; i++)
+            {
+                var info = MagicList[i];
+                if (info != null)
+                {
+                    var magic = info.TheMagic;
+                    if (magic != null)
+                    {
+                        if (Utils.EqualNoCase(magic.FileName, fileName))
+                        {
+                            return i;
+                        }
+                    }
+                }
+            }
+            return -1;
         }
 
         public static Texture GetTexture(int index)
@@ -242,26 +284,83 @@ namespace Engine.ListManager
             return false;
         }
 
-        public static void SetMagicLevel(string fileName, int level)
+        public static bool IsMagicHided(string fileName)
         {
             for (var i = 1; i <= MaxMagic; i++)
             {
-                var info = MagicList[i];
-                if (info != null)
+                if (MagicListHide[i] != null)
                 {
-                    var magic = info.TheMagic;
+                    var magic = MagicListHide[i].TheMagic;
                     if (magic != null)
                     {
                         if (Utils.EqualNoCase(magic.FileName, fileName))
                         {
-                            magic = magic.GetLevel(level);
-                            info.TheMagic = magic;
-                            info.Exp = magic.LevelupExp;
-                            return;
+                            return true;
                         }
                     }
                 }
             }
+            return false;
+        }
+
+        public static MagicItemInfo SetMagicHide(string fileName, bool isHide)
+        {
+            if (isHide)
+            {
+                var index = GetIndex(fileName);
+                if (index != -1)
+                {
+                    var info = MagicList[index];
+                    for (var i = 1; i <= MaxMagic; i++)
+                    {
+                        if (MagicListHide[i] == null)
+                        {
+                            MagicListHide[i] = info;
+                            MagicList[index] = null;
+
+                            if (index == XiuLianIndex && Globals.ThePlayer != null)
+                            {
+                                Globals.ThePlayer.XiuLianMagic = null;
+                            }
+
+                            return info;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                for (var i = 1; i <= MaxMagic; i++)
+                {
+                    if (MagicListHide[i] != null)
+                    {
+                        var magic = MagicListHide[i].TheMagic;
+                        if (magic != null)
+                        {
+                            if (Utils.EqualNoCase(magic.FileName, fileName))
+                            {
+                                var info = MagicListHide[i];
+                                for (var j = StoreListStart; j <= StoreListEnd; j++)
+                                {
+                                    if (MagicList[j] == null)
+                                    {
+                                        MagicList[j] = info;
+                                        return info;
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        public static void SetMagicLevel(string fileName, int level)
+        {
+            
         }
 
         public class MagicItemInfo

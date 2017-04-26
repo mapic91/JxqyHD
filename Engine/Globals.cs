@@ -106,6 +106,7 @@ namespace Engine
         public static int WindowHeight = 600;
         public static bool IsFullScreen = true;
         public static int SaveLoadSelectionIndex;
+        public static bool IsUseThewWhenNormalRun = false;
 
         public static bool IsInputDisabled;
         public static bool IsWaterEffectEnabled;
@@ -132,6 +133,8 @@ namespace Engine
                     WindowHeight = value;
                 if (int.TryParse(setting["SaveLoadSelectionIndex"], out value))
                     SaveLoadSelectionIndex = value;
+                if (int.TryParse(setting["IsUseThewWhenNormalRun"], out value))
+                    IsUseThewWhenNormalRun = value > 0;
                 if (int.TryParse(setting["MaxMagicUnit"], out value))
                     MagicManager.MaxMagicUnit = value;
                 if (int.TryParse(setting["RunSpeedFold"], out value))
@@ -188,6 +191,7 @@ namespace Engine
 
                 section["FullScreen"] = IsFullScreen ? "1" : "0";
                 section["SaveLoadSelectionIndex"] = SaveLoadSelectionIndex.ToString();
+                section["IsUseThewWhenNormalRun"] = IsUseThewWhenNormalRun ? "1" : "0";
                 if (isAll)
                 {
                     section["Width"] = WindowWidth.ToString();

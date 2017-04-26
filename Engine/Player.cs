@@ -425,7 +425,7 @@ namespace Engine
         {
             if (CanRun())
             {
-                if (!IsNotUseThewWhenRun && IsInFighting)
+                if (!IsNotUseThewWhenRun && (IsInFighting || Globals.IsUseThewWhenNormalRun))
                 {
                     Thew -= 1;
                 }
@@ -607,6 +607,27 @@ namespace Engine
                     LifeMax += equip.LifeMax;
                     ThewMax += equip.ThewMax;
                     ManaMax += equip.ManaMax;
+
+                    if (!string.IsNullOrEmpty(equip.MagicIniWhenUse))
+                    {
+                        if (MagicListManager.IsMagicHided(equip.MagicIniWhenUse))
+                        {
+                            var info = MagicListManager.SetMagicHide(equip.MagicIniWhenUse, false);
+                            if (info != null)
+                            {
+                                GuiManager.ShowMessage("武功" + info.TheMagic.Name + "已可使用");
+                                GuiManager.UpdateMagicView();
+                            }
+                            else
+                            {
+                                GuiManager.ShowMessage("错误");
+                            }
+                        }
+                        else
+                        {
+                            AddMagic(equip.MagicIniWhenUse);
+                        }
+                    }
                 }
 
                 switch (equip.TheEffectType)
@@ -663,6 +684,33 @@ namespace Engine
                     LifeMax -= equip.LifeMax;
                     ThewMax -= equip.ThewMax;
                     ManaMax -= equip.ManaMax;
+
+                    if (!string.IsNullOrEmpty(equip.MagicIniWhenUse))
+                    {
+                        var info = MagicListManager.SetMagicHide(equip.MagicIniWhenUse, true);
+                        if (info != null)
+                        {
+                            GuiManager.ShowMessage("武功" + info.TheMagic.Name + "已不可使用");
+
+                            if (XiuLianMagic != null && 
+                                Utils.EqualNoCase(XiuLianMagic.TheMagic.Name, info.TheMagic.Name))
+                            {
+                                XiuLianMagic = null;
+                            }
+
+                            if (CurrentMagicInUse != null &&
+                                Utils.EqualNoCase(CurrentMagicInUse.TheMagic.Name, info.TheMagic.Name))
+                            {
+                                CurrentMagicInUse = null;
+                            }
+
+                            GuiManager.UpdateMagicView();
+                        }
+                        else
+                        {
+                            GuiManager.ShowMessage("错误");
+                        }
+                    }
                 }
                 switch (equip.TheEffectType)
                 {
