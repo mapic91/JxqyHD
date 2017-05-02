@@ -108,7 +108,20 @@ namespace Engine
         public static int SaveLoadSelectionIndex;
         public static bool IsUseThewWhenNormalRun = false;
 
-        public static bool IsInputDisabled;
+        private static bool _isInputDisabled;
+        private static bool _isInputDisabledDirty;
+
+        public static bool IsInputDisabled
+        {
+            set
+            {
+                _isInputDisabled = value;
+                _isInputDisabledDirty = true;
+            }
+            get { return _isInputDisabled; }
+        }
+
+   
         public static bool IsWaterEffectEnabled;
 
         public static readonly MessageDelegater TheMessageSender = new MessageDelegater();
@@ -215,8 +228,9 @@ namespace Engine
         /// </summary>
         public static void EnableInputTemporary()
         {
-            _lastIsInputDisabled = IsInputDisabled;
-            IsInputDisabled = false;
+            _lastIsInputDisabled = _isInputDisabled;
+            _isInputDisabled = false;
+            _isInputDisabledDirty = false;
         }
 
         /// <summary>
@@ -224,7 +238,11 @@ namespace Engine
         /// </summary>
         public static void RestoreInputDisableState()
         {
-            IsInputDisabled = _lastIsInputDisabled;
+            if (!_isInputDisabledDirty)
+            {
+                //Restor value only when value unchanged.
+                _isInputDisabled = _lastIsInputDisabled;
+            }
         }
     }
 }
