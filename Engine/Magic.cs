@@ -62,6 +62,7 @@ namespace Engine
         private int _passThroughWithDestroyEffect;
         private int _passThroughWall;
         private int _carryUser;
+        private int _carryUserSpriteIndex;
         private int _bounce;
         private int _ball;
         private int _sticky;
@@ -106,6 +107,15 @@ namespace Engine
         private int _restoreType;
         #endregion Restore
 
+        private int _dieAfterUse;
+
+        #region Parasitic
+        private int _parasitic;
+        private Magic _parasiticMagic;
+        private int _parasiticInterval = 1000;
+        private int _parasiticMaxEffect;
+        #endregion Parasitic
+
         #region Public properties
         public AddonEffect AdditionalEffect { set; get; }
 
@@ -121,6 +131,10 @@ namespace Engine
                 if (_flyMagic != null)
                 {
                     _flyMagic.ItemInfo = value;
+                }
+                if (_parasiticMagic != null)
+                {
+                    _parasiticMagic.ItemInfo = value;
                 }
             }
             get { return _iteminfo; }
@@ -393,6 +407,36 @@ namespace Engine
             set { _restoreProbability = value.Clamp(0, 100); }
         }
 
+        public int DieAfterUse
+        {
+            get { return _dieAfterUse; }
+            set { _dieAfterUse = value; }
+        }
+
+        public int Parasitic
+        {
+            get { return _parasitic; }
+            set { _parasitic = value; }
+        }
+
+        public Magic ParasiticMagic
+        {
+            get { return _parasiticMagic; }
+            set { _parasiticMagic = value; }
+        }
+
+        public int ParasiticInterval
+        {
+            get { return _parasiticInterval; }
+            set { _parasiticInterval = value; }
+        }
+
+        public int ParasiticMaxEffect
+        {
+            get { return _parasiticMaxEffect; }
+            set { _parasiticMaxEffect = value; }
+        }
+
         public int KeepMilliseconds
         {
             get { return _keepMilliseconds; }
@@ -493,6 +537,12 @@ namespace Engine
         {
             get { return _carryUser; }
             set { _carryUser = value; }
+        }
+
+        public int CarryUserSpriteIndex
+        {
+            get { return _carryUserSpriteIndex; }
+            set { _carryUserSpriteIndex = value; }
         }
 
         public int Bounce
@@ -668,6 +718,7 @@ namespace Engine
                         break;
                     case "ExplodeMagicFile":
                     case "FlyMagic":
+                    case "ParasiticMagic":
                         info.SetValue(this, Utils.GetMagic(nameValue[1], false), null);
                         break;
                     case "RegionFile":
@@ -773,6 +824,10 @@ namespace Engine
             if (magic.FlyMagic != null)
             {
                 magic.FlyMagic = magic.FlyMagic.GetLevel(level);
+            }
+            if (magic.ParasiticMagic != null)
+            {
+                magic.ParasiticMagic = magic.ParasiticMagic.GetLevel(level);
             }
             //Assign item info to level magic
             magic.ItemInfo = ItemInfo;

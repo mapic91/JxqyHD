@@ -286,6 +286,8 @@ MoveImitateUser - ´óÓÚ0±íÊ¾ÊÍ·ÅÕßÒÆ¶¯¶àÉÙ¾àÀë£¬ÏàÓ¦µÄÎä¹¦µ¥Î»Ò²»áÏàÓ¦µÄÒÆ¶¯Ò»Ñùµ
 CircleMoveColockwise - ´óÓÚ0±íÊ¾»áÒÔÊÍ·ÅÕßÎªÔ²ÐÄ×÷Ë³Ê±ÕëÔ²ÖÜÔË¶¯
 CircleMoveAnticlockwise - ´óÓÚ0±íÊ¾»áÒÔÊÍ·ÅÕßÎªÔ²ÐÄ×÷ÄæÊ±ÕëÔ²ÖÜÔË¶¯
 
+CarryUserSpriteIndex - µ±Ò»¸öÎä¹¦Ê¹ÓÃ·Å³öÇòÌåÊ±£¬Ã¿¸öÇòÌå¶¼»áÓÐÒ»¸ö´Ó0¿ªÊ¼µÄË÷ÒýÖµ¡£±ÈÈç£ºÒ»´Î·Å³ö1¸öÇò£¬Ôò¸ÃÇòË÷ÒýÎª0£»Ò»´Î·Å³ö3¸öÇò£¬ÔòÃ¿¸öÇòË÷Òý·Ö±ðÎª0£¬1£¬2£»ÉèÖÃCarryUserSpriteIndex£¬±íÊ¾ÊÇÄÄ¸öÇòÐ¯´øÎä¹¦ÊÍ·ÅÕß£¬Ä¬ÈÏÖµÎª0¡£
+
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ´©Í¸ÐÔ£º
@@ -341,3 +343,20 @@ BeginAtUserAddDirectionOffset - ´óÓÚ0±íÊ¾ÊÍ·ÅÕßÔÚÊÍ·ÅÎä¹¦Ê±£¬ÆäÊó±êÎ»ÖÃ¿´×÷ÔÚÊÍ·
 
 ×¢£ºÓÅÏÈ¶ÈBeginAtMouse>BeginAtUser>BeginAtUserAddDirectionOffset
 
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+ÓÃºóËÀÍö£º
+
+DieAfterUse - ´óÓÚÁã±íÊ¾Ê¹ÓÃ¸ÃÎä¹¦ºó£¬Ê¹ÓÃÕßÁ¢¼´ËÀÍö£¬Ä¬ÈÏ0¡£
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+¼ÄÉú£º
+
+µ±¸ÃÎä¹¦»÷ÖÐµÐÈËÊÜµ½ÉËº¦ºó£¬»áð¤¸½ÔÚµÐÈËÉíÉÏ£¬Ã¿¸ôParasiticInterval0µÐÈËÊÜµ½¸ÃÎä¹¦ÉËº¦£¬²¢ÔÚ¸ÃµÐÈË´¦ÊÍ·Å¿ÉÉËº¦ÆäËûµÐÈËµÄÎä¹¦ParasiticMagic¡£µ±¸ÃÎä¹¦¶Ô¸ÃµÐÈËÔì³ÉµÄÉËº¦×ÜºÍ´óÓÚµÈÓÚParasiticMaxEffectÊ±£¬»ò¸ÃµÐÈËËÀÍöÊ±£¬Îä¹¦ÏûÊ§¡£
+
+Parasitic - ´óÓÚ0±íÊ¾ÊÇÓÐ¼ÄÉúÊôÐÔ£¬Ä¬ÈÏ0
+ParasiticMagic - ÊÍ·ÅµÄÎä¹¦ÎÄ¼þÃû£¬ÊÍ·ÅµÄMagicµÈ¼¶¸úÔ­MagicÏàÍ¬£¬ÈôÃ»ÉèÖÃÔò²»»áÊÍ·Å
+ParasiticInterval - ¼ä¸ô£¬µ¥Î»ºÁÃë£¬Ä¬ÈÏ1000
+ParasiticMaxEffect - ¶ÔµÐÈËÔì³ÉµÄ×î´óÉËº¦£¬µÈÓÚ0±íÊ¾ÎÞÉÏÏÞ£¬Ä¬ÈÏ0
+VanishImage - ±íÊ¾»÷ÖÐµÐÈËºóÏÔÊ¾µÄÍ¼Ïñ£¬Èç¹ûÃ»ÉèÖÃÔò¼ÌÐøÊ¹ÓÃFlyingImage

@@ -39,11 +39,34 @@ namespace Engine
 
         private Character _stickedCharacter;
 
+        private Character _parasitiferCharacter;
+        private float _parasticTime;
+        private int _totalParasticEffect;
+
         private Vector2 _lastUserWorldPosition;
 
         private Vector2 _circleMoveDir;
 
+        private int _index;
+
         public const int MinimalDamage = 5;
+
+        public int Index
+        {
+            get { return _index; }
+            set
+            {
+                _index = value;
+
+                if (BelongMagic != null && BelongCharacter != null)
+                {
+                    if (BelongMagic.CarryUser > 0 && BelongMagic.CarryUserSpriteIndex == value)
+                    {
+                        BelongCharacter.MovedByMagicSprite = this;
+                    }
+                }
+            }
+        }
 
         #region Public properties
         public Magic BelongMagic
@@ -204,10 +227,7 @@ namespace Engine
                     }
                     break;
             }
-            if (belongMagic.CarryUser > 0)
-            {
-                belongCharacter.MovedByMagicSprite = this;
-            }
+            
             Set(positionInWorld, velocity, texture, 0);
             BelongMagic = belongMagic;
             BelongCharacter = belongCharacter;
@@ -285,6 +305,12 @@ namespace Engine
                 }
             }
 
+            if (BelongMagic.Parasitic > 0)
+            {
+                _parasitiferCharacter = character;
+                destroy = true;
+            }
+
             //Apply magic special effect
             switch (BelongMagic.SpecialKind)
             {
@@ -341,7 +367,7 @@ namespace Engine
             }
         }
 
-        private void CharacterHited(Character character, int damage)
+        private void CharacterHited(Character character, int damage, bool addMagicHitedExp = true)
         {
             var isInDeath = character.IsDeathInvoked;
 
@@ -364,7 +390,7 @@ namespace Engine
                 hitRatio += belowRatio + upOffsetRatio * upRatio;
             }
 
-            if (Globals.TheRandom.Next(101) <= (int)(hitRatio * 100f))
+            if (_parasitiferCharacter != null || Globals.TheRandom.Next(101) <= (int)(hitRatio * 100f))
             {
                 var effect = damage - character.Defend;
                 foreach (var magicSprite in character.MagicSpritesInEffect)
@@ -411,6 +437,11 @@ namespace Engine
                 }
             }
 
+            if (_parasitiferCharacter != null)
+            {
+                _totalParasticEffect += damage;
+            }
+
             {
                 Player player = null;
                 MagicListManager.MagicItemInfo info = null;
@@ -436,7 +467,7 @@ namespace Engine
                         info = player.CurrentMagicInUse;
                     }
                 }
-                if (player != null && info != null)
+                if (addMagicHitedExp && player != null && info != null)
                 {
                     var amount = Utils.GetMagicExp(character.Level);
                     player.AddMagicExp(info, amount);
@@ -478,6 +509,12 @@ namespace Engine
             {
                 //Clear sticked character
                 _stickedCharacter = null;
+            }
+
+            if (_parasitiferCharacter != null)
+            {
+                // Magic sprite finded its parasitifer.
+                return;
             }
 
             if (BelongCharacter.IsPlayer || BelongCharacter.IsFighterFriend)
@@ -532,7 +569,7 @@ namespace Engine
             SoundManager.Play3DSoundOnece(sound,
                 positionInWorld - Globals.ListenerPosition);
 
-            UseExplodeMagic();
+            UseMagic(BelongMagic.ExplodeMagicFile);
         }
 
         private bool CheckDestroyForObstacleInMap()
@@ -634,12 +671,21 @@ namespace Engine
                 }
                 else
                 {
-                    _isDestroyed = true;
+                    if (_parasitiferCharacter == null)
+                    {
+                        _isDestroyed = true;
+                    }
                 }
+
+                if (_parasitiferCharacter != null)
+                {
+                    PlayFrames(int.MaxValue);
+                }
+
                 SoundManager.Play3DSoundOnece(BelongMagic.VanishSound,
                     PositionInWorld - Globals.ListenerPosition);
 
-                UseExplodeMagic();
+                UseMagic(BelongMagic.ExplodeMagicFile);
 
                 if (BelongMagic.VibratingScreen > 0)
                 {
@@ -653,17 +699,16 @@ namespace Engine
             _isDestroyed = true;
         }
 
-        private void UseExplodeMagic()
+        private void UseMagic(Magic magic)
         {
-            if (BelongMagic.ExplodeMagicFile != null)
-            {
-                MagicManager.UseMagic(BelongCharacter,
-                    BelongMagic.ExplodeMagicFile,
+            if(magic == null) return;
+
+            MagicManager.UseMagic(BelongCharacter,
+                    magic,
                     PositionInWorld,
                     RealMoveDirection == Vector2.Zero
                         ? PositionInWorld + (PositionInWorld - BelongCharacter.PositionInWorld)
                         : PositionInWorld + RealMoveDirection);
-            }
         }
 
         private void LeapToNextTarget(Character hitedCharacter)
@@ -736,6 +781,33 @@ namespace Engine
             {
                 _waitMilliSeconds -= (float)gameTime.ElapsedGameTime.TotalMilliseconds;
                 return;
+            }
+
+            if (_parasitiferCharacter != null)
+            {
+                PositionInWorld = _parasitiferCharacter.PositionInWorld;
+
+                if (_parasitiferCharacter.IsDeathInvoked)
+                {
+                    _parasitiferCharacter = null;
+                    _isDestroyed = true;
+                }
+                else
+                {
+                    _parasticTime += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                    if (_parasticTime >= BelongMagic.ParasiticInterval)
+                    {
+                        _parasticTime -= BelongMagic.ParasiticInterval;
+                        UseMagic(BelongMagic.ParasiticMagic);
+                        CharacterHited(_parasitiferCharacter, MagicManager.GetEffectAmount(BelongMagic, BelongCharacter), false);
+
+                        if (BelongMagic.ParasiticMaxEffect > 0 && _totalParasticEffect >= BelongMagic.ParasiticMaxEffect)
+                        {
+                            _parasitiferCharacter = null;
+                            _isDestroyed = true;
+                        }
+                    }
+                }
             }
 
             if (_paths != null)

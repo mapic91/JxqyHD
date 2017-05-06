@@ -16,6 +16,8 @@ namespace Engine
         private static LinkedList<MagicSprite> _solideMagicSprites = new LinkedList<MagicSprite>(); 
         private static List<Sprite> _magicSpritesInView = new List<Sprite>();
 
+        private static int _maigicSpriteIndex;
+
         public static int MaxMagicUnit;
 
         public static LinkedList<MagicSprite> MagicSpritesList
@@ -56,7 +58,11 @@ namespace Engine
         {
             if (item.LeftMilliseconds < 1)
                 AddMagicSprite(item.TheSprite);
-            else _workList.AddLast(item);
+            else
+            {
+                item.SpriteIndex = _maigicSpriteIndex++;
+                _workList.AddLast(item);
+            }
         }
 
         private static Vector2 GetDirectionOffsetOf8(Vector2 direction)
@@ -127,7 +133,7 @@ namespace Engine
                 destroyOnEnd));
         }
 
-        private static void AddMagicSprite(MagicSprite sprite)
+        private static void AddMagicSprite(MagicSprite sprite, int spriteIndex = -1)
         {
             if (sprite != null)
             {
@@ -146,6 +152,8 @@ namespace Engine
                             return;
                     }   
                 }
+
+                sprite.Index = spriteIndex == -1 ? _maigicSpriteIndex++ : spriteIndex;
 
                 _magicSprites.AddLast(sprite);
 
@@ -776,6 +784,8 @@ namespace Engine
         {
             if (user == null || magic == null) return;
 
+            _maigicSpriteIndex = 0;
+
             if (magic.FlyingSound != null)
             {
                 magic.FlyingSound.Play();
@@ -939,6 +949,11 @@ namespace Engine
                         throw new ArgumentOutOfRangeException();
                 }
             }
+
+            if (magic.DieAfterUse > 0)
+            {
+                user.Death();
+            }
         }
 
         public static bool IsObstacle(Vector2 tilePosition)
@@ -957,7 +972,7 @@ namespace Engine
                 item.LeftMilliseconds -= elapsedMilliseconds;
                 if (item.LeftMilliseconds <= 0)
                 {
-                    AddMagicSprite(item.TheSprite);
+                    AddMagicSprite(item.TheSprite, item.SpriteIndex);
                     _workList.Remove(node);
                 }
                 node = next;
@@ -1042,6 +1057,7 @@ namespace Engine
         {
             public float LeftMilliseconds;
             public MagicSprite TheSprite;
+            public int SpriteIndex;
 
             public WorkItem(float leftMilliseconds, MagicSprite theSprite)
             {
