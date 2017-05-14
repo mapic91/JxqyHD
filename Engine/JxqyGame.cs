@@ -73,7 +73,6 @@ namespace Engine
             IsMouseVisible = false;
             _graphics.IsFullScreen = false;
             _graphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
-            _graphics.GraphicsProfile = GraphicsProfile.HiDef;
             GameState.State = GameState.StateType.Start;
         }
 
@@ -325,10 +324,21 @@ namespace Engine
         /// </summary>
         protected override void Initialize()
         {
+            Log.Initialize();
             Globals.TheGame = this;
+
+            if (_graphics.GraphicsDevice.Adapter.IsProfileSupported(GraphicsProfile.HiDef))
+            {
+                _graphics.GraphicsProfile = GraphicsProfile.HiDef;
+                _graphics.ApplyChanges();
+            }
+            else
+            {
+                Log.LogMessage("您的显卡不支持高配模式，最大只支持2048x2048的图片，如果TMX地图中存在大于2048x2048的图片，将会显示不正确。");
+            }
+
             Globals.LoadSetting();
             TalkTextList.Initialize();
-            Log.Initialize();
 
             Log.LogMessage("Game is running...");
 
