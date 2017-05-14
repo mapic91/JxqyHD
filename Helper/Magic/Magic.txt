@@ -22,7 +22,7 @@ ActionFile 释放AttackFile时的角色动作
 AttackFile 修炼此武功时刀劈时（Attack2时）使用此文件中的武功
 
 Level 1-10
-Effect 效果值
+Effect 效果值，如果没设置或为0，则等于角色的Attack属性值
 ManaCost 消耗蓝
 LevelupExp 升级所需经验
 

@@ -156,6 +156,26 @@ namespace Engine
             IsAIDisabled = false;
         }
 
+        public bool KeepDistanceWhenLifeLow()
+        {
+            if (FollowTarget != null &&
+                KeepRadiusWhenLifeLow > 0 &&
+                LifeMax > 0 &&
+                Life / (float)LifeMax <= LifeLowPercent / 100.0f)
+            {
+                //Life is low, keep distance with target
+                var distance = Engine.PathFinder.GetViewTileDistance(TilePosition, FollowTarget.TilePosition);
+                if (distance < KeepRadiusWhenLifeLow)
+                {
+                    if (MoveAwayTarget(FollowTarget.PositionInWorld, KeepRadiusWhenLifeLow - distance, false))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
         public override void Update(GameTime gameTime)
         {
             if (_controledMagicSprite != null)
@@ -190,8 +210,15 @@ namespace Engine
                 }
             }
 
-            //Follow target
-            PerformeFollow();
+            if (!KeepDistanceWhenLifeLow() && MagicToUseWhenLifeLow != null && LifeMax > 0 && Life/(float)LifeMax <= LifeLowPercent/100.0f)
+            {
+                PerformeAttack(PositionInWorld+Utils.GetDirection8(CurrentDirection), MagicToUseWhenLifeLow);
+            }
+            else
+            {
+                //Follow target
+                PerformeFollow();
+            }
 
             //Attack interval
             if (_idledFrame < Idle)

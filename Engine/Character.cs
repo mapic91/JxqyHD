@@ -14,6 +14,41 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Engine
 {
     using StateMapList = Dictionary<int, ResStateInfo>;
+
+    public class FlyIniInfoItem : IEquatable<FlyIniInfoItem> , IComparable<FlyIniInfoItem>
+    {
+        public int UseDistance;
+        public Magic TheMagic;
+
+        public FlyIniInfoItem(int useDistance, Magic theMagic)
+        {
+            UseDistance = useDistance;
+            TheMagic = theMagic;
+        }
+
+        public bool Equals(FlyIniInfoItem other)
+        {
+            if (other == null) return false;
+            return UseDistance == other.UseDistance && TheMagic.FileName == other.TheMagic.FileName;
+        }
+
+        public int CompareTo(FlyIniInfoItem other)
+        {
+            if (other == null) return 1;
+            if (UseDistance == other.UseDistance) return 0;
+            if (UseDistance < other.UseDistance) return -1;
+            return 1;
+        }
+
+        public void SetLevel(int attackLevel)
+        {
+            if (TheMagic != null)
+            {
+                TheMagic = TheMagic.GetLevel(attackLevel);
+            }
+        }
+    }
+
     public abstract class Character : Sprite
     {
         #region Field
@@ -48,6 +83,13 @@ namespace Engine
         private Obj _bodyIni;
         private Magic _flyIni;
         private Magic _flyIni2;
+        private List<FlyIniInfoItem> _flyIniInfos = new List<FlyIniInfoItem>();
+        private string _flyInis;
+        private Magic _magicToUseWhenLifeLow;
+        private int _keepRadiusWhenLifeLow;
+        private const int LifeLowPercentDefault = 20;
+        private int _lifeLowPercent = LifeLowPercentDefault;
+        private Magic _magicToUseWhenAttack;
         private string _scriptFile;
         private string _deathScript;
         private string _timerScriptFile;
@@ -502,16 +544,97 @@ namespace Engine
             }
         }
 
-        virtual public Magic FlyIni
+        public virtual Magic FlyIni
         {
             get { return _flyIni; }
-            set { _flyIni = value; }
+            set
+            {
+                RemoveMagicFromInfos(_flyIni, AttackRadius);
+                _flyIni = value;
+                if (_flyIni != null) _flyIni = _flyIni.GetLevel(AttackLevel);
+                AddMagicToInfos(_flyIni, AttackRadius);
+            }
         }
 
-        virtual public Magic FlyIni2
+        public virtual Magic FlyIni2
         {
             get { return _flyIni2; }
-            set { _flyIni2 = value; }
+            set
+            {
+                RemoveMagicFromInfos(_flyIni2, AttackRadius);
+                _flyIni2 = value;
+                if (_flyIni2 != null) _flyIni2 = _flyIni2.GetLevel(AttackLevel);
+                AddMagicToInfos(_flyIni2, AttackRadius);
+            }
+        }
+
+        public virtual string FlyInis
+        {
+            get { return _flyInis; }
+            set
+            {
+                _flyInis = value;
+                var strs = value.Split(new []{';', '；'});
+                foreach (var str in strs)
+                {
+                    if (!string.IsNullOrEmpty(str))
+                    {
+                        var strinfo = str.Split(new []{ ':' , '：'});
+                        if (strinfo.Length == 2)
+                        {
+                            var useDistance = 0;
+                            int.TryParse(strinfo[1], out useDistance);
+                            _flyIniInfos.Add(new FlyIniInfoItem(useDistance, Utils.GetMagic(strinfo[0], MagicFromCache)));
+                        }
+                    }
+                }
+            }
+        }
+
+        public Magic MagicToUseWhenLifeLow
+        {
+            get { return _magicToUseWhenLifeLow; }
+            set
+            {
+                _magicToUseWhenLifeLow = value;
+                if (_magicToUseWhenLifeLow != null)
+                {
+                    _magicToUseWhenLifeLow = _magicToUseWhenLifeLow.GetLevel(AttackLevel);
+                }
+            }
+        }
+
+        public int KeepRadiusWhenLifeLow
+        {
+            get { return _keepRadiusWhenLifeLow; }
+            set { _keepRadiusWhenLifeLow = value; }
+        }
+
+        public int LifeLowPercent
+        {
+            get { return _lifeLowPercent; }
+            set { _lifeLowPercent = value; }
+        }
+
+        protected void AddMagicToInfos(Magic magic, int useDistance, bool notResort = false)
+        {
+            if (magic == null) return;
+            _flyIniInfos.Add(new FlyIniInfoItem(useDistance, magic));
+
+            if(! notResort) _flyIniInfos.Sort();
+        }
+
+        protected void RemoveMagicFromInfos(Magic magic, int useDistance)
+        {
+            if (magic == null) return;
+            for (int i = 0; i < _flyIniInfos.Count; i++)
+            {
+                if (_flyIniInfos[i].TheMagic.FileName == magic.FileName && _flyIniInfos[i].UseDistance == useDistance)
+                {
+                    _flyIniInfos.RemoveAt(i);
+                    break;
+                }
+            }
         }
 
         public string ScriptFile
@@ -712,13 +835,13 @@ namespace Engine
                     Globals.BaseSpeed,
                     NpcIni[(int)CharacterState.Stand].Image, Dir);
             }
-            if (FlyIni != null)
+            
+            AddMagicToInfos(_flyIni, AttackRadius, true);
+            AddMagicToInfos(_flyIni2, AttackRadius, true);
+            _flyIniInfos.Sort();
+            foreach (var flyIniInfoItem in _flyIniInfos)
             {
-                FlyIni = FlyIni.GetLevel(AttackLevel);
-            }
-            if (FlyIni2 != null)
-            {
-                FlyIni2 = FlyIni2.GetLevel(AttackLevel);
+                flyIniInfoItem.SetLevel(AttackLevel);
             }
         }
 
@@ -915,7 +1038,8 @@ namespace Engine
                 }
                 CheckMapTrap();
                 CheckStepMove();
-                if (AttackingIsOk()) PerformeAttack();
+                Magic magicToUse;
+                if (AttackingIsOk(out magicToUse)) PerformeAttack(magicToUse);
                 _interactiveTarget = interactTarget;
                 if (InteractIsOk()) PerformeInteract();
                 if (IsRuning())
@@ -1101,6 +1225,7 @@ namespace Engine
                     case "ScriptFile":
                     case "DeathScript":
                     case "TimerScriptFile":
+                    case "FlyInis":
                         info.SetValue(this, keyData.Value, null);
                         break;
                     case "NpcIni":
@@ -1120,8 +1245,13 @@ namespace Engine
                         info.SetValue(this, Utils.GetLevelLists(@"ini\level\" + keyData.Value), null);
                         break;
                     case "FlyIni":
+                        _flyIni = Utils.GetMagic(keyData.Value, MagicFromCache);
+                        break;
                     case "FlyIni2":
-                        info.SetValue(this, Utils.GetMagic(keyData.Value, MagicFromCache), null);
+                        _flyIni2 = Utils.GetMagic(keyData.Value, MagicFromCache);
+                        break;
+                    case "MagicToUseWhenLifeLow":
+                        _magicToUseWhenLifeLow = Utils.GetMagic(keyData.Value, MagicFromCache);
                         break;
                     case "Life":
                         _life = int.Parse(keyData.Value);
@@ -1224,9 +1354,9 @@ namespace Engine
             }
         }
 
-        protected void AddKey(KeyDataCollection keyDataCollection, string key, int value)
+        protected void AddKey(KeyDataCollection keyDataCollection, string key, int value, int defaultValue = 0)
         {
-            if (value != 0)
+            if (value != defaultValue)
             {
                 keyDataCollection.AddKey(key, value.ToString());
             }
@@ -1362,6 +1492,12 @@ namespace Engine
             {
                 AddKey(keyDataCollection, "FlyIni2", _flyIni2.FileName);
             }
+            AddKey(keyDataCollection, "FlyInis", _flyInis);
+            if (_magicToUseWhenLifeLow != null)
+            {
+                AddKey(keyDataCollection, "MagicToUseWhenLifeLow", _magicToUseWhenLifeLow.FileName);
+            }
+            AddKey(keyDataCollection, "LifeLowPercent", _lifeLowPercent, LifeLowPercentDefault);
             if (_scriptFile != null)
             {
                 AddKey(keyDataCollection, "ScriptFile", _scriptFile);
@@ -1702,8 +1838,9 @@ namespace Engine
             {
                 _isRunToTarget = isRun;
                 DestinationAttackTilePosition = destinationTilePosition;
-                if (IsStanding() && AttackingIsOk())
-                    PerformeAttack();
+                Magic magicToUse;
+                if (IsStanding() && AttackingIsOk(out magicToUse))
+                    PerformeAttack(magicToUse);
             }
         }
 
@@ -1713,23 +1850,101 @@ namespace Engine
             _interactiveTarget = null;
         }
 
-        protected bool AttackingIsOk()
+        /// <summary>
+        /// Get closest use magic distance form magic info list.
+        /// </summary>
+        /// <param name="toTargetDistance">Current distance to target.</param>
+        /// <returns></returns>
+        protected int GetClosedAttackRadius(int toTargetDistance)
         {
+            var minDistance = int.MaxValue;
+            var result = 0;
+            for (var i = 0; i < _flyIniInfos.Count; i++)
+            {
+                var distance = Math.Abs(toTargetDistance - _flyIniInfos[i].UseDistance);
+                if (minDistance > distance)
+                {
+                    minDistance = distance;
+                    result = _flyIniInfos[i].UseDistance;
+                }
+                if (_flyIniInfos[i].UseDistance > toTargetDistance) break;
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Get a random magic which use distance equal useDistance. 
+        /// If not find return smallest use distace magic.
+        /// Otherwise return null.
+        /// </summary>
+        /// <param name="useDistance"></param>
+        /// <returns></returns>
+        protected Magic GetRamdomMagicWithUseDistance(int useDistance)
+        {
+            var start = -1;
+            var end = -1;
+            for (var i = 0; i < _flyIniInfos.Count; i++)
+            {
+                if (useDistance == _flyIniInfos[i].UseDistance)
+                {
+                    if (start == -1)
+                    {
+                        start = i;
+                    }
+                }
+                else
+                {
+                    if (start != -1)
+                    {
+                        end = i;
+                        break;
+                    }
+                }
+            }
+            if (end == -1) end = _flyIniInfos.Count;
+            if (start != -1)
+            {
+                var index = start + Globals.TheRandom.Next(end - start);
+                return _flyIniInfos[index].TheMagic;
+            }
+            for (var i = 0; i < _flyIniInfos.Count; i++)
+            {
+                if (_flyIniInfos[i].UseDistance > useDistance)
+                {
+                    return _flyIniInfos[i].TheMagic;
+                }
+            }
+            return _flyIniInfos.Count > 0 ? _flyIniInfos[0].TheMagic : null;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="useAttackDistance">If return true, its value is the magic to use when attack.</param>
+        /// <returns></returns>
+        protected bool AttackingIsOk(out Magic magicToUse)
+        {
+            magicToUse = null;
             if (DestinationAttackTilePosition != Vector2.Zero)
             {
                 int tileDistance = Engine.PathFinder.GetViewTileDistance(TilePosition, DestinationAttackTilePosition);
+                var attackRadius = GetClosedAttackRadius(tileDistance);
 
-                if (tileDistance == AttackRadius)
+                if (tileDistance == attackRadius)
                 {
                     var canSeeTarget = Engine.PathFinder.CanViewTarget(TilePosition,
                         DestinationAttackTilePosition,
-                        AttackRadius);
+                        tileDistance);
 
-                    if (canSeeTarget) return true;
+                    if (canSeeTarget)
+                    {
+                        magicToUse = GetRamdomMagicWithUseDistance(attackRadius);
+                        return true;
+                    }
 
                     MoveToTarget(DestinationAttackTilePosition, _isRunToTarget);
                 }
-                if (tileDistance > AttackRadius)
+                if (tileDistance > attackRadius)
                 {
                     MoveToTarget(DestinationAttackTilePosition, _isRunToTarget);
                 }
@@ -1737,8 +1952,12 @@ namespace Engine
                 {
                     //Actack distance too small, move away target
                     if (!MoveAwayTarget(DestinationAttackPositionInWorld,
-                        AttackRadius - tileDistance,
-                        _isRunToTarget)) return true;
+                        attackRadius - tileDistance,
+                        _isRunToTarget))
+                    {
+                        magicToUse = GetRamdomMagicWithUseDistance(attackRadius);
+                        return true;
+                    }
                 }
             }
             return false;
@@ -1794,9 +2013,9 @@ namespace Engine
             _interactiveTarget = interact;
         }
 
-        protected void PerformeAttack()
+        protected void PerformeAttack(Magic magicToUse)
         {
-            PerformeAttack(DestinationAttackPositionInWorld);
+            PerformeAttack(DestinationAttackPositionInWorld, magicToUse);
         }
 
         protected virtual bool CanPerformeAttack()
@@ -1811,12 +2030,18 @@ namespace Engine
 
         public void PerformeAttack(Vector2 destinationPositionInWorld)
         {
+            PerformeAttack(destinationPositionInWorld, GetRamdomMagicWithUseDistance(AttackRadius));
+        }
+
+        public void PerformeAttack(Vector2 destinationPositionInWorld, Magic magicToUse)
+        {
             if (PerformActionOk())
             {
                 if (!CanPerformeAttack()) return;
                 StateInitialize();
                 ToFightingState();
                 _attackDestination = destinationPositionInWorld;
+                _magicToUseWhenAttack = magicToUse;
 
                 var value = Globals.TheRandom.Next(3);
                 if (value == 1 && NpcIni.ContainsKey((int)CharacterState.Attack1))
@@ -2562,13 +2787,14 @@ namespace Engine
                         {
                             PlaySoundEffect(NpcIni[State].Sound);
                         }
-                        var magic = FlyIni;
-                        if (FlyIni2 != null && Globals.TheRandom.Next(8) == 0)
-                            magic = FlyIni2;
-                        MagicManager.UseMagic(this,
-                            magic,
-                            PositionInWorld,
-                            _attackDestination);
+                        if (_magicToUseWhenAttack != null)
+                        {
+                            MagicManager.UseMagic(this,
+                           _magicToUseWhenAttack,
+                           PositionInWorld,
+                           _attackDestination);
+                        }
+                       
 
                         //Do somethig when attacking
                         OnAttacking(_attackDestination);

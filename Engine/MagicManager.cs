@@ -763,10 +763,8 @@ namespace Engine
         public static int GetEffectAmount(Magic magic, Character belongCharacter)
         {
             //If magic effect not set(equal 0) use belong character attack value as amount.
-            //Because npc just can use FlyIni FlyIni2, 
-            //so if belong character is a npc not a player use character attack value as amount also.
             if (magic == null || belongCharacter == null) return 0;
-            var effect = (magic.Effect == 0 || !belongCharacter.IsPlayer) ?
+            var effect = (magic.Effect == 0) ?
                 belongCharacter.Attack :
                 magic.Effect;
             return effect + magic.EffectExt;

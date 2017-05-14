@@ -80,4 +80,27 @@ MapY			long
 
 ----------ExpBonus   
 ----------FixedPos   
-----------Idle       
+----------Idle    
+
+
+扩展（原版没有的）：
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+FlyInis:
+设置多个攻击武功和其释放距离；
+格式：武功文件名:距离[;][武功文件名:距离][;]....
+比如：
+FlyInis=magic-飞刀.ini:3;magic-蜂王毒刺.ini:1;
+表示magic-飞刀.ini在和释放目标距离为3时释放，magic-蜂王毒刺.ini在和释放目标距离为1时释放
+
+注：FlyIni和FlyIni2的释放距离还是AttackRadius
+   
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+血量低时：
+
+KeepRadiusWhenLifeLow - 如果大于0，表示当NPC的血量比例小于等于LifeLowPercent时，会保持离攻击目标该距离，默认0。比如设置为10，则当血量低时，会保持离攻击目标10的距离。
+MagicToUseWhenLifeLow - 设置当NPC的血量比例小于等于LifeLowPercent时，使用该武功
+LifeLowPercent - 血量百分比，范围0-100，默认20
+

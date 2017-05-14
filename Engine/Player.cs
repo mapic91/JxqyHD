@@ -50,16 +50,42 @@ namespace Engine
 
         #region Public properties
 
-        public override Magic FlyIni
+        public Magic FlyIniReplace
         {
-            get { return _flyIniReplace ?? base.FlyIni; }
-            set { base.FlyIni = value; }
+            get { return _flyIniReplace; }
+            set
+            {
+                if (value != null)
+                {
+                    RemoveMagicFromInfos(FlyIni, AttackRadius);
+                    AddMagicToInfos(value, AttackRadius);
+                }
+                else
+                {
+                    RemoveMagicFromInfos(_flyIniReplace, AttackRadius);
+                    AddMagicToInfos(FlyIni, AttackRadius);
+                }
+                _flyIniReplace = value;
+            }
         }
 
-        public override Magic FlyIni2
+        public Magic FlyIni2Replace
         {
-            get { return _flyIni2Replace ?? base.FlyIni2; }
-            set { base.FlyIni2 = value; }
+            get { return _flyIni2Replace; }
+            set
+            {
+                if (value != null)
+                {
+                    RemoveMagicFromInfos(FlyIni2, AttackRadius);
+                    AddMagicToInfos(value, AttackRadius);
+                }
+                else
+                {
+                    RemoveMagicFromInfos(_flyIni2Replace, AttackRadius);
+                    AddMagicToInfos(FlyIni2, AttackRadius);
+                }
+                _flyIni2Replace = value;
+            }
         }
 
         public bool IsNotUseThewWhenRun { set; get; }
@@ -658,11 +684,11 @@ namespace Engine
 
                 if (!string.IsNullOrEmpty(equip.FlyIni))
                 {
-                    _flyIniReplace = Utils.GetMagic(equip.FlyIni, MagicFromCache);
+                    FlyIniReplace = Utils.GetMagic(equip.FlyIni, MagicFromCache);
                 }
                 if (!string.IsNullOrEmpty(equip.FlyIni2))
                 {
-                    _flyIni2Replace = Utils.GetMagic(equip.FlyIni2, MagicFromCache);
+                    FlyIni2Replace = Utils.GetMagic(equip.FlyIni2, MagicFromCache);
                 }
             }
 
@@ -736,11 +762,11 @@ namespace Engine
 
                 if (!string.IsNullOrEmpty(equip.FlyIni))
                 {
-                    _flyIniReplace = null;
+                    FlyIniReplace = null;
                 }
                 if (!string.IsNullOrEmpty(equip.FlyIni2))
                 {
-                    _flyIni2Replace = null;
+                    FlyIni2Replace = null;
                 }
             }
         }
@@ -1099,7 +1125,7 @@ namespace Engine
                         {
                             if (!IsFightDisabled)
                             {
-                                character.PerformeAttack(mouseWorldPosition);
+                                character.PerformeAttack(mouseWorldPosition, GetRamdomMagicWithUseDistance(AttackRadius));
                             }
                         }
                         else character.WalkTo(mouseTilePosition);
