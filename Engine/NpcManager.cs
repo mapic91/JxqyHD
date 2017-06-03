@@ -103,9 +103,9 @@ namespace Engine
         /// <param name="positionInWorld">Target position</param>
         /// <param name="ignoreList">Ignore those character when finding</param>
         /// <returns>If not find, return null</returns>
-        public static Character GetClosedEnemyTypeCharacter(Vector2 positionInWorld, List<Character> ignoreList = null)
+        public static Character GetClosestEnemyTypeCharacter(Vector2 positionInWorld, List<Character> ignoreList = null)
         {
-            return GetClosedEnemyTypeCharacter(NpcList, positionInWorld, ignoreList);
+            return GetClosestEnemyTypeCharacter(NpcList, positionInWorld, ignoreList);
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace Engine
         /// <param name="positionInWorld">Target position</param>
         /// <param name="ignoreList">Ignore those character when finding</param>
         /// <returns>If not find, return null</returns>
-        public static Character GetClosedEnemyTypeCharacter(IEnumerable<Character> list, Vector2 positionInWorld, List<Character> ignoreList = null)
+        public static Character GetClosestEnemyTypeCharacter(IEnumerable<Character> list, Vector2 positionInWorld, List<Character> ignoreList = null)
         {
             Character closed = null;
             var closedDistance = 99999999f;
@@ -141,18 +141,18 @@ namespace Engine
         /// <param name="targetPositionInWorld">Target position to begin find.</param>
         /// <param name="ignoreList">Ignore those character when finding</param>
         /// <returns></returns>
-        public static Character GetClosedEnemy(Character finder, Vector2 targetPositionInWorld, List<Character> ignoreList = null)
+        public static Character GetClosestEnemy(Character finder, Vector2 targetPositionInWorld, List<Character> ignoreList = null)
         {
             if (finder == null) return null;
 
             if (finder.IsEnemy)
             {
-                return GetLiveClosedPlayerOrFighterFriend(targetPositionInWorld, ignoreList);
+                return GetLiveClosestPlayerOrFighterFriend(targetPositionInWorld, ignoreList);
             }
 
             if (finder.IsPlayer || finder.IsFighterFriend)
             {
-                return GetClosedEnemyTypeCharacter(targetPositionInWorld, ignoreList);
+                return GetClosestEnemyTypeCharacter(targetPositionInWorld, ignoreList);
             }
 
             return null;
@@ -164,7 +164,7 @@ namespace Engine
         /// <param name="positionInWorld">Target position</param>
         /// <param name="ignoreList">Ignore those character when finding</param>
         /// <returns>If not find, return null</returns>
-        public static Character GetLiveClosedPlayerOrFighterFriend(Vector2 positionInWorld, List<Character> ignoreList = null)
+        public static Character GetLiveClosestPlayerOrFighterFriend(Vector2 positionInWorld, List<Character> ignoreList = null)
         {
             Character closed = null;
             var closedDistance = 99999999f;
@@ -187,6 +187,28 @@ namespace Engine
                 closed = Globals.ThePlayer;
             }
             return closed;
+        }
+
+        public static Character GetClosestCanInteractChracter(Vector2 findBeginTilePosition, int maxTileDistance = int.MaxValue)
+        {
+            var minDistance = (maxTileDistance == int.MaxValue ? maxTileDistance : maxTileDistance + 1);
+            Character minNpc = null;
+            foreach (var npc in _list)
+            {
+                if (npc.HasInteractScript && !npc.IsEnemy && npc.TilePosition != findBeginTilePosition)
+                {
+                    var tileDistance = PathFinder.GetViewTileDistance(findBeginTilePosition, npc.TilePosition);
+                    if (tileDistance < minDistance || 
+                        (tileDistance == minDistance && !npc.IsPartner) // find closest nonpartner npc first
+                        )
+                    {
+                        minDistance = tileDistance;
+                        minNpc = npc;
+                    }
+                }
+                
+            }
+            return minNpc;
         }
 
         /// <summary>

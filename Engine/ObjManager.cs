@@ -201,6 +201,25 @@ namespace Engine
             }
         }
 
+        public static Obj GetClosestCanInteractObj(Vector2 findBeginTilePosition, int maxTileDistance = int.MaxValue)
+        {
+            var minDistance = (maxTileDistance == int.MaxValue ? maxTileDistance : maxTileDistance + 1);
+            Obj minObj = null;
+            foreach (var obj in _list)
+            {
+                if (!string.IsNullOrEmpty(obj.ScriptFile))
+                {
+                    var tileDistance = PathFinder.GetViewTileDistance(findBeginTilePosition, obj.TilePosition);
+                    if (tileDistance < minDistance)
+                    {
+                        minDistance = tileDistance;
+                        minObj = obj;
+                    }
+                }
+            }
+            return minObj;
+        }
+
         public static void Save(string fileName = null)
         {
             if (string.IsNullOrEmpty(fileName))

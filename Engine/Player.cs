@@ -25,6 +25,7 @@ namespace Engine
         private const float ListRestorePercent = 0.01f;
         private const float ThewRestorePercent = 0.03f;
         private const float ManaRestorePercent = 0.02f;
+        private const int MaxAutoInteractTileDistance = 13;
         private float _standingMilliseconds;
         private float _sittedMilliseconds;
         private bool _isRun;
@@ -1136,6 +1137,27 @@ namespace Engine
                         {
                             HandleMoveKeyboardInput();
                         }
+
+                        if (Globals.TheGame.LastKeyboardState.IsKeyUp(Keys.Q) && keyboardState.IsKeyDown(Keys.Q))
+                        {
+                            var closestObj =
+                                ObjManager.GetClosestCanInteractObj(character.TilePosition,
+                                    MaxAutoInteractTileDistance);
+                            if (closestObj != null)
+                            {
+                                character.InteractWith(closestObj, _isRun);
+                            }
+                        }
+                        else if (Globals.TheGame.LastKeyboardState.IsKeyUp(Keys.E) && keyboardState.IsKeyDown(Keys.E))
+                        {
+                            var closestNpc =
+                                NpcManager.GetClosestCanInteractChracter(character.TilePosition,
+                                    MaxAutoInteractTileDistance);
+                            if (closestNpc != null)
+                            {
+                                character.InteractWith(closestNpc, _isRun);
+                            }
+                        }
                     }
                     var rightButtonPressed = (mouseState.RightButton == ButtonState.Pressed &&
                                               _lastMouseState.RightButton == ButtonState.Released);
@@ -1157,9 +1179,12 @@ namespace Engine
                         }
                         else
                         {
-                            if (Globals.OutEdgeNpc != null)
-                                UseMagic(CurrentMagicInUse.TheMagic, Globals.OutEdgeNpc.TilePosition, Globals.OutEdgeNpc);
-                            else UseMagic(CurrentMagicInUse.TheMagic, mouseTilePosition);
+                            if(!AttackClosedAnemy(character))
+                            {
+                                if (Globals.OutEdgeNpc != null)
+                                    UseMagic(CurrentMagicInUse.TheMagic, Globals.OutEdgeNpc.TilePosition, Globals.OutEdgeNpc);
+                                else UseMagic(CurrentMagicInUse.TheMagic, mouseTilePosition);
+                            }
                         }
 
                     }
@@ -1215,6 +1240,22 @@ namespace Engine
             _lastMouseState = mouseState;
             _lastKeyboardState = keyboardState;
             base.Update(gameTime);
+        }
+
+        private bool AttackClosedAnemy(Character attacker)
+        {
+            var keyboardState = Keyboard.GetState();
+            if (keyboardState.IsKeyDown(Keys.LeftControl) ||
+                keyboardState.IsKeyDown(Keys.RightControl))
+            {
+                var closedEnemy = NpcManager.GetClosestEnemy(attacker, PositionInWorld);
+                if (closedEnemy != null)
+                {
+                    UseMagic(CurrentMagicInUse.TheMagic, closedEnemy.TilePosition, closedEnemy);
+                    return true;
+                }
+            }
+            return false;
         }
 
         private static readonly BlendState NoWriteColorBlendState = new BlendState()

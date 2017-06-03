@@ -725,7 +725,7 @@ namespace Engine
 
             AddDestroySprite(MagicManager.EffectSprites, PositionInWorld, BelongMagic.VanishImage, BelongMagic.VanishSound);
 
-            var closedEnemy = NpcManager.GetClosedEnemy(BelongCharacter, hitedCharacter.PositionInWorld, _leapedCharacters);
+            var closedEnemy = NpcManager.GetClosestEnemy(BelongCharacter, hitedCharacter.PositionInWorld, _leapedCharacters);
             if (closedEnemy == null)
             {
                 EndLeap();
@@ -894,7 +894,7 @@ namespace Engine
                         {
                             if (_closedCharecter == null || _closedCharecter.IsDeath)
                             {
-                                _closedCharecter = NpcManager.GetClosedEnemyTypeCharacter(PositionInWorld);
+                                _closedCharecter = NpcManager.GetClosestEnemyTypeCharacter(PositionInWorld);
                             }
                         }
                         else

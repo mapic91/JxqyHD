@@ -48,11 +48,14 @@
             this.label5 = new System.Windows.Forms.Label();
             this._runSpeed = new System.Windows.Forms.TrackBar();
             this._textRunSpeed = new System.Windows.Forms.Label();
+            this.groupBoxTips = new System.Windows.Forms.GroupBox();
+            this.label6 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this._soundEffectVolume)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this._musicVolume)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this._maxMagicUintCtl)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this._runSpeed)).BeginInit();
+            this.groupBoxTips.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -231,11 +234,31 @@
             this._textRunSpeed.TabIndex = 22;
             this._textRunSpeed.Text = "2";
             // 
+            // groupBoxTips
+            // 
+            this.groupBoxTips.Controls.Add(this.label6);
+            this.groupBoxTips.Location = new System.Drawing.Point(39, 402);
+            this.groupBoxTips.Name = "groupBoxTips";
+            this.groupBoxTips.Size = new System.Drawing.Size(333, 90);
+            this.groupBoxTips.TabIndex = 23;
+            this.groupBoxTips.TabStop = false;
+            this.groupBoxTips.Text = "提示";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(9, 20);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(253, 65);
+            this.label6.TabIndex = 0;
+            this.label6.Text = "1.释放武功时按住 Ctrl 可以攻击距离最近的敌人\r\n\r\n2.按 Q 可以拾取或开最近的物品和箱子\r\n\r\n3.按 E  可以对话最近的NPC";
+            // 
             // Setting
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(410, 378);
+            this.ClientSize = new System.Drawing.Size(410, 504);
+            this.Controls.Add(this.groupBoxTips);
             this.Controls.Add(this._textRunSpeed);
             this.Controls.Add(this._runSpeed);
             this.Controls.Add(this.label5);
@@ -260,6 +283,8 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this._runSpeed)).EndInit();
+            this.groupBoxTips.ResumeLayout(false);
+            this.groupBoxTips.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -286,5 +311,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TrackBar _runSpeed;
         private System.Windows.Forms.Label _textRunSpeed;
+        private System.Windows.Forms.GroupBox groupBoxTips;
+        private System.Windows.Forms.Label label6;
     }
 }
