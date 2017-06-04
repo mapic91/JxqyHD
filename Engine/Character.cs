@@ -89,6 +89,8 @@ namespace Engine
         private int _keepRadiusWhenLifeLow;
         private const int LifeLowPercentDefault = 20;
         private int _lifeLowPercent = LifeLowPercentDefault;
+        private Magic _magicToUseWhenBeAttacked;
+        private int _magicDirectionWhenBeAttacked;
         private Magic _magicToUseWhenAttack;
         private string _scriptFile;
         private string _deathScript;
@@ -148,7 +150,7 @@ namespace Engine
         #endregion Field
 
         #region Protected properties
-        protected virtual bool MagicFromCache { get { return true; } }
+        protected virtual bool IsMagicFromCache { get { return true; } }
         protected string LevelIniFile { set; get; }
 
         /// <summary>
@@ -584,7 +586,7 @@ namespace Engine
                         {
                             var useDistance = 0;
                             int.TryParse(strinfo[1], out useDistance);
-                            _flyIniInfos.Add(new FlyIniInfoItem(useDistance, Utils.GetMagic(strinfo[0], MagicFromCache)));
+                            _flyIniInfos.Add(new FlyIniInfoItem(useDistance, Utils.GetMagic(strinfo[0], IsMagicFromCache)));
                         }
                     }
                 }
@@ -614,6 +616,18 @@ namespace Engine
         {
             get { return _lifeLowPercent; }
             set { _lifeLowPercent = value; }
+        }
+
+        public Magic MagicToUseWhenBeAttacked
+        {
+            get { return _magicToUseWhenBeAttacked; }
+            set { _magicToUseWhenBeAttacked = value; }
+        }
+
+        public int MagicDirectionWhenBeAttacked
+        {
+            get { return _magicDirectionWhenBeAttacked; }
+            set { _magicDirectionWhenBeAttacked = value; }
         }
 
         protected void AddMagicToInfos(Magic magic, int useDistance, bool notResort = false)
@@ -842,6 +856,16 @@ namespace Engine
             foreach (var flyIniInfoItem in _flyIniInfos)
             {
                 flyIniInfoItem.SetLevel(AttackLevel);
+            }
+
+            if (_magicToUseWhenLifeLow != null)
+            {
+                _magicToUseWhenLifeLow = _magicToUseWhenLifeLow.GetLevel(AttackLevel);
+            }
+
+            if (_magicToUseWhenBeAttacked != null)
+            {
+                _magicToUseWhenBeAttacked = _magicToUseWhenBeAttacked.GetLevel(AttackLevel);
             }
         }
 
@@ -1217,7 +1241,7 @@ namespace Engine
         {
             try
             {
-                var info = this.GetType().GetProperty(keyData.KeyName);
+                var info = GetType().GetProperty(keyData.KeyName);
                 switch (keyData.KeyName)
                 {
                     case "FixedPos":
@@ -1245,13 +1269,16 @@ namespace Engine
                         info.SetValue(this, Utils.GetLevelLists(@"ini\level\" + keyData.Value), null);
                         break;
                     case "FlyIni":
-                        _flyIni = Utils.GetMagic(keyData.Value, MagicFromCache);
+                        _flyIni = Utils.GetMagic(keyData.Value, IsMagicFromCache);
                         break;
                     case "FlyIni2":
-                        _flyIni2 = Utils.GetMagic(keyData.Value, MagicFromCache);
+                        _flyIni2 = Utils.GetMagic(keyData.Value, IsMagicFromCache);
                         break;
                     case "MagicToUseWhenLifeLow":
-                        _magicToUseWhenLifeLow = Utils.GetMagic(keyData.Value, MagicFromCache);
+                        _magicToUseWhenLifeLow = Utils.GetMagic(keyData.Value, IsMagicFromCache);
+                        break;
+                    case "MagicToUseWhenBeAttacked":
+                        _magicToUseWhenBeAttacked = Utils.GetMagic(keyData.Value, IsMagicFromCache);
                         break;
                     case "Life":
                         _life = int.Parse(keyData.Value);
@@ -1498,6 +1525,11 @@ namespace Engine
                 AddKey(keyDataCollection, "MagicToUseWhenLifeLow", _magicToUseWhenLifeLow.FileName);
             }
             AddKey(keyDataCollection, "LifeLowPercent", _lifeLowPercent, LifeLowPercentDefault);
+            if (_magicToUseWhenBeAttacked != null)
+            {
+                AddKey(keyDataCollection, "MagicToUseWhenBeAttacked", _magicToUseWhenBeAttacked.FileName);
+            }
+            AddKey(keyDataCollection, "MagicDirectionWhenBeAttacked", _magicDirectionWhenBeAttacked);
             if (_scriptFile != null)
             {
                 AddKey(keyDataCollection, "ScriptFile", _scriptFile);
@@ -2984,6 +3016,13 @@ namespace Engine
             Stand,
             RandWalk,
             LoopWalk
+        }
+
+        public enum BeAttackedUseMagicDirection
+        {
+            Attacker,
+            MagicSpriteOppDirection,
+            CurrentNpcDirection,
         }
         #endregion Type
     }

@@ -442,6 +442,32 @@ namespace Engine
                 _totalParasticEffect += damage;
             }
 
+            if (character.MagicToUseWhenBeAttacked != null)
+            {
+                Vector2 destination;
+                Character target = null;
+                var dirType = (Character.BeAttackedUseMagicDirection) character.MagicDirectionWhenBeAttacked;
+                switch (dirType)
+                {
+                    case Character.BeAttackedUseMagicDirection.Attacker:
+                        destination = BelongCharacter.PositionInWorld;
+                        target = BelongCharacter;
+                        break;
+                    case Character.BeAttackedUseMagicDirection.MagicSpriteOppDirection:
+                        destination = RealMoveDirection == Vector2.Zero
+                            ? (character.PositionInWorld + Utils.GetDirection8(character.CurrentDirection))
+                            : (character.PositionInWorld - RealMoveDirection);
+                        break;
+                    case Character.BeAttackedUseMagicDirection.CurrentNpcDirection:
+                        destination = character.PositionInWorld + Utils.GetDirection8(character.CurrentDirection);
+                        break;
+                    default:
+                        destination = BelongCharacter.PositionInWorld;
+                        break;
+                }
+                MagicManager.UseMagic(character, character.MagicToUseWhenBeAttacked, character.PositionInWorld, destination, target);
+            }
+
             {
                 Player player = null;
                 MagicListManager.MagicItemInfo info = null;

@@ -393,7 +393,7 @@ namespace Engine
 
         #region Protected method
 
-        protected override bool MagicFromCache
+        protected override bool IsMagicFromCache
         {
             get { return false; }
         }
@@ -685,11 +685,11 @@ namespace Engine
 
                 if (!string.IsNullOrEmpty(equip.FlyIni))
                 {
-                    FlyIniReplace = Utils.GetMagic(equip.FlyIni, MagicFromCache);
+                    FlyIniReplace = Utils.GetMagic(equip.FlyIni, IsMagicFromCache);
                 }
                 if (!string.IsNullOrEmpty(equip.FlyIni2))
                 {
-                    FlyIni2Replace = Utils.GetMagic(equip.FlyIni2, MagicFromCache);
+                    FlyIni2Replace = Utils.GetMagic(equip.FlyIni2, IsMagicFromCache);
                 }
             }
 
