@@ -764,7 +764,7 @@ namespace Engine
         {
             //If magic effect not set(equal 0) use belong character attack value as amount.
             if (magic == null || belongCharacter == null) return 0;
-            var effect = (magic.Effect == 0) ?
+            var effect = (magic.Effect == 0 || !belongCharacter.IsPlayer) ?
                 belongCharacter.Attack :
                 magic.Effect;
             return effect + magic.EffectExt;
