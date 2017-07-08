@@ -107,6 +107,13 @@ namespace Engine
             //Just enemy can drop
             if (!character.IsEnemy) return null;
 
+            if (!string.IsNullOrEmpty(character.DropIni))
+            {
+                var obj = new Obj(@"ini\obj\" + character.DropIni);
+                obj.TilePosition = character.TilePosition;
+                return obj;
+            }
+
             if (character.ExpBonus > 0)
             {
                 //Boss

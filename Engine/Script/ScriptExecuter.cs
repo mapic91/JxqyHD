@@ -1871,5 +1871,17 @@ namespace Engine.Script
                 Variables[kv.Key] = kv.Value;
             }
         }
+
+        public static void SetDropIni(List<string> parameters)
+        {
+            Character target = null;
+            var fileName = "";
+            target = GetPlayerOrNpc(Utils.RemoveStringQuotes(parameters[0]));
+            fileName = Utils.RemoveStringQuotes(parameters[1]);
+            if (target != null)
+            {
+                target.DropIni = fileName;
+            }
+        }
     }
 }

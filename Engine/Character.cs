@@ -143,6 +143,8 @@ namespace Engine
         protected Magic MagicUse;
         protected MagicSprite _controledMagicSprite;
 
+        protected String _dropIni;
+
         protected bool IsInLoopWalk;
 
         protected bool IsSitted;
@@ -173,6 +175,12 @@ namespace Engine
         {
             get { return _controledMagicSprite; }
             set { _controledMagicSprite = value; }
+        }
+
+        public string DropIni
+        {
+            get { return _dropIni; }
+            set { _dropIni = value; }
         }
 
         public bool IsFightDisabled { protected set; get; }
@@ -824,6 +832,8 @@ namespace Engine
             get { return (HasInteractScript || IsEnemy || IsFighterFriend); }
         }
 
+       
+
         #endregion Character Type and Relation
 
         #region Ctor
@@ -1250,6 +1260,7 @@ namespace Engine
                     case "DeathScript":
                     case "TimerScriptFile":
                     case "FlyInis":
+                    case "DropIni":
                         info.SetValue(this, keyData.Value, null);
                         break;
                     case "NpcIni":

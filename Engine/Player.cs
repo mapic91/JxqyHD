@@ -985,6 +985,10 @@ namespace Engine
                 {
                     AddMagic(detail.NewMagic);
                 }
+                if (!string.IsNullOrEmpty(detail.NewGood))
+                {
+                    ScriptExecuter.AddGoods(detail.NewGood);
+                }
             }
             else
             {

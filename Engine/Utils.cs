@@ -252,6 +252,7 @@ namespace Engine
             public int Defend;
             public int Evade;
             public string NewMagic;
+            public string NewGood;
             public int Exp;
             public int Life;
         }
@@ -314,6 +315,9 @@ namespace Engine
                                     break;
                                 case "NewMagic":
                                     detail.NewMagic = nameValue[1];
+                                    break;
+                                case "NewGood":
+                                    detail.NewGood = nameValue[1];
                                     break;
                             }
                             i++;
