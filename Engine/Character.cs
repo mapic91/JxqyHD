@@ -92,6 +92,8 @@ namespace Engine
         private Magic _magicToUseWhenBeAttacked;
         private int _magicDirectionWhenBeAttacked;
         private Magic _magicToUseWhenAttack;
+        private Magic _magicToUseWhenDeath;
+        private int _magicDirectionWhenDeath;
         private string _scriptFile;
         private string _deathScript;
         private string _timerScriptFile;
@@ -638,6 +640,20 @@ namespace Engine
             set { _magicDirectionWhenBeAttacked = value; }
         }
 
+        public Magic MagicToUseWhenDeath
+        {
+            get { return _magicToUseWhenDeath; }
+            set { _magicToUseWhenDeath = value; }
+        }
+
+        public int MagicDirectionWhenDeath
+        {
+            get { return _magicDirectionWhenDeath; }
+            set { _magicDirectionWhenDeath = value; }
+        }
+
+        public MagicSprite LastAttackerMagicSprite;
+
         protected void AddMagicToInfos(Magic magic, int useDistance, bool notResort = false)
         {
             if (magic == null) return;
@@ -876,6 +892,11 @@ namespace Engine
             if (_magicToUseWhenBeAttacked != null)
             {
                 _magicToUseWhenBeAttacked = _magicToUseWhenBeAttacked.GetLevel(AttackLevel);
+            }
+
+            if (_magicToUseWhenDeath != null)
+            {
+                _magicToUseWhenDeath = _magicToUseWhenDeath.GetLevel(AttackLevel);
             }
         }
 
@@ -1291,6 +1312,9 @@ namespace Engine
                     case "MagicToUseWhenBeAttacked":
                         _magicToUseWhenBeAttacked = Utils.GetMagic(keyData.Value, IsMagicFromCache);
                         break;
+                    case "MagicToUseWhenDeath":
+                        _magicToUseWhenDeath = Utils.GetMagic(keyData.Value, IsMagicFromCache);
+                        break;
                     case "Life":
                         _life = int.Parse(keyData.Value);
                         break;
@@ -1541,6 +1565,11 @@ namespace Engine
                 AddKey(keyDataCollection, "MagicToUseWhenBeAttacked", _magicToUseWhenBeAttacked.FileName);
             }
             AddKey(keyDataCollection, "MagicDirectionWhenBeAttacked", _magicDirectionWhenBeAttacked);
+            if (_magicToUseWhenDeath != null)
+            {
+                AddKey(keyDataCollection, "MagicToUseWhenDeath", _magicToUseWhenDeath.FileName);
+            }
+            AddKey(keyDataCollection, "MagicDirectionWhenDeath", _magicDirectionWhenDeath);
             if (_scriptFile != null)
             {
                 AddKey(keyDataCollection, "ScriptFile", _scriptFile);
@@ -1820,6 +1849,34 @@ namespace Engine
 
             //Run death script
             _currentRunDeathScript = ScriptManager.RunScript(Utils.GetScriptParser(DeathScript), this);
+
+            if (MagicToUseWhenDeath != null)
+            {
+                Vector2 destination;
+                Character target = null;
+                var dirType = (DeathUseMagicDirection)MagicDirectionWhenDeath;
+                switch (dirType)
+                {
+                    case DeathUseMagicDirection.LastAttacker:
+                        destination = LastAttackerMagicSprite == null ? 
+                            PositionInWorld + Utils.GetDirection8(CurrentDirection) : 
+                            LastAttackerMagicSprite.BelongCharacter.PositionInWorld;
+                        target = LastAttackerMagicSprite == null ? null : LastAttackerMagicSprite.BelongCharacter;
+                        break;
+                    case DeathUseMagicDirection.LastMagicSpriteOppDirection:
+                        destination = (LastAttackerMagicSprite == null || LastAttackerMagicSprite.RealMoveDirection == Vector2.Zero)
+                            ? (PositionInWorld + Utils.GetDirection8(CurrentDirection))
+                            : (PositionInWorld - LastAttackerMagicSprite.RealMoveDirection);
+                        break;
+                    case DeathUseMagicDirection.CurrentNpcDirection:
+                        destination = PositionInWorld + Utils.GetDirection8(CurrentDirection);
+                        break;
+                    default:
+                        destination = PositionInWorld + Utils.GetDirection8(CurrentDirection);
+                        break;
+                }
+                MagicManager.UseMagic(this, MagicToUseWhenDeath, PositionInWorld, destination, target);
+            }
 
             if (ControledMagicSprite != null)
             {
@@ -3033,6 +3090,13 @@ namespace Engine
         {
             Attacker,
             MagicSpriteOppDirection,
+            CurrentNpcDirection,
+        }
+
+        public enum DeathUseMagicDirection
+        {
+            LastAttacker,
+            LastMagicSpriteOppDirection,
             CurrentNpcDirection,
         }
         #endregion Type

@@ -1163,8 +1163,7 @@ namespace Engine
                             }
                         }
                     }
-                    var rightButtonPressed = (mouseState.RightButton == ButtonState.Pressed &&
-                                              _lastMouseState.RightButton == ButtonState.Released);
+                    var rightButtonPressed = mouseState.RightButton == ButtonState.Pressed;
                     if (!IsFightDisabled &&
                         ControledCharacter == null && //Can't use magic when controling other character
                         (rightButtonPressed || _isUseMagicByKeyborad)
@@ -1183,7 +1182,7 @@ namespace Engine
                         }
                         else
                         {
-                            if(!AttackClosedAnemy(character))
+                            if(PerformActionOk() && !AttackClosedAnemy(character))
                             {
                                 if (Globals.OutEdgeNpc != null)
                                     UseMagic(CurrentMagicInUse.TheMagic, Globals.OutEdgeNpc.TilePosition, Globals.OutEdgeNpc);

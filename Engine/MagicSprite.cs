@@ -370,6 +370,7 @@ namespace Engine
         private void CharacterHited(Character character, int damage, bool addMagicHitedExp = true)
         {
             var isInDeath = character.IsDeathInvoked;
+            character.LastAttackerMagicSprite = this;
 
             //Hit ratio
             var targetEvade = character.Evade;

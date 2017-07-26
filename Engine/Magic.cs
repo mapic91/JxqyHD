@@ -72,6 +72,7 @@ namespace Engine
         private int _beginAtMouse;
         private int _beginAtUser;
         private int _beginAtUserAddDirectionOffset;
+        private int _beginAtUserAddUserDirectionOffset;
         private int _coldMilliSeconds;
 
         private int _rangeEffect;
@@ -597,6 +598,12 @@ namespace Engine
         {
             get { return _beginAtUserAddDirectionOffset; }
             set { _beginAtUserAddDirectionOffset = value; }
+        }
+
+        public int BeginAtUserAddUserDirectionOffset
+        {
+            get { return _beginAtUserAddUserDirectionOffset; }
+            set { _beginAtUserAddUserDirectionOffset = value; }
         }
 
         public int ColdMilliSeconds

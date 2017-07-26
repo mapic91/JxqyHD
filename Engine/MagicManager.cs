@@ -811,6 +811,11 @@ namespace Engine
                 }
                 destination = origin + dir;
             }
+            else if (magic.BeginAtUserAddUserDirectionOffset > 0)
+            {
+                var dir = Utils.GetDirection8(user.CurrentDirection);
+                destination = origin + dir;
+            }
 
             if (magic.MeteorMove > 0)
             {
