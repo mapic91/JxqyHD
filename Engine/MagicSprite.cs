@@ -315,13 +315,13 @@ namespace Engine
             switch (BelongMagic.SpecialKind)
             {
                 case 1:
-                    character.SetFrozenSeconds(BelongMagic.CurrentLevel + 1);
+                    character.SetFrozenSeconds(BelongMagic.EffectLevel + 1);
                     break;
                 case 2:
-                    character.SetPoisonSeconds(BelongMagic.CurrentLevel + 1);
+                    character.SetPoisonSeconds(BelongMagic.EffectLevel + 1);
                     break;
                 case 3:
-                    character.SetPetrifySeconds(BelongMagic.CurrentLevel + 1);
+                    character.SetPetrifySeconds(BelongMagic.EffectLevel + 1);
                     break;
             }
 

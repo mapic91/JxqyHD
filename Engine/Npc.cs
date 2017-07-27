@@ -10,6 +10,7 @@ namespace Engine
     {
         private List<Vector2> _actionPathTilePositionList;
         private int _idledFrame;
+        private Character _keepDistanceCharacterWhenFriendDeath;
 
         private List<Vector2> ActionPathTilePositionList
         {
@@ -176,6 +177,39 @@ namespace Engine
             return false;
         }
 
+        public bool CheckKeepDistanceWhenFriendDeath()
+        {
+            if (KeepRadiusWhenFriendDeath > 0 && 
+                Kind != 3) // Follower has no effect
+            {
+                var target = _keepDistanceCharacterWhenFriendDeath;
+                if (target == null || target.IsDeathInvoked)
+                {
+                    target = _keepDistanceCharacterWhenFriendDeath = null;
+
+                    var dead = NpcManager.FindFriendDeadKilledByLiveCharacter(this, VisionRadius);
+                    if (dead != null)
+                    {
+                        target = _keepDistanceCharacterWhenFriendDeath = dead.LastAttackerMagicSprite.BelongCharacter;
+                    }
+                }
+
+                if (target != null)
+                {
+                    var distance = Engine.PathFinder.GetViewTileDistance(TilePosition, target.TilePosition);
+                    if (distance < KeepRadiusWhenFriendDeath)
+                    {
+                        if (MoveAwayTarget(target.TilePosition, KeepRadiusWhenFriendDeath - distance, false))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            
+            return false;
+        }
+
         public override void Update(GameTime gameTime)
         {
             if (_controledMagicSprite != null)
@@ -210,7 +244,7 @@ namespace Engine
                 }
             }
 
-            if (!KeepDistanceWhenLifeLow() && MagicToUseWhenLifeLow != null && LifeMax > 0 && Life/(float)LifeMax <= LifeLowPercent/100.0f)
+            if (!CheckKeepDistanceWhenFriendDeath() && !KeepDistanceWhenLifeLow() && MagicToUseWhenLifeLow != null && LifeMax > 0 && Life/(float)LifeMax <= LifeLowPercent/100.0f)
             {
                 PerformeAttack(PositionInWorld+Utils.GetDirection8(CurrentDirection), MagicToUseWhenLifeLow);
             }

@@ -89,6 +89,7 @@ namespace Engine
         private int _keepRadiusWhenLifeLow;
         private const int LifeLowPercentDefault = 20;
         private int _lifeLowPercent = LifeLowPercentDefault;
+        private int _keepRadiusWhenFriendDeath;
         private Magic _magicToUseWhenBeAttacked;
         private int _magicDirectionWhenBeAttacked;
         private Magic _magicToUseWhenAttack;
@@ -626,6 +627,12 @@ namespace Engine
         {
             get { return _lifeLowPercent; }
             set { _lifeLowPercent = value; }
+        }
+
+        public int KeepRadiusWhenFriendDeath
+        {
+            get { return _keepRadiusWhenFriendDeath; }
+            set { _keepRadiusWhenFriendDeath = value; }
         }
 
         public Magic MagicToUseWhenBeAttacked
@@ -1560,6 +1567,8 @@ namespace Engine
                 AddKey(keyDataCollection, "MagicToUseWhenLifeLow", _magicToUseWhenLifeLow.FileName);
             }
             AddKey(keyDataCollection, "LifeLowPercent", _lifeLowPercent, LifeLowPercentDefault);
+            AddKey(keyDataCollection, "KeepRadiusWhenLifeLow", _keepRadiusWhenLifeLow);
+            AddKey(keyDataCollection, "KeepRadiusWhenFriendDeath", _keepRadiusWhenFriendDeath);
             if (_magicToUseWhenBeAttacked != null)
             {
                 AddKey(keyDataCollection, "MagicToUseWhenBeAttacked", _magicToUseWhenBeAttacked.FileName);
@@ -1586,6 +1595,7 @@ namespace Engine
             {
                 AddKey(keyDataCollection, "TimerScriptInterval", _timerScriptInterval);
             }
+            AddKey(keyDataCollection, "DropIni", _dropIni);
         }
 
         #endregion Save load method
@@ -1843,6 +1853,8 @@ namespace Engine
         {
             if (IsDeathInvoked) return;
             IsDeathInvoked = true;
+
+            NpcManager.AddDead(this);
 
             //When death speedup is cancled
             SppedUpByMagicSprite = null;

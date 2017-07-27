@@ -39,6 +39,7 @@ namespace Engine
         private int _flyInterval;
         private Dictionary<int, Magic> _level;
         private int _currentLevel;
+        private int _effectLevel;
         private int _effect;
         private int _effectExt;
         private int _manaCost;
@@ -165,6 +166,12 @@ namespace Engine
         {
             get { return _currentLevel; }
             set { _currentLevel = value; }
+        }
+
+        public int EffectLevel
+        {
+            get { return _effectLevel > 0 ? _effectLevel : CurrentLevel; }
+            set { _effectLevel = value; }
         }
 
         public bool IsOk

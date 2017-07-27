@@ -167,7 +167,7 @@ namespace Engine
         private static void AddLineMoveMagicSprite(Character user, Magic magic, Vector2 origin, Vector2 destination, bool destroyOnEnd)
         {
             var speedRatio = GetSpeedRatio(destination - origin);
-            var level = magic.CurrentLevel < 1 ? 1 : magic.CurrentLevel;
+            var level = magic.EffectLevel < 1 ? 1 : magic.EffectLevel;
             for (var i = 0; i < level; i++)
             {
                 const float magicDelayMilliseconds = 60f;
@@ -258,9 +258,9 @@ namespace Engine
             directionIndex = 4 * directionIndex;//8 to 32
             var list = Utils.GetDirection32List();
             var count = 1;
-            if (magic.CurrentLevel > 0)
+            if (magic.EffectLevel > 0)
             {
-                count += (magic.CurrentLevel - 1) / 3;
+                count += (magic.EffectLevel - 1) / 3;
             }
             direction = list[directionIndex];
             var speedRatio = GetSpeedRatio(direction.Y);
@@ -287,9 +287,9 @@ namespace Engine
             directionIndex = 4 * directionIndex;//8 to 32
             var list = Utils.GetDirection32List();
             var count = 1;
-            if (magic.CurrentLevel > 0)
+            if (magic.EffectLevel > 0)
             {
-                count += (magic.CurrentLevel - 1) / 3;
+                count += (magic.EffectLevel - 1) / 3;
             }
             direction = list[directionIndex];
             var speedRatio = GetSpeedRatio(direction.Y);
@@ -314,7 +314,7 @@ namespace Engine
             var offset = GetDirectionOffsetOf8(destination - origin);
 
             var count = 3;
-            if (magic.CurrentLevel > 1) count += (magic.CurrentLevel - 1) * 2;
+            if (magic.EffectLevel > 1) count += (magic.EffectLevel - 1) * 2;
             AddFixedWallMagicSprite(user, magic, destination, offset, count, destroyOnEnd);
         }
 
@@ -355,7 +355,7 @@ namespace Engine
             var speedRatio = GetSpeedRatio(direction);
 
             var count = 1;
-            if (magic.CurrentLevel > 1) count += magic.CurrentLevel - 1;
+            if (magic.EffectLevel > 1) count += magic.EffectLevel - 1;
             AddMagicSprite(GetMoveMagicSpriteOnDirection(user, magic, origin, direction, destroyOnEnd, speedRatio));
             for (var i = 1; i <= count; i++)
             {
@@ -369,7 +369,7 @@ namespace Engine
         private static void AddSquareFixedPositionMagicSprite(Character user, Magic magic, Vector2 destination, bool destroyOnEnd)
         {
             var count = 3;
-            if (magic.CurrentLevel > 3) count += ((magic.CurrentLevel - 1) / 3) * 2;
+            if (magic.EffectLevel > 3) count += ((magic.EffectLevel - 1) / 3) * 2;
             var offsetRow = new Vector2(32, 16);
             var offsetColumn = new Vector2(32, -16);
             var halfCount = count / 2;
@@ -389,7 +389,7 @@ namespace Engine
         private static void AddCrossFixedPositionMagicSprite(Character user, Magic magic, Vector2 origion, bool destroyOnEnd)
         {
             var count = 3;
-            if (magic.CurrentLevel > 3) count += ((magic.CurrentLevel - 1) / 3) * 2;
+            if (magic.EffectLevel > 3) count += ((magic.EffectLevel - 1) / 3) * 2;
             const float magicDelayMilliseconds = 60f;
             for (var i = 0; i < count; i++)
             {
@@ -436,7 +436,7 @@ namespace Engine
             var directionIndex = Utils.GetDirectionIndex(direction, 8);
             const int columnCount = 5;
             var count = 3;
-            if (magic.CurrentLevel > 3) count += ((magic.CurrentLevel - 1) / 3) * 2;
+            if (magic.EffectLevel > 3) count += ((magic.EffectLevel - 1) / 3) * 2;
             const float magicDelayMilliseconds = 60f;
             switch (directionIndex)
             {
@@ -539,7 +539,7 @@ namespace Engine
             var rowOffset = _rowOffsetOf8[directionIndex];
             var columnOffset = _columOffsetOf8[directionIndex];
             var count = 3;
-            if (magic.CurrentLevel > 3) count += ((magic.CurrentLevel - 1) / 3) * 2;
+            if (magic.EffectLevel > 3) count += ((magic.EffectLevel - 1) / 3) * 2;
             const float magicDelayMilliseconds = 60f;
             var beginPosition = origin;
             for (var i = 0; i < count; i++)
@@ -554,7 +554,7 @@ namespace Engine
             var direction = destination - origin;
             var directionIndex = Utils.GetDirectionIndex(direction, 8);
             var count = 3;
-            if (magic.CurrentLevel > 3) count += ((magic.CurrentLevel - 1) / 3) * 2;
+            if (magic.EffectLevel > 3) count += ((magic.EffectLevel - 1) / 3) * 2;
             var orgTile = PathFinder.FindNeighborInDirection(MapBase.ToTilePosition(origin), directionIndex);
             AddMagicSprite(GetFixedPositionMagicSprite(user, magic, MapBase.ToPixelPosition(orgTile), destroyOnEnd));
             const float magicDelayMilliseconds = 60f;
@@ -661,9 +661,9 @@ namespace Engine
         private static void AddThrowMagicSprite(Character user, Magic magic, Vector2 origin, Vector2 destination, bool destroyOnEnd)
         {
             var count = 1;
-            if (magic.CurrentLevel > 1)
+            if (magic.EffectLevel > 1)
             {
-                count += (magic.CurrentLevel - 1) / 3;
+                count += (magic.EffectLevel - 1) / 3;
             }
             var columnOffset = new Vector2(-32, 16);
             var rowOffset = new Vector2(32, 16);

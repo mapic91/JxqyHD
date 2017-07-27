@@ -11,8 +11,21 @@ namespace Engine
 {
     static public class NpcManager
     {
+        public class DeathInfo
+        {
+            public Character TheDead;
+            public int LeftFrameToKeep;
+
+            public DeathInfo(Character theDead, int leftFrameToKeep)
+            {
+                TheDead = theDead;
+                LeftFrameToKeep = leftFrameToKeep;
+            }
+        }
+
         private static LinkedList<Npc> _list = new LinkedList<Npc>();
         private static List<Npc> _npcInView = new List<Npc>();
+        public static readonly LinkedList<DeathInfo> DeathInfos = new LinkedList<DeathInfo>();
         private static string _fileName;
 
         public static List<Npc> NpcsInView
@@ -440,6 +453,7 @@ namespace Engine
             {
                 _list.Clear();
             }
+            DeathInfos.Clear();
         }
 
         public static void ClearAllNpcAndKeepPartner()
@@ -654,6 +668,18 @@ namespace Engine
                 }
                 node = next;
             }
+
+            for (var node = DeathInfos.First; node != null;)
+            {
+                var info = node.Value;
+                var next = node.Next;
+                info.LeftFrameToKeep--;
+                if (info.LeftFrameToKeep <= 0)
+                {
+                    DeathInfos.Remove(node);
+                }
+                node = next;
+            }
         }
 
         public static void UpdateNpcsInView()
@@ -685,6 +711,31 @@ namespace Engine
         public static Character GetPlayerKindCharacter()
         {
             return _list.FirstOrDefault(npc => npc.Kind == (int)Character.CharacterKind.Player);
+        }
+
+        public static void AddDead(Character dead)
+        {
+            DeathInfos.AddLast(new DeathInfo(dead, 2));
+        }
+
+        public static Character FindFriendDeadKilledByLiveCharacter(Character finder, int maxTileDistance)
+        {
+            foreach (var deadInfo in DeathInfos)
+            {
+                if (Engine.PathFinder.GetViewTileDistance(finder.TilePosition, deadInfo.TheDead.TilePosition) <=
+                    maxTileDistance)
+                {
+                    if (deadInfo.TheDead.LastAttackerMagicSprite != null &&
+                        deadInfo.TheDead.LastAttackerMagicSprite.BelongCharacter != null &&
+                        !deadInfo.TheDead.LastAttackerMagicSprite.BelongCharacter.IsDeathInvoked &&
+                        ((finder.IsEnemy && deadInfo.TheDead.IsEnemy) ||
+                        (finder.IsFighterFriend && deadInfo.TheDead.IsFighterFriend)))
+                    {
+                        return deadInfo.TheDead;
+                    }
+                }
+            }
+            return null;
         }
     }
 }
