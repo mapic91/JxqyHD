@@ -1813,6 +1813,12 @@ namespace Engine
                 _magicDestination = MapBase.ToPixelPosition(magicDestinationTilePosition);
                 _magicTarget = target;
                 SetState(CharacterState.Magic);
+
+                if (magicUse.UseActionFile != null)
+                {
+                    Texture = magicUse.UseActionFile;
+                }
+
                 SetDirection(_magicDestination - PositionInWorld);
                 PlayCurrentDirOnce();
             }
@@ -2163,6 +2169,11 @@ namespace Engine
                 else SetState(CharacterState.Attack);
 
                 OnPerformeAttack();
+
+                if (magicToUse.UseActionFile != null)
+                {
+                    Texture = magicToUse.UseActionFile;
+                }
 
                 SetDirection(destinationPositionInWorld - PositionInWorld);
                 PlayCurrentDirOnce();

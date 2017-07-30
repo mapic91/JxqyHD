@@ -88,6 +88,8 @@ namespace Engine
         private int _rangeRadius;
         private int _rangeTimeInerval;
 
+        private Asf _useActionFile;
+
         private Dictionary<int, List<MagicRegionFileReader.Item>> _regionFile;
 
         #region Leap
@@ -685,6 +687,12 @@ namespace Engine
             set { _rangeTimeInerval = value; }
         }
 
+        public Asf UseActionFile
+        {
+            get { return _useActionFile; }
+            set { _useActionFile = value; }
+        }
+
         public Dictionary<int, List<MagicRegionFileReader.Item>> RegionFile
         {
             get { return _regionFile; }
@@ -739,6 +747,12 @@ namespace Engine
                         if (!string.IsNullOrEmpty(nameValue[1]))
                         {
                             info.SetValue(this, MagicRegionFileReader.Load(@"ini\magic\" + nameValue[1]), null);
+                        }
+                        break;
+                    case "UseActionFile":
+                        if (!string.IsNullOrEmpty(nameValue[1]))
+                        {
+                            info.SetValue(this, Utils.GetAsf(@"asf\character\", nameValue[1]), null);
                         }
                         break;
                     default:
