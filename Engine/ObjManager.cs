@@ -220,6 +220,25 @@ namespace Engine
             return minObj;
         }
 
+        public static List<Obj> GetBodyInRaidus(Vector2 startTilePos, int radius, bool isDelete)
+        {
+            var retList = new List<Obj>();
+            for (var node = _list.First; node != null;)
+            {
+                var next = node.Next;
+                if (node.Value.Kind == (int)Obj.ObjKind.Body && PathFinder.GetViewTileDistance(startTilePos, node.Value.TilePosition) <= radius)
+                {
+                    retList.Add(node.Value);
+                    if (isDelete)
+                    {
+                        DeleteObj(node);
+                    }
+                }
+                node = next;
+            }
+            return retList;
+        }
+
         public static void Save(string fileName = null)
         {
             if (string.IsNullOrEmpty(fileName))

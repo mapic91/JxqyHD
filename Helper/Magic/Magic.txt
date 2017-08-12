@@ -367,3 +367,9 @@ ParasiticMagic - ÊÍ·ÅµÄÎä¹¦ÎÄ¼þÃû£¬ÊÍ·ÅµÄMagicµÈ¼¶¸úÔ­MagicÏàÍ¬£¬ÈôÃ»ÉèÖÃÔò²»»áÊ
 ParasiticInterval - ¼ä¸ô£¬µ¥Î»ºÁÃë£¬Ä¬ÈÏ1000
 ParasiticMaxEffect - ¶ÔµÐÈËÔì³ÉµÄ×î´óÉËº¦£¬µÈÓÚ0±íÊ¾ÎÞÉÏÏÞ£¬Ä¬ÈÏ0
 VanishImage - ±íÊ¾»÷ÖÐµÐÈËºóÏÔÊ¾µÄÍ¼Ïñ£¬Èç¹ûÃ»ÉèÖÃÔò¼ÌÐøÊ¹ÓÃFlyingImage
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Ê¬Ìå£º
+
+BodyRadius - Ä¬ÈÏ0¡£´óÓÚ0±íÊ¾µ±¶ÔÄ¿±ê½ÇÉ«ÊÍ·ÅÎä¹¦Ê±£¬ÒÔÄ¿±ê½ÇÉ«µÄBodyRadius·¶Î§ÄÚµÄÊ¬ÌåÎªÃ½½é£¬ÔÚÃ¿¸öÊ¬Ìå´¦ÊÍ·Å¸ÃÎä¹¦£¬Îä¹¦µÄ·½Ïò³¯ÏòÄ¿±ê½ÇÉ«£¬ÊÍ·ÅºóÊ¬ÌåÏûÊ§£»

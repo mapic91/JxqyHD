@@ -1184,9 +1184,21 @@ namespace Engine
                         {
                             if(PerformActionOk() && !AttackClosedAnemy(character))
                             {
-                                if (Globals.OutEdgeNpc != null)
-                                    UseMagic(CurrentMagicInUse.TheMagic, Globals.OutEdgeNpc.TilePosition, Globals.OutEdgeNpc);
-                                else UseMagic(CurrentMagicInUse.TheMagic, mouseTilePosition);
+                                if (CurrentMagicInUse.TheMagic.BodyRadius > 0 &&
+                                    (Globals.OutEdgeNpc == null || !Globals.OutEdgeNpc.IsEnemy))
+                                {
+                                    GuiManager.ShowMessage("无有效目标");
+                                }
+                                else if (CurrentMagicInUse.TheMagic.MoveKind == 21 && Globals.OutEdgeNpc == null)
+                                {
+                                    GuiManager.ShowMessage("无目标");
+                                }
+                                else
+                                {
+                                    if (Globals.OutEdgeNpc != null)
+                                        UseMagic(CurrentMagicInUse.TheMagic, Globals.OutEdgeNpc.TilePosition, Globals.OutEdgeNpc);
+                                    else UseMagic(CurrentMagicInUse.TheMagic, mouseTilePosition);
+                                }
                             }
                         }
 

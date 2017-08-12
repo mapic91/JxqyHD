@@ -90,6 +90,8 @@ namespace Engine
 
         private Asf _useActionFile;
 
+        private int _bodyRadius;
+
         private Dictionary<int, List<MagicRegionFileReader.Item>> _regionFile;
 
         #region Leap
@@ -691,6 +693,12 @@ namespace Engine
         {
             get { return _useActionFile; }
             set { _useActionFile = value; }
+        }
+
+        public int BodyRadius
+        {
+            get { return _bodyRadius; }
+            set { _bodyRadius = value; }
         }
 
         public Dictionary<int, List<MagicRegionFileReader.Item>> RegionFile

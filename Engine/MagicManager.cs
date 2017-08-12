@@ -778,9 +778,19 @@ namespace Engine
         /// <param name="origin">Magic initial pixel postion in world.</param>
         /// <param name="destination">Magic destination pixel postiont in world.</param>
         /// <param name="target">Magic target</param>
-        public static void UseMagic(Character user, Magic magic, Vector2 origin, Vector2 destination, Character target = null)
+        /// <param name="recursiveCounter"></param>
+        public static void UseMagic(Character user, Magic magic, Vector2 origin, Vector2 destination, Character target = null, int recursiveCounter = 0)
         {
             if (user == null || magic == null) return;
+
+            if (magic.BodyRadius > 0 && target != null && recursiveCounter == 0)
+            {
+                foreach (var body in ObjManager.GetBodyInRaidus(target.TilePosition, magic.BodyRadius, true))
+                {
+                    UseMagic(user, magic, body.PositionInWorld, destination, target, recursiveCounter + 1);
+                }
+                return;
+            }
 
             _maigicSpriteIndex = 0;
 
