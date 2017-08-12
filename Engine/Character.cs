@@ -311,6 +311,24 @@ namespace Engine
             }
         }
 
+        public bool IsFronzenVisualEffect
+        {
+            get { return _isFronzenVisualEffect; }
+            set { _isFronzenVisualEffect = value; }
+        }
+
+        public bool IsPoisionVisualEffect
+        {
+            get { return _isPoisionVisualEffect; }
+            set { _isPoisionVisualEffect = value; }
+        }
+
+        public bool IsPetrifiedVisualEffect
+        {
+            get { return _isPetrifiedVisualEffect; }
+            set { _isPetrifiedVisualEffect = value; }
+        }
+
         public bool IsFrozened { get { return FrozenSeconds > 0; } }
         public bool IsPoisoned { get { return PoisonSeconds > 0; } }
         public bool IsPetrified { get { return PetrifiedSeconds > 0; } }
@@ -1356,6 +1374,11 @@ namespace Engine
                     case "FrozenSeconds":
                         info.SetValue(this, float.Parse(keyData.Value), null);
                         break;
+                    case "IsPoisionVisualEffect":
+                    case "IsPetrifiedVisualEffect":
+                    case "IsFronzenVisualEffect":
+                        info.SetValue(this, int.Parse(keyData.Value) == 1, null);
+                        break;
                     default:
                         {
                             var integerValue = int.Parse(keyData.Value);
@@ -1569,6 +1592,9 @@ namespace Engine
             AddKey(keyDataCollection, "PoisonSeconds", _poisonSeconds);
             AddKey(keyDataCollection, "PetrifiedSeconds", _petrifiedSeconds);
             AddKey(keyDataCollection, "FrozenSeconds", _frozenSeconds);
+            AddKey(keyDataCollection, "IsPoisionVisualEffect", _isPoisionVisualEffect);
+            AddKey(keyDataCollection, "IsPetrifiedVisualEffect", _isPetrifiedVisualEffect);
+            AddKey(keyDataCollection, "IsFronzenVisualEffect", _isFronzenVisualEffect);
             if (_bodyIni != null)
             {
                 AddKey(keyDataCollection,
@@ -1945,21 +1971,21 @@ namespace Engine
             if (NpcIni.ContainsKey((int)CharacterState.Death))
             {
                 SetState(CharacterState.Death);
-                if (IsFrozened)
+                if (IsFrozened && _isFronzenVisualEffect)
                 {
                     if (FrozenDie == null) FrozenDie = Utils.GetAsf(@"asf\interlude\", "die-冰.asf");
                     Texture = FrozenDie;
                     CurrentDirection = 0;
                     _notAddBody = true;
                 }
-                else if (IsPoisoned)
+                else if (IsPoisoned && _isPoisionVisualEffect)
                 {
                     if (PoisonDie == null) PoisonDie = Utils.GetAsf(@"asf\interlude\", "die-毒.asf");
                     Texture = PoisonDie;
                     CurrentDirection = 0;
                     _notAddBody = true;
                 }
-                else if (IsPetrified)
+                else if (IsPetrified && _isPetrifiedVisualEffect)
                 {
                     if (PetrifiedDie == null) PetrifiedDie = Utils.GetAsf(@"asf\interlude\", "die-石.asf");
                     Texture = PetrifiedDie;
