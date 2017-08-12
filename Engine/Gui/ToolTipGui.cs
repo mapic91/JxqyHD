@@ -141,10 +141,34 @@ namespace Engine.Gui
                     effect += ("体 " + good.Thew.ToString("+#;-#") + "  ");
                 if (good.Mana != 0)
                     effect += ("气 " + good.Mana.ToString("+#;-#") + "  ");
-                if (good.Attack != 0)
-                    effect += ("攻 " + good.Attack.ToString("+#;-#") + "  ");
-                if (good.Defend != 0)
-                    effect += ("防 " + good.Defend.ToString("+#;-#") + "  ");
+                if (good.Attack != 0 || good.Attack2 != 0)
+                {
+                    var attack1 = "";
+                    if (good.Attack != 0)
+                    {
+                        attack1 = good.Attack.ToString("+#;-#");
+                    }
+                    var attack2 = "";
+                    if (good.Attack2 != 0)
+                    {
+                        attack2 = string.Format("({0:+#;-#})", good.Attack2);
+                    }
+                    effect += ("攻 " + attack1 + attack2 + "  ");
+                }
+                if (good.Defend != 0 || good.Defend2 != 0)
+                {
+                    var defend1 = "";
+                    if (good.Defend != 0)
+                    {
+                        defend1 = good.Defend.ToString("+#;-#");
+                    }
+                    var defend2 = "";
+                    if (good.Defend2 != 0)
+                    {
+                        defend2 = string.Format("({0:+#;-#})", good.Defend2);
+                    }
+                    effect += ("防 " + defend1 + defend2 + "  ");
+                }
                 if (good.Evade != 0)
                     effect += ("捷 " + good.Evade.ToString("+#;-#") + "  ");
                 if(good.LifeMax != 0)

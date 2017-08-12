@@ -421,8 +421,20 @@ namespace GameEditor
                     try
                     {
                         var radius = int.Parse(posDialog.RangeRadiusText.Text);
-
-                        Globals.PlayerKindCharacter.ShowRangeRadius(radius);
+                        var name = posDialog.NpcName.Text;
+                        var chracter = Globals.PlayerKindCharacter;
+                        if (!string.IsNullOrEmpty(name))
+                        {
+                            chracter = NpcManager.GetNpc(name);
+                        }
+                        if (chracter != null)
+                        {
+                            chracter.ShowRangeRadius(radius);
+                        }
+                        else
+                        {
+                            MessageBox.Show("没找到NPC：" + name);
+                        }
                     }
                     catch (Exception)
                     {

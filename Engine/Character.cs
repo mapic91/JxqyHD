@@ -67,8 +67,10 @@ namespace Engine
         private int _walkSpeed = 1;
         private int _evade;
         private int _attack;
+        private int _attack2;
         private int _attackLevel;
         private int _defend;
+        private int _defend2;
         private int _exp;
         private int _levelUpExp;
         private int _level;
@@ -122,8 +124,11 @@ namespace Engine
         private bool _isDeath;
         private float _poisonedMilliSeconds;
         private float _frozenSeconds;
+        private bool _isFronzenVisualEffect;
         private float _poisonSeconds;
+        private bool _isPoisionVisualEffect;
         private float _petrifiedSeconds;
+        private bool _isPetrifiedVisualEffect;
         private bool _notAddBody;
         private bool _isNextStepStand;
         private Dictionary<int, Utils.LevelDetail> _levelIni;
@@ -275,7 +280,7 @@ namespace Engine
         public float FrozenSeconds
         {
             get { return _frozenSeconds; }
-            set
+            protected set
             {
                 if (IsInDeathing || IsPetrified) return;
                 if (value < 0) value = 0;
@@ -286,7 +291,7 @@ namespace Engine
         public float PoisonSeconds
         {
             get { return _poisonSeconds; }
-            set
+            protected set
             {
                 if (IsInDeathing || IsPetrified) return;
                 if (value < 0) value = 0;
@@ -297,7 +302,7 @@ namespace Engine
         public float PetrifiedSeconds
         {
             get { return _petrifiedSeconds; }
-            set
+            protected set
             {
                 if (IsInDeathing) return;
                 if (value < 0) value = 0;
@@ -310,22 +315,25 @@ namespace Engine
         public bool IsPoisoned { get { return PoisonSeconds > 0; } }
         public bool IsPetrified { get { return PetrifiedSeconds > 0; } }
 
-        public void SetFrozenSeconds(float s)
+        public void SetFrozenSeconds(float s, bool hasVisualEffect)
         {
             if(_frozenSeconds > 0) return;
             FrozenSeconds = s;
+            _isFronzenVisualEffect = hasVisualEffect;
         }
 
-        public void SetPoisonSeconds(float s)
+        public void SetPoisonSeconds(float s, bool hasVisualEffect)
         {
             if(_poisonSeconds > 0) return;
             PoisonSeconds = s;
+            _isPoisionVisualEffect = hasVisualEffect;
         }
 
-        public void SetPetrifySeconds(float s)
+        public void SetPetrifySeconds(float s, bool hasVisualEffect)
         {
             if(_petrifiedSeconds > 0) return;
             PetrifiedSeconds = s;
+            _isPetrifiedVisualEffect = hasVisualEffect;
         }
 
         public bool BodyFunctionWell
@@ -440,6 +448,12 @@ namespace Engine
             set { _attack = value; }
         }
 
+        public int Attack2
+        {
+            get { return _attack2; }
+            set { _attack2 = value; }
+        }
+
         public int AttackLevel
         {
             get { return _attackLevel; }
@@ -461,6 +475,12 @@ namespace Engine
         {
             get { return _defend; }
             set { _defend = value; }
+        }
+
+        public int Defend2
+        {
+            get { return _defend2; }
+            set { _defend2 = value; }
         }
 
         public int Exp
@@ -1528,8 +1548,10 @@ namespace Engine
             AddKey(keyDataCollection, "WalkSpeed", _walkSpeed);
             AddKey(keyDataCollection, "Evade", _evade);
             AddKey(keyDataCollection, "Attack", _attack);
+            AddKey(keyDataCollection, "Attack2", _attack2);
             AddKey(keyDataCollection, "AttackLevel", _attackLevel);
             AddKey(keyDataCollection, "Defend", _defend);
+            AddKey(keyDataCollection, "Defend2", _defend2);
             AddKey(keyDataCollection, "Exp", _exp);
             AddKey(keyDataCollection, "LevelUpExp", _levelUpExp);
             AddKey(keyDataCollection, "Level", _level);
@@ -2530,7 +2552,9 @@ namespace Engine
                 Thew = ThewMax;
                 Mana = ManaMax;
                 Attack = detail.Attack;
+                Attack2 = detail.Attack2;
                 Defend = detail.Defend;
+                Defend2 = detail.Defend2;
                 Evade = detail.Evade;
                 LevelUpExp = detail.LevelUpExp;
             }
@@ -3029,23 +3053,28 @@ namespace Engine
             if (!(IsDeath || IsHide || IsInTransport))
             {
                 var color = DrawColor;
-                if (FrozenSeconds > 0)
+                if (FrozenSeconds > 0 && _isFronzenVisualEffect)
                     color = new Color(80, 80, 255);
-                if (PoisonSeconds > 0)
+                if (PoisonSeconds > 0 && _isPoisionVisualEffect)
                     color = new Color(50, 255, 50);
-                if (PetrifiedSeconds > 0)
+                if (PetrifiedSeconds > 0 && _isPetrifiedVisualEffect)
                 {
                     spriteBatch.End();
                     JxqyGame.BeginSpriteBatch(spriteBatch, Globals.TheGame.GrayScaleEffect);
                 }
                 base.Draw(spriteBatch, texture, color);
-                if (PetrifiedSeconds > 0)
+                if (PetrifiedSeconds > 0 && _isPetrifiedVisualEffect)
                 {
                     spriteBatch.End();
                     JxqyGame.BeginSpriteBatch(spriteBatch);
                 }
             }
 
+            DrawRangeRadius(spriteBatch);
+        }
+
+        public void DrawRangeRadius(SpriteBatch spriteBatch)
+        {
             if (_rangeRadiusToShow > 0)
             {
                 if (_radiusRangeLastTilePosition != TilePosition || _lastRadiusTileTilesCached == null)

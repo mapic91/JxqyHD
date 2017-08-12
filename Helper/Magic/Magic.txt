@@ -70,7 +70,7 @@ FlyingImageÊ¹ÓÃ·½Ïò0£¬Åöµ½µÐÈË¾Í±¬Õ¨£¬LifeFrameÍêÒ²±¬Õ¨.
 [0] - ÎÞÐ§¹û
 [1] - Ôö¼ÓÉúÃü£¬Ôö¼ÓEffect£¬LifeFrameÍê±¬Õ¨
 [2] - Ôö¼ÓÌåÁ¦£¬Ôö¼ÓEffect£¬LifeFrameÍê±¬Õ¨
-[3] - ¼õÉÙEffectµÄÉËº¦£¨¼´Ïàµ±ÓÚÌáÉýÁËEffectµÄ·ÀÓùÁ¦£©£¬Ê±¼ä³¤¶ÈLifeFrame£¬LifeFrameÍê±¬Õ¨
+[3] - ¼õÉÙEffectºÍEffect2µÄÉËº¦£¨¼´Ïàµ±ÓÚÌáÉýÁËEffectºÍEffect2µÄ·ÀÓùÁ¦£©£¬Ê±¼ä³¤¶ÈLifeFrame£¬LifeFrameÍê±¬Õ¨
 14 ÎÞ
 15 È«ÆÁ
 ÔÝÍ£ÓÎÏ·£¬ÔÚÊ©·ÅÕß´¦²¥·ÅSuperModeImage£¬ÍêºóÔÚÈ«ÆÁÃ¿¸öµÐÈË´¦·ÅVanishImage²¢ÊÜµ½ÉËº¦
@@ -93,6 +93,8 @@ EffectLevel - Ä¬ÈÏ0£¬Èç¹û´óÓÚÁãÔò²»Ê¹ÓÃÎä¹¦µÄµ±Ç°µÈ¼¶£¬¶øÊ¹ÓÃ¸ÃÖµÉèÖÃµÄµÈ¼¶¡£±ÈÈ
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 Îä¹¦ÉËº¦£º
 EffectExt - ¸½¼ÓµÄÎä¹¦ÉËº¦¡£±ÈÈçEffect=30£¬EffectExt=90£¬Ôò¸ÃÎä¹¦µÄÉËº¦ÊÇ30+90=120£»ÔÙ±ÈÈçEffect=0£¬EffectExt=90£¬ÔòÒòÎªEffect=0£¬Îä¹¦µÄÉËº¦ÒÔÊ¹ÓÃÕßµÄ¹¥»÷Á¦Ëã£¬Ê¹ÓÃÕßµÄ¹¥»÷Á¦ÊÇÓÉ»ù´¡ÊôÐÔ¼ÓÉÏ×°±¸µÄÊôÐÔËã³öÀ´µÄ£¬ËùÒÔ´ËÊ±Îä¹¦µÄÉËº¦ÊÇ[Ê¹ÓÃÕßµÄ»ù´¡¹¥»÷Á¦+×°±¸¸½¼ÓµÄ¹¥»÷Á¦+EffectExt]¡£
+
+Effect2 - ÁíÍâÒ»Ì×¹¥»÷Öµ¡£¼ÆËã·½Ê½£ºÔÚÔ­À´ÉËº¦µÄ»ù´¡ÉÏ¼ÓÉÏ£¨Effect2 - Defend2£©£¬Defend2±»»÷ÖÐÈËÎïµÄ·ÀÓùÁ¦ÊôÐÔ£¬Èç¹ûDefend2´óÓÚEffect2£¬¼´Effect2 - Defend2Ð¡ÓÚ0£¬ÔòÈ¡0¡£
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -373,3 +375,9 @@ VanishImage - ±íÊ¾»÷ÖÐµÐÈËºóÏÔÊ¾µÄÍ¼Ïñ£¬Èç¹ûÃ»ÉèÖÃÔò¼ÌÐøÊ¹ÓÃFlyingImage
 Ê¬Ìå£º
 
 BodyRadius - Ä¬ÈÏ0¡£´óÓÚ0±íÊ¾µ±¶ÔÄ¿±ê½ÇÉ«ÊÍ·ÅÎä¹¦Ê±£¬ÒÔÄ¿±ê½ÇÉ«µÄBodyRadius·¶Î§ÄÚµÄÊ¬ÌåÎªÃ½½é£¬ÔÚÃ¿¸öÊ¬Ìå´¦ÊÍ·Å¸ÃÎä¹¦£¬Îä¹¦µÄ·½Ïò³¯ÏòÄ¿±ê½ÇÉ«£¬ÊÍ·ÅºóÊ¬ÌåÏûÊ§£»
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+×´Ì¬£º
+
+NoSpecialKindEffect - Ä¬ÈÏ0£¬Èç¹û´óÓÚ0±íÊ¾Îä¹¦Ê¹½ÇÉ«ÖÐ¶¾¡¢Ê¯»¯¡¢±ù¶³ºó£¬¸Ã½ÇÉ«²»»áÓÐ±äÂÌ£¬±ä»Ò£¬±äÀ¶µÄÊÓ¾õÐ§¹û¡£

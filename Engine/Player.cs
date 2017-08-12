@@ -629,7 +629,9 @@ namespace Engine
                 if (!justEffectType)
                 {
                     Attack += equip.Attack;
+                    Attack2 += equip.Attack2;
                     Defend += equip.Defend;
+                    Defend2 += equip.Defend2;
                     Evade += equip.Evade;
                     LifeMax += equip.LifeMax;
                     ThewMax += equip.ThewMax;
@@ -706,7 +708,9 @@ namespace Engine
                 if (!justEffectType)
                 {
                     Attack -= equip.Attack;
+                    Attack2 -= equip.Attack2;
                     Defend -= equip.Defend;
+                    Defend2 -= equip.Defend2;
                     Evade -= equip.Evade;
                     LifeMax -= equip.LifeMax;
                     ThewMax -= equip.ThewMax;
@@ -978,7 +982,9 @@ namespace Engine
                 Thew = ThewMax;
                 Mana = ManaMax;
                 Attack += (detail.Attack - currentDetail.Attack);
+                Attack2 += (detail.Attack2 - currentDetail.Attack2);
                 Defend += (detail.Defend - currentDetail.Defend);
+                Defend2 += (detail.Defend2 - currentDetail.Defend2);
                 Evade += (detail.Evade - currentDetail.Evade);
                 LevelUpExp = detail.LevelUpExp;
                 if (!string.IsNullOrEmpty(detail.NewMagic))
@@ -1390,6 +1396,7 @@ namespace Engine
 
                 Globals.TheGame.GraphicsDevice.Clear(ClearOptions.Stencil, Color.Black, 0, 0);
                 JxqyGame.BeginSpriteBatch(spriteBatch);
+                DrawRangeRadius(spriteBatch);
             }
             else
             {

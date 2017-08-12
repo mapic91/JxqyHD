@@ -31,6 +31,7 @@ namespace Engine
 
         private int _leftLeapTimes;
         private int _currentEffect;
+        private int _currentEffect2;
         private bool _canLeap;
 
         private Npc _summonedNpc;
@@ -315,13 +316,13 @@ namespace Engine
             switch (BelongMagic.SpecialKind)
             {
                 case 1:
-                    character.SetFrozenSeconds(BelongMagic.EffectLevel + 1);
+                    character.SetFrozenSeconds(BelongMagic.EffectLevel + 1, BelongMagic.NoSpecialKindEffect == 0);
                     break;
                 case 2:
-                    character.SetPoisonSeconds(BelongMagic.EffectLevel + 1);
+                    character.SetPoisonSeconds(BelongMagic.EffectLevel + 1, BelongMagic.NoSpecialKindEffect == 0);
                     break;
                 case 3:
-                    character.SetPetrifySeconds(BelongMagic.EffectLevel + 1);
+                    character.SetPetrifySeconds(BelongMagic.EffectLevel + 1, BelongMagic.NoSpecialKindEffect == 0);
                     break;
             }
 
@@ -330,20 +331,21 @@ namespace Engine
             {
                 case Magic.AddonEffect.Frozen:
                     if (!character.IsFrozened)
-                        character.FrozenSeconds = BelongCharacter.Level / 10 + 1;
+                        character.SetFrozenSeconds(BelongCharacter.Level / 10 + 1, BelongMagic.NoSpecialKindEffect == 0);
                     break;
                 case Magic.AddonEffect.Poision:
                     if (!character.IsPoisoned)
-                        character.PoisonSeconds = BelongCharacter.Level / 10 + 1;
+                        character.SetPoisonSeconds(BelongCharacter.Level / 10 + 1, BelongMagic.NoSpecialKindEffect == 0);
                     break;
                 case Magic.AddonEffect.Petrified:
                     if (!character.IsPetrified)
-                        character.PetrifiedSeconds = BelongCharacter.Level / 10 + 1;
+                        character.SetPetrifySeconds(BelongCharacter.Level / 10 + 1, BelongMagic.NoSpecialKindEffect == 0);
                     break;
             }
 
             var amount = _canLeap ? _currentEffect : MagicManager.GetEffectAmount(BelongMagic, BelongCharacter);
-            CharacterHited(character, amount);
+            var amount2 = _canLeap ? _currentEffect2 : MagicManager.GetEffectAmount2(BelongMagic, BelongCharacter);
+            CharacterHited(character, amount, amount2);
 
             if (_canLeap)
             {
@@ -367,7 +369,7 @@ namespace Engine
             }
         }
 
-        private void CharacterHited(Character character, int damage, bool addMagicHitedExp = true)
+        private void CharacterHited(Character character, int damage, int damage2, bool addMagicHitedExp = true)
         {
             var isInDeath = character.IsDeathInvoked;
             character.LastAttackerMagicSprite = this;
@@ -393,7 +395,8 @@ namespace Engine
 
             if (_parasitiferCharacter != null || Globals.TheRandom.Next(101) <= (int)(hitRatio * 100f))
             {
-                var effect = damage - character.Defend;
+                var effect2 = damage2 - character.Defend2;
+                var effect = (damage - character.Defend);
                 foreach (var magicSprite in character.MagicSpritesInEffect)
                 {
                     var magic = magicSprite.BelongMagic;
@@ -404,11 +407,16 @@ namespace Engine
                             {
                                 //Target character have protecter
                                 var damageReduce = MagicManager.GetEffectAmount(magic, character);
+                                var damageReduce2 = MagicManager.GetEffectAmount2(magic, character);
+                                effect2 -= damageReduce2;
                                 effect -= damageReduce;
                             }
                             break;
                     }
                 }
+
+                if (effect2 > 0) effect += effect2;
+
                 if (effect > character.Life)
                 {
                     //Effect amount should less than or equal target character current life amount.
@@ -559,6 +567,7 @@ namespace Engine
         {
             _leftLeapTimes = BelongMagic.LeapTimes;
             _currentEffect = MagicManager.GetEffectAmount(BelongMagic, BelongCharacter);
+            _currentEffect2 = MagicManager.GetEffectAmount2(BelongMagic, BelongCharacter);
 
             if (_leftLeapTimes > 0)
             {
@@ -744,6 +753,7 @@ namespace Engine
             {
                 _leftLeapTimes--;
                 _currentEffect -= _currentEffect * BelongMagic.EffectReducePercentage / 100;
+                _currentEffect2 -= _currentEffect2 * BelongMagic.EffectReducePercentage / 100;
             }
             else
             {
@@ -826,7 +836,7 @@ namespace Engine
                     {
                         _parasticTime -= BelongMagic.ParasiticInterval;
                         UseMagic(BelongMagic.ParasiticMagic);
-                        CharacterHited(_parasitiferCharacter, MagicManager.GetEffectAmount(BelongMagic, BelongCharacter), false);
+                        CharacterHited(_parasitiferCharacter, MagicManager.GetEffectAmount(BelongMagic, BelongCharacter), MagicManager.GetEffectAmount2(BelongMagic, BelongCharacter), false);
 
                         if (BelongMagic.ParasiticMaxEffect > 0 && _totalParasticEffect >= BelongMagic.ParasiticMaxEffect)
                         {
@@ -993,19 +1003,19 @@ namespace Engine
                             {
                                 if (BelongMagic.RangeFreeze > 0)
                                 {
-                                    target.SetFrozenSeconds(BelongMagic.RangeFreeze/1000.0f);
+                                    target.SetFrozenSeconds(BelongMagic.RangeFreeze/1000.0f, BelongMagic.NoSpecialKindEffect == 0);
                                 }
                                 if (BelongMagic.RangePoison > 0)
                                 {
-                                    target.SetPoisonSeconds(BelongMagic.RangePoison/1000.0f);
+                                    target.SetPoisonSeconds(BelongMagic.RangePoison/1000.0f, BelongMagic.NoSpecialKindEffect == 0);
                                 }
                                 if (BelongMagic.RangePetrify > 0)
                                 {
-                                    target.SetPetrifySeconds(BelongMagic.RangePetrify/1000.0f);
+                                    target.SetPetrifySeconds(BelongMagic.RangePetrify/1000.0f, BelongMagic.NoSpecialKindEffect == 0);
                                 }
                                 if (BelongMagic.RangeDamage > 0)
                                 {
-                                    CharacterHited(target, BelongMagic.RangeDamage);
+                                    CharacterHited(target, BelongMagic.RangeDamage, BelongMagic.Effect2);
                                     AddDestroySprite(MagicManager.EffectSprites, target.PositionInWorld, BelongMagic.VanishImage, BelongMagic.VanishSound);
                                 }
                             }

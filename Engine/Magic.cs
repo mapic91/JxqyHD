@@ -41,6 +41,7 @@ namespace Engine
         private int _currentLevel;
         private int _effectLevel;
         private int _effect;
+        private int _effect2;
         private int _effectExt;
         private int _manaCost;
         private int _levelupExp;
@@ -91,6 +92,8 @@ namespace Engine
         private Asf _useActionFile;
 
         private int _bodyRadius;
+
+        private int _noSpecialKindEffect;
 
         private Dictionary<int, List<MagicRegionFileReader.Item>> _regionFile;
 
@@ -331,6 +334,12 @@ namespace Engine
         {
             get { return _effectExt; }
             set { _effectExt = value; }
+        }
+
+        public int Effect2
+        {
+            get { return _effect2; }
+            set { _effect2 = value; }
         }
 
         public int ManaCost
@@ -699,6 +708,12 @@ namespace Engine
         {
             get { return _bodyRadius; }
             set { _bodyRadius = value; }
+        }
+
+        public int NoSpecialKindEffect
+        {
+            get { return _noSpecialKindEffect; }
+            set { _noSpecialKindEffect = value; }
         }
 
         public Dictionary<int, List<MagicRegionFileReader.Item>> RegionFile
