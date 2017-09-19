@@ -106,6 +106,21 @@ namespace Engine.Storage
             CopyAllFilesToDirectory(SaveGameDirectory, path);
         }
 
+        /// <summary>
+        /// Delete all user saved data.
+        /// </summary>
+        public static void DeleteAllSaveData()
+        {
+            for (var i = 1; i <= 7; i++)
+            {
+                DeletAllFiles(SaveRpgDirectory + i);
+                if (File.Exists(GetSaveSnapShotFilePath(i)))
+                {
+                    File.Delete(GetSaveSnapShotFilePath(i));
+                }
+            }
+        }
+
         public static string GetSaveTime(int saveIndex)
         {
             var path = SaveRpgDirectory + saveIndex;

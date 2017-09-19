@@ -592,6 +592,9 @@ namespace Engine.Script
                         case "SetDropIni":
                             ScriptExecuter.SetDropIni(parameters);
                             break;
+                        case "ClearAllSave":
+                            ScriptExecuter.ClearAllSave(parameters);
+                            break;
                         default:
                             throw new Exception("无此函数");
                     }

@@ -1883,5 +1883,10 @@ namespace Engine.Script
                 target.DropIni = fileName;
             }
         }
+
+        public static void ClearAllSave(List<string> parameters)
+        {
+            StorageBase.DeleteAllSaveData();
+        }
     }
 }
