@@ -96,6 +96,8 @@ EffectExt - 附加的武功伤害。比如Effect=30，EffectExt=90，则该武功的伤害是30+90=1
 
 Effect2 - 另外一套攻击值。计算方式：在原来伤害的基础上加上（Effect2 - Defend2），Defend2被击中人物的防御力属性，如果Defend2大于Effect2，即Effect2 - Defend2小于0，则取0。
 
+EffectMana - 内力伤害，默认0。表示武功击中敌人后，敌人损失多少内力。
+
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 施法时间：
@@ -226,7 +228,7 @@ ExplodeMagicFile - 设置爆炸后的释放的Magic（释放的Magic等级跟原Magic相同，跟Kind
 LeapTimes - 跳跃次数
 LeapImage - 跳跃时的图像
 LeapFrame - 跳跃持续帧，值越大跳跃的距离越远
-EffectReducePercentage - 每次跳跃减少多少白分比的效果（比如，Effect=200，EffectReducePercentage=20，第一次Effect是200，第二次是200-200*0.2=160 ，第三次是160-160*0.2=128 ...）
+EffectReducePercentage - 每次跳跃减少多少白分比的Effect，Effect2，EffectMana效果。比如，Effect=200，EffectReducePercentage=20，第一次Effect是200，第二次是200-200*0.2=160 ，第三次是160-160*0.2=128 ...
 
 范例见文件：magic-跳跃.ini
 

@@ -43,6 +43,7 @@ namespace Engine
         private int _effect;
         private int _effect2;
         private int _effectExt;
+        private int _effectMana;
         private int _manaCost;
         private int _levelupExp;
         private bool _isOk;
@@ -340,6 +341,12 @@ namespace Engine
         {
             get { return _effect2; }
             set { _effect2 = value; }
+        }
+
+        public int EffectMana
+        {
+            get { return _effectMana; }
+            set { _effectMana = value; }
         }
 
         public int ManaCost

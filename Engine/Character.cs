@@ -2537,6 +2537,14 @@ namespace Engine
             }
         }
 
+        public void DecreaseMana(int amount)
+        {
+            if (amount > 0)
+            {
+                Mana -= amount;
+            }
+        }
+
         public void AddMana(int amount)
         {
             Mana += amount;

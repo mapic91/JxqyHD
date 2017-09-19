@@ -32,6 +32,7 @@ namespace Engine
         private int _leftLeapTimes;
         private int _currentEffect;
         private int _currentEffect2;
+        private int _currentEffectMana;
         private bool _canLeap;
 
         private Npc _summonedNpc;
@@ -345,7 +346,8 @@ namespace Engine
 
             var amount = _canLeap ? _currentEffect : MagicManager.GetEffectAmount(BelongMagic, BelongCharacter);
             var amount2 = _canLeap ? _currentEffect2 : MagicManager.GetEffectAmount2(BelongMagic, BelongCharacter);
-            CharacterHited(character, amount, amount2);
+            var amountMana = _canLeap ? _currentEffectMana : BelongMagic.EffectMana;
+            CharacterHited(character, amount, amount2, amountMana);
 
             if (_canLeap)
             {
@@ -369,7 +371,7 @@ namespace Engine
             }
         }
 
-        private void CharacterHited(Character character, int damage, int damage2, bool addMagicHitedExp = true)
+        private void CharacterHited(Character character, int damage, int damage2, int damageMana, bool addMagicHitedExp = true)
         {
             var isInDeath = character.IsDeathInvoked;
             character.LastAttackerMagicSprite = this;
@@ -423,6 +425,7 @@ namespace Engine
                     effect = character.Life;
                 }
                 character.DecreaseLifeAddHurt(effect < MinimalDamage ? MinimalDamage : effect);
+                character.DecreaseMana(damageMana);
 
                 //Restore
                 if (BelongMagic.RestoreProbability > 0 &&
@@ -568,6 +571,7 @@ namespace Engine
             _leftLeapTimes = BelongMagic.LeapTimes;
             _currentEffect = MagicManager.GetEffectAmount(BelongMagic, BelongCharacter);
             _currentEffect2 = MagicManager.GetEffectAmount2(BelongMagic, BelongCharacter);
+            _currentEffectMana = BelongMagic.EffectMana;
 
             if (_leftLeapTimes > 0)
             {
@@ -754,6 +758,7 @@ namespace Engine
                 _leftLeapTimes--;
                 _currentEffect -= _currentEffect * BelongMagic.EffectReducePercentage / 100;
                 _currentEffect2 -= _currentEffect2 * BelongMagic.EffectReducePercentage / 100;
+                _currentEffectMana -= _currentEffectMana * BelongMagic.EffectReducePercentage / 100;
             }
             else
             {
@@ -836,7 +841,7 @@ namespace Engine
                     {
                         _parasticTime -= BelongMagic.ParasiticInterval;
                         UseMagic(BelongMagic.ParasiticMagic);
-                        CharacterHited(_parasitiferCharacter, MagicManager.GetEffectAmount(BelongMagic, BelongCharacter), MagicManager.GetEffectAmount2(BelongMagic, BelongCharacter), false);
+                        CharacterHited(_parasitiferCharacter, MagicManager.GetEffectAmount(BelongMagic, BelongCharacter), MagicManager.GetEffectAmount2(BelongMagic, BelongCharacter), BelongMagic.EffectMana, false);
 
                         if (BelongMagic.ParasiticMaxEffect > 0 && _totalParasticEffect >= BelongMagic.ParasiticMaxEffect)
                         {
@@ -1015,7 +1020,7 @@ namespace Engine
                                 }
                                 if (BelongMagic.RangeDamage > 0)
                                 {
-                                    CharacterHited(target, BelongMagic.RangeDamage, BelongMagic.Effect2);
+                                    CharacterHited(target, BelongMagic.RangeDamage, BelongMagic.Effect2, 0);
                                     AddDestroySprite(MagicManager.EffectSprites, target.PositionInWorld, BelongMagic.VanishImage, BelongMagic.VanishSound);
                                 }
                             }
