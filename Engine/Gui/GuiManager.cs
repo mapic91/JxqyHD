@@ -166,8 +166,14 @@ namespace Engine.Gui
 
         public static void PlayInterfaceShowMissSound(bool isShow)
         {
-            if (isShow) _interfaceShow.Play();
-            else _interfaceMiss.Play();
+            if (isShow)
+            {
+                if (_interfaceShow != null) _interfaceShow.Play();
+            }
+            else
+            {
+                if(_interfaceMiss != null) _interfaceMiss.Play();
+            }
              
         }
 
@@ -721,7 +727,8 @@ namespace Engine.Gui
                         DragDropSourceItem.IsShow = true;
                     }
                     if (DragDropSourceTexture != null &&
-                        DragDropSourceTexture.Data != null)
+                        DragDropSourceTexture.Data != null &&
+                        _dropSound != null)
                     {
                         _dropSound.Play();
                     }
