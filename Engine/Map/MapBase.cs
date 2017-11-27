@@ -227,7 +227,7 @@ namespace Engine.Map
         public static Vector2 GetStartTileInView(int viewBeginX, int viewBeginY)
         {
             var start = ToTilePosition(viewBeginX, viewBeginY);
-            start -= new Vector2(15);
+            start -= new Vector2(20);
             if (start.X < 0) start.X = 0;
             if (start.Y < 0) start.Y = 0;
             return start;
@@ -238,7 +238,7 @@ namespace Engine.Map
         public static Vector2 GetEndTileInView(int viewEndX, int viewEndY, int mapColumnCounts, int mapRowCounts)
         {
             var end = ToTilePosition(viewEndX, viewEndY);
-            end += new Vector2(15);
+            end += new Vector2(20);
             if (end.X > mapColumnCounts) end.X = mapColumnCounts;
             if (end.Y > mapRowCounts) end.Y = mapRowCounts;
             return end;
