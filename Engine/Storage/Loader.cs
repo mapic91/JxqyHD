@@ -58,6 +58,14 @@ namespace Engine.Storage
                 {
                     Sprite.DrawColor = StorageBase.GetColorFromString(option["AsfStyle"]);
                 }
+                if (string.IsNullOrEmpty(option["SaveDisabled"]))
+                {
+                    Globals.IsSaveDisabled = false;
+                }
+                else
+                {
+                    Globals.IsSaveDisabled = int.Parse(option["SaveDisabled"]) > 0;
+                }
 
                 //Timer
                 var timer = data["Timer"];
@@ -161,6 +169,7 @@ namespace Engine.Storage
                 GuiManager.EndDialog();
                 BackgroundMusic.Stop();
                 Globals.IsInputDisabled = false;
+                Globals.IsSaveDisabled = false;
             }
 
             LoadGameFile();

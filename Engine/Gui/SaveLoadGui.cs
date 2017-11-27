@@ -159,6 +159,12 @@ namespace Engine.Gui
                 if (_list.SelectionIndex != -1 &&
                     SaveLoadIndexInRange(_list.SelectionIndex + 1))
                 {
+                    if (Globals.IsSaveDisabled)
+                    {
+                        _message.Text = "此处无法存档";
+                        return;
+                    }
+
                     if (!Globals.TheGame.IsSafe())
                     {
                         _message.Text = "战斗中不能存档，找个安全的地方存档吧。";

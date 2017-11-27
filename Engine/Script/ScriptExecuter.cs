@@ -1888,5 +1888,15 @@ namespace Engine.Script
         {
             StorageBase.DeleteAllSaveData();
         }
+
+        public static void EnableSave(List<string> parameters)
+        {
+            Globals.IsSaveDisabled = false;
+        }
+
+        public static void DisableSave(List<string> parameters)
+        {
+            Globals.IsSaveDisabled = true;
+        }
     }
 }

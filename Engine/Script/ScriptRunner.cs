@@ -595,6 +595,12 @@ namespace Engine.Script
                         case "ClearAllSave":
                             ScriptExecuter.ClearAllSave(parameters);
                             break;
+                        case "EnableSave":
+                            ScriptExecuter.EnableSave(parameters);
+                            break;
+                        case "DisableSave":
+                            ScriptExecuter.DisableSave(parameters);
+                            break;
                         default:
                             throw new Exception("无此函数");
                     }

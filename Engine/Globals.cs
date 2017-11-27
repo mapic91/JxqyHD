@@ -121,6 +121,11 @@ namespace Engine
             get { return _isInputDisabled; }
         }
 
+        /// <summary>
+        /// Is save game disabed.
+        /// </summary>
+        public static bool IsSaveDisabled { set; get; }
+
    
         public static bool IsWaterEffectEnabled;
 
