@@ -50,8 +50,8 @@ namespace Engine.Gui
                 var info = MagicListManager.GetItemInfo(data.Index);
                 if (info != null)
                 {
-                    for (var i = MagicListManager.BottomMagicIndexStart;
-                        i <= MagicListManager.BottomMagicIndexEnd;
+                    for (var i = MagicListManager.BottomIndexBegin;
+                        i <= MagicListManager.BottomIndexEnd;
                         i++)
                     {
                         var binfo = MagicListManager.GetItemInfo(i);
@@ -79,7 +79,7 @@ namespace Engine.Gui
                 baseTexture.Width,
                 baseTexture.Height,
                 baseTexture,
-                12,
+                (MagicListManager.StoreIndexEnd - MagicListManager.StoreIndexBegin + 1 + 2)/3,
                 GuiManager.Setttings.Sections["Magics_List_Items"],
                 cfg["ScrollBarButton"]);
             _listView.Scrolled += delegate
@@ -102,7 +102,7 @@ namespace Engine.Gui
         {
             for (var i = 0; i < 9; i++)
             {
-                var index = _listView.ToListIndex(i);
+                var index = _listView.ToListIndex(i) + MagicListManager.StoreIndexBegin - 1;
                 var magic = MagicListManager.Get(index);
                 var image = (magic == null ? null : magic.Image);
                 _listView.SetListItem(i, new Texture(image), new MagicItemData(index));

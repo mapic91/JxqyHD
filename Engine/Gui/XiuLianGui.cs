@@ -13,7 +13,7 @@ namespace Engine.Gui
         private TextGui _expText;
         private TextGui _nameText;
         private TextGui _introText;
-        private const int ItemIndex = 49;
+        private int ItemIndex = 49;
         private bool _isShow = false;
         private bool _isItemChange;
 
@@ -29,6 +29,7 @@ namespace Engine.Gui
 
         public XiuLianGui()
         {
+            ItemIndex = MagicListManager.XiuLianIndex;
             var cfg = GuiManager.Setttings.Sections["XiuLian"];
             BaseTexture = new Texture(Utils.GetAsf(null, cfg["Image"]));
             Width = BaseTexture.Width;

@@ -114,9 +114,10 @@ namespace Engine.Gui
                 baseTexture.Width,
                 baseTexture.Height,
                 baseTexture,
-                66,
+                (GoodsListManager.StoreIndexEnd - GoodsListManager.StoreIndexBegin + 1 + 2)/3,
                 GuiManager.Setttings.Sections["Goods_List_Items"],
-                cfg["ScrollBarButton"]);
+                cfg["ScrollBarButton"],
+                GoodsListManager.Type != GoodsListManager.ListType.TypeByGoodItem);
             _listView.Scrolled += delegate
             {
                 UpdateItems();
@@ -153,7 +154,7 @@ namespace Engine.Gui
         {
             for (var i = 0; i < 9; i++)
             {
-                var index = _listView.ToListIndex(i);
+                var index = _listView.ToListIndex(i) + GoodsListManager.StoreIndexBegin - 1;
                 var info = GoodsListManager.GetItemInfo(index);
                 Good good = null;
                 if (info != null) good = info.TheGood;

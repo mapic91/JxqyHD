@@ -9,17 +9,33 @@ namespace Engine.ListManager
 {
     public static class MagicListManager
     {
-        private const int MaxMagic = 49;
-        private const int MagicListIndexBegin = 1;
-        private const int StoreListStart = 1;
-        private const int StoreListEnd = 36;
-        private const int HideStartIndex = 1000;
-        private static readonly MagicItemInfo[] MagicList = new MagicItemInfo[MaxMagic + 1];
-        private static readonly MagicItemInfo[] MagicListHide = new MagicItemInfo[MaxMagic + 1];
+        public static int MaxMagic = 49;
+        public static int MagicListIndexBegin = 1;
+        public static int StoreIndexBegin = 1;
+        public static int StoreIndexEnd = 36;
+        public static int HideStartIndex = 1000;
+        private static MagicItemInfo[] MagicList = new MagicItemInfo[MaxMagic + 1];
+        private static MagicItemInfo[] MagicListHide = new MagicItemInfo[MaxMagic + 1];
 
-        public const int XiuLianIndex = 49;
-        public const int BottomMagicIndexStart = 40;
-        public const int BottomMagicIndexEnd = 44;
+        public static int XiuLianIndex = 49;
+        public static int BottomIndexBegin = 40;
+        public static int BottomIndexEnd = 44;
+
+        public static void InitIndex(IniData settings)
+        {
+            var cfg = settings.Sections["MagicInit"];
+            StoreIndexBegin = int.Parse(cfg["StoreIndexBegin"]);
+            StoreIndexEnd = int.Parse(cfg["StoreIndexEnd"]);
+            BottomIndexBegin = int.Parse(cfg["BottomIndexBegin"]);
+            BottomIndexEnd = int.Parse(cfg["BottomIndexEnd"]);
+            XiuLianIndex = int.Parse(cfg["XiuLianIndex"]);
+            HideStartIndex = int.Parse(cfg["HideStartIndex"]);
+            MaxMagic = Math.Max(0, StoreIndexEnd);
+            MaxMagic = Math.Max(MaxMagic, BottomIndexEnd);
+            MaxMagic = Math.Max(MaxMagic, XiuLianIndex);
+            MagicList = new MagicItemInfo[MaxMagic + 1];
+            MagicListHide = new MagicItemInfo[MaxMagic + 1];
+        }
         public static void LoadList(string filePath)
         {
             RenewList();
@@ -106,7 +122,7 @@ namespace Engine.ListManager
 
         public static bool IndexInBottomRange(int index)
         {
-            return (index >= BottomMagicIndexStart && index <= BottomMagicIndexEnd);
+            return (index >= BottomIndexBegin && index <= BottomIndexEnd);
         }
 
         public static bool IndexInXiuLianIndex(int index)
@@ -199,7 +215,7 @@ namespace Engine.ListManager
             var magic = Get(index);
             if (magic != null)
             {
-                if(index >= 40 && index <= 44)
+                if(index >= BottomIndexBegin && index <= BottomIndexEnd)
                     return new Texture(magic.Icon);
                 else
                     return new Texture(magic.Image);
@@ -248,6 +264,32 @@ namespace Engine.ListManager
             return 0;
         }
 
+        public static int GetFreeIndex()
+        {
+            var index = -1;
+            for (var i = StoreIndexBegin; i <= StoreIndexEnd; i++)
+            {
+                if (MagicList[i] == null)
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            if (index == -1)
+            {
+                for (var i = BottomIndexBegin; i <= BottomIndexEnd; i++)
+                {
+                    if (MagicList[i] == null)
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+            }
+            return index;
+        }
+
         public static bool AddMagicToList(string fileName, out int index, out Magic outMagic)
         {
             index = -1;
@@ -271,15 +313,13 @@ namespace Engine.ListManager
                 }
             }
 
-            for (var i = StoreListStart; i <= StoreListEnd; i++)
+            index = GetFreeIndex();
+
+            if (index != -1)
             {
-                if (MagicList[i] == null)
-                {
-                    MagicList[i] = new MagicItemInfo(fileName, 1, 0);
-                    index = i;
-                    outMagic = MagicList[i].TheMagic;
-                    return true;
-                }
+                MagicList[index] = new MagicItemInfo(fileName, 1, 0);
+                outMagic = MagicList[index].TheMagic;
+                return true;
             }
             return false;
         }
@@ -340,7 +380,7 @@ namespace Engine.ListManager
                             if (Utils.EqualNoCase(magic.FileName, fileName))
                             {
                                 var info = MagicListHide[i];
-                                for (var j = StoreListStart; j <= StoreListEnd; j++)
+                                for (var j = StoreIndexBegin; j <= StoreIndexEnd; j++)
                                 {
                                     if (MagicList[j] == null)
                                     {

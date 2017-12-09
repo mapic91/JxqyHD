@@ -440,7 +440,7 @@ namespace Engine.Script
             return false;
         }
 
-        private static readonly Regex IfParameterPatten = new Regex(@"(\$[a-zA-Z0-9]+) *([><=]+).*?([0-9]+)");
+        private static readonly Regex IfParameterPatten = new Regex(@"(\$[_a-zA-Z0-9]+) *([><=]+).*?([-]?[0-9]+)");
         public static bool If(List<string> parameters)
         {
             var parmeter = parameters[0];
@@ -783,10 +783,6 @@ namespace Engine.Script
             if (result && good != null)
             {
                 GuiManager.ShowMessage("你获得了" + good.Name);
-            }
-            else
-            {
-                GuiManager.ShowMessage("错误");
             }
             GuiManager.UpdateGoodsView();
         }
@@ -1897,6 +1893,16 @@ namespace Engine.Script
         public static void DisableSave(List<string> parameters)
         {
             Globals.IsSaveDisabled = true;
+        }
+
+        public static void CheckFreeGoodsSpace(List<string> parameters)
+        {
+            Variables["$_CheckFreeGoodsSpace"] = GoodsListManager.HasFreeItemSpace() ? 1 : 0;
+        }
+
+        public static void CheckFreeMagicSpace(List<string> parameters)
+        {
+            Variables["$_CheckFreeMagicSpace"] = MagicListManager.GetFreeIndex() == -1 ? 0 : 1;
         }
     }
 }

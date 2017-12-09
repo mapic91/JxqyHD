@@ -44,12 +44,14 @@ namespace Engine.Gui
                 0f + int.Parse(cfg["TopAdjust"]));
 
             cfg = GuiManager.Setttings.Sections["Equip_Head"];
+            var hasCount = GoodsListManager.Type != GoodsListManager.ListType.TypeByGoodItem;
             _items[0] = _head = new DragDropItem(this,//Head
                 new Vector2(int.Parse(cfg["Left"]), int.Parse(cfg["Top"])),
                 int.Parse(cfg["Width"]),
                 int.Parse(cfg["Height"]),
                 null,
-                new GoodsGui.GoodItemData(201));
+                new GoodsGui.GoodItemData(GoodsListManager.EquipIndexBegin),
+                hasCount);
 
             cfg = GuiManager.Setttings.Sections["Equip_Neck"];
             _items[1] = _neck = new DragDropItem(this, //Neck
@@ -57,7 +59,8 @@ namespace Engine.Gui
                 int.Parse(cfg["Width"]),
                 int.Parse(cfg["Height"]),
                 null,
-                new GoodsGui.GoodItemData(202));
+                new GoodsGui.GoodItemData(GoodsListManager.EquipIndexBegin+1),
+                hasCount);
 
             cfg = GuiManager.Setttings.Sections["Equip_Body"];
             _items[2] = _body = new DragDropItem(this, //Body
@@ -65,7 +68,8 @@ namespace Engine.Gui
                 int.Parse(cfg["Width"]),
                 int.Parse(cfg["Height"]),
                 null,
-                new GoodsGui.GoodItemData(203));
+                new GoodsGui.GoodItemData(GoodsListManager.EquipIndexBegin+2),
+                hasCount);
 
             cfg = GuiManager.Setttings.Sections["Equip_Back"];
             _items[3] = _back = new DragDropItem(this, //Back
@@ -73,7 +77,8 @@ namespace Engine.Gui
                 int.Parse(cfg["Width"]),
                 int.Parse(cfg["Height"]),
                 null,
-                new GoodsGui.GoodItemData(204));
+                new GoodsGui.GoodItemData(GoodsListManager.EquipIndexBegin+3),
+                hasCount);
 
             cfg = GuiManager.Setttings.Sections["Equip_Hand"];
             _items[4] = _hand = new DragDropItem(this, //Hand
@@ -81,7 +86,8 @@ namespace Engine.Gui
                 int.Parse(cfg["Width"]),
                 int.Parse(cfg["Height"]),
                 null,
-                new GoodsGui.GoodItemData(205));
+                new GoodsGui.GoodItemData(GoodsListManager.EquipIndexBegin+4),
+                hasCount);
 
             cfg = GuiManager.Setttings.Sections["Equip_Wrist"];
             _items[5] = _wrist = new DragDropItem(this, //Wrist
@@ -89,7 +95,8 @@ namespace Engine.Gui
                 int.Parse(cfg["Width"]),
                 int.Parse(cfg["Height"]),
                 null,
-                new GoodsGui.GoodItemData(206));
+                new GoodsGui.GoodItemData(GoodsListManager.EquipIndexBegin+5),
+                hasCount);
 
             cfg = GuiManager.Setttings.Sections["Equip_Foot"];
             _items[6] = _foot = new DragDropItem(this, //Foot
@@ -97,7 +104,8 @@ namespace Engine.Gui
                 int.Parse(cfg["Width"]),
                 int.Parse(cfg["Height"]),
                 null,
-                new GoodsGui.GoodItemData(207));
+                new GoodsGui.GoodItemData(GoodsListManager.EquipIndexBegin+6),
+                hasCount);
             RegisterEventHandler();
 
             IsShow = false;

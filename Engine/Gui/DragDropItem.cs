@@ -9,6 +9,7 @@ namespace Engine.Gui
     public class DragDropItem : GuiItem
     {
         private TextGui TopLeftTextGui { set; get; }
+        public bool UseTopLeftText { set; get; }
 
         public event Action<object, DragEvent> Drag;
         public event Action<object, DropEvent> Drop;
@@ -50,10 +51,12 @@ namespace Engine.Gui
             int width,
             int height,
             Texture baseTexture,
-            object data = null)
+            object data = null,
+            bool useTopLeftText = true)
             : base(parent, position, width, height, baseTexture)
         {
             Data = data;
+            UseTopLeftText = useTopLeftText;
             MouseLeftDown += delegate(object arg1, MouseLeftDownEvent arg2)
             {
                 GuiManager.DragDropSourceItem = this;
@@ -84,7 +87,7 @@ namespace Engine.Gui
         {
             if (!IsShow) return;
             base.Update(gameTime);
-            if (TopLeftTextGui != null)
+            if (UseTopLeftText && TopLeftTextGui != null)
                 TopLeftTextGui.Update(gameTime);
         }
 
@@ -92,7 +95,7 @@ namespace Engine.Gui
         {
             if (!IsShow) return;
             base.Draw(spriteBatch);
-            if (TopLeftTextGui != null)
+            if (UseTopLeftText && TopLeftTextGui != null)
                 TopLeftTextGui.Draw(spriteBatch);
         }
 

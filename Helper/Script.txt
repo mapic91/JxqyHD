@@ -452,7 +452,7 @@ ClearAllVar();                  -   清除所有变量
 ClearAllVar($exp);              -   除了变量$exp，清除所有其它变量
 ClearAllVar($exp, $event);      -   除了变量$exp，$event，清除所有其它变量
 
-SetDropIni(a,b)
+SetDropIni(a,b);
 a - 要设置的npc名字（Name）
 b - 要设置的掉落物品文件名，文件位置在 ini\obj
 比如：SetDropIni("杀手头目","高级装备.ini")
@@ -462,6 +462,40 @@ ClearAllSave();
 
 EnableSave(); - 允许存档
 DisableSave(); - 不允许存档
+
+CheckFreeGoodsSpace();
+检查是否还有栏位空间添加新的物品，结果在 $_CheckFreeGoodsSpace 变量，1表示有，0表示没有.
+示例：
+    CheckFreeGoodsSpace();
+    If ($_CheckFreeGoodsSpace == 1) @HasSpace;
+    If ($_CheckFreeGoodsSpace == 0) @NoSpace;
+    Return;
+@HasSpace:
+    PlaySound("物-箱子开.wav");
+    OpenBox();
+    AddRandGoods("低级药品.ini");
+    SetObjScript("","");
+    Return;
+@NoSpace:
+    DisplayMessage("物品栏已满");
+    Return;
+    
+    
+CheckFreeMagicSpace():
+检查是否还有栏位空间添加新的武功，结果在 $_CheckFreeMagicSpace 变量，1表示有，0表示没有.
+示例：
+    CheckFreeMagicSpace();
+    If ($_CheckFreeMagicSpace == 1) @HasSpace;
+    If ($_CheckFreeMagicSpace == 0) @NoSpace;
+    Return;
+@HasSpace:
+    AddMagic("player-magic-武道德经.ini");
+    DelGoods("Book15-武道德经.ini");
+    Return;
+@NoSpace:
+    DisplayMessage("武功栏已满");
+    Return;
+
 ///////////////////////////////////////////////////////////////////
 //////////////////    Implemented   End  /////////////////////////
 /////////////////////////////////////////////////////////////////

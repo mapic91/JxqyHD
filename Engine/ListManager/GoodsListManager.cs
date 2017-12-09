@@ -10,18 +10,39 @@ namespace Engine.ListManager
 {
     public static class GoodsListManager
     {
-        public const int MaxGoods = 223;
-        public const int ListIndexBegin = 1;
-        public const int ListIndexEnd = 223;
-        public const int StoreIndexBegin = 1;
-        public const int StoreIndexEnd = 198;
-        public const int BottomGoodsIndexBegin = 221;
-        public const int BottomGoodsIndexEnd = 223;
-        public const int EquipIndexBegin = 201;
-        public const int EquipIndexEnd = 207;
-        public const int BottomIndexBegin = 221;
-        public const int BottomIndexEnd = 223;
+        public static ListType Type = 0;
+        public static int MaxGoods = 223;
+        public static int ListIndexBegin = 1;
+        public static int ListIndexEnd = 223;
+        public static int StoreIndexBegin = 1;
+        public static int StoreIndexEnd = 198;
+        public static int EquipIndexBegin = 201;
+        public static int EquipIndexEnd = 207;
+        public static int BottomIndexBegin = 221;
+        public static int BottomIndexEnd = 223;
         private static readonly GoodsItemInfo[] GoodsList = new GoodsItemInfo[MaxGoods + 1];
+
+        public enum ListType
+        {
+            TypeByGoodType, //store goods by type
+            TypeByGoodItem //store goods by item
+        }
+
+        public static void InitIndex(IniData settings)
+        {
+            var cfg = settings.Sections["GoodsInit"];
+            Type = (ListType) int.Parse(cfg["GoodsListType"]);
+            StoreIndexBegin = int.Parse(cfg["StoreIndexBegin"]);
+            StoreIndexEnd = int.Parse(cfg["StoreIndexEnd"]);
+            EquipIndexBegin = int.Parse(cfg["EquipIndexBegin"]);
+            EquipIndexEnd = int.Parse(cfg["EquipIndexEnd"]);
+            BottomIndexBegin = int.Parse(cfg["BottomIndexBegin"]);
+            BottomIndexEnd = int.Parse(cfg["BottomIndexEnd"]);
+            MaxGoods = Math.Max(0, StoreIndexEnd);
+            MaxGoods = Math.Max(MaxGoods, EquipIndexEnd);
+            MaxGoods = Math.Max(MaxGoods, BottomIndexEnd);
+            ListIndexEnd = MaxGoods;
+        }
 
         public static void RenewList()
         {
@@ -48,7 +69,7 @@ namespace Engine.ListManager
 
         public static bool IsInBottomGoodsRange(int index)
         {
-            return (index >= BottomGoodsIndexBegin && index <= BottomGoodsIndexEnd);
+            return (index >= BottomIndexBegin && index <= BottomIndexEnd);
         }
 
         public static void LoadList(string filePath)
@@ -159,43 +180,104 @@ namespace Engine.ListManager
             return false;
         }
 
-        public static void AddGoodToList(string fileName)
+        public static bool HasFreeItemSpace()
+        {
+            for (var i = StoreIndexBegin; i <= StoreIndexEnd; i++)
+            {
+                var info = GoodsList[i];
+                if (info == null)
+                {
+                    return true;
+                }
+            }
+
+            for (var i = BottomIndexBegin; i <= BottomIndexEnd; i++)
+            {
+                var info = GoodsList[i];
+                if (info == null)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static bool AddGoodToList(string fileName)
         {
             int i;
             Good g;
-            AddGoodToList(fileName, out i, out g);
+            return AddGoodToList(fileName, out i, out g);
         }
 
         public static bool AddGoodToList(string fileName, out int index, out Good outGood)
         {
             index = -1;
             outGood = null;
-            for (var i = ListIndexBegin; i <= ListIndexEnd; i++)
+            switch (Type)
             {
-                var info = GoodsList[i];
-                if (info != null && info.TheGood != null)
+                case ListType.TypeByGoodType:
                 {
-                    if (Utils.EqualNoCase(info.TheGood.FileName, fileName))
+                    for (var i = ListIndexBegin; i <= ListIndexEnd; i++)
                     {
-                        info.Count += 1;
-                        index = i;
-                        outGood = info.TheGood;
-                        return true;
+                        var info = GoodsList[i];
+                        if (info != null && info.TheGood != null)
+                        {
+                            if (Utils.EqualNoCase(info.TheGood.FileName, fileName))
+                            {
+                                info.Count += 1;
+                                index = i;
+                                outGood = info.TheGood;
+                                return true;
+                            }
+                        }
+                    }
+
+                    for (var i = StoreIndexBegin; i <= StoreIndexEnd; i++)
+                    {
+                        var info = GoodsList[i];
+                        if (info == null)
+                        {
+                            GoodsList[i] = new GoodsItemInfo(fileName, 1);
+                            index = i;
+                            outGood = GoodsList[i].TheGood;
+                            return true;
+                        }
+                    }
+                    }
+                    break;
+                case ListType.TypeByGoodItem:
+                {
+                    for (var i = StoreIndexBegin; i <= StoreIndexEnd; i++)
+                    {
+                        var info = GoodsList[i];
+                        if (info == null)
+                        {
+                            GoodsList[i] = new GoodsItemInfo(fileName, 1);
+                            index = i;
+                            outGood = GoodsList[i].TheGood;
+                            return true;
+                        }
+                    }
+
+                    for (var i = BottomIndexBegin; i <= BottomIndexEnd; i++)
+                    {
+                        var info = GoodsList[i];
+                        if (info == null)
+                        {
+                            GoodsList[i] = new GoodsItemInfo(fileName, 1);
+                            index = i;
+                            outGood = GoodsList[i].TheGood;
+                            return true;
+                        }
                     }
                 }
+                    break;
+                default:
+                    Log.LogMessage(@"GoodsListType 设置错误，请检查Content\ui\UI_Settings.ini文件");
+                    return false;
             }
 
-            for (var i = StoreIndexBegin; i <= StoreIndexEnd; i++)
-            {
-                var info = GoodsList[i];
-                if (info == null)
-                {
-                    GoodsList[i] = new GoodsItemInfo(fileName, 1);
-                    index = i;
-                    outGood = GoodsList[i].TheGood;
-                    return true;
-                }
-            }
+            GuiManager.ShowMessage("物品栏已满");
 
             return false;
         }

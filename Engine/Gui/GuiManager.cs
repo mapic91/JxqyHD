@@ -68,6 +68,9 @@ namespace Engine.Gui
         {
             Setttings = new FileIniDataParser().ReadFile(@"Content\ui\UI_Settings.ini", Globals.LocalEncoding);
 
+            GoodsListManager.InitIndex(Setttings);
+            MagicListManager.InitIndex(Setttings);
+
             IsShow = true;
 
             _dropSound = Utils.GetSoundEffect("界-拖放.wav");
@@ -423,7 +426,7 @@ namespace Engine.Gui
         /// <param name="index">0-2</param>
         public static void UsingBottomGood(int index)
         {
-            GoodsListManager.UsingGood(index + GoodsListManager.BottomGoodsIndexBegin);
+            GoodsListManager.UsingGood(index + GoodsListManager.BottomIndexBegin);
         }
 
         public static void DeleteGood(string fileName)
@@ -493,7 +496,7 @@ namespace Engine.Gui
         /// <returns>Magic item info.Return null if not found.</returns>
         public static MagicListManager.MagicItemInfo GetBottomMagicItemInfo(int index)
         {
-            return MagicListManager.GetItemInfo(index + MagicListManager.BottomMagicIndexStart);
+            return MagicListManager.GetItemInfo(index + MagicListManager.BottomIndexBegin);
         }
 
         public static void Adjust(int windowWidth, int windowHeight)

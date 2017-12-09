@@ -860,7 +860,7 @@ namespace Engine
                 }
                 else
                 {
-                    GuiManager.ShowMessage("错误");
+                    GuiManager.ShowMessage("武功栏已满");
                 }
             }
         }
@@ -1439,9 +1439,11 @@ namespace Engine
             var cost = good.Cost;
             if (Money >= cost)
             {
-                Money -= cost;
-                GoodsListManager.AddGoodToList(good.FileName);
-                GuiManager.UpdateGoodsView();
+                if (GoodsListManager.AddGoodToList(good.FileName))
+                {
+                    Money -= cost;
+                    GuiManager.UpdateGoodsView();
+                }
             }
             else
             {

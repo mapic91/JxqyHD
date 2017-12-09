@@ -601,6 +601,12 @@ namespace Engine.Script
                         case "DisableSave":
                             ScriptExecuter.DisableSave(parameters);
                             break;
+                        case "CheckFreeGoodsSpace":
+                            ScriptExecuter.CheckFreeGoodsSpace(parameters);
+                            break;
+                        case "CheckFreeMagicSpace":
+                            ScriptExecuter.CheckFreeMagicSpace(parameters);
+                            break;
                         default:
                             throw new Exception("无此函数");
                     }

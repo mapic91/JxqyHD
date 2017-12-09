@@ -28,52 +28,58 @@ namespace Engine.Gui
         private void InitializeItems()
         {
             var cfg = GuiManager.Setttings.Sections["Bottom_Items"];
+            var hasCount = GoodsListManager.Type != GoodsListManager.ListType.TypeByGoodItem;
             _items[0] = new DragDropItem(this, 
                 new Vector2(int.Parse(cfg["Item_Left_1"]), int.Parse(cfg["Item_Top_1"])),
                 int.Parse(cfg["Item_Width_1"]),
                 int.Parse(cfg["Item_Height_1"]), 
                 null, 
-                new GoodsGui.GoodItemData(221));
+                new GoodsGui.GoodItemData(GoodsListManager.BottomIndexBegin),
+                hasCount);
             _items[1] = new DragDropItem(this, 
                 new Vector2(int.Parse(cfg["Item_Left_2"]), int.Parse(cfg["Item_Top_2"])),
                 int.Parse(cfg["Item_Width_2"]),
-                int.Parse(cfg["Item_Height_2"]), null, new GoodsGui.GoodItemData(222));
+                int.Parse(cfg["Item_Height_2"]), 
+                null, 
+                new GoodsGui.GoodItemData(GoodsListManager.BottomIndexBegin+1),
+                hasCount);
             _items[2] = new DragDropItem(this, 
                 new Vector2(int.Parse(cfg["Item_Left_3"]), int.Parse(cfg["Item_Top_3"])),
                 int.Parse(cfg["Item_Width_3"]),
                 int.Parse(cfg["Item_Height_3"]), 
                 null, 
-                new GoodsGui.GoodItemData(223));
+                new GoodsGui.GoodItemData(GoodsListManager.BottomIndexBegin+2),
+                hasCount);
             _items[3] = new DragDropItem(this, 
                 new Vector2(int.Parse(cfg["Item_Left_4"]), int.Parse(cfg["Item_Top_4"])),
                 int.Parse(cfg["Item_Width_4"]),
                 int.Parse(cfg["Item_Height_4"]), 
                 null, 
-                new MagicGui.MagicItemData(40));
+                new MagicGui.MagicItemData(MagicListManager.BottomIndexBegin));
             _items[4] = new DragDropItem(this, 
                 new Vector2(int.Parse(cfg["Item_Left_5"]), int.Parse(cfg["Item_Top_5"])),
                 int.Parse(cfg["Item_Width_5"]),
                 int.Parse(cfg["Item_Height_5"]), 
                 null, 
-                new MagicGui.MagicItemData(41));
+                new MagicGui.MagicItemData(MagicListManager.BottomIndexBegin+1));
             _items[5] = new DragDropItem(this,
                 new Vector2(int.Parse(cfg["Item_Left_6"]), int.Parse(cfg["Item_Top_6"])),
                 int.Parse(cfg["Item_Width_6"]),
                 int.Parse(cfg["Item_Height_6"]), 
                 null, 
-                new MagicGui.MagicItemData(42));
+                new MagicGui.MagicItemData(MagicListManager.BottomIndexBegin+2));
             _items[6] = new DragDropItem(this, 
                 new Vector2(int.Parse(cfg["Item_Left_7"]), int.Parse(cfg["Item_Top_7"])),
                 int.Parse(cfg["Item_Width_7"]),
                 int.Parse(cfg["Item_Height_7"]), 
                 null, 
-                new MagicGui.MagicItemData(43));
+                new MagicGui.MagicItemData(MagicListManager.BottomIndexBegin+3));
             _items[7] = new DragDropItem(this, 
                 new Vector2(int.Parse(cfg["Item_Left_8"]), int.Parse(cfg["Item_Top_8"])),
                 int.Parse(cfg["Item_Width_8"]),
                 int.Parse(cfg["Item_Height_8"]), 
                 null, 
-                new MagicGui.MagicItemData(44));
+                new MagicGui.MagicItemData(MagicListManager.BottomIndexBegin+4));
 
             for (var i = 0; i < 3; i++)
             {
@@ -120,12 +126,12 @@ namespace Engine.Gui
 
         public int ToMagicListIndex(int itemIndex)
         {
-            return itemIndex + 37;
+            return itemIndex - 3 + MagicListManager.BottomIndexBegin;
         }
 
         public int ToGoodsListIndex(int itemIndex)
         {
-            return itemIndex + 221;
+            return itemIndex + GoodsListManager.BottomIndexBegin;
         }
 
         public void SetItem(int index, Texture texture, string topLeftText = "")
@@ -155,7 +161,7 @@ namespace Engine.Gui
 
         public void UpdateGoodItem(int listIndex)
         {
-            UpdateItem(listIndex - GoodsListManager.BottomGoodsIndexBegin);
+            UpdateItem(listIndex - GoodsListManager.BottomIndexBegin);
         }
 
         public void UpdateItem(int itemIndex)
