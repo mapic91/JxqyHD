@@ -290,6 +290,38 @@ namespace Engine.ListManager
             return index;
         }
 
+        public static MagicItemInfo GetMagic(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName)) return null;
+
+            for (var i = 1; i <= MaxMagic; i++)
+            {
+                if (MagicList[i] != null)
+                {
+                    var magic = MagicList[i].TheMagic;
+                    if (magic != null)
+                    {
+                        if (Utils.EqualNoCase(magic.FileName, fileName))
+                        {
+                            return MagicList[i];
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        public static int GetMagicLevel(string fileName)
+        {
+            var info = GetMagic(fileName);
+            if (info != null && info.TheMagic != null)
+            {
+                return info.Level;
+            }
+            return 0;
+        }
+
         public static bool AddMagicToList(string fileName, out int index, out Magic outMagic)
         {
             index = -1;
@@ -400,7 +432,11 @@ namespace Engine.ListManager
 
         public static void SetMagicLevel(string fileName, int level)
         {
-            
+            var info = GetMagic(fileName);
+            if (info == null || info.TheMagic == null) return;
+
+            info.Exp = level > 1 ? info.TheMagic.GetLevel(level - 1).LevelupExp : 0;
+            info.TheMagic = info.TheMagic.GetLevel(level);
         }
 
         public class MagicItemInfo

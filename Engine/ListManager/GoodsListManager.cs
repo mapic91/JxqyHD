@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using Engine.Gui;
 using Engine.Gui.Base;
 using Engine.Script;
@@ -384,6 +385,20 @@ namespace Engine.ListManager
             var info = GetItemInfo(goodIndex);
             if (info == null) return;
             var good = info.TheGood;
+            if (good.User != null && good.User.Length > 0)
+            {
+                if (!good.User.Contains(Globals.ThePlayer.Name))
+                {
+                    //Current player can't use this good
+                    GuiManager.ShowMessage("使用者：" + string.Join("，", good.User));
+                    return;
+                }
+            }
+            if (good.MinUserLevel > 0 && Globals.ThePlayer.Level < good.MinUserLevel)
+            {
+                GuiManager.ShowMessage("需要等级" + good.MinUserLevel);
+                return;
+            }
             if (good != null)
             {
                 switch (good.Kind)

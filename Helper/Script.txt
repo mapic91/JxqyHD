@@ -481,7 +481,7 @@ CheckFreeGoodsSpace();
     Return;
     
     
-CheckFreeMagicSpace():
+CheckFreeMagicSpace();
 检查是否还有栏位空间添加新的武功，结果在 $_CheckFreeMagicSpace 变量，1表示有，0表示没有.
 示例：
     CheckFreeMagicSpace();
@@ -495,6 +495,28 @@ CheckFreeMagicSpace():
 @NoSpace:
     DisplayMessage("武功栏已满");
     Return;
+    
+GetPlayerState(a,b);
+获取当前主角的属性，a指定哪个属性，将获取的值存到变量b
+a:
+Level  - 等级
+Attack - 攻击力
+Defend - 防御力
+Evade  - 身法
+Life   - 命
+Thew   - 体
+Mana   - 气
+b:
+存到那个变量
+比如：
+GetPlayerState(Level, $tmp);
+表示获取当前主角的等级，并存到变量$tmp
+
+GetPlayerMagicLevel(a,b);
+获取当前主角武功的等级，a指定哪个武功文件名，将获取的值存到变量b，如果当前没有学该武功，b的值是0
+比如：
+GetPlayerMagicLevel("player-magic-银钩铁划.ini", $tmp)
+
 
 ///////////////////////////////////////////////////////////////////
 //////////////////    Implemented   End  /////////////////////////

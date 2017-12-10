@@ -42,6 +42,9 @@ namespace Engine
         public string FlyIni2 { set; get; }
         public string MagicIniWhenUse { set; get; }
 
+        public string[] User { set; get; }
+        public int MinUserLevel { set; get; }
+
         public GoodEffectType TheEffectType
         {
             get
@@ -191,6 +194,12 @@ namespace Engine
                                     break;
                             }
                             info.SetValue(this, position, null);
+                        }
+                        break;
+                    case "User":
+                        if (!string.IsNullOrEmpty(value))
+                        {
+                            User = value.Split(',');
                         }
                         break;
                     default:

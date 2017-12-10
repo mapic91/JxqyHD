@@ -607,6 +607,12 @@ namespace Engine.Script
                         case "CheckFreeMagicSpace":
                             ScriptExecuter.CheckFreeMagicSpace(parameters);
                             break;
+                        case "GetPlayerState":
+                            ScriptExecuter.GetPlayerState(parameters);
+                            break;
+                        case "GetPlayerMagicLevel":
+                            ScriptExecuter.GetPlayerMagicLevel(parameters);
+                            break;
                         default:
                             throw new Exception("无此函数");
                     }

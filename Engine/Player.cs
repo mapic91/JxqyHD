@@ -649,7 +649,7 @@ namespace Engine
                             }
                             else
                             {
-                                GuiManager.ShowMessage("错误");
+                                GuiManager.ShowMessage("Good-MagicIniWhenUse错误");
                             }
                         }
                         else
@@ -739,7 +739,7 @@ namespace Engine
                         }
                         else
                         {
-                            GuiManager.ShowMessage("错误");
+                            GuiManager.ShowMessage("Good-MagicIniWhenUse错误");
                         }
                     }
                 }

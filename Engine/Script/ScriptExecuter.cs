@@ -1904,5 +1904,46 @@ namespace Engine.Script
         {
             Variables["$_CheckFreeMagicSpace"] = MagicListManager.GetFreeIndex() == -1 ? 0 : 1;
         }
+
+        public static void GetPlayerState(List<string> parameters)
+        {
+            if (parameters.Count == 2)
+            {
+                var value = 0;
+                switch (parameters[0])
+                {
+                    case "Level":
+                        value = Globals.ThePlayer.Level;
+                        break;
+                    case "Attack":
+                        value = Globals.ThePlayer.Attack;
+                        break;
+                    case "Defend":
+                        value = Globals.ThePlayer.Defend;
+                        break;
+                    case "Evade":
+                        value = Globals.ThePlayer.Evade;
+                        break;
+                    case "Life":
+                        value = Globals.ThePlayer.Life;
+                        break;
+                    case "Thew":
+                        value = Globals.ThePlayer.Thew;
+                        break;
+                    case "Mana":
+                        value = Globals.ThePlayer.Mana;
+                        break;
+                }
+                Variables[parameters[1]] = value;
+            }
+        }
+
+        public static void GetPlayerMagicLevel(List<string> parameters)
+        {
+            if (parameters.Count == 2)
+            {
+                Variables[parameters[1]] = MagicListManager.GetMagicLevel(Utils.RemoveStringQuotes(parameters[0]));
+            }
+        }
     }
 }
