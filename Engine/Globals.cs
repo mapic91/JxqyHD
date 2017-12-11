@@ -126,6 +126,8 @@ namespace Engine
         /// </summary>
         public static bool IsSaveDisabled { set; get; }
 
+        public static bool IsDropGoodWhenDefeatEnemyDisabled { set; get; }
+
    
         public static bool IsWaterEffectEnabled;
 

@@ -66,7 +66,14 @@ namespace Engine.Storage
                 {
                     Globals.IsSaveDisabled = int.Parse(option["SaveDisabled"]) > 0;
                 }
-
+                if (string.IsNullOrEmpty(option["IsDropGoodWhenDefeatEnemyDisabled"]))
+                {
+                    Globals.IsDropGoodWhenDefeatEnemyDisabled = false;
+                }
+                else
+                {
+                    Globals.IsDropGoodWhenDefeatEnemyDisabled = int.Parse(option["IsDropGoodWhenDefeatEnemyDisabled"]) > 0;
+                }
                 //Timer
                 var timer = data["Timer"];
                 if (timer != null)

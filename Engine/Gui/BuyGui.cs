@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Engine.Gui.Base;
+using Engine.ListManager;
 using IniParser;
+using IniParser.Model;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Texture = Engine.Gui.Base.Texture;
@@ -12,8 +15,12 @@ namespace Engine.Gui
     {
         private ListView _listView;
         private GuiItem _closeButton;
-        private readonly Dictionary<int, Good> _goods = new Dictionary<int, Good>();
-        private int _goodCount;
+        private readonly Dictionary<int, GoodsListManager.GoodsItemInfo> _goods = new Dictionary<int, GoodsListManager.GoodsItemInfo>();
+        private string _fileName;
+        private int _goodTypeCount;
+        private int _goodTypeCountAtStart;
+        private bool _numberValid;
+        public bool CanSellSelfGoods = true;
 
         public BuyGui()
         {
@@ -49,7 +56,7 @@ namespace Engine.Gui
                 var index = (int) item.Data;
                 if (_goods.ContainsKey(index))
                 {
-                    GuiManager.ToolTipInterface.ShowGood(_goods[index]);
+                    GuiManager.ToolTipInterface.ShowGood(_goods[index].TheGood);
                 }
             });
             _listView.RegisterItemMouseLeaveHandler(
@@ -60,7 +67,21 @@ namespace Engine.Gui
                 var index = (int) item.Data;
                 if (_goods.ContainsKey(index))
                 {
-                    Globals.ThePlayer.BuyGood(_goods[index]);
+                    if (_numberValid && _goods[index].Count <= 0)
+                    {
+                        GuiManager.ShowMessage("该物品已售罄");
+                    }
+                    else if(_goods[index].TheGood != null)
+                    {
+                        if (Globals.ThePlayer.BuyGood(_goods[index].TheGood))
+                        {
+                            if (_numberValid)
+                            {
+                                _goods[index].Count--;
+                                UpdateItems();
+                            }
+                        }
+                    } 
                 }
             });
             _closeButton.Click += (arg1, arg2) => GuiManager.EndBuyGoods();
@@ -68,19 +89,31 @@ namespace Engine.Gui
             IsShow = false;
         }
 
-        public void BeginBuy(string listFileName)
+        public void BeginBuy(string listFileName, bool canSellSelfGoods)
         {
-            var path = @"ini\buy\" + listFileName;
+            _fileName = listFileName;
+            var path = @"save\game\" + listFileName;
+            if (!File.Exists(path))
+            {
+                path = @"ini\buy\" + listFileName;
+            }
+            CanSellSelfGoods = canSellSelfGoods;
             try
             {
                 _goods.Clear();
                 var parser = new FileIniDataParser();
                 var data =parser.ReadFile(path, Globals.LocalEncoding);
-                _goodCount = int.Parse(data["Header"]["Count"]);
-                const string basePath = @"ini\goods\";
-                for (var i = 1; i <= _goodCount; i++)
+                _goodTypeCountAtStart = _goodTypeCount = int.Parse(data["Header"]["Count"]);
+                _numberValid = !string.IsNullOrEmpty(data["Header"]["NumberValid"]) && int.Parse(data["Header"]["NumberValid"]) != 0;
+                for (var i = 1; i <= _goodTypeCountAtStart; i++)
                 {
-                    _goods[i] = new Good(basePath + data[i.ToString()]["IniFile"]);
+                    var count = 0;
+                    if (_numberValid)
+                    {
+                        var number = data[i.ToString()]["Number"];
+                        count = string.IsNullOrEmpty(number) ? 0 : int.Parse(number);
+                    }
+                    _goods[i] = new GoodsListManager.GoodsItemInfo(data[i.ToString()]["IniFile"], count);
                 }
                 _listView.ScrollToRow(0);
                 UpdateItems();
@@ -92,22 +125,53 @@ namespace Engine.Gui
             }
         }
 
+        public void EndBuy()
+        {
+            if (IsShow)
+            {
+                IsShow = false;
+                if (_numberValid)
+                {
+                    var data = new IniData();
+                    data.Sections.AddSection("Header");
+                    data["Header"].AddKey("Count", _goodTypeCountAtStart.ToString());
+                    data["Header"].AddKey("NumberValid", "1");
+
+                    for (var i = 1; i <= _goodTypeCountAtStart; i++)
+                    {
+                        data.Sections.AddSection(i.ToString());
+                        var s = data[i.ToString()];
+                        s.AddKey("IniFile", _goods[i].TheGood.FileName);
+                        s.AddKey("Number", _goods[i].Count.ToString());
+                    }
+
+                    File.WriteAllText(@"save\game\" + _fileName, data.ToString(), Globals.LocalEncoding);
+                }
+            }
+        }
+
         public void AddGood(Good good)
         {
             if(good == null)return;
 
             foreach (var goodItem in _goods)
             {
-                if(goodItem.Value == null)continue;
-                if (Utils.EqualNoCase(good.FileName, goodItem.Value.FileName))
+                if(goodItem.Value == null || goodItem.Value.TheGood == null) continue;
+                if (Utils.EqualNoCase(good.FileName, goodItem.Value.TheGood.FileName))
                 {
                     //Already exist.
+                    if (_numberValid)
+                    {
+                        goodItem.Value.Count++;
+                        UpdateItems();
+                        
+                    }
                     return;
                 }
             }
 
-            _goodCount++;
-            _goods[_goodCount] = good;
+            _goodTypeCount++;
+            _goods[_goodTypeCount] = new GoodsListManager.GoodsItemInfo(good, 1);
             UpdateItems();
         }
 
@@ -116,13 +180,17 @@ namespace Engine.Gui
             for (var i = 0; i < 9; i++)
             {
                 Texture texture = null;
+                var countStr = "";
                 var index = _listView.ToListIndex(i);
                 if (_goods.ContainsKey(index) &&
-                    _goods[index] != null)
+                    _goods[index] != null &&
+                    _goods[index].TheGood != null)
                 {
-                    texture = new Texture(_goods[index].Image);
+                    texture = new Texture(_goods[index].TheGood.Image);
+                    countStr = _goods[index].Count.ToString();
                 }
                 _listView.SetListItem(i, texture, index);
+                _listView.SetItemTopLeftText(i, _numberValid ? countStr : "");
             }
         }
 

@@ -160,6 +160,7 @@ namespace Engine.Script
                             break;
                         case "SellGoods":
                         case "BuyGoods":
+                        case "BuyGoodsOnly":
                             isEnd = ScriptExecuter.IsBuyGoodsEnd();
                             break;
                         case "NpcSpecialActionEx":
@@ -534,7 +535,11 @@ namespace Engine.Script
                             break;
                         case "SellGoods":
                         case "BuyGoods":
-                            ScriptExecuter.BuyGoods(parameters);
+                            ScriptExecuter.BuyGoods(parameters, true);
+                            isEnd = ScriptExecuter.IsBuyGoodsEnd();
+                            break;
+                        case "BuyGoodsOnly":
+                            ScriptExecuter.BuyGoods(parameters, false);
                             isEnd = ScriptExecuter.IsBuyGoodsEnd();
                             break;
                         case "OpenTimeLimit":
@@ -612,6 +617,18 @@ namespace Engine.Script
                             break;
                         case "GetPlayerMagicLevel":
                             ScriptExecuter.GetPlayerMagicLevel(parameters);
+                            break;
+                        case "EnabelDrop":
+                            ScriptExecuter.EnabelDrop(parameters);
+                            break;
+                        case "DisableDrop":
+                            ScriptExecuter.DisableDrop(parameters);
+                            break;
+                        case "ClearGoods":
+                            ScriptExecuter.ClearGoods(parameters);
+                            break;
+                        case "ClearMagic":
+                            ScriptExecuter.ClearMagic(parameters);
                             break;
                         default:
                             throw new Exception("无此函数");

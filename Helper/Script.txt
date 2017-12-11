@@ -463,12 +463,12 @@ ClearAllSave();
 EnableSave(); - 允许存档
 DisableSave(); - 不允许存档
 
-CheckFreeGoodsSpace();
-检查是否还有栏位空间添加新的物品，结果在 $_CheckFreeGoodsSpace 变量，1表示有，0表示没有.
+CheckFreeGoodsSpace(a);
+检查是否还有栏位空间添加新的物品，结果在 a 变量，1表示有，0表示没有.
 示例：
-    CheckFreeGoodsSpace();
-    If ($_CheckFreeGoodsSpace == 1) @HasSpace;
-    If ($_CheckFreeGoodsSpace == 0) @NoSpace;
+    CheckFreeGoodsSpace($tmp);
+    If ($tmp == 1) @HasSpace;
+    If ($tmp == 0) @NoSpace;
     Return;
 @HasSpace:
     PlaySound("物-箱子开.wav");
@@ -481,12 +481,12 @@ CheckFreeGoodsSpace();
     Return;
     
     
-CheckFreeMagicSpace();
-检查是否还有栏位空间添加新的武功，结果在 $_CheckFreeMagicSpace 变量，1表示有，0表示没有.
+CheckFreeMagicSpace(a);
+检查是否还有栏位空间添加新的武功，结果在 a 变量，1表示有，0表示没有.
 示例：
-    CheckFreeMagicSpace();
-    If ($_CheckFreeMagicSpace == 1) @HasSpace;
-    If ($_CheckFreeMagicSpace == 0) @NoSpace;
+    CheckFreeMagicSpace($tmp);
+    If ($tmp == 1) @HasSpace;
+    If ($tmp == 0) @NoSpace;
     Return;
 @HasSpace:
     AddMagic("player-magic-武道德经.ini");
@@ -517,6 +517,17 @@ GetPlayerMagicLevel(a,b);
 比如：
 GetPlayerMagicLevel("player-magic-银钩铁划.ini", $tmp)
 
+BuyGoodsOnly(a);
+只能买物品，不能卖自己的物品
+比如：
+BuyGoodsOnly("衣3级.ini");
+
+EnabelDrop();  - 击败敌人有掉落战利品
+DisableDrop(); - 击败敌人有无战利品
+
+ClearGoods(); - 清空当前主角所有拥有的物品
+
+ClearMagic(); - 清空当前主角所有拥有的武功
 
 ///////////////////////////////////////////////////////////////////
 //////////////////    Implemented   End  /////////////////////////

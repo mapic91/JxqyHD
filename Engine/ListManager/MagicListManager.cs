@@ -356,6 +356,30 @@ namespace Engine.ListManager
             return false;
         }
 
+        public static void ClearLearnedMagic(Player player)
+        {
+            for (var i = 0; i < MagicList.Length; i++)
+            {
+                var info = MagicList[i];
+                if (info != null)
+                {
+                    if (info.TheMagic != null)
+                    {
+                        if (!GoodsListManager.IsMagicInEquipedEquip(info.TheMagic.FileName))
+                        {
+                            player.OnDeleteMagic(info);
+                            MagicList[i] = null;
+                        }
+                    }
+                    else
+                    {
+                        MagicList[i] = null;
+                    }
+                }
+            }
+            GuiManager.UpdateMagicView();
+        }
+
         public static bool IsMagicHided(string fileName)
         {
             for (var i = 1; i <= MaxMagic; i++)

@@ -65,9 +65,16 @@ namespace Engine.Gui
             {
                 if (good.SellPrice > 0)
                 {
-                    Globals.ThePlayer.AddMoneyValue(good.SellPrice);
-                    GuiManager.DeleteGood(good.FileName);
-                    GuiManager.BuyInterface.AddGood(good);
+                    if (GuiManager.BuyInterface.CanSellSelfGoods)
+                    {
+                        Globals.ThePlayer.AddMoneyValue(good.SellPrice);
+                        GuiManager.DeleteGood(good.FileName);
+                        GuiManager.BuyInterface.AddGood(good);
+                    }
+                    else
+                    {
+                        GuiManager.ShowMessage("当前只能买物品");
+                    }
                 }
             }
             else

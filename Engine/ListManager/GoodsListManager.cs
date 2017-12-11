@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Engine.Gui;
@@ -137,6 +138,40 @@ namespace Engine.ListManager
             {
                 player.Equiping(Get(i), null, true);
             }
+        }
+
+        public static void UnEquipAllEquipWithoutTakeOff(Player player)
+        {
+            if (player == null) return;
+            for (var i = EquipIndexBegin; i <= EquipIndexEnd; i++)
+            {
+                player.UnEquiping(Get(i));
+            }
+        }
+
+        public static void ClearAllGoods(Player player)
+        {
+            UnEquipAllEquipWithoutTakeOff(player);
+            RenewList();
+            GuiManager.UpdateGoodsView();
+        }
+
+        /// <summary>
+        /// Is magic learned from equiping equip?
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public static bool IsMagicInEquipedEquip(string fileName)
+        {
+            for (var i = EquipIndexBegin; i <= EquipIndexEnd; i++)
+            {
+                var good = Get(i);
+                if (good != null && Utils.EqualNoCase(good.MagicIniWhenUse, fileName))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public static void ExchangeListItemAndEquiping(int index1, int index2)
@@ -374,6 +409,74 @@ namespace Engine.ListManager
             return false;
         }
 
+        public static bool DeleteGood(string fileName, int amount)
+        {
+            if (amount <= 0) return false;
+            switch (Type)
+            {
+                case ListType.TypeByGoodType:
+                {
+                    for (var i = ListIndexBegin; i <= ListIndexEnd; i++)
+                    {
+                        var info = GoodsList[i];
+                        if (info != null && info.TheGood != null)
+                        {
+                            if (Utils.EqualNoCase(info.TheGood.FileName, fileName))
+                            {
+                                if (info.Count < amount)
+                                {
+                                    return false;
+                                }
+                                info.Count -= amount;
+                                if (info.Count == 0)
+                                {
+                                    GoodsList[i] = null;
+                                }
+                                GuiManager.UpdateGoodItemView(i);
+                                return true;
+                            }
+                        }
+                    }
+                }
+                    break;
+                case ListType.TypeByGoodItem:
+                {
+                    var indexToDelete = new List<int>();
+                    for (var i = ListIndexBegin; i <= ListIndexEnd; i++)
+                    {
+                        var info = GoodsList[i];
+                        if (info != null && info.TheGood != null)
+                        {
+                            if (Utils.EqualNoCase(info.TheGood.FileName, fileName))
+                            {
+                                indexToDelete.Add(i);
+                                amount--;
+                                if (amount == 0)
+                                {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    if (amount == 0)
+                    {
+                        foreach (var i in indexToDelete)
+                        {
+                            GoodsList[i] = null;
+                            GuiManager.UpdateGoodItemView(i);
+                        }
+                        return true;
+                    }
+                }
+                    break;
+                default:
+                    Log.LogMessage(@"GoodsListType 设置错误，请检查Content\ui\UI_Settings.ini文件");
+                    return false;
+            }
+            return false;
+        }
+
         public static void UsingGood(int goodIndex)
         {
             if (IsInEquipRange(goodIndex))
@@ -488,6 +591,12 @@ namespace Engine.ListManager
             {
                 var good = Utils.GetGood(fileName);
                 if (good != null) TheGood = good;
+                Count = count;
+            }
+
+            public GoodsItemInfo(Good good, int count)
+            {
+                TheGood = good;
                 Count = count;
             }
         }

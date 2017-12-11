@@ -1681,9 +1681,9 @@ namespace Engine.Script
             GuiManager.EquipGoods(index, part);
         }
 
-        public static void BuyGoods(List<string> parameters)
+        public static void BuyGoods(List<string> parameters, bool canSellSelfGoods)
         {
-            GuiManager.BuyGoods(Utils.RemoveStringQuotes(parameters[0]));
+            GuiManager.BuyGoods(Utils.RemoveStringQuotes(parameters[0]), canSellSelfGoods);
             Globals.IsInputDisabled = true;
         }
 
@@ -1897,12 +1897,12 @@ namespace Engine.Script
 
         public static void CheckFreeGoodsSpace(List<string> parameters)
         {
-            Variables["$_CheckFreeGoodsSpace"] = GoodsListManager.HasFreeItemSpace() ? 1 : 0;
+            Variables[parameters[0]] = GoodsListManager.HasFreeItemSpace() ? 1 : 0;
         }
 
         public static void CheckFreeMagicSpace(List<string> parameters)
         {
-            Variables["$_CheckFreeMagicSpace"] = MagicListManager.GetFreeIndex() == -1 ? 0 : 1;
+            Variables[parameters[0]] = MagicListManager.GetFreeIndex() == -1 ? 0 : 1;
         }
 
         public static void GetPlayerState(List<string> parameters)
@@ -1944,6 +1944,26 @@ namespace Engine.Script
             {
                 Variables[parameters[1]] = MagicListManager.GetMagicLevel(Utils.RemoveStringQuotes(parameters[0]));
             }
+        }
+
+        public static void EnabelDrop(List<string> parameters)
+        {
+            Globals.IsDropGoodWhenDefeatEnemyDisabled = false;
+        }
+
+        public static void DisableDrop(List<string> parameters)
+        {
+            Globals.IsDropGoodWhenDefeatEnemyDisabled = true;
+        }
+
+        public static void ClearGoods(List<string> parameters)
+        {
+            GoodsListManager.ClearAllGoods(Globals.ThePlayer);
+        }
+
+        public static void ClearMagic(List<string> parameters)
+        {
+            MagicListManager.ClearLearnedMagic(Globals.ThePlayer);
         }
     }
 }

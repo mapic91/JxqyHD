@@ -42,6 +42,14 @@ namespace Engine.Storage
             option.AddKey("Water", Globals.IsWaterEffectEnabled ? "1" : "0");
             option.AddKey("MpcStyle", StorageBase.GetStringFromColor(MapBase.DrawColor));
             option.AddKey("AsfStyle", StorageBase.GetStringFromColor(Sprite.DrawColor));
+            if (Globals.IsSaveDisabled)
+            {
+                option.AddKey("SaveDisabled", "1");
+            }
+            if (Globals.IsDropGoodWhenDefeatEnemyDisabled)
+            {
+                option.AddKey("IsDropGoodWhenDefeatEnemyDisabled", "1");
+            }
 
             //Timer
             data.Sections.AddSection("Timer");

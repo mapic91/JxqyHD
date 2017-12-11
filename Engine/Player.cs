@@ -436,6 +436,15 @@ namespace Engine
                 return false;
             }
 
+            if (MagicUse.GoodsName != null && !string.IsNullOrEmpty(MagicUse.GoodsName.FileName))
+            {
+                if (!GoodsListManager.DeleteGood(MagicUse.GoodsName.FileName, 1))
+                {
+                    GuiManager.ShowMessage("缺少物品" + MagicUse.GoodsName.Name);
+                    return false;
+                }
+            }
+
             Mana -= MagicUse.ManaCost;
             return true;
         }
@@ -723,17 +732,7 @@ namespace Engine
                         {
                             GuiManager.ShowMessage("武功" + info.TheMagic.Name + "已不可使用");
 
-                            if (XiuLianMagic != null && 
-                                Utils.EqualNoCase(XiuLianMagic.TheMagic.Name, info.TheMagic.Name))
-                            {
-                                XiuLianMagic = null;
-                            }
-
-                            if (CurrentMagicInUse != null &&
-                                Utils.EqualNoCase(CurrentMagicInUse.TheMagic.Name, info.TheMagic.Name))
-                            {
-                                CurrentMagicInUse = null;
-                            }
+                            OnDeleteMagic(info);
 
                             GuiManager.UpdateMagicView();
                         }
@@ -773,6 +772,23 @@ namespace Engine
                 {
                     FlyIni2Replace = null;
                 }
+            }
+        }
+
+        public void OnDeleteMagic(MagicListManager.MagicItemInfo info)
+        {
+            if (info == null || info.TheMagic == null) return;
+
+            if (XiuLianMagic != null &&
+                Utils.EqualNoCase(XiuLianMagic.TheMagic.Name, info.TheMagic.Name))
+            {
+                XiuLianMagic = null;
+            }
+
+            if (CurrentMagicInUse != null &&
+                Utils.EqualNoCase(CurrentMagicInUse.TheMagic.Name, info.TheMagic.Name))
+            {
+                CurrentMagicInUse = null;
             }
         }
 
@@ -1433,9 +1449,9 @@ namespace Engine
                 InfoDrawer.DrawLife(spriteBatch, Globals.OutEdgeNpc);
         }
 
-        public void BuyGood(Good good)
+        public bool BuyGood(Good good)
         {
-            if (good == null) return;
+            if (good == null) return false;
             var cost = good.Cost;
             if (Money >= cost)
             {
@@ -1443,12 +1459,14 @@ namespace Engine
                 {
                     Money -= cost;
                     GuiManager.UpdateGoodsView();
+                    return true;
                 }
             }
             else
             {
                 GuiManager.ShowMessage("没有足够的钱！");
             }
+            return false;
         }
     }
 }

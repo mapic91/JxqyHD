@@ -96,6 +96,8 @@ namespace Engine
 
         private int _noSpecialKindEffect;
 
+        private Good _goodsName;
+
         private Dictionary<int, List<MagicRegionFileReader.Item>> _regionFile;
 
         #region Leap
@@ -723,6 +725,12 @@ namespace Engine
             set { _noSpecialKindEffect = value; }
         }
 
+        public Good GoodsName
+        {
+            get { return _goodsName; }
+            set { _goodsName = value; }
+        }
+
         public Dictionary<int, List<MagicRegionFileReader.Item>> RegionFile
         {
             get { return _regionFile; }
@@ -784,6 +792,9 @@ namespace Engine
                         {
                             info.SetValue(this, Utils.GetAsf(@"asf\character\", nameValue[1]), null);
                         }
+                        break;
+                    case "GoodsName":
+                        GoodsName = Utils.GetGood(nameValue[1]);
                         break;
                     default:
                         var integerValue = int.Parse(nameValue[1]);

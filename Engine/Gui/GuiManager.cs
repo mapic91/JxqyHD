@@ -441,16 +441,16 @@ namespace Engine.Gui
             EquipInterface.EquipGood(goodListIndex);
         }
 
-        public static void BuyGoods(string listFileName)
+        public static void BuyGoods(string listFileName, bool canSellSelfGoods)
         {
             ShowAllPanels(false);
-            BuyInterface.BeginBuy(listFileName);
+            BuyInterface.BeginBuy(listFileName, canSellSelfGoods);
             GoodsInterface.IsShow = true;
         }
 
         public static void EndBuyGoods()
         {
-            BuyInterface.IsShow = false;
+            BuyInterface.EndBuy();
             GoodsInterface.IsShow = false;
         }
 
@@ -656,9 +656,10 @@ namespace Engine.Gui
                     BottomInterface.Update(gameTime);
                     IsMouseStateEated = true;
 
-                    if (IsKeyPressedAndCanInput(keyboardState, Keys.Escape))
+                    if (IsKeyPressed(keyboardState, Keys.Escape))
                     {
                         EndBuyGoods();
+                        ShowAllPanels(false);
                     }
                     //Restore input
                     Globals.RestoreInputDisableState();
