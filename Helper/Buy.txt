@@ -1,0 +1,9 @@
+int/buy/*.ini:
+
+[Header]
+Count=1
+NumberValid=1 -- 0 表示不限量，1表示限量（使用 Number 里的数量）
+
+[1]
+IniFile=Goods-h06-轩辕冠.ini
+Number=1
