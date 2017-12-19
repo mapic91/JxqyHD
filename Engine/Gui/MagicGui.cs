@@ -81,6 +81,8 @@ namespace Engine.Gui
                 baseTexture,
                 (MagicListManager.StoreIndexEnd - MagicListManager.StoreIndexBegin + 1 + 2)/3,
                 GuiManager.Setttings.Sections["Magics_List_Items"],
+                int.Parse(cfg["ScrollBarWidth"]),
+                int.Parse(cfg["ScrollBarHeight"]),
                 cfg["ScrollBarButton"]);
             _listView.Scrolled += delegate
             {

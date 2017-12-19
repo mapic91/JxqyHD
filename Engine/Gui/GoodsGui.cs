@@ -123,6 +123,8 @@ namespace Engine.Gui
                 baseTexture,
                 (GoodsListManager.StoreIndexEnd - GoodsListManager.StoreIndexBegin + 1 + 2)/3,
                 GuiManager.Setttings.Sections["Goods_List_Items"],
+                int.Parse(cfg["ScrollBarWidth"]),
+                int.Parse(cfg["ScrollBarHeight"]),
                 cfg["ScrollBarButton"],
                 GoodsListManager.Type != GoodsListManager.ListType.TypeByGoodItem);
             _listView.Scrolled += delegate

@@ -37,6 +37,8 @@ namespace Engine.Gui
                 baseTexture,
                 27,
                 GuiManager.Setttings.Sections["BuySell_List_Items"],
+                int.Parse(cfg["ScrollBarWidth"]),
+                int.Parse(cfg["ScrollBarHeight"]),
                 cfg["ScrollBarButton"]);
             var asf = Utils.GetAsf(null, cfg["CloseImage"]);
             baseTexture = new Texture(asf, 0, 1);

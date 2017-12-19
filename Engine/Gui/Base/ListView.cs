@@ -18,7 +18,7 @@ namespace Engine.Gui.Base
             {
                 if (_scrollBar == null)
                     return 0;
-                return _scrollBar.Value;
+                return (int)_scrollBar.Value;
             }
         }
 
@@ -30,6 +30,8 @@ namespace Engine.Gui.Base
             Texture baseTexture,
             int rowCouunts,
             KeyDataCollection config,
+            int slideBarWidth,
+            int slideBarHeight,
             string slideButtonImage,
             bool useTopLeftText = true)
             : base(parent, position, width, height, baseTexture)
@@ -49,8 +51,8 @@ namespace Engine.Gui.Base
                 null,
                 Utils.GetSoundEffect("界-大按钮.wav"));
             _scrollBar = new ScrollBar(this,
-                28,
-                190,
+                slideBarWidth,
+                slideBarHeight,
                 null,
                 ScrollBar.ScrollBarType.Vertical,
                 slideButton,

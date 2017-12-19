@@ -9,11 +9,12 @@ namespace Engine.Gui
     public class ScrollBar : GuiItem
     {
         private GuiItem _slider;
-        private int _value;
+        private float _value;
         private int _minValue;
         private int _maxValue;
         private bool _inDragging;
-        private int _lastValue;
+        private bool _isSliderClicked;
+        private float _lastValue;
         private Vector2 _lastMouseScreenPosition;
 
         public event Action<object, ScrolledEvent> Scrolled; 
@@ -32,7 +33,7 @@ namespace Engine.Gui
             }
         }
 
-        public int Value
+        public float Value
         {
             get { return _value; }
             set
@@ -63,9 +64,9 @@ namespace Engine.Gui
                     Slider.Position = new Vector2(x, y);
                 }
 
-                if (lastValue != _value && Scrolled != null)
+                if ((int)lastValue != (int)_value && Scrolled != null)
                 {
-                    Scrolled(this, new ScrolledEvent(_value));
+                    Scrolled(this, new ScrolledEvent((int)_value));
                 }
             }
         }
@@ -147,6 +148,10 @@ namespace Engine.Gui
             Slider.MouseLeftDown += (arg1, arg2) =>
             {
                 _inDragging = true;
+                _isSliderClicked = true;
+
+                _lastValue = _value;
+                _lastMouseScreenPosition = arg2.MouseScreenPosition;
             };
             Slider.MouseLeftUp += (arg1, arg2) =>
             {
@@ -156,26 +161,31 @@ namespace Engine.Gui
 
             MouseLeftDown += (arg1, arg2) =>
             {
-                _lastValue = _value;
-                _lastMouseScreenPosition = arg2.MouseScreenPosition;
+                if (!_isSliderClicked)
+                {
+                    _lastValue = _value;
+                    _lastMouseScreenPosition = arg2.MouseScreenPosition;
+                }
             };
-            MouseLeftUp += (arg1, arg2) =>
+            Click += (arg1, arg2) =>
             {
-                if (Vector2.Distance(arg2.MouseScreenPosition, _lastMouseScreenPosition) > StepLength) return;
+                if (_isSliderClicked)
+                {
+                    _isSliderClicked = false;
+                    return;
+                }
 
-                var offset = 0f;
                 switch (Type)
                 {
                     case ScrollBarType.Horizontal:
-                        offset = arg2.MouseScreenPosition.X - ScreenPosition.X;
+                        Value += (arg2.MouseScreenPosition.X > Slider.ScreenPosition.X ? 1 : -1);
                         break;
                     case ScrollBarType.Vertical:
-                        offset = arg2.MouseScreenPosition.Y - ScreenPosition.Y;
+                        Value += (arg2.MouseScreenPosition.Y > Slider.ScreenPosition.Y ? 1 : -1);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
-                Value = (int)(offset / StepLength);
             };
         }
 
@@ -196,7 +206,7 @@ namespace Engine.Gui
                         throw new ArgumentOutOfRangeException();
                 }
 
-                var valueOffset = (int)(offset / StepLength);
+                var valueOffset = offset / StepLength;
                 if (valueOffset != 0)
                 {
                     Value =  _lastValue + valueOffset;
@@ -208,8 +218,8 @@ namespace Engine.Gui
         public override void Update(GameTime gameTime)
         {
             if (!IsShow) return;
-            base.Update(gameTime);
             if (Slider != null) Slider.Update(gameTime);
+            base.Update(gameTime);
         }
 
         public override void Draw(SpriteBatch spriteBatch)

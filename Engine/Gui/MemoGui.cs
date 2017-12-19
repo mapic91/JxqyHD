@@ -68,7 +68,7 @@ namespace Engine.Gui
         {
             var count = MemoListManager.GetCount();
             _scrollBar.MaxValue = count - 1;
-            SetTextShow(_scrollBar.Value);
+            SetTextShow((int)_scrollBar.Value);
         }
 
         public void SetTextShow(int indexBegin)
