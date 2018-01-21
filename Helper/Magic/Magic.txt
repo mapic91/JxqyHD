@@ -19,6 +19,8 @@ VanishSound 消亡声音
 SuperModeImage 超级模式图像（MoveKide=15）
 Belong 可忽视
 ActionFile 释放AttackFile时的角色动作
+           具体使用哪个文件是 "asf\character\" + ActionFile + NpcIniIndex + “.asf"
+           NpcIniIndex: 比如主角的NpcIni是 z杨影枫.ini 此时为1，z杨影枫2.ini 此时为2，依此类推
 AttackFile 修炼此武功时刀劈时（Attack2时）使用此文件中的武功
 
 Level 1-10
