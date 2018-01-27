@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Engine.Gui;
 using Engine.ListManager;
@@ -506,6 +507,25 @@ namespace Engine
         protected override void CheckMapTrap()
         {
             MapBase.Instance.RunTileTrapScript(TilePosition);
+        }
+
+        protected override bool CheckMapTrapByPath(LinkedList<Vector2> pixelPositionPathList, out Vector2 trapTilePosition)
+        {
+            if (pixelPositionPathList != null)
+            {
+                foreach (var pixelPostiion in pixelPositionPathList)
+                {
+                    var tilePosition = MapBase.ToTilePosition(pixelPostiion);
+                    if (MapBase.Instance.HasTrapScript(tilePosition))
+                    {
+                        trapTilePosition = tilePosition;
+                        return true;
+                    }
+                }
+            }
+
+            trapTilePosition = Vector2.Zero;
+            return false;
         }
 
         protected override void AssignToValue(KeyData keyData)
@@ -1329,95 +1349,98 @@ namespace Engine
             var texture = GetCurrentTexture();
             if (texture == null) return;
 
-            var tilePosition = new Vector2(MapX, MapY);
-            var start = tilePosition - new Vector2(3, 15);
-            var end = tilePosition + new Vector2(3, 15);
-            if (start.X < 0) start.X = 0;
-            if (start.Y < 0) start.Y = 0;
-            if (end.X > MapBase.Instance.MapColumnCounts) end.X = MapBase.Instance.MapColumnCounts;
-            if (end.Y > MapBase.Instance.MapRowCounts) end.Y = MapBase.Instance.MapRowCounts;
-            var textureWorldRegion = new Rectangle();
-            var region = RegionInWorld;
-            const int maxSamplerTextures = 10;
-            int currentCount = 0;
-
-            //Enable stencile
-            spriteBatch.End();
-            var alphaTestEffect = Globals.TheGame.AlphaTestEffect;
-            alphaTestEffect.Parameters["MinAlpha"].SetValue(0.0f);
-            spriteBatch.Begin(SpriteSortMode.Immediate, NoWriteColorBlendState, null, StencilStateMask,null, alphaTestEffect);
-
-            for (var y = (int)start.Y; y < (int)end.Y; y++)
+            if (IsDraw)
             {
-                for (var x = (int)start.X; x < (int)end.X; x++)
+                var tilePosition = new Vector2(MapX, MapY);
+                var start = tilePosition - new Vector2(3, 15);
+                var end = tilePosition + new Vector2(3, 15);
+                if (start.X < 0) start.X = 0;
+                if (start.Y < 0) start.Y = 0;
+                if (end.X > MapBase.Instance.MapColumnCounts) end.X = MapBase.Instance.MapColumnCounts;
+                if (end.Y > MapBase.Instance.MapRowCounts) end.Y = MapBase.Instance.MapRowCounts;
+                var textureWorldRegion = new Rectangle();
+                var region = RegionInWorld;
+                const int maxSamplerTextures = 10;
+                int currentCount = 0;
+
+                //Enable stencile
+                spriteBatch.End();
+                var alphaTestEffect = Globals.TheGame.AlphaTestEffect;
+                alphaTestEffect.Parameters["MinAlpha"].SetValue(0.0f);
+                spriteBatch.Begin(SpriteSortMode.Immediate, NoWriteColorBlendState, null, StencilStateMask, null, alphaTestEffect);
+
+                for (var y = (int)start.Y; y < (int)end.Y; y++)
                 {
-                    Texture2D tileTexture;
-                    Nullable<Rectangle> sourceRegion;
-                    if (y > MapY)
+                    for (var x = (int)start.X; x < (int)end.X; x++)
                     {
-                        tileTexture = MapBase.Instance.GetTileTextureAndRegionInWorld(x, y, 1, out sourceRegion, ref textureWorldRegion);
+                        Texture2D tileTexture;
+                        Nullable<Rectangle> sourceRegion;
+                        if (y > MapY)
+                        {
+                            tileTexture = MapBase.Instance.GetTileTextureAndRegionInWorld(x, y, 1, out sourceRegion, ref textureWorldRegion);
+                            if (tileTexture != null && Collider.IsBoxCollide(region, textureWorldRegion))
+                            {
+                                MapBase.Instance.DrawTile(spriteBatch, Color.White, 1, new Vector2(x, y));
+                                currentCount++;
+                            }
+                        }
+                        tileTexture = MapBase.Instance.GetTileTextureAndRegionInWorld(x, y, 2, out sourceRegion, ref textureWorldRegion);
                         if (tileTexture != null && Collider.IsBoxCollide(region, textureWorldRegion))
                         {
-                            MapBase.Instance.DrawTile(spriteBatch, Color.White, 1, new Vector2(x,y));
+                            MapBase.Instance.DrawTile(spriteBatch, Color.White, 2, new Vector2(x, y));
                             currentCount++;
                         }
                     }
-                    tileTexture = MapBase.Instance.GetTileTextureAndRegionInWorld(x, y, 2, out sourceRegion, ref textureWorldRegion);
-                    if (tileTexture != null && Collider.IsBoxCollide(region, textureWorldRegion))
-                    {
-                        MapBase.Instance.DrawTile(spriteBatch, Color.White, 2, new Vector2(x, y));
-                        currentCount++;
-                    }
                 }
-            }
-            foreach (var npc in NpcManager.NpcsInView)
-            {
-                if (currentCount >= maxSamplerTextures) break;
-
-                if (npc.MapY > MapY && !npc.IsHide)
+                foreach (var npc in NpcManager.NpcsInView)
                 {
-                    if (Collider.IsBoxCollide(region, npc.RegionInWorld))
-                    {
-                        npc.Draw(spriteBatch, Color.White);
-                        currentCount++;
-                    }
-                }
-            }
-            foreach (var magicSprite in MagicManager.MagicSpritesInView)
-            {
-                if (currentCount >= maxSamplerTextures) break;
-                if (magicSprite.MapY >= MapY)
-                {
-                    if (Collider.IsBoxCollide(region, magicSprite.RegionInWorld))
-                    {
-                        magicSprite.Draw(spriteBatch, Color.White);
-                        currentCount++;
-                    }
-                }
-            }
-            spriteBatch.End();
+                    if (currentCount >= maxSamplerTextures) break;
 
-            if (currentCount > 0)
-            {
-                var useGrayScale = DrawColor == Color.Black;
-                spriteBatch.Begin(SpriteSortMode.Immediate, null, null, StencilStateDrawOpaque, null, useGrayScale ? Globals.TheGame.GrayScaleEffect : null);
-                base.Draw(spriteBatch, texture, useGrayScale ? Color.White : DrawColor);
-                spriteBatch.End();
-                var halfTransparentEffect = Globals.TheGame.TransparentEffect;
-                halfTransparentEffect.Parameters["alpha"].SetValue(0.5f);
-                halfTransparentEffect.Parameters["useGrayScale"].SetValue(useGrayScale ? 1 : 0);
-                spriteBatch.Begin(SpriteSortMode.Immediate, null, null, StencilStateDrawHalfTransparent, null, halfTransparentEffect);
-                base.Draw(spriteBatch, texture, useGrayScale ? Color.White : DrawColor);
+                    if (npc.MapY > MapY && !npc.IsHide)
+                    {
+                        if (Collider.IsBoxCollide(region, npc.RegionInWorld))
+                        {
+                            npc.Draw(spriteBatch, Color.White);
+                            currentCount++;
+                        }
+                    }
+                }
+                foreach (var magicSprite in MagicManager.MagicSpritesInView)
+                {
+                    if (currentCount >= maxSamplerTextures) break;
+                    if (magicSprite.MapY >= MapY)
+                    {
+                        if (Collider.IsBoxCollide(region, magicSprite.RegionInWorld))
+                        {
+                            magicSprite.Draw(spriteBatch, Color.White);
+                            currentCount++;
+                        }
+                    }
+                }
                 spriteBatch.End();
 
-                Globals.TheGame.GraphicsDevice.Clear(ClearOptions.Stencil, Color.Black, 0, 0);
-                JxqyGame.BeginSpriteBatch(spriteBatch);
-                DrawRangeRadius(spriteBatch);
-            }
-            else
-            {
-                JxqyGame.BeginSpriteBatch(spriteBatch);
-                base.Draw(spriteBatch, texture);
+                if (currentCount > 0)
+                {
+                    var useGrayScale = DrawColor == Color.Black;
+                    spriteBatch.Begin(SpriteSortMode.Immediate, null, null, StencilStateDrawOpaque, null, useGrayScale ? Globals.TheGame.GrayScaleEffect : null);
+                    base.Draw(spriteBatch, texture, useGrayScale ? Color.White : DrawColor);
+                    spriteBatch.End();
+                    var halfTransparentEffect = Globals.TheGame.TransparentEffect;
+                    halfTransparentEffect.Parameters["alpha"].SetValue(0.5f);
+                    halfTransparentEffect.Parameters["useGrayScale"].SetValue(useGrayScale ? 1 : 0);
+                    spriteBatch.Begin(SpriteSortMode.Immediate, null, null, StencilStateDrawHalfTransparent, null, halfTransparentEffect);
+                    base.Draw(spriteBatch, texture, useGrayScale ? Color.White : DrawColor);
+                    spriteBatch.End();
+
+                    Globals.TheGame.GraphicsDevice.Clear(ClearOptions.Stencil, Color.Black, 0, 0);
+                    JxqyGame.BeginSpriteBatch(spriteBatch);
+                    DrawRangeRadius(spriteBatch);
+                }
+                else
+                {
+                    JxqyGame.BeginSpriteBatch(spriteBatch);
+                    base.Draw(spriteBatch, texture);
+                }
             }
 
             if (Globals.OutEdgeSprite != null &&

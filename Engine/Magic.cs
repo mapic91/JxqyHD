@@ -66,6 +66,7 @@ namespace Engine
         private int _passThroughWall;
         private int _carryUser;
         private int _carryUserSpriteIndex;
+        private int _hideUserWhenCarry;
         private int _bounce;
         private int _ball;
         private int _sticky;
@@ -573,6 +574,12 @@ namespace Engine
         {
             get { return _carryUserSpriteIndex; }
             set { _carryUserSpriteIndex = value; }
+        }
+
+        public int HideUserWhenCarry
+        {
+            get { return _hideUserWhenCarry; }
+            set { _hideUserWhenCarry = value; }
         }
 
         public int Bounce

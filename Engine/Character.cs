@@ -248,6 +248,15 @@ namespace Engine
 
         public bool IsHide { get; set; }
 
+        public bool IsDraw
+        {
+            get
+            {
+                return !(IsDeath || IsHide || IsInTransport ||
+                         (MovedByMagicSprite != null && MovedByMagicSprite.BelongMagic.HideUserWhenCarry > 0));
+            }
+        }
+
         /// <summary>
         /// If true, character won't be drawed.
         /// </summary>
@@ -1440,6 +1449,12 @@ namespace Engine
         }
 
         protected virtual void CheckMapTrap() { }
+
+        protected virtual bool CheckMapTrapByPath(LinkedList<Vector2> pixelPositionPathList, out Vector2 trapTilePosition)
+        {
+            trapTilePosition = Vector2.Zero;
+            return false;
+        }
 
         protected abstract void PlaySoundEffect(SoundEffect soundEffect);
 
@@ -3040,7 +3055,7 @@ namespace Engine
                 }
                 else
                 {
-                    if (Engine.PathFinder.CanLinearlyMove(this, TilePosition, MovedByMagicSprite.TilePosition))
+                    if (CheckLinearlyMove(TilePosition, MovedByMagicSprite.TilePosition))
                     {
                         PositionInWorld = MovedByMagicSprite.PositionInWorld;
                         SetDirection(MovedByMagicSprite.MoveDirection);
@@ -3057,7 +3072,8 @@ namespace Engine
             {
                 var newPosition = PositionInWorld + BouncedDirection * (BouncedVelocity * (float)elapsedGameTime.TotalSeconds);
                 var newTilePosition = MapBase.ToTilePosition(newPosition);
-                if (Engine.PathFinder.CanLinearlyMove(this, TilePosition, newTilePosition))
+
+                if (CheckLinearlyMove(TilePosition, newTilePosition))
                 {
                     PositionInWorld = newPosition;
                     BouncedVelocity -= friction;
@@ -3073,6 +3089,26 @@ namespace Engine
             }
         }
 
+        public virtual bool CheckLinearlyMove(Vector2 fromTile, Vector2 toTile)
+        {
+            if (fromTile == toTile) return true;
+
+            var path = Engine.PathFinder.GetLinearlyMovePath(this, fromTile,
+                toTile);
+            if (path != null)
+            {
+                Vector2 trapTilePosition;
+                if (CheckMapTrapByPath(path, out trapTilePosition))
+                {
+                    TilePosition = trapTilePosition;
+                    CheckMapTrap();
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public virtual void Draw(SpriteBatch spriteBatch)
         {
             Draw(spriteBatch, GetCurrentTexture());
@@ -3084,7 +3120,7 @@ namespace Engine
         private LinkedList<Vector2> _lastRadiusTileTilesCached;
         public virtual void Draw(SpriteBatch spriteBatch, Texture2D texture)
         {
-            if (!(IsDeath || IsHide || IsInTransport))
+            if (IsDraw)
             {
                 var color = DrawColor;
                 if (FrozenSeconds > 0 && _isFronzenVisualEffect)

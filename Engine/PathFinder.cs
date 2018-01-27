@@ -630,23 +630,23 @@ namespace Engine
         }
 
         /// <summary>
-        /// Test finder can move linearly.
+        /// If finder can move linearly, return the path.
         /// </summary>
         /// <param name="finder"></param>
         /// <param name="fromTilePosition"></param>
         /// <param name="toTilePosition"></param>
         /// <returns></returns>
-        public static bool CanLinearlyMove(Character finder, Vector2 fromTilePosition, Vector2 toTilePosition)
+        public static LinkedList<Vector2> GetLinearlyMovePath(Character finder, Vector2 fromTilePosition, Vector2 toTilePosition)
         {
-            if(fromTilePosition == toTilePosition) return true;
-            if (finder.HasObstacle(toTilePosition)) return false;
+            if (fromTilePosition == toTilePosition) return null;
+            if (finder.HasObstacle(toTilePosition)) return null;
             var tileDistance = GetPathTileDistance(fromTilePosition, toTilePosition);
             var path = FindPathPerfect(finder, fromTilePosition, toTilePosition, tileDistance*16);
             if (path != null && (path.Count - 1) == tileDistance)
             {
-                return true;
+                return path;
             }
-            return false;
+            return null;
         }
 
         /// <summary>

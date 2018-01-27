@@ -293,11 +293,12 @@ FollowMouse - 大于0表示朝鼠标的位置移动，（忽略RandomMoveDegree的值）。默认0
 MeteorMove - 大于0表示从空中砸向地面，值越大高度越高，（忽略RandomMoveDegree，FollowMouse的值）,默认0。范例见：MeteorMove.ini
 MeteorMoveDir - MeteorMove的运动方向，0-7，大于7表示随机，默认5.
 MoveBack - 大于零当LifeFrame结束，返回到释放者处。结合PassThrough可以模拟回旋镖。
-CarryUser - 大于0表示释放者也跟着武功单位一起移动
 MoveImitateUser - 大于0表示释放者移动多少距离，相应的武功单位也会相应的移动一样的距离。
 CircleMoveColockwise - 大于0表示会以释放者为圆心作顺时针圆周运动
 CircleMoveAnticlockwise - 大于0表示会以释放者为圆心作逆时针圆周运动
 
+CarryUser - 大于0表示释放者也跟着武功单位一起移动
+HideUserWhenCarry - 大于0表示CarryUser生效时，当时被移动的释放者的角色图像不会显示。
 CarryUserSpriteIndex - 当一个武功使用放出球体时，每个球体都会有一个从0开始的索引值。比如：一次放出1个球，则该球索引为0；一次放出3个球，则每个球索引分别为0，1，2；设置CarryUserSpriteIndex，表示是哪个球携带武功释放者，默认值为0。
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
