@@ -3049,7 +3049,7 @@ namespace Engine
 
             if (MovedByMagicSprite != null)
             {
-                if (MovedByMagicSprite.IsInDestroy || MovedByMagicSprite.IsDestroyed)
+                if ((MovedByMagicSprite.IsInDestroy && MovedByMagicSprite.BelongMagic.HideUserWhenCarry == 0) || MovedByMagicSprite.IsDestroyed)
                 {
                     MovedByMagicSprite = null;
                 }
