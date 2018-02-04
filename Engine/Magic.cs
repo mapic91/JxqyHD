@@ -99,6 +99,7 @@ namespace Engine
 
         private Good _goodsName;
 
+        private int _noInterruption;
         private Dictionary<int, List<MagicRegionFileReader.Item>> _regionFile;
 
         #region Leap
@@ -736,6 +737,12 @@ namespace Engine
         {
             get { return _goodsName; }
             set { _goodsName = value; }
+        }
+
+        public int NoInterruption
+        {
+            get { return _noInterruption; }
+            set { _noInterruption = value; }
         }
 
         public Dictionary<int, List<MagicRegionFileReader.Item>> RegionFile

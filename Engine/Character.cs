@@ -1896,7 +1896,8 @@ namespace Engine
         {
             const int maxRandValue = 4;
             if (Globals.TheRandom.Next(maxRandValue) != 0 ||
-                IsPetrified) //Can't hurted when been petrified for game playability
+                IsPetrified || //Can't hurted when been petrified for game playability
+                (State == (int)CharacterState.Magic && MagicUse != null && MagicUse.NoInterruption > 0)) 
             {
                 return;
             }
