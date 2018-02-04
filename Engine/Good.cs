@@ -139,6 +139,11 @@ namespace Engine
             set { _sellPrice = value; }
         }
 
+        public bool IsSellPriceSetted
+        {
+            get { return _sellPrice > 0; }
+        }
+
         public Good(string filePath)
         {
             Load(filePath);

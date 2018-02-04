@@ -88,8 +88,11 @@
     <Compile Include="Gui\Base\LineText.cs" />
     <Compile Include="Gui\Base\ListItem.cs" />
     <Compile Include="Gui\Base\ListTextItem.cs" />
+    <Compile Include="Gui\Base\BackgroundColorLayer.cs" />
     <Compile Include="Gui\LittleHeadGui.cs" />
     <Compile Include="Gui\SelectionGui.cs" />
+    <Compile Include="Gui\ToolTipGuiBase.cs" />
+    <Compile Include="Gui\ToolTipGuiType2.cs" />
     <Compile Include="MagicRegionFileReader.cs" />
     <Compile Include="Map\JxqyMap.cs" />
     <Compile Include="Map\TiledMap.cs" />
@@ -122,7 +125,7 @@
     <Compile Include="Gui\StateGui.cs" />
     <Compile Include="Gui\Base\TextGui.cs" />
     <Compile Include="Gui\Base\Texture.cs" />
-    <Compile Include="Gui\ToolTipGui.cs" />
+    <Compile Include="Gui\ToolTipGuiType1.cs" />
     <Compile Include="Gui\TopGui.cs" />
     <Compile Include="Gui\XiuLianGui.cs" />
     <Compile Include="IMoveControlInWorld.cs" />

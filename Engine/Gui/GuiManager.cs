@@ -39,7 +39,7 @@ namespace Engine.Gui
         public static TimerGui TimerInterface;
         public static LittleMapGui LittleMapInterface;
 
-        public static ToolTipGui ToolTipInterface;
+        public static ToolTipGuiBase ToolTipInterface;
         public static MessageGui MessageInterface;
         public static DialogGui DialogInterface;
         public static LittleHeadGui LittleHeadInterface;
@@ -130,7 +130,15 @@ namespace Engine.Gui
             _allGuiItems.AddLast(EquipInterface);
             _panels.AddLast(EquipInterface);
 
-            ToolTipInterface = new ToolTipGui();
+            var toolTipUseType = int.Parse(Setttings.Sections["ToolTip_Use_Type"]["UseType"]);
+            if (toolTipUseType == 1)
+            {
+                ToolTipInterface = new ToolTipGuiType1();
+            }
+            else
+            {
+                ToolTipInterface = new ToolTipGuiType2();
+            }
             _allGuiItems.AddLast(ToolTipInterface);
             _panels.AddLast(ToolTipInterface);
 
@@ -487,6 +495,11 @@ namespace Engine.Gui
         public static bool IsTimerStarted()
         {
             return TimerInterface.IsShow;
+        }
+
+        public static Vector2 GetMouseScreenPosition()
+        {
+            return MouseInterface != null ? MouseInterface.ScreenPosition : Vector2.Zero;
         }
 
         /// <summary>
