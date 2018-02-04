@@ -371,11 +371,12 @@ namespace Engine.Gui.Base
         {
             if (!IsShow) return;
             base.Draw(spriteBatch);
+            var screenPosition = ScreenPosition;
             foreach (var info in _drawInfo)
             {
                 spriteBatch.DrawString(Font,
                     info.Text,
-                    info.Position + ScreenPosition,
+                    info.Position + screenPosition,
                     info.DrawColor);
             }
         }
