@@ -1065,6 +1065,12 @@ namespace Engine.Script
             RunScript(Utils.RemoveStringQuotes(parameters[0]), belongObject);
         }
 
+        public static void RunParallelScript(List<string> parameters, object belongObject)
+        {
+            ScriptManager.RunParallelScript(Utils.GetScriptFilePath(Utils.RemoveStringQuotes(parameters[0])),
+                parameters.Count == 2 ? int.Parse(parameters[1]) : 0);
+        }
+
         public static void RunScript(string fileName, object belongObject = null)
         {
             ScriptManager.RunScript(Utils.GetScriptParser(fileName), belongObject);
@@ -1827,6 +1833,7 @@ namespace Engine.Script
 
         public static void ReturnToTitle()
         {
+            ScriptManager.ClearParallelScript();
             GuiManager.ShowTitle();
             GameState.State = GameState.StateType.Title;
         }

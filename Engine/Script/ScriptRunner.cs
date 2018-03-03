@@ -389,6 +389,9 @@ namespace Engine.Script
                         case "RunScript":
                             ScriptExecuter.RunScript(parameters, BelongObject);
                             break;
+                        case "RunParallelScript":
+                            ScriptExecuter.RunParallelScript(parameters, BelongObject);
+                            break;
                         case "PlayMovie":
                             ScriptExecuter.PlayMovie(parameters);
                             isEnd = !ScriptExecuter.IsInPlayingMovie;

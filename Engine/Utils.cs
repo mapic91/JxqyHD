@@ -486,17 +486,21 @@ namespace Engine
         public static ScriptParser GetScriptParser(string fileName, string mapName = null, ScriptCategory category = ScriptCategory.Normal)
         {
             if (string.IsNullOrEmpty(fileName)) return null;
-            var path = GetScriptFilePath(fileName, mapName, category);
+            return GetScriptParserFromPath(GetScriptFilePath(fileName, mapName, category));
+        }
+
+        public static ScriptParser GetScriptParserFromPath(string filePath)
+        {
             if (!Globals.TheGame.IsInEditMode ||
-                (_scriptFileLastWriteTime.ContainsKey(path) && 
-                _scriptFileLastWriteTime[path].Equals(File.GetLastWriteTime(path))))
+                (_scriptFileLastWriteTime.ContainsKey(filePath) &&
+                 _scriptFileLastWriteTime[filePath].Equals(File.GetLastWriteTime(filePath))))
             {
                 //Use cached script parser:
                 // *In play mode or
                 // *If file is cached and not modified in edit mode.
-                if (_scriptParserCache.ContainsKey(path))
+                if (_scriptParserCache.ContainsKey(filePath))
                 {
-                    return _scriptParserCache[path];
+                    return _scriptParserCache[filePath];
                 }
             }
             else if (Globals.TheGame.IsInEditMode)
@@ -504,7 +508,7 @@ namespace Engine
                 try
                 {
                     // Update last write time
-                    _scriptFileLastWriteTime[path] = File.GetLastWriteTime(path);
+                    _scriptFileLastWriteTime[filePath] = File.GetLastWriteTime(filePath);
                 }
                 catch (Exception)
                 {
@@ -513,8 +517,8 @@ namespace Engine
             }
 
             //No script parser in cache, create new and add to cache.
-            var parser = new ScriptParser(path);
-            _scriptParserCache[path] = parser;
+            var parser = new ScriptParser(filePath);
+            _scriptParserCache[filePath] = parser;
             return parser;
         }
 

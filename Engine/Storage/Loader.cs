@@ -97,6 +97,9 @@ namespace Engine.Storage
 
                 //Variables
                 ScriptExecuter.LoadVariables(data["Var"]);
+
+                //ParallelScript
+                ScriptManager.LoadParallelScript(data["ParallelScript"]);
             }
             catch (Exception exception)
             {

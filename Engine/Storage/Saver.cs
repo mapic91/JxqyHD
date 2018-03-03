@@ -68,6 +68,10 @@ namespace Engine.Storage
             data.Sections.AddSection("Var");
             ScriptExecuter.SaveVariables(data["Var"]);
 
+            //ParallelScript
+            data.Sections.AddSection("ParallelScript");
+            ScriptManager.SaveParallelScript(data["ParallelScript"]);
+
             //Wirte to file
             File.WriteAllText(StorageBase.GameIniFilePath, data.ToString(), Globals.LocalEncoding);
         }
