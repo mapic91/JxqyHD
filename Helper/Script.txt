@@ -126,7 +126,7 @@ AddNpc(a,b,c,d)
 AddNpc("月眉儿.ini",8,18,7);
 
 AddObj(a,b,c,d)
-AddNpc("纳兰真.ini", 54, 79, 7);
+AddObj("纳兰真.ini", 54, 79, 7);
 
 ShowNpc(a, b)
 ShowNpc("杨影枫", 0);
