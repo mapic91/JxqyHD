@@ -158,46 +158,49 @@ namespace Engine.Script
 
             //New item may added when script run, count items added before this frame.
             var itemSum = _parallelListDelayed.Count;
-            var count = 0; 
+            var count = 0;
 
-            for (var node = _parallelListDelayed.First; node != null && count < itemSum; count++)
+            if (!Globals.TheGame.IsGamePlayPaused)
             {
-                var item = node.Value;
-                if (item.WaitMilliseconds > 0)
+                for (var node = _parallelListDelayed.First; node != null && count < itemSum; count++)
                 {
-                    item.WaitMilliseconds -= (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-                }
-
-                if (item.WaitMilliseconds <= 0)
-                {
-                    item.CheckCreateScriptRunner();
-                }
-
-                if (item.ScriptInRun != null)
-                {
-                    LogScriptFilePath(item.ScriptInRun);
-                    if (!item.ScriptInRun.Continue())
+                    var item = node.Value;
+                    if (item.WaitMilliseconds > 0)
                     {
-                        _parallelListDelayed.Remove(node);
+                        item.WaitMilliseconds -= (float)gameTime.ElapsedGameTime.TotalMilliseconds;
                     }
+
+                    if (item.WaitMilliseconds <= 0)
+                    {
+                        item.CheckCreateScriptRunner();
+                    }
+
+                    if (item.ScriptInRun != null)
+                    {
+                        LogScriptFilePath(item.ScriptInRun);
+                        if (!item.ScriptInRun.Continue())
+                        {
+                            _parallelListDelayed.Remove(node);
+                        }
+                    }
+
+                    node = node.Next;
                 }
 
-                node = node.Next;
-            }
-
-            for (var node = _parallelListImmediately.First; node != null;)
-            {
-                var item = node.Value;
-                item.CheckCreateScriptRunner();
-
-                LogScriptFilePath(item.ScriptInRun);
-                var continueRun = item.ScriptInRun.Continue();
-                var next = node.Next; //Get next here, new item may added after script run.
-                if (!continueRun)
+                for (var node = _parallelListImmediately.First; node != null;)
                 {
-                    _parallelListImmediately.Remove(node);
+                    var item = node.Value;
+                    item.CheckCreateScriptRunner();
+
+                    LogScriptFilePath(item.ScriptInRun);
+                    var continueRun = item.ScriptInRun.Continue();
+                    var next = node.Next; //Get next here, new item may added after script run.
+                    if (!continueRun)
+                    {
+                        _parallelListImmediately.Remove(node);
+                    }
+                    node = next;
                 }
-                node = next;
             }
         }
 
