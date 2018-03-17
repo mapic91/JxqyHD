@@ -76,6 +76,30 @@ namespace Engine
             return path;
         }
 
+        /// <summary>
+        /// Test can move in one direction or not.
+        /// </summary>
+        /// <param name="direction">Direction to move, range: 0 - 7</param>
+        /// <param name="canMoveDirectionCount">Can move direction count, possible value 1, 2, 4, 8</param>
+        /// <returns></returns>
+        public static bool CanMoveInDirection(int direction, int canMoveDirectionCount)
+        {
+            // 3  4  5
+            // 2     6
+            // 1  0  7
+            switch (canMoveDirectionCount)
+            {
+                case 1:
+                    return direction == 0;
+                case 2:
+                    return direction == 0 || direction == 4;
+                case 4:
+                    return direction == 0 || direction == 2 || direction == 4 || direction == 6;
+                default:
+                    return direction < canMoveDirectionCount;
+            }
+        }
+
         //Returned path is in pixel position
         public static LinkedList<Vector2> FindPathStep(Character finder, Vector2 startTile, Vector2 endTile, int stepCount)
         {
@@ -92,6 +116,7 @@ namespace Engine
             path.AddLast(MapBase.ToPixelPosition(startTile));
             var current = startTile;
             var maxTry = 100;// For performance
+            var canMoveDir = finder.CanMoveDirCount;
             while (maxTry-- > 0)
             {
                 var direction = Utils.GetDirectionIndex(endPositon - MapBase.ToPixelPosition(current), 8);
@@ -115,6 +140,7 @@ namespace Engine
                     {
                         continue;
                     }
+                    if (!CanMoveInDirection(list[i], canMoveDir)) continue;
                     index = list[i];
                     break;
                 }
@@ -154,7 +180,7 @@ namespace Engine
                 var current = frontier.DeleteMin().Location;
                 if (current == endTile) break;
                 if (finder.HasObstacle(current) && current != startTile) continue;
-                foreach (var neighbor in FindNeighbors(current))
+                foreach (var neighbor in FindNeighbors(current, finder.CanMoveDirCount))
                 {
                     if (!cameFrom.ContainsKey(neighbor))
                     {
@@ -339,7 +365,7 @@ namespace Engine
                 var current = frontier.DeleteMin().Location;
                 if (current.Equals(endTile)) break;
                 if (finder.HasObstacle(current) && current != startTile) continue;
-                foreach (var next in FindNeighbors(current))
+                foreach (var next in FindNeighbors(current, finder.CanMoveDirCount))
                 {
                     var newCost = costSoFar[current] + GetTilePositionCost(current, next);
                     if (!costSoFar.ContainsKey(next) ||
@@ -422,11 +448,12 @@ namespace Engine
         /// Find not obstacle tile neighbors at location.
         /// </summary>
         /// <param name="location">Tile postion.</param>
+        /// <param name="canMoveDirectionCount"></param>
         /// <returns>Neighbors list.</returns>
-        public static List<Vector2> FindNeighbors(Vector2 location)
+        public static List<Vector2> FindNeighbors(Vector2 location, int canMoveDirectionCount)
         {
             List<int> list;
-            return FindNeighbors(location, out list);
+            return FindNeighbors(location, out list, canMoveDirectionCount);
         }
 
         /// <summary>
@@ -434,8 +461,9 @@ namespace Engine
         /// </summary>
         /// <param name="location">Tile postion.</param>
         /// <param name="removeList">Obstacle neighbor index list.</param>
+        /// <param name="canMoveDirectionCount">Can move direction count, possible value 1, 2, 4, 8</param>
         /// <returns>Neighbors list.</returns>
-        public static List<Vector2> FindNeighbors(Vector2 location, out List<int> removeList)
+        public static List<Vector2> FindNeighbors(Vector2 location, out List<int> removeList, int canMoveDirectionCount)
         {
             var listAll = FindAllNeighbors(location);
             removeList = GetObstacleIndexList(listAll);
@@ -444,7 +472,7 @@ namespace Engine
             var count = listAll.Count;
             for (var j = 0; j < count; j++)
             {
-                if (!removeList.Contains(j))
+                if (!removeList.Contains(j) && CanMoveInDirection(j, canMoveDirectionCount))
                     list.Add(listAll[j]);
             }
 

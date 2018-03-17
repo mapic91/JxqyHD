@@ -373,6 +373,86 @@ namespace Engine
             }
         }
 
+        static private int GetMinDir(int currentDir, StateMapList list, CharacterState state)
+        {
+            if (list == null) return currentDir;
+            var texture = list.ContainsKey((int) state) ? list[(int) state].Image : null;
+            if (texture == null) return currentDir;
+            if (currentDir == -1) return texture.DirectionCounts;
+            if (currentDir > texture.DirectionCounts) return texture.DirectionCounts;
+            return currentDir;
+        }
+
+        private int _canMoveDirCount = -1;
+        public int CanMoveDirCount
+        {
+            get
+            {
+                if (_canMoveDirCount == -1)
+                {
+                    _canMoveDirCount = GetMinDir(_canMoveDirCount, NpcIni, CharacterState.Walk);
+                    _canMoveDirCount = GetMinDir(_canMoveDirCount, NpcIni, CharacterState.FightWalk);
+                    _canMoveDirCount = GetMinDir(_canMoveDirCount, NpcIni, CharacterState.Run);
+                    _canMoveDirCount = GetMinDir(_canMoveDirCount, NpcIni, CharacterState.FightRun);
+
+                    if (_canMoveDirCount == -1) _canMoveDirCount = 0;
+                }
+
+                return _canMoveDirCount;
+            }
+        }
+
+        private int _canAttackDirCount = -1;
+        public int CanAttackDirCount
+        {
+            get
+            {
+                if (_canAttackDirCount == -1)
+                {
+                    _canAttackDirCount = GetMinDir(_canAttackDirCount, NpcIni, CharacterState.Attack);
+                    _canAttackDirCount = GetMinDir(_canAttackDirCount, NpcIni, CharacterState.Attack1);
+                    _canAttackDirCount = GetMinDir(_canAttackDirCount, NpcIni, CharacterState.Attack2);
+
+                    if (_canAttackDirCount == -1) _canAttackDirCount = 0;
+                }
+
+                return _canAttackDirCount;
+            }
+        }
+
+        private int _canUseMagicDirCount = -1;
+        public int CanUseMagicDirCount
+        {
+            get
+            {
+                if (_canUseMagicDirCount == -1)
+                {
+                    _canUseMagicDirCount = GetMinDir(_canUseMagicDirCount, NpcIni, CharacterState.Magic);
+
+                    if (_canUseMagicDirCount == -1) _canUseMagicDirCount = 0;
+                }
+
+                return _canUseMagicDirCount;
+            }
+        }
+
+        private int _canJumpDirCount = -1;
+        public int CanJumpDirCount
+        {
+            get
+            {
+                if (_canJumpDirCount == -1)
+                {
+                    _canJumpDirCount = GetMinDir(_canJumpDirCount, NpcIni, CharacterState.Jump);
+                    _canJumpDirCount = GetMinDir(_canJumpDirCount, NpcIni, CharacterState.FightJump);
+
+                    if (_canJumpDirCount == -1) _canJumpDirCount = 0;
+                }
+
+                return _canJumpDirCount;
+            }
+        }
+
         public int Dir
         {
             get { return _dir; }
@@ -1833,6 +1913,11 @@ namespace Engine
                 !HasObstacle(destinationTilePosition))
             {
                 if (!CanJump()) return;
+
+                //Check jump animations supporting current jump direction or not.
+                if (CanJumpDirCount < 8 && !Engine.PathFinder.CanMoveInDirection(
+                        Utils.GetDirectionIndex(MapBase.ToPixelPosition(destinationTilePosition) - PositionInWorld, 8), CanJumpDirCount)) return;
+
                 StateInitialize();
                 DestinationMoveTilePosition = destinationTilePosition;
                 Path = new LinkedList<Vector2>();
@@ -1869,6 +1954,13 @@ namespace Engine
         {
             if (PerformActionOk())
             {
+                //Check use magic animations supporting current use magic direction or not.
+                var canUseMagicDirCount = magicUse.UseActionFile != null
+                    ? magicUse.UseActionFile.DirectionCounts
+                    : CanUseMagicDirCount;
+                if (canUseMagicDirCount < 8 && !Engine.PathFinder.CanMoveInDirection(
+                        Utils.GetDirectionIndex(MapBase.ToPixelPosition(magicDestinationTilePosition) - PositionInWorld, 8), canUseMagicDirCount)) return;
+
                 StateInitialize();
                 ToFightingState();
 
@@ -2220,6 +2312,14 @@ namespace Engine
             if (PerformActionOk())
             {
                 if (!CanPerformeAttack()) return;
+
+                //Check attck animations supporting current attack direction or not.
+                var canAttackDirCount = magicToUse.UseActionFile != null
+                    ? magicToUse.UseActionFile.DirectionCounts
+                    : CanAttackDirCount;
+                if (canAttackDirCount < 8 && !Engine.PathFinder.CanMoveInDirection(
+                    Utils.GetDirectionIndex(destinationPositionInWorld - PositionInWorld, 8), canAttackDirCount)) return;
+
                 StateInitialize();
                 ToFightingState();
                 _attackDestination = destinationPositionInWorld;
