@@ -45,6 +45,10 @@ namespace Engine
         public string[] User { set; get; }
         public int MinUserLevel { set; get; }
 
+        public int AddMagicEffectPercent { set; get; }
+        public int AddMagicEffectAmount { set; get; }
+        public string AddMagicEffectName { set; get; }
+
         public GoodEffectType TheEffectType
         {
             get
@@ -162,6 +166,7 @@ namespace Engine
                     case "FlyIni":
                     case "FlyIni2":
                     case "MagicIniWhenUse":
+                    case "AddMagicEffectName":
                         info.SetValue(this, value, null);
                         break;
                     case "Kind":

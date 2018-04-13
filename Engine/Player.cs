@@ -722,6 +722,16 @@ namespace Engine
                 {
                     FlyIni2Replace = Utils.GetMagic(equip.FlyIni2, IsMagicFromCache);
                 }
+
+                if (string.IsNullOrEmpty(equip.AddMagicEffectName))
+                {
+                    AddMagicEffectPercent += equip.AddMagicEffectPercent;
+                    AddMagicEffectAmount += equip.AddMagicEffectAmount;
+                }
+                else
+                {
+                    AddMagicEffectWithName[equip.AddMagicEffectName] = new AddmagicEffectInfo(equip.AddMagicEffectPercent, equip.AddMagicEffectAmount);
+                }
             }
 
             //Restore
@@ -791,6 +801,16 @@ namespace Engine
                 if (!string.IsNullOrEmpty(equip.FlyIni2))
                 {
                     FlyIni2Replace = null;
+                }
+
+                if (string.IsNullOrEmpty(equip.AddMagicEffectName))
+                {
+                    AddMagicEffectPercent -= equip.AddMagicEffectPercent;
+                    AddMagicEffectAmount -= equip.AddMagicEffectAmount;
+                }
+                else
+                {
+                    AddMagicEffectWithName.Remove(equip.AddMagicEffectName);
                 }
             }
         }

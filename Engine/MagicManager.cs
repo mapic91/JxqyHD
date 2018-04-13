@@ -760,6 +760,20 @@ namespace Engine
             Globals.TheGame.TimeStoperMagicSprite = null;
         }
 
+        private static int AddMagicEffect(Magic magic, Character belongCharacter, int effect)
+        {
+            var info = belongCharacter.GetAddMagicEffectInfo(magic.Name);
+            var percent = belongCharacter.AddMagicEffectPercent + (info == null ? 0 : info.AddMagicEffectPercent);
+            var amount = belongCharacter.AddMagicEffectAmount + (info == null ? 0 : info.AddMagicEffectAmount);
+            if (percent > 0)
+            {
+                effect += (int) (effect * percent / 100.0f);
+            }
+
+            effect += amount;
+            return effect;
+        }
+
         public static int GetEffectAmount(Magic magic, Character belongCharacter)
         {
             //If magic effect not set(equal 0) use belong character attack value as amount.
@@ -767,7 +781,7 @@ namespace Engine
             var effect = (magic.Effect == 0 || !belongCharacter.IsPlayer) ?
                 belongCharacter.Attack :
                 magic.Effect;
-            return effect + magic.EffectExt;
+            return AddMagicEffect(magic, belongCharacter, effect + magic.EffectExt);
         }
 
         public static int GetEffectAmount2(Magic magic, Character belongCharacter)
@@ -777,7 +791,7 @@ namespace Engine
             var effect = (magic.Effect2 == 0 || !belongCharacter.IsPlayer) ?
                 belongCharacter.Attack2 :
                 magic.Effect2;
-            return effect;
+            return AddMagicEffect(magic, belongCharacter, effect);
         }
 
         /// <summary>

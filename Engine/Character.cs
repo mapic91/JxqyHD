@@ -191,6 +191,27 @@ namespace Engine
             set { _dropIni = value; }
         }
 
+
+        public class AddmagicEffectInfo
+        {
+            public int AddMagicEffectPercent { private set; get; }
+            public int AddMagicEffectAmount { private set; get; }
+            public AddmagicEffectInfo(int percent, int amount)
+            {
+                AddMagicEffectPercent = percent;
+                AddMagicEffectAmount = amount;
+            }
+        }
+        public int AddMagicEffectPercent { protected set; get; }
+        public int AddMagicEffectAmount { protected set; get; }
+        protected Dictionary<string, AddmagicEffectInfo> AddMagicEffectWithName = new Dictionary<string, AddmagicEffectInfo>();
+
+        public AddmagicEffectInfo GetAddMagicEffectInfo(string magicName)
+        {
+            return AddMagicEffectWithName.ContainsKey(magicName) ? AddMagicEffectWithName[magicName] : null;
+        }
+
+
         public bool IsFightDisabled { protected set; get; }
         public bool IsJumpDisabled { protected set; get; }
         public bool IsRunDisabled { protected set; get; }
