@@ -109,6 +109,8 @@ namespace Engine.Gui
 
                 if (good.User != null && good.User.Length > 0)
                     user = ("使用者：" + string.Join("，", good.User));
+                if (good.MinUserLevel > 0)
+                    user += (string.IsNullOrEmpty(user) ? "" : Environment.NewLine) + "等级需求：" + good.MinUserLevel;
 
                 if (good.Life != 0)
                     effect.AppendLine("命" + good.Life.ToString("+#;-#"));
@@ -132,6 +134,15 @@ namespace Engine.Gui
                     effect.AppendLine("体" + good.ThewMax.ToString("+#;-#"));
                 if (good.ManaMax != 0)
                     effect.AppendLine("气" + good.ManaMax.ToString("+#;-#"));
+                if (good.SpecialEffect == 1)
+                    effect.AppendLine(string.Format("不断恢复生命 {0}%/秒", good.SpecialEffectValue));
+                if (good.AddMagicEffectPercent > 0 || good.AddMagicEffectAmount > 0)
+                {
+                    effect.AppendLine(string.Format("[{0}] 攻击{1}{2}",
+                        string.IsNullOrEmpty(good.AddMagicEffectName) ? "所有武功" : good.AddMagicEffectName,
+                        good.AddMagicEffectPercent > 0 ? (" +" + good.AddMagicEffectPercent/100.0f + "%") : "",
+                        good.AddMagicEffectAmount > 0 ? (" +" + good.AddMagicEffectAmount) : ""));
+                }
                 if (!string.IsNullOrEmpty(good.Intro))
                     intro = good.Intro;
             }
