@@ -818,10 +818,18 @@ namespace Engine
                 if (!string.IsNullOrEmpty(equip.AddMagicEffectName))
                 {
                     AddMagicEffectWithName[equip.AddMagicEffectName].Remove(equip.Name);
+                    if (AddMagicEffectWithName[equip.AddMagicEffectName].Count == 0)
+                    {
+                        AddMagicEffectWithName.Remove(equip.AddMagicEffectName);
+                    }
                 }
                 else if (!string.IsNullOrEmpty(equip.AddMagicEffectType))
                 {
                     AddMagicEffectWithType[equip.AddMagicEffectType].Remove(equip.Name);
+                    if (AddMagicEffectWithType[equip.AddMagicEffectType].Count == 0)
+                    {
+                        AddMagicEffectWithType.Remove(equip.AddMagicEffectType);
+                    }
                 }
                 else
                 {
