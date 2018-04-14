@@ -48,6 +48,7 @@ namespace Engine
         public int AddMagicEffectPercent { set; get; }
         public int AddMagicEffectAmount { set; get; }
         public string AddMagicEffectName { set; get; }
+        public string AddMagicEffectType { set; get; }
 
         public GoodEffectType TheEffectType
         {
@@ -167,6 +168,7 @@ namespace Engine
                     case "FlyIni2":
                     case "MagicIniWhenUse":
                     case "AddMagicEffectName":
+                    case "AddMagicEffectType":
                         info.SetValue(this, value, null);
                         break;
                     case "Kind":

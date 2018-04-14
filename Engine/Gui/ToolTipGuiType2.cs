@@ -77,6 +77,8 @@ namespace Engine.Gui
             {
                 if (!string.IsNullOrEmpty(magic.Name))
                     name = magic.Name;
+                if (!string.IsNullOrEmpty(magic.Type))
+                    name += " " + magic.Type;
                 level = "等级： " + magic.CurrentLevel;
                 if (!string.IsNullOrEmpty(magic.Intro))
                     intro = magic.Intro;
@@ -138,8 +140,11 @@ namespace Engine.Gui
                     effect.AppendLine(string.Format("不断恢复生命 {0}%/秒", good.SpecialEffectValue));
                 if (good.AddMagicEffectPercent > 0 || good.AddMagicEffectAmount > 0)
                 {
-                    effect.AppendLine(string.Format("[{0}] 攻击{1}{2}",
-                        string.IsNullOrEmpty(good.AddMagicEffectName) ? "所有武功" : good.AddMagicEffectName,
+                    var showName = "所有武功";
+                    if (!string.IsNullOrEmpty(good.AddMagicEffectName)) showName = good.AddMagicEffectName;
+                    else if (!string.IsNullOrEmpty(good.AddMagicEffectType)) showName = good.AddMagicEffectType;
+                    effect.AppendLine(string.Format("{0} 攻击{1}{2}",
+                        showName,
                         good.AddMagicEffectPercent > 0 ? (" +" + good.AddMagicEffectPercent + "%") : "",
                         good.AddMagicEffectAmount > 0 ? (" +" + good.AddMagicEffectAmount) : ""));
                 }

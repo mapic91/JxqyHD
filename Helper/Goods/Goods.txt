@@ -101,6 +101,7 @@ AddMagicEffectPercent - Ôö¼Ó¶àÉÙ±ÈÀıµÄÔ­¹¥»÷£¨Effect£¬Effect2¶¼»á¼ÓÉÏ¸Ã±ÈÀı£©£¬Ä
 AddMagicEffectAmount - Ôö¼Ó¶àÉÙµÄ¹¥»÷(Effect, Effect2¶¼»á¼ÓÉÏ¸ÃÖµ)£¬Ä¬ÈÏ0¡£±ÈÈçÎä¹¦µÄ¹¥»÷EffectÎª10£¬µ±Ç°ÉèÖÃÎª1£¬ÔòÎä¹¦¹¥»÷Îª 10 + 1 = 11
 AddMagicEffectName - Èç¹ûÉèÖÃÁË£¬ÔòÖ»Ôö¼Ó¸ÃÎä¹¦Ãû³Æ£¨Îä¹¦iniÎÄ¼şÀïµÄNameÏî£©Îª¸ÃÖµµÄ¹¥»÷£¬·ñÔòÔö¼ÓËùÓĞÎä¹¦µÄ¹¥»÷£¬Ä¬ÈÏ²»ÉèÖÃ¡£±ÈÈçÉèÖÃÎª£ºÁÒ»ğÇéÌì£¬ÔòÖ»Ôö¼ÓÁÒ»ğÇéÌì(player-magic-ÁÒ»ğÇéÌì.ini)µÄ¹¥»÷¡£
 ×¢£ºÈç¹û¶à¸ö×°±¸¶¼Ôö¼ÓÎä¹¦µÄ¹¥»÷£¬Ôò¼ÆËã·½Ê½Îª£¬ÏÈ¼ÆËã°Ù·Ö±È£¬ÔÙ¼ÓÉÏÔö¼ÓÖµ£¬¼´ -> Ô­¹¥»÷ * (1 + AddMagicEffectPercent% + AddMagicEffectPercent% + ...) + AddMagicEffectAmount + AddMagicEffectAmount + ...
+AddMagicEffectType - ÓëAddMagicEffectName²»Í¬µÄÊÇ£¬¸ÃÏî°´Îä¹¦µÄTypeÀ´Ôö¼ÓÎä¹¦µÄ¹¥»÷£¬²»°´ÌØ¶¨µÄÎä¹¦Ãû³Æ¡£AddMagicEffectNameµÄÓÅÏÈ¼¶±È´ËÏî¸ß£¬¼´Í¬Ê±ÉèÖÃÁËAddMagicEffectNameºÍAddMagicEffectType£¬AddMagicEffectNameÉúĞ§¡£±ÈÈç£ºAddMagicEffectType=[½£·¨]£¬±íÊ¾Îä¹¦ÀàĞÍ£¨Type£©Îª [½£·¨] µÄ¹¥»÷Á¦¶¼»áÔö¼Ó¡£
 
 
 

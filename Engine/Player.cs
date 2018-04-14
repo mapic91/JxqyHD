@@ -723,14 +723,26 @@ namespace Engine
                     FlyIni2Replace = Utils.GetMagic(equip.FlyIni2, IsMagicFromCache);
                 }
 
-                if (string.IsNullOrEmpty(equip.AddMagicEffectName))
+                if (!string.IsNullOrEmpty(equip.AddMagicEffectName))
                 {
-                    AddMagicEffectPercent += equip.AddMagicEffectPercent;
-                    AddMagicEffectAmount += equip.AddMagicEffectAmount;
+                    if (!AddMagicEffectWithName.ContainsKey(equip.AddMagicEffectName))
+                    {
+                        AddMagicEffectWithName[equip.AddMagicEffectName] = new Dictionary<string, AddmagicEffectInfo>();
+                    }
+                    AddMagicEffectWithName[equip.AddMagicEffectName][equip.Name] = new AddmagicEffectInfo(equip.AddMagicEffectPercent, equip.AddMagicEffectAmount);
+                }
+                else if (!string.IsNullOrEmpty(equip.AddMagicEffectType))
+                {
+                    if (!AddMagicEffectWithType.ContainsKey(equip.AddMagicEffectType))
+                    {
+                        AddMagicEffectWithType[equip.AddMagicEffectType] = new Dictionary<string, AddmagicEffectInfo>();
+                    }
+                    AddMagicEffectWithType[equip.AddMagicEffectType][equip.Name] = new AddmagicEffectInfo(equip.AddMagicEffectPercent, equip.AddMagicEffectAmount);
                 }
                 else
                 {
-                    AddMagicEffectWithName[equip.AddMagicEffectName] = new AddmagicEffectInfo(equip.AddMagicEffectPercent, equip.AddMagicEffectAmount);
+                    AddMagicEffectPercent += equip.AddMagicEffectPercent;
+                    AddMagicEffectAmount += equip.AddMagicEffectAmount;
                 }
             }
 
@@ -803,14 +815,18 @@ namespace Engine
                     FlyIni2Replace = null;
                 }
 
-                if (string.IsNullOrEmpty(equip.AddMagicEffectName))
+                if (!string.IsNullOrEmpty(equip.AddMagicEffectName))
                 {
-                    AddMagicEffectPercent -= equip.AddMagicEffectPercent;
-                    AddMagicEffectAmount -= equip.AddMagicEffectAmount;
+                    AddMagicEffectWithName[equip.AddMagicEffectName].Remove(equip.Name);
+                }
+                else if (!string.IsNullOrEmpty(equip.AddMagicEffectType))
+                {
+                    AddMagicEffectWithType[equip.AddMagicEffectType].Remove(equip.Name);
                 }
                 else
                 {
-                    AddMagicEffectWithName.Remove(equip.AddMagicEffectName);
+                    AddMagicEffectPercent -= equip.AddMagicEffectPercent;
+                    AddMagicEffectAmount -= equip.AddMagicEffectAmount;
                 }
             }
         }

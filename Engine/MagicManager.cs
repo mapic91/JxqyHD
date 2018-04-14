@@ -762,9 +762,33 @@ namespace Engine
 
         private static int AddMagicEffect(Magic magic, Character belongCharacter, int effect)
         {
-            var info = belongCharacter.GetAddMagicEffectInfo(magic.Name);
-            var percent = belongCharacter.AddMagicEffectPercent + (info == null ? 0 : info.AddMagicEffectPercent);
-            var amount = belongCharacter.AddMagicEffectAmount + (info == null ? 0 : info.AddMagicEffectAmount);
+            var percent = belongCharacter.AddMagicEffectPercent ;
+            var amount = belongCharacter.AddMagicEffectAmount;
+            var nameInfo = belongCharacter.GetAddMagicEffectInfoWithName(magic.Name);
+            if (nameInfo != null)
+            {
+                foreach (var addmagicEffectInfo in nameInfo)
+                {
+                    percent += addmagicEffectInfo.Value.AddMagicEffectPercent;
+                    amount += addmagicEffectInfo.Value.AddMagicEffectAmount;
+                }
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(magic.Type))
+                {
+                    var typeInfo = belongCharacter.GetAddMagicEffectInfoWithType(magic.Type);
+                    if (typeInfo != null)
+                    {
+                        foreach (var addmagicEffectInfo in typeInfo)
+                        {
+                            percent += addmagicEffectInfo.Value.AddMagicEffectPercent;
+                            amount += addmagicEffectInfo.Value.AddMagicEffectAmount;
+                        }
+                    }
+                }
+                
+            }
             if (percent > 0)
             {
                 effect += (int) (effect * percent / 100.0f);

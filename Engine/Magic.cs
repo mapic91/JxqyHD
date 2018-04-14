@@ -132,6 +132,7 @@ namespace Engine
 
         #region Public properties
         public AddonEffect AdditionalEffect { set; get; }
+        public string Type { set; get; }
 
         public MagicListManager.MagicItemInfo ItemInfo
         {
@@ -770,6 +771,7 @@ namespace Engine
                     case "Intro":
                     case "ActionFile":
                     case "NpcFile":
+                    case "Type":
                         info.SetValue(this, nameValue[1], null);
                         break;
                     case "Image":

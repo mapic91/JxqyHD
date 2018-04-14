@@ -204,11 +204,17 @@ namespace Engine
         }
         public int AddMagicEffectPercent { protected set; get; }
         public int AddMagicEffectAmount { protected set; get; }
-        protected Dictionary<string, AddmagicEffectInfo> AddMagicEffectWithName = new Dictionary<string, AddmagicEffectInfo>();
+        protected Dictionary<string, Dictionary<string, AddmagicEffectInfo>> AddMagicEffectWithName = new Dictionary<string, Dictionary<string, AddmagicEffectInfo>>();
+        protected Dictionary<string, Dictionary<string, AddmagicEffectInfo>> AddMagicEffectWithType = new Dictionary<string, Dictionary<string, AddmagicEffectInfo>>();
 
-        public AddmagicEffectInfo GetAddMagicEffectInfo(string magicName)
+        public Dictionary<string, AddmagicEffectInfo> GetAddMagicEffectInfoWithName(string magicName)
         {
             return AddMagicEffectWithName.ContainsKey(magicName) ? AddMagicEffectWithName[magicName] : null;
+        }
+
+        public Dictionary<string, AddmagicEffectInfo> GetAddMagicEffectInfoWithType(string type)
+        {
+            return AddMagicEffectWithType.ContainsKey(type) ? AddMagicEffectWithType[type] : null;
         }
 
 
