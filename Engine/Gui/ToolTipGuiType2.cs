@@ -140,7 +140,7 @@ namespace Engine.Gui
                 {
                     effect.AppendLine(string.Format("[{0}] 攻击{1}{2}",
                         string.IsNullOrEmpty(good.AddMagicEffectName) ? "所有武功" : good.AddMagicEffectName,
-                        good.AddMagicEffectPercent > 0 ? (" +" + good.AddMagicEffectPercent/100.0f + "%") : "",
+                        good.AddMagicEffectPercent > 0 ? (" +" + good.AddMagicEffectPercent + "%") : "",
                         good.AddMagicEffectAmount > 0 ? (" +" + good.AddMagicEffectAmount) : ""));
                 }
                 if (!string.IsNullOrEmpty(good.Intro))
