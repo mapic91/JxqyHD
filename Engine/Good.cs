@@ -50,6 +50,8 @@ namespace Engine
         public string AddMagicEffectName { set; get; }
         public string AddMagicEffectType { set; get; }
 
+        public int ChangeMoveSpeedPercent { set; get; }
+
         public GoodEffectType TheEffectType
         {
             get

@@ -17,6 +17,7 @@ namespace Engine
     {
         public static readonly Encoding LocalEncoding = Encoding.GetEncoding(936);
         public const int BaseSpeed = 100;
+        public const int MinChangeMoveSpeedPercent = -90;
         public const int MagicBasespeed = 100;
         public const float SoundMaxDistance = 1000f;
         public const float Sound3DMaxDistance = 8f;

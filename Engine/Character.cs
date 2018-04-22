@@ -218,6 +218,17 @@ namespace Engine
         }
 
 
+        public int ChangeMoveSpeedPercent { protected set; get; }
+        protected float ChangeMoveSpeedFold
+        {
+            get
+            {
+                return 1 + (ChangeMoveSpeedPercent < Globals.MinChangeMoveSpeedPercent
+                           ? Globals.MinChangeMoveSpeedPercent
+                           : ChangeMoveSpeedPercent) / 100.0f;
+            }
+        }
+
         public bool IsFightDisabled { protected set; get; }
         public bool IsJumpDisabled { protected set; get; }
         public bool IsRunDisabled { protected set; get; }
@@ -3066,7 +3077,7 @@ namespace Engine
                         {
                             var direction = _fixedPathMoveDestinationPixelPostion - PositionInWorld;
                             MoveTo(direction,
-                                (float)elapsedGameTime.TotalSeconds * WalkSpeed * 2);
+                                (float)elapsedGameTime.TotalSeconds * WalkSpeed * 2 * ChangeMoveSpeedFold);
                             if (direction == Vector2.Zero ||
                                 MovedDistance >= _fixedPathDistanceToMove)
                             {
@@ -3076,7 +3087,7 @@ namespace Engine
                         }
                         else
                         {
-                            MoveAlongPath((float)elapsedGameTime.TotalSeconds, WalkSpeed);
+                            MoveAlongPath((float)elapsedGameTime.TotalSeconds * ChangeMoveSpeedFold, WalkSpeed);
                         }
                         SoundManager.Apply3D(_sound,
                                     PositionInWorld - Globals.ListenerPosition);
@@ -3085,7 +3096,7 @@ namespace Engine
                     break;
                 case CharacterState.Run:
                 case CharacterState.FightRun:
-                    MoveAlongPath((float)elapsedGameTime.TotalSeconds, Globals.RunSpeedFold);
+                    MoveAlongPath((float)elapsedGameTime.TotalSeconds * ChangeMoveSpeedFold, Globals.RunSpeedFold);
                     SoundManager.Apply3D(_sound,
                                     PositionInWorld - Globals.ListenerPosition);
                     base.Update(gameTime);

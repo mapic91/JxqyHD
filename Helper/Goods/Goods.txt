@@ -103,5 +103,14 @@ AddMagicEffectName - 如果设置了，则只增加该武功名称（武功ini文件里的Name项）为该
 注：如果多个装备都增加武功的攻击，则计算方式为，先计算百分比，再加上增加值，即 -> 原攻击 * (1 + AddMagicEffectPercent% + AddMagicEffectPercent% + ...) + AddMagicEffectAmount + AddMagicEffectAmount + ...
 AddMagicEffectType - 与AddMagicEffectName不同的是，该项按武功的Type来增加武功的攻击，不按特定的武功名称。AddMagicEffectName的优先级比此项高，即同时设置了AddMagicEffectName和AddMagicEffectType，AddMagicEffectName生效。比如：AddMagicEffectType=[剑法]，表示武功类型（Type）为 [剑法] 的攻击力都会增加。
 
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+增加或减少移动速度
+ChangeMoveSpeedPercent - 增加或减少多少百分比的移动速度，默认0。正数表示增加，负数表示减少，若有多个装备，累积增加无上限，累积减少最多90%。
+比如
+ChangeMoveSpeedPercent=40
+表示增加移动速度40%
+ChangeMoveSpeedPercent=-40
+表示减少移动速度40%
 
 

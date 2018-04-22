@@ -744,6 +744,8 @@ namespace Engine
                     AddMagicEffectPercent += equip.AddMagicEffectPercent;
                     AddMagicEffectAmount += equip.AddMagicEffectAmount;
                 }
+
+                ChangeMoveSpeedPercent += equip.ChangeMoveSpeedPercent;
             }
 
             //Restore
@@ -836,6 +838,8 @@ namespace Engine
                     AddMagicEffectPercent -= equip.AddMagicEffectPercent;
                     AddMagicEffectAmount -= equip.AddMagicEffectAmount;
                 }
+
+                ChangeMoveSpeedPercent -= equip.ChangeMoveSpeedPercent;
             }
         }
 

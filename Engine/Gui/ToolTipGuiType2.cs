@@ -138,6 +138,8 @@ namespace Engine.Gui
                     effect.AppendLine("气" + good.ManaMax.ToString("+#;-#"));
                 if (good.SpecialEffect == 1)
                     effect.AppendLine(string.Format("不断恢复生命 {0}%/秒", good.SpecialEffectValue));
+                if (good.ChangeMoveSpeedPercent != 0)
+                    effect.AppendLine(string.Format("移动速度 {0:+#;-#}%", good.ChangeMoveSpeedPercent));
                 if (good.AddMagicEffectPercent > 0 || good.AddMagicEffectAmount > 0)
                 {
                     var showName = "所有武功";
