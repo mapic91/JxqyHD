@@ -65,6 +65,7 @@ namespace Engine
         private int _lum;
         private int _action;
         private int _walkSpeed = 1;
+        private int _addMoveSpeedPercent;
         private int _evade;
         private int _attack;
         private int _attack2;
@@ -223,9 +224,10 @@ namespace Engine
         {
             get
             {
-                return 1 + (ChangeMoveSpeedPercent < Globals.MinChangeMoveSpeedPercent
+                var percent = ChangeMoveSpeedPercent + AddMoveSpeedPercent;
+                return 1 + (percent < Globals.MinChangeMoveSpeedPercent
                            ? Globals.MinChangeMoveSpeedPercent
-                           : ChangeMoveSpeedPercent) / 100.0f;
+                           : percent) / 100.0f;
             }
         }
 
@@ -579,6 +581,12 @@ namespace Engine
         {
             get { return _walkSpeed; }
             set { _walkSpeed = value < 1 ? 1 : value; }
+        }
+
+        public int AddMoveSpeedPercent
+        {
+            get { return _addMoveSpeedPercent; }
+            set { _addMoveSpeedPercent = value; }
         }
 
         public int Evade
@@ -1702,6 +1710,7 @@ namespace Engine
             AddKey(keyDataCollection, "Lum", _lum);
             AddKey(keyDataCollection, "Action", _action);
             AddKey(keyDataCollection, "WalkSpeed", _walkSpeed);
+            AddKey(keyDataCollection, "AddMoveSpeedPercent", _addMoveSpeedPercent);
             AddKey(keyDataCollection, "Evade", _evade);
             AddKey(keyDataCollection, "Attack", _attack);
             AddKey(keyDataCollection, "Attack2", _attack2);

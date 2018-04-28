@@ -1972,5 +1972,13 @@ namespace Engine.Script
         {
             MagicListManager.ClearLearnedMagic(Globals.ThePlayer);
         }
+
+        public static void AddMoveSpeedPercent(List<string> parameters)
+        {
+            if (Globals.ThePlayer != null)
+            {
+                Globals.ThePlayer.AddMoveSpeedPercent += int.Parse(parameters[0]);
+            }
+        }
     }
 }
