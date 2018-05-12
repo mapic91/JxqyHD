@@ -950,17 +950,25 @@ namespace Engine
                 {
                     if (MovedDistance > 200f) //First move 200, than find target
                     {
-                        if (BelongCharacter.IsPlayer || BelongCharacter.IsFriend)
+                        if (BelongMagic.AttackAll > 0)
                         {
-                            if (_closedCharecter == null || _closedCharecter.IsDeath)
-                            {
-                                _closedCharecter = NpcManager.GetClosestEnemyTypeCharacter(PositionInWorld);
-                            }
+                            _closedCharecter = NpcManager.GetClosestFighter(PositionInWorld);
                         }
                         else
                         {
-                            _closedCharecter = Globals.ThePlayer;
+                            if (BelongCharacter.IsPlayer || BelongCharacter.IsFriend)
+                            {
+                                if (_closedCharecter == null || _closedCharecter.IsDeath)
+                                {
+                                    _closedCharecter = NpcManager.GetClosestEnemyTypeCharacter(PositionInWorld);
+                                }
+                            }
+                            else
+                            {
+                                _closedCharecter = NpcManager.GetLiveClosestPlayerOrFighterFriend(PositionInWorld);
+                            }
                         }
+                        
 
                         if (_closedCharecter != null)
                             MoveDirection = _closedCharecter.PositionInWorld - PositionInWorld;
