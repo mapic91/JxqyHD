@@ -555,7 +555,11 @@ namespace Engine
                 return;
             }
 
-            if (BelongCharacter.IsPlayer || BelongCharacter.IsFighterFriend)
+            if (BelongMagic.AttackAll > 0)
+            {
+                CharacterHited(NpcManager.GetFighter(TilePosition));
+            }
+            else if (BelongCharacter.IsPlayer || BelongCharacter.IsFighterFriend)
             {
                 var target = NpcManager.GetEnemy(TilePosition);
                 CharacterHited(target);
@@ -638,7 +642,12 @@ namespace Engine
                 Texture = null;
                 _superModeDestroySprites = new LinkedList<Sprite>();
                 List<Character> targets;
-                if (BelongCharacter.IsPlayer || BelongCharacter.IsFighterFriend)
+                if (BelongMagic.AttackAll > 0)
+                {
+                    targets = NpcManager.NpcsInView.Where(npc => npc.IsFighter).Cast<Character>().ToList();
+                    targets.Add(Globals.ThePlayer);
+                }
+                else if (BelongCharacter.IsPlayer || BelongCharacter.IsFighterFriend)
                 {
                     targets = NpcManager.NpcsInView.Where(npc => npc.IsEnemy).Cast<Character>().ToList();
                 }
@@ -767,19 +776,28 @@ namespace Engine
 
             AddDestroySprite(MagicManager.EffectSprites, PositionInWorld, BelongMagic.VanishImage, BelongMagic.VanishSound);
 
-            var closedEnemy = NpcManager.GetClosestEnemy(BelongCharacter, hitedCharacter.PositionInWorld, _leapedCharacters);
-            if (closedEnemy == null)
+            Character nextTarget;
+            if (BelongMagic.AttackAll > 0)
+            {
+                nextTarget = NpcManager.GetClosestFighter(hitedCharacter.PositionInWorld, _leapedCharacters);
+            }
+            else
+            {
+                nextTarget =
+                    NpcManager.GetClosestEnemy(BelongCharacter, hitedCharacter.PositionInWorld, _leapedCharacters);
+            }
+            if (nextTarget == null)
             {
                 EndLeap();
                 return;
             }
             Texture = BelongMagic.LeapImage;
             PlayFrames(BelongMagic.LeapFrame);
-            MoveDirection = closedEnemy.PositionInWorld - PositionInWorld;
+            MoveDirection = nextTarget.PositionInWorld - PositionInWorld;
             //Move magic sprite to neighber tile
             TilePosition = PathFinder.FindNeighborInDirection(TilePosition, RealMoveDirection);
             //Correct move direction
-            MoveDirection = closedEnemy.PositionInWorld - PositionInWorld;
+            MoveDirection = nextTarget.PositionInWorld - PositionInWorld;
 
             _leapedCharacters.Add(hitedCharacter);
         }
@@ -1004,7 +1022,17 @@ namespace Engine
                             BelongMagic.RangePetrify > 0 ||
                             BelongMagic.RangeDamage > 0)
                         {
-                            foreach (var target in NpcManager.FindEnemiesInTileDistance(BelongCharacter, TilePosition, BelongMagic.RangeRadius))
+                            List<Character> targets;
+                            if (BelongMagic.AttackAll > 0)
+                            {
+                                targets = NpcManager.FindFightersInTileDistance(TilePosition, BelongMagic.RangeRadius);
+                            }
+                            else
+                            {
+                                targets = NpcManager.FindEnemiesInTileDistance(BelongCharacter, TilePosition,
+                                    BelongMagic.RangeRadius);
+                            }
+                            foreach (var target in targets)
                             {
                                 if (BelongMagic.RangeFreeze > 0)
                                 {

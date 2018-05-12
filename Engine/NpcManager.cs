@@ -147,6 +147,32 @@ namespace Engine
             return closed;
         }
 
+        public static Character GetClosestFighter(Vector2 targetPositionInWorld, List<Character> ignoreList = null)
+        {
+            Character closed = null;
+            var closedDistance = 99999999f;
+            foreach (var npc in _list)
+            {
+                if ((ignoreList == null || ignoreList.All(item => npc != item)) && npc.IsFighter)
+                {
+                    var distance = Vector2.Distance(targetPositionInWorld, npc.PositionInWorld);
+                    if (npc.IsDeathInvoked || !(distance < closedDistance)) continue;
+                    closed = npc;
+                    closedDistance = distance;
+                }
+            }
+
+            var character = Globals.PlayerKindCharacter;
+            if ((ignoreList == null || ignoreList.All(item => character != item)) &&
+                !character.IsDeathInvoked &&
+                Globals.ThePlayer.Kind == (int)Character.CharacterKind.Player &&
+                Vector2.Distance(targetPositionInWorld, character.PositionInWorld) < closedDistance)
+            {
+                closed = Globals.ThePlayer;
+            }
+            return closed;
+        }
+
         /// <summary>
         /// Get enemy relate to finder closed to targetPositionInWorld.
         /// </summary>
@@ -272,6 +298,19 @@ namespace Engine
             }
 
             return enemies;
+        }
+
+        public static List<Character> FindFightersInTileDistance(Vector2 beginTilePosition, int tileDistance)
+        {
+            var fighters = new List<Character>();
+
+            fighters.AddRange(_list.Where(npc => npc.IsFighter && PathFinder.GetViewTileDistance(beginTilePosition, npc.TilePosition) <= tileDistance));
+
+            if (Globals.ThePlayer.Kind == (int)Character.CharacterKind.Player && PathFinder.GetViewTileDistance(beginTilePosition, Globals.ThePlayer.TilePosition) <= tileDistance)
+            {
+                fighters.Add(Globals.ThePlayer);
+            }
+            return fighters;
         }
 
         public static List<Character> FindFriendInTileDistance(Character finder, Vector2 beginTilePosition, int tileDistance)
@@ -491,6 +530,25 @@ namespace Engine
             return _list.FirstOrDefault(npc => npc.IsEventCharacter && npc.TilePosition == tilePosition);
         }
 
+        /// <summary>
+        /// Get character who can fight.
+        /// </summary>
+        /// <param name="tilePosition"></param>
+        /// <returns></returns>
+        public static Character GetFighter(Vector2 tilePosition)
+        {
+            if (Globals.ThePlayer.Kind == (int)Character.CharacterKind.Player && Globals.ThePlayer.TilePosition == tilePosition) return Globals.ThePlayer;
+            foreach (var npc in _list)
+            {
+                if (npc.IsFighter)
+                {
+                    if (npc.TilePosition == tilePosition) return npc;
+                }
+            }
+
+            return null;
+        }
+
         public static Npc GetEnemy(Vector2 tilePosition)
         {
             return GetEnemy((int)tilePosition.X, (int)tilePosition.Y);
@@ -701,7 +759,7 @@ namespace Engine
         {
             foreach (var npc in _list)
             {
-                if (npc.IsFighter)
+                if (npc.IsFighterKind)
                 {
                     npc.CancleAttackTarget();
                 }

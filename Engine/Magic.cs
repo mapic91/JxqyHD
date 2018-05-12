@@ -90,6 +90,7 @@ namespace Engine
         private int _rangeDamage;
         private int _rangeRadius;
         private int _rangeTimeInerval;
+        private int _attackAll;
 
         private Asf _useActionFile;
 
@@ -714,6 +715,12 @@ namespace Engine
         {
             get { return _rangeTimeInerval; }
             set { _rangeTimeInerval = value; }
+        }
+
+        public int AttackAll
+        {
+            get { return _attackAll; }
+            set { _attackAll = value; }
         }
 
         public Asf UseActionFile

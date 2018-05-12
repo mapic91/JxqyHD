@@ -1015,6 +1015,11 @@ namespace Engine
 
         public bool IsFighter
         {
+            get { return IsFighterKind || IsPartner; }
+        }
+
+        public bool IsFighterKind
+        {
             get { return Kind == (int)CharacterKind.Fighter; }
         }
 
