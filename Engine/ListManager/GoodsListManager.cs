@@ -508,6 +508,20 @@ namespace Engine.ListManager
                 {
                     case Good.GoodKind.Drug:
                         {
+                            if (IsInBottomGoodsRange(goodIndex))
+                            {
+                                if (info.RemainColdMilliseconds > 0)
+                                {
+                                    GuiManager.ShowMessage("该物品尚未冷却");
+                                    return;
+                                }
+
+                                if (info.TheGood.ColdMilliSeconds > 0)
+                                {
+                                    info.RemainColdMilliseconds = info.TheGood.ColdMilliSeconds;
+                                }
+                            }
+
                             if (Globals.ThePlayer.UseDrug(good))
                             {
 
@@ -586,6 +600,19 @@ namespace Engine.ListManager
         {
             public Good TheGood;
             public int Count;
+            private float _remainColdMilliseconds;
+            public float RemainColdMilliseconds
+            {
+                get { return _remainColdMilliseconds; }
+                set
+                {
+                    if (value < 0)
+                    {
+                        value = 0;
+                    }
+                    _remainColdMilliseconds = value;
+                }
+            }
 
             public GoodsItemInfo(string fileName, int count)
             {

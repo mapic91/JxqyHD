@@ -91,6 +91,16 @@ namespace Engine.Gui
                 _items[i].RightClick += GoodsGui.RightClickHandler;
                 _items[i].MouseStayOver += GoodsGui.MouseStayOverHandler;
                 _items[i].MouseLeave += GoodsGui.MouseLeaveHandler;
+                _items[i].OnUpdate += (arg1, arg2) =>
+                {
+                    var data = (GoodsGui.GoodItemData)(((DragDropItem)arg1).Data);
+                    var info = GoodsListManager.GetItemInfo(data.Index);
+                    if (info != null)
+                    {
+                        var gameTime = (GameTime)arg2;
+                        info.RemainColdMilliseconds -= (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                    }
+                };
             }
 
             for (var i = 3; i < 8; i++)
@@ -211,12 +221,30 @@ namespace Engine.Gui
                 dragDropItem.Draw(spriteBatch);
             }
 
-            for (var i = 3; i < 8; i++) //Magic
+            for (var i = 0; i < 8; i++) //Magic
             {
+                float remainColdMilliseconds = 0;
                 var item = _items[i];
-                var data = (MagicGui.MagicItemData)item.Data;
-                var info = MagicListManager.GetItemInfo(data.Index);
-                if (info != null && info.RemainColdMilliseconds > 0)
+                if (i >= 0 && i < 3)
+                {
+                    var data = (GoodsGui.GoodItemData) item.Data;
+                    var info = GoodsListManager.GetItemInfo(data.Index);
+                    if (info != null)
+                    {
+                        remainColdMilliseconds = info.RemainColdMilliseconds;
+                    }
+                }
+                else
+                {
+                    var data = (MagicGui.MagicItemData)item.Data;
+                    var info = MagicListManager.GetItemInfo(data.Index);
+                    if (info != null)
+                    {
+                        remainColdMilliseconds = info.RemainColdMilliseconds;
+                    }
+                }
+
+                if (remainColdMilliseconds > 0)
                 {
                     if (_coldTimeBackground == null)
                     {
@@ -224,7 +252,7 @@ namespace Engine.Gui
                             item.Height);
                     }
 
-                    var timeTxt = (info.RemainColdMilliseconds/1000f).ToString("0.0");
+                    var timeTxt = (remainColdMilliseconds / 1000f).ToString("0.0");
                     var font = Globals.FontSize10;
 
                     spriteBatch.Draw(

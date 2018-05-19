@@ -51,6 +51,7 @@ namespace Engine
         public string AddMagicEffectType { set; get; }
 
         public int ChangeMoveSpeedPercent { set; get; }
+        public int ColdMilliSeconds { set; get; }
 
         public GoodEffectType TheEffectType
         {
