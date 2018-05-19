@@ -91,6 +91,8 @@ namespace Engine
         private int _rangeRadius;
         private int _rangeTimeInerval;
         private int _attackAll;
+        private int _discardOppositeMagic;
+        private int _exchangeUser;
 
         private Asf _useActionFile;
 
@@ -721,6 +723,18 @@ namespace Engine
         {
             get { return _attackAll; }
             set { _attackAll = value; }
+        }
+
+        public int DiscardOppositeMagic
+        {
+            get { return _discardOppositeMagic; }
+            set { _discardOppositeMagic = value; }
+        }
+
+        public int ExchangeUser
+        {
+            get { return _exchangeUser; }
+            set { _exchangeUser = value; }
         }
 
         public Asf UseActionFile

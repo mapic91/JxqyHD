@@ -117,6 +117,23 @@ namespace Engine
             get { return _isInDestroy; }
         }
 
+        public bool CanDiscard
+        {
+            get
+            {
+                return _stickedCharacter == null && _parasitiferCharacter == null && BelongMagic.MoveKind != 13 &&
+                       BelongMagic.MoveKind != 15 && BelongMagic.MoveKind != 21 && BelongMagic.MoveKind != 23;
+            }
+        }
+
+        public bool CanExchangeUser
+        {
+            get {
+                return _stickedCharacter == null && _parasitiferCharacter == null && BelongMagic.MoveKind != 13 &&
+                       BelongMagic.MoveKind != 15 && BelongMagic.MoveKind != 20 && BelongMagic.MoveKind != 21 && BelongMagic.MoveKind != 22 && BelongMagic.MoveKind != 23;
+            }
+        }
+
         #endregion Public properties
 
         #region Ctor
@@ -259,9 +276,9 @@ namespace Engine
             return true;
         }
 
-        private void CharacterHited(Character character)
+        private bool CharacterHited(Character character)
         {
-            if (character == null) return;
+            if (character == null) return false;
             var destroy = true;
 
             if (BelongMagic.Bounce > 0)
@@ -369,6 +386,8 @@ namespace Engine
             {
                 Destroy();
             }
+
+            return true;
         }
 
         private void CharacterHited(Character character, int damage, int damage2, int damageMana, bool addMagicHitedExp = true)
@@ -487,6 +506,11 @@ namespace Engine
                 {
                     player = BelongCharacter as Player;
                     info = BelongMagic.ItemInfo;
+
+                    if (info == null)
+                    {
+                        if (player != null) info = player.CurrentMagicInUse;
+                    }
                 }
                 else if (BelongCharacter.ControledMagicSprite != null)
                 {
@@ -536,7 +560,7 @@ namespace Engine
             }
         }
 
-        private void CheckCharacterHited()
+        private void CollisionDetaction()
         {
             if (_stickedCharacter != null && _stickedCharacter.MovedByMagicSprite == this)
             {
@@ -555,19 +579,79 @@ namespace Engine
                 return;
             }
 
+
+            bool characterHited = false;
             if (BelongMagic.AttackAll > 0)
             {
-                CharacterHited(NpcManager.GetFighter(TilePosition));
+                characterHited = CharacterHited(NpcManager.GetFighter(TilePosition));
             }
             else if (BelongCharacter.IsPlayer || BelongCharacter.IsFighterFriend)
             {
                 var target = NpcManager.GetEnemy(TilePosition);
-                CharacterHited(target);
+                characterHited = CharacterHited(target);
             }
             else if (BelongCharacter.IsEnemy)
             {
-                CharacterHited(NpcManager.GetPlayerOrFighterFriend(TilePosition));
+                characterHited = CharacterHited(NpcManager.GetPlayerOrFighterFriend(TilePosition));
             }
+
+            if (!characterHited && !CheckMagicDiscard())
+            {
+                CheckMagicExchangeUser();
+            }
+        }
+
+        private bool CheckMagicDiscard()
+        {
+            if (BelongMagic.DiscardOppositeMagic > 0)
+            {
+                foreach (var magicSprite in MagicManager.MagicSpritesList)
+                {
+                    if (magicSprite.TilePosition == TilePosition && 
+                        IsOpposite(magicSprite) && 
+                        magicSprite.CanDiscard)
+                    {
+                        magicSprite.SetDestroyed();
+                        SetDestroyed();
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private bool CheckMagicExchangeUser()
+        {
+            if (BelongMagic.ExchangeUser > 0)
+            {
+                foreach (var magicSprite in MagicManager.MagicSpritesList)
+                {
+                    if (magicSprite.TilePosition == TilePosition  && 
+                        IsOpposite(magicSprite) && 
+                        magicSprite.CanExchangeUser)
+                    {
+                        magicSprite.BelongCharacter = BelongCharacter;
+                        var dir = magicSprite.MoveDirection * magicSprite.Velocity +
+                                           MoveDirection * Velocity;
+                        magicSprite.MoveDirection = dir;
+                        magicSprite.Velocity = dir.Length();
+                        SetDestroyed();
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public bool IsOpposite(MagicSprite magicSprite)
+        {
+            if (BelongCharacter.IsPlayer || BelongCharacter.IsFighterFriend)
+            {
+                return magicSprite.BelongCharacter.IsEnemy;
+            }
+
+            return BelongCharacter.IsPlayer || BelongCharacter.IsFighterFriend;
         }
 
         private void Begin()
@@ -886,7 +970,7 @@ namespace Engine
                         if (_paths.Count < 2)
                         {
                             if (_destroyOnEnd || BelongMagic.MeteorMove > 0) Destroy();
-                            CheckCharacterHited();
+                            CollisionDetaction();
                         }
                     }
                 }
@@ -1135,7 +1219,7 @@ namespace Engine
                         checkHit = false;
                         break;
                     default:
-                        CheckCharacterHited();
+                        CollisionDetaction();
                         break;
                 }
 
