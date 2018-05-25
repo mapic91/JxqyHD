@@ -1469,9 +1469,18 @@ namespace Engine
 
                 if (currentCount > 0)
                 {
+                    var drawColor = DrawColor;
                     var useGrayScale = DrawColor == Color.Black;
+                    if (FrozenSeconds > 0 && IsFronzenVisualEffect)
+                        drawColor = new Color(80, 80, 255);
+                    if (PoisonSeconds > 0 && IsPoisionVisualEffect)
+                        drawColor = new Color(50, 255, 50);
+                    if (PetrifiedSeconds > 0 && IsPetrifiedVisualEffect)
+                    {
+                        useGrayScale = true;
+                    }
                     spriteBatch.Begin(SpriteSortMode.Immediate, null, null, StencilStateDrawOpaque, null, useGrayScale ? Globals.TheGame.GrayScaleEffect : null);
-                    base.Draw(spriteBatch, texture, useGrayScale ? Color.White : DrawColor);
+                    base.Draw(spriteBatch, texture, useGrayScale ? Color.White : drawColor);
                     spriteBatch.End();
                     var halfTransparentEffect = Globals.TheGame.TransparentEffect;
                     halfTransparentEffect.Parameters["alpha"].SetValue(0.5f);

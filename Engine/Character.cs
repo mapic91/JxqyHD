@@ -39,14 +39,6 @@ namespace Engine
             if (UseDistance < other.UseDistance) return -1;
             return 1;
         }
-
-        public void SetLevel(int attackLevel)
-        {
-            if (TheMagic != null)
-            {
-                TheMagic = TheMagic.GetLevel(attackLevel);
-            }
-        }
     }
 
     public abstract class Character : Sprite
@@ -1060,14 +1052,12 @@ namespace Engine
                     Globals.BaseSpeed,
                     NpcIni[(int)CharacterState.Stand].Image, Dir);
             }
-            
+
+            if (_flyIni != null) _flyIni = _flyIni.GetLevel(AttackLevel);
+            if (_flyIni2 != null) _flyIni2 = _flyIni2.GetLevel(AttackLevel);
             AddMagicToInfos(_flyIni, AttackRadius, true);
             AddMagicToInfos(_flyIni2, AttackRadius, true);
             _flyIniInfos.Sort();
-            foreach (var flyIniInfoItem in _flyIniInfos)
-            {
-                flyIniInfoItem.SetLevel(AttackLevel);
-            }
 
             if (_magicToUseWhenLifeLow != null)
             {

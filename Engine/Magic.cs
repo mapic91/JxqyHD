@@ -935,6 +935,8 @@ namespace Engine
             {
                 magic.ParasiticMagic = magic.ParasiticMagic.GetLevel(level);
             }
+
+            magic.AdditionalEffect = AdditionalEffect;
             //Assign item info to level magic
             magic.ItemInfo = ItemInfo;
             return magic;
