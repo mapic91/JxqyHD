@@ -9,6 +9,7 @@
             Start,
             Title,
             Playing,
+            EndAds
         }
     }
 }

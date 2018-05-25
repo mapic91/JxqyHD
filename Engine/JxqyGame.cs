@@ -7,6 +7,7 @@ using Engine.ListManager;
 using Engine.Map;
 using Engine.Script;
 using Engine.Weather;
+using IniParser;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -30,6 +31,14 @@ namespace Engine
         private double _totalInactivedSeconds;
         private const double MaxInactivedSeconds = 1.0;
         private bool _isInactivedReachMaxInterval;
+
+        #region End Ads
+
+        private float _elapsedSecondsAd;
+        private const float AdKeepSeconds = 3;
+        private Texture2D _adPic;
+
+        #endregion
 
         private readonly Color BackgroundColor = Color.Black;
 
@@ -306,6 +315,11 @@ namespace Engine
             }
         }
 
+        private void DrawAds(GameTime gameTime)
+        {
+            _spriteBatch.Draw(_adPic, new Rectangle(0, 0, Globals.WindowWidth, Globals.WindowHeight), Color.White);
+        }
+
         private void DrawGameInfo(SpriteBatch spriteBatch)
         {
             var text = "FPS=" + Fps.FpsValue + "\n" +
@@ -500,6 +514,15 @@ namespace Engine
                         if (IsGamePlayPaused) break;
                         UpdatePlaying(gameTime);
                         break;
+                    case GameState.StateType.EndAds:
+                        _elapsedSecondsAd += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                        if (_elapsedSecondsAd >= AdKeepSeconds ||
+                            (keyboardState.IsKeyDown(Keys.Escape) &&
+                             LastKeyboardState.IsKeyUp(Keys.Escape)))
+                        {
+                            Exit();
+                        }
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
@@ -539,6 +562,9 @@ namespace Engine
                         break;
                     case GameState.StateType.Playing:
                         DrawGamePlay(gameTime);
+                        break;
+                    case GameState.StateType.EndAds:
+                        DrawAds(gameTime);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -603,7 +629,17 @@ namespace Engine
         public void ExitGame()
         {
             Globals.SaveSetting();
-            Exit();
+            ToEndAdsScene();
+        }
+
+        public void ToEndAdsScene()
+        {
+            GameState.State = GameState.StateType.EndAds;
+            GuiManager.IsShow = false;
+            var data = new FileIniDataParser().ReadFile("img/show.ini", Globals.LocalEncoding);
+            var index = Globals.TheRandom.Next(1, int.Parse(data.Sections["Init"]["Count"])+1);
+            if (!data.Sections["Init"].ContainsKey(index.ToString())) index = 1;
+            _adPic = Utils.LoadTexture2DFromFile("img/" + data.Sections["Init"][index.ToString()]);
         }
     }
 }
