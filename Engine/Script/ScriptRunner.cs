@@ -636,6 +636,9 @@ namespace Engine.Script
                         case "AddMoveSpeedPercent":
                             ScriptExecuter.AddMoveSpeedPercent(parameters);
                             break;
+                        case "UseMagic":
+                            ScriptExecuter.UseMagic(parameters);
+                            break;
                         default:
                             throw new Exception("无此函数");
                     }

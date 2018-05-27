@@ -1980,5 +1980,17 @@ namespace Engine.Script
                 Globals.ThePlayer.AddMoveSpeedPercent += int.Parse(parameters[0]);
             }
         }
+
+        public static void UseMagic(List<string> parameters)
+        {
+            var magicFileName = Utils.RemoveStringQuotes(parameters[0]);
+            var mapX = int.Parse(parameters[1]);
+            var mapY = int.Parse(parameters[2]);
+            var magicInfo = MagicListManager.GetMagic(magicFileName);
+            if (magicInfo != null)
+            {
+                Globals.ThePlayer.UseMagic(magicInfo.TheMagic, new Vector2(mapX, mapY));
+            }
+        }
     }
 }
