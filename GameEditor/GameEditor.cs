@@ -50,7 +50,7 @@ namespace GameEditor
         private void GameEditor_FormClosed(object sender, FormClosedEventArgs e)
         {
             SaveSettings();
-            TheJxqyGame.ExitGame();
+            TheJxqyGame.ExitGameImmediately();
         }
 
         private void GameEditor_Activated(object sender, EventArgs e)
@@ -325,7 +325,7 @@ namespace GameEditor
         {
             SaveSettings();
             Program.Restart = true;
-            TheJxqyGame.ExitGame();
+            TheJxqyGame.ExitGameImmediately();
         }
 
         private void _aboutMeun_Click(object sender, EventArgs e)

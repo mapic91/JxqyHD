@@ -1984,8 +1984,19 @@ namespace Engine.Script
         public static void UseMagic(List<string> parameters)
         {
             var magicFileName = Utils.RemoveStringQuotes(parameters[0]);
-            var mapX = int.Parse(parameters[1]);
-            var mapY = int.Parse(parameters[2]);
+            var mapX = 0;
+            var mapY = 0;
+            if (parameters.Count >= 3)
+            {
+                mapX = int.Parse(parameters[1]);
+                mapY = int.Parse(parameters[2]);
+            }
+            else
+            {
+                var dest = PathFinder.FindAllNeighbors(Globals.ThePlayer.TilePosition)[Globals.ThePlayer.CurrentDirection];
+                mapX = (int)dest.X;
+                mapY = (int)dest.Y;
+            }
             var magicInfo = MagicListManager.GetMagic(magicFileName);
             if (magicInfo != null)
             {

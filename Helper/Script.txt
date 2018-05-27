@@ -546,8 +546,9 @@ AddMoveSpeedPercent(40)
 AddMoveSpeedPercent(-40)
 表示减少移动速度40%
 
+UseMagic(a);
 UseMagic(a,b,c);
-主角对目标位置(b,c)使用武功a，主角必须已经习得该武功。
+主角对目标位置(b,c)，如果没有设置b,c，则是主角对面，使用武功a，主角必须已经习得该武功。
 a - 武功文件名
 b - 地图坐标x
 c - 地图坐标y

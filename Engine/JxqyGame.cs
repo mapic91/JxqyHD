@@ -632,6 +632,11 @@ namespace Engine
             ToEndAdsScene();
         }
 
+        public void ExitGameImmediately()
+        {
+            Exit();
+        }
+
         public void ToEndAdsScene()
         {
             GameState.State = GameState.StateType.EndAds;
