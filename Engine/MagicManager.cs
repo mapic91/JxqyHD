@@ -11,6 +11,7 @@ namespace Engine
     {
         private static LinkedList<MagicSprite> _magicSprites = new LinkedList<MagicSprite>();
         private static LinkedList<WorkItem> _workList = new LinkedList<WorkItem>();
+        private static LinkedList<UseMagicInfoItem> _useMagicInfoList = new LinkedList<UseMagicInfoItem>();
         private static LinkedList<Sprite> _effectSprites = new LinkedList<Sprite>(); 
         private static LinkedList<Kind19MagicInfo> _kind19Magics = new LinkedList<Kind19MagicInfo>(); 
         private static LinkedList<MagicSprite> _solideMagicSprites = new LinkedList<MagicSprite>(); 
@@ -62,6 +63,16 @@ namespace Engine
             {
                 item.SpriteIndex = _maigicSpriteIndex++;
                 _workList.AddLast(item);
+            }
+        }
+
+        private static void AddUseMagicItem(UseMagicInfoItem item)
+        {
+            if(item.LeftMilliseconds <= 0)
+                UseMagic(item.User, item.Magic, item.Origin, item.Destination, item.Target);
+            else
+            {
+                _useMagicInfoList.AddLast(item);
             }
         }
 
@@ -741,6 +752,7 @@ namespace Engine
         {
             _magicSprites.Clear();
             _workList.Clear();
+            _useMagicInfoList.Clear();
             _effectSprites.Clear();
             Globals.TheGame.TimeStoperMagicSprite = null;
         }
@@ -751,6 +763,7 @@ namespace Engine
         public static void Renew()
         {
             _workList.Clear();
+            _useMagicInfoList.Clear();
             _effectSprites.Clear();
 
             foreach (var sprite in _magicSprites)
@@ -830,6 +843,11 @@ namespace Engine
         public static void UseMagic(Character user, Magic magic, Vector2 origin, Vector2 destination, Character target = null, int recursiveCounter = 0)
         {
             if (user == null || magic == null) return;
+
+            if (magic.SecondMagicFile != null)
+            {
+                AddUseMagicItem(new UseMagicInfoItem(magic.SecondMagicDelay, user, magic.SecondMagicFile, origin, destination, target));
+            }
 
             if (magic.BodyRadius > 0 && target != null && recursiveCounter == 0)
             {
@@ -1039,6 +1057,21 @@ namespace Engine
                 node = next;
             }
 
+            var useMaigcInfoCount = _useMagicInfoList.Count;
+            var counter = 0;
+            for (var node = _useMagicInfoList.First; node != null && counter < useMaigcInfoCount; counter++)
+            {
+                var item = node.Value;
+                var next = node.Next;
+                item.LeftMilliseconds -= elapsedMilliseconds;
+                if (item.LeftMilliseconds <= 0)
+                {
+                    UseMagic(item.User, item.Magic, item.Origin, item.Destination, item.Target);
+                    _useMagicInfoList.Remove(node);
+                }
+                node = next;
+            }
+
             for (var node = _magicSprites.First; node != null; )
             {
                 var sprite = node.Value;
@@ -1111,6 +1144,26 @@ namespace Engine
             foreach (var sprite in _effectSprites)
             {
                 sprite.Draw(spriteBatch);
+            }
+        }
+
+        public class UseMagicInfoItem
+        {
+            public float LeftMilliseconds;
+            public Character User;
+            public Magic Magic;
+            public Vector2 Origin;
+            public Vector2 Destination;
+            public Character Target;
+
+            public UseMagicInfoItem(float leftMilliseconds, Character user, Magic magic, Vector2 origin, Vector2 destination, Character target)
+            {
+                LeftMilliseconds = leftMilliseconds;
+                User = user;
+                Magic = magic;
+                Origin = origin;
+                Destination = destination;
+                Target = target;
             }
         }
 

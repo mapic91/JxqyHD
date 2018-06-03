@@ -133,6 +133,12 @@ namespace Engine
         private int _parasiticMaxEffect;
         #endregion Parasitic
 
+        #region Second magic
+
+        private Magic _secondMagicFile;
+        private int _secondMagicDelay;
+        #endregion Second magic
+
         #region Public properties
         public AddonEffect AdditionalEffect { set; get; }
         public string Type { set; get; }
@@ -471,6 +477,18 @@ namespace Engine
         {
             get { return _parasiticMaxEffect; }
             set { _parasiticMaxEffect = value; }
+        }
+
+        public Magic SecondMagicFile
+        {
+            get { return _secondMagicFile; }
+            set { _secondMagicFile = value; }
+        }
+
+        public int SecondMagicDelay
+        {
+            get { return _secondMagicDelay; }
+            set { _secondMagicDelay = value; }
         }
 
         public int KeepMilliseconds
@@ -816,6 +834,7 @@ namespace Engine
                     case "ExplodeMagicFile":
                     case "FlyMagic":
                     case "ParasiticMagic":
+                    case "SecondMagicFile":
                         info.SetValue(this, Utils.GetMagic(nameValue[1], false), null);
                         break;
                     case "RegionFile":
@@ -934,6 +953,10 @@ namespace Engine
             if (magic.ParasiticMagic != null)
             {
                 magic.ParasiticMagic = magic.ParasiticMagic.GetLevel(level);
+            }
+            if (magic.SecondMagicFile != null)
+            {
+                magic.SecondMagicFile = magic.SecondMagicFile.GetLevel(level);
             }
 
             magic.AdditionalEffect = AdditionalEffect;
