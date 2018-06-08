@@ -35,7 +35,7 @@ namespace Engine.Map
         private TmxMap _tmxMap;
         private Dictionary<string, Texture2D> _allTextures = new Dictionary<string, Texture2D>();
         private int _tileTextureCounts;
-        private TileTextureInfo[] _tileTextureInfos;
+        private Dictionary<int,TileTextureInfo> _tileTextureInfos;
         private TmxLayer[] _mapLayers = new TmxLayer[MaxLayer];
         private TmxLayer _trapLayer, _obstacleLayer;
 
@@ -54,7 +54,7 @@ namespace Engine.Map
             var pos = x + y * _mapColumnCounts;
             var gid = tmxLayer.Tiles[pos].Gid;
 
-            if (gid == 0)
+            if (gid == 0 || !_tileTextureInfos.ContainsKey(gid))
             {
                 return null;
             }
@@ -69,7 +69,7 @@ namespace Engine.Map
             var pos = x + y * _mapColumnCounts;
             var gid = tmxLayer.Tiles[pos].Gid;
 
-            if (gid == 0)
+            if (gid == 0 || !_tileTextureInfos.ContainsKey(gid))
             {
                 return null;
             }
@@ -229,17 +229,17 @@ namespace Engine.Map
 
         private void LoadAllTileTextureInfos()
         {
-            _tileTextureInfos = new TileTextureInfo[_tileTextureCounts + 1]; //tile texture gid start at 1
+            _tileTextureInfos = new Dictionary<int, TileTextureInfo>(); //tile texture gid start at 1
             foreach (var tileset in _tmxMap.Tilesets)
             {
-                var gid = tileset.FirstGid;
+                var firstGid = tileset.FirstGid;
                 switch (tileset.Name)
                 {
                     case TrapName:
                         {
                             foreach (var tile in tileset.Tiles)
                             {
-                                _trapGidToIndex[gid + tile.Id] = int.Parse(Path.GetFileNameWithoutExtension(tile.Image.Source));
+                                _trapGidToIndex[firstGid + tile.Id] = int.Parse(Path.GetFileNameWithoutExtension(tile.Image.Source));
                             }
 
                             break;
@@ -251,16 +251,16 @@ namespace Engine.Map
                                 switch (Path.GetFileNameWithoutExtension(tile.Image.Source))
                                 {
                                     case "跳透":
-                                        _obstacleGidToType[gid + tile.Id] = CanOverTrans;
+                                        _obstacleGidToType[firstGid + tile.Id] = CanOverTrans;
                                         break;
                                     case "跳障":
-                                        _obstacleGidToType[gid + tile.Id] = CanOverObstacle;
+                                        _obstacleGidToType[firstGid + tile.Id] = CanOverObstacle;
                                         break;
                                     case "透":
-                                        _obstacleGidToType[gid + tile.Id] = Trans;
+                                        _obstacleGidToType[firstGid + tile.Id] = Trans;
                                         break;
                                     case "障":
-                                        _obstacleGidToType[gid + tile.Id] = Obstacle;
+                                        _obstacleGidToType[firstGid + tile.Id] = Obstacle;
                                         break;
                                 }
                             }
@@ -273,11 +273,10 @@ namespace Engine.Map
                     foreach (var tile in tileset.Tiles)
                     {
                         var info = new TileTextureInfo();
-                        _tileTextureInfos[gid] = info;
-                        info.Gid = gid;
+                        _tileTextureInfos[firstGid + tile.Id] = info;
+                        info.Gid = firstGid + tile.Id;
                         info.BelongTileset = tileset;
                         info.Texture = _allTextures[tile.Image.Source];
-                        gid++;
                     }
                 }
                 else
@@ -290,8 +289,8 @@ namespace Engine.Map
                         for (var i = 0; i < columns; i++)
                         {
                             var info = new TileTextureInfo();
-                            _tileTextureInfos[gid] = info;
-                            info.Gid = gid;
+                            _tileTextureInfos[firstGid + i] = info;
+                            info.Gid = firstGid + i;
                             info.BelongTileset = tileset;
                             info.Texture = _allTextures[tileset.Image.Source];
                             info.TextureSourceRegion = new Rectangle(
@@ -300,7 +299,6 @@ namespace Engine.Map
                                 tileset.TileWidth,
                                 tileset.TileHeight
                             );
-                            gid++;
                             count++;
                         }
                         if (count == tileset.TileCount.Value) break;
