@@ -49,14 +49,6 @@ namespace Engine.Gui
                 }
                 if (value)
                 {
-                    var texture = MapBase.LittelMapTexture;
-                    if (texture == null)
-                    {
-                        //Little map texture not exist, can't show little map.
-                        base.IsShow = false;
-                        return;
-                    }
-
                     ViewBeginX = MapBase.Instance.ViewBeginX / Ratio;
                     ViewBeginY = MapBase.Instance.ViewBeginY / Ratio;
                 }
@@ -347,12 +339,15 @@ namespace Engine.Gui
                     Color.White);
             }
 
-            var npcs = NpcManager.NpcList;
-            foreach (var npc in npcs)
+            if (MapBase.LittelMapTexture != null)
             {
-                DrawCharacter(spriteBatch, npc, worldRegion, viewBeginInWorld, drawBeginPosition);
+                var npcs = NpcManager.NpcList;
+                foreach (var npc in npcs)
+                {
+                    DrawCharacter(spriteBatch, npc, worldRegion, viewBeginInWorld, drawBeginPosition);
+                }
+                DrawCharacter(spriteBatch, Globals.ThePlayer, worldRegion, viewBeginInWorld, drawBeginPosition);
             }
-            DrawCharacter(spriteBatch, Globals.ThePlayer, worldRegion, viewBeginInWorld, drawBeginPosition);
         }
 
         private void DrawCharacter(SpriteBatch spriteBatch, 
