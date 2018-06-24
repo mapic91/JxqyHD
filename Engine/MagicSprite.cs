@@ -293,6 +293,8 @@ namespace Engine
                         direction = (character.BouncedDirection * character.BouncedVelocity + direction * BelongMagic.Bounce);
                         velocity = (int)direction.Length();
                     }
+
+                    character.BoundByMagicSprite = this;
                     character.BouncedDirection = direction;
                     character.BouncedVelocity = velocity;
                     character.StandingImmediately();
@@ -646,12 +648,22 @@ namespace Engine
 
         public bool IsOpposite(MagicSprite magicSprite)
         {
-            if (BelongCharacter.IsPlayer || BelongCharacter.IsFighterFriend)
+            if (magicSprite.BelongCharacter.IsEnemy)
             {
-                return magicSprite.BelongCharacter.IsEnemy;
+                return BelongCharacter.IsPlayer || BelongCharacter.IsFighterFriend;
             }
 
-            return BelongCharacter.IsPlayer || BelongCharacter.IsFighterFriend;
+            return BelongCharacter.IsEnemy;
+        }
+
+        public bool IsOpposite(Character character)
+        {
+            if (character.IsEnemy)
+            {
+                return BelongCharacter.IsPlayer || BelongCharacter.IsFighterFriend;
+            }
+
+            return BelongCharacter.IsEnemy;
         }
 
         private void Begin()

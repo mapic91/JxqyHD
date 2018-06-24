@@ -68,6 +68,7 @@ namespace Engine
         private int _carryUserSpriteIndex;
         private int _hideUserWhenCarry;
         private int _bounce;
+        private int _bounceHurt;
         private int _ball;
         private int _sticky;
         private int _solid;
@@ -609,6 +610,12 @@ namespace Engine
         {
             get { return _bounce; }
             set { _bounce = value; }
+        }
+
+        public int BounceHurt
+        {
+            get { return _bounceHurt; }
+            set { _bounceHurt = value; }
         }
 
         public int Ball

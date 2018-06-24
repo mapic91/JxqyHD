@@ -296,7 +296,7 @@ namespace Engine
 
         public MagicSprite MovedByMagicSprite { set; get; }
 
-
+        public MagicSprite BoundByMagicSprite { set; get; }
         public float BouncedVelocity { set; get; }
         private Vector2 _bouncedDirection;
 
@@ -3228,6 +3228,14 @@ namespace Engine
                 else
                 {
                     BouncedVelocity = 0;
+                    if (BoundByMagicSprite.BelongMagic.BounceHurt > 0)
+                    {
+                        var character = NpcManager.GetFighter(newTilePosition);
+                        if (character != null && BoundByMagicSprite.IsOpposite(character))
+                        {
+                            character.DecreaseLifeAddHurt(BoundByMagicSprite.BelongMagic.BounceHurt);
+                        }
+                    }
                 }
             }
         }
