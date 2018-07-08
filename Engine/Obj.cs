@@ -22,6 +22,7 @@ namespace Engine
         private StateMapList _objFile;
         private string _objFileName;
         private string _scriptFile;
+        private int _canInteractDirectly;
         private string _timerScriptFile;
         private int _timerScriptInterval = Globals.DefaultNpcObjTimeScriptInterval;
         private float _timerScriptIntervlElapsed;
@@ -101,6 +102,12 @@ namespace Engine
         {
             get { return _scriptFile; }
             set { _scriptFile = value; }
+        }
+
+        public int CanInteractDirectly
+        {
+            get { return _canInteractDirectly; }
+            set { _canInteractDirectly = value; }
         }
 
         public string TimerScriptFile

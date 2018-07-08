@@ -91,6 +91,7 @@ namespace Engine
         private Magic _magicToUseWhenDeath;
         private int _magicDirectionWhenDeath;
         private string _scriptFile;
+        private int _canInteractDirectly;
         private string _deathScript;
         private string _timerScriptFile;
         private int _timerScriptInterval = Globals.DefaultNpcObjTimeScriptInterval;
@@ -851,6 +852,12 @@ namespace Engine
         {
             get { return _scriptFile; }
             set { _scriptFile = value; }
+        }
+
+        public int CanInteractDirectly
+        {
+            get { return _canInteractDirectly; }
+            set { _canInteractDirectly = value; }
         }
 
         public string TimerScriptFile
@@ -2409,41 +2416,46 @@ namespace Engine
 
                 Vector2 destinationTilePositon;
                 int interactDistance;
-                if (!GetInteractTargetInfo(out destinationTilePositon, out interactDistance))
+                bool canInteractDirectly;
+                if (!GetInteractTargetInfo(out destinationTilePositon, out interactDistance, out canInteractDirectly))
                 {
                     return;
                 }
-                var destinationPositionInWorld = MapBase.ToPixelPosition(destinationTilePositon);
 
-                DestinationMoveTilePosition = Engine.PathFinder.FindDistanceTileInDirection(
-                    destinationTilePositon,
-                    PositionInWorld - destinationPositionInWorld,
-                    interactDistance);
-                //if can't reach destination tile positon, find neighbor tile
-                if (MapBase.Instance.IsObstacleForCharacter(DestinationMoveTilePosition) ||
-                    HasObstacle(DestinationMoveTilePosition))
+                if (!canInteractDirectly)
                 {
-                    //Try all 8 direction
-                    var directionList = Utils.GetDirection8List();
-                    var isFinded = false;
-                    foreach (var dir in directionList)
+                    var destinationPositionInWorld = MapBase.ToPixelPosition(destinationTilePositon);
+
+                    DestinationMoveTilePosition = Engine.PathFinder.FindDistanceTileInDirection(
+                        destinationTilePositon,
+                        PositionInWorld - destinationPositionInWorld,
+                        interactDistance);
+                    //if can't reach destination tile positon, find neighbor tile
+                    if (MapBase.Instance.IsObstacleForCharacter(DestinationMoveTilePosition) ||
+                        HasObstacle(DestinationMoveTilePosition))
                     {
-                        DestinationMoveTilePosition = Engine.PathFinder.FindDistanceTileInDirection(
-                            destinationTilePositon,
-                            dir,
-                            interactDistance);
-                        if (!MapBase.Instance.IsObstacleForCharacter(DestinationMoveTilePosition) &&
-                            !HasObstacle(DestinationMoveTilePosition))
+                        //Try all 8 direction
+                        var directionList = Utils.GetDirection8List();
+                        var isFinded = false;
+                        foreach (var dir in directionList)
                         {
-                            isFinded = true;
-                            break;
+                            DestinationMoveTilePosition = Engine.PathFinder.FindDistanceTileInDirection(
+                                destinationTilePositon,
+                                dir,
+                                interactDistance);
+                            if (!MapBase.Instance.IsObstacleForCharacter(DestinationMoveTilePosition) &&
+                                !HasObstacle(DestinationMoveTilePosition))
+                            {
+                                isFinded = true;
+                                break;
+                            }
                         }
-                    }
-                    if (!isFinded)
-                    {
-                        //Not find, can't move to target, do nothing.
-                        _interactiveTarget = null;
-                        return;
+                        if (!isFinded)
+                        {
+                            //Not find, can't move to target, do nothing.
+                            _interactiveTarget = null;
+                            return;
+                        }
                     }
                 }
 
@@ -2452,10 +2464,11 @@ namespace Engine
             }
         }
 
-        private bool GetInteractTargetInfo(out Vector2 tilePosition, out int interactDistance)
+        private bool GetInteractTargetInfo(out Vector2 tilePosition, out int interactDistance, out bool canInteractDirectly)
         {
             tilePosition = Vector2.Zero;
             interactDistance = 0;
+            canInteractDirectly = false;
             if (_interactiveTarget == null) return false;
             var character = _interactiveTarget as Character;
             var obj = _interactiveTarget as Obj;
@@ -2463,11 +2476,13 @@ namespace Engine
             {
                 tilePosition = character.TilePosition;
                 interactDistance = character.DialogRadius;
+                canInteractDirectly = character.CanInteractDirectly > 0;
             }
             else if (obj != null)
             {
                 tilePosition = obj.TilePosition;
                 interactDistance = 1;
+                canInteractDirectly = obj.CanInteractDirectly > 0;
             }
             else
                 return false;
@@ -2479,13 +2494,14 @@ namespace Engine
             if (_interactiveTarget == null) return false;
             Vector2 destinationTilePositon;
             int interactDistance;
-            if (!GetInteractTargetInfo(out destinationTilePositon, out interactDistance))
+            bool canInteractDirectly;
+            if (!GetInteractTargetInfo(out destinationTilePositon, out interactDistance, out canInteractDirectly))
             {
                 return false;
             }
 
             var tileDistance = Engine.PathFinder.GetViewTileDistance(TilePosition, destinationTilePositon);
-            if (tileDistance <= interactDistance)
+            if (canInteractDirectly || tileDistance <= interactDistance)
             {
                 return true;
             }
