@@ -1606,7 +1606,7 @@ namespace Engine
             //Do nothing
         }
 
-        protected virtual void CheckMapTrap() { }
+        public virtual void CheckMapTrap() { }
 
         protected virtual bool CheckMapTrapByPath(LinkedList<Vector2> pixelPositionPathList, out Vector2 trapTilePosition)
         {

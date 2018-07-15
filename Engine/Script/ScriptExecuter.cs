@@ -730,7 +730,11 @@ namespace Engine.Script
             character.SetPosition(new Vector2(x, y));
             Globals.TheCarmera.CenterPlayerInCamera();
             //Reset parter position relate to player position
-            if (Globals.ThePlayer != null) Globals.ThePlayer.ResetPartnerPosition();
+            if (Globals.ThePlayer != null)
+            {
+                Globals.ThePlayer.ResetPartnerPosition();
+                Globals.ThePlayer.CheckMapTrap();
+            }
         }
 
         public static void SetPlayerDir(List<string> parameters)

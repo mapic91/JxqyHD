@@ -504,7 +504,7 @@ namespace Engine
         /// <summary>
         /// Check whether current tile in map has trap, if has run it
         /// </summary>
-        protected override void CheckMapTrap()
+        public override void CheckMapTrap()
         {
             MapBase.Instance.RunTileTrapScript(TilePosition);
         }
