@@ -1145,6 +1145,7 @@ namespace Engine
                         var edgeColor = Globals.NpcEdgeColor;
                         if (one.IsEnemy) edgeColor = Globals.EnemyEdgeColor;
                         else if (one.IsFighterFriend) edgeColor = Globals.FriendEdgeColor;
+                        else if (one.IsNeutralFighter) edgeColor = Globals.NeturalEdgeColor;
                         Globals.OutEdgeColor = edgeColor;
                         break;
                     }
@@ -1353,7 +1354,7 @@ namespace Engine
             if (keyboardState.IsKeyDown(Keys.LeftControl) ||
                 keyboardState.IsKeyDown(Keys.RightControl))
             {
-                var closedEnemy = NpcManager.GetClosestEnemy(attacker, PositionInWorld);
+                var closedEnemy = NpcManager.GetClosestEnemy(attacker, PositionInWorld, true);
                 if (closedEnemy != null)
                 {
                     UseMagic(CurrentMagicInUse.TheMagic, closedEnemy.TilePosition, closedEnemy);

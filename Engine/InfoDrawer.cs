@@ -13,6 +13,7 @@ namespace Engine
 
         public static Color EnemyLifeColor = new Color(163, 18, 21)*0.9f;
         public static Color FriendLifeColor = new Color(16, 165, 28)*0.9f;
+        public static Color NeutralLifeColor = new Color(40, 30, 245)*0.9f;
         public static Color LifeLoseColor = Color.Black * 0.7f;
         public static Color NameColor = Color.White*0.8f;
         public static Color EnemyBossNameColor = new Color(200, 200, 10) * 0.9f;
@@ -36,6 +37,7 @@ namespace Engine
                 }
             }
             else if (npc.IsFighterFriend) drawColor = FriendLifeColor;
+            else if (npc.IsNeutralFighter) drawColor = NeutralLifeColor;
             else return;
 
             if (!ListGuiConfigLoaded)

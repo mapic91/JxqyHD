@@ -995,6 +995,11 @@ namespace Engine
             get { return Kind == 1 && Relation == 1; }
         }
 
+        public bool IsNeutralFighter
+        {
+            get { return Relation == (int)RelationType.Neutral && Kind == 1; }
+        }
+
         public bool IsEventCharacter
         {
             get { return Kind == (int) CharacterKind.Eventer; }
@@ -1005,7 +1010,7 @@ namespace Engine
             get { return Relation == (int)RelationType.Friend; }
         }
 
-        public bool IsRelationNeutral { get { return Relation == 2; } }
+        public bool IsRelationNeutral { get { return Relation == (int)RelationType.Neutral; } }
 
         public bool IsFighterFriend
         {
@@ -1029,7 +1034,7 @@ namespace Engine
 
         public bool IsInteractive
         {
-            get { return (HasInteractScript || IsEnemy || IsFighterFriend); }
+            get { return (HasInteractScript || IsEnemy || IsFighterFriend || IsNeutralFighter); }
         }
 
        
@@ -1125,6 +1130,24 @@ namespace Engine
                 //Only set back direction when standing.
                 SetDirection(_directionBeforInteract);
             }
+        }
+
+        public bool IsOpposite(Character target)
+        {
+            if (target.IsEnemy)
+            {
+                return IsPlayer || IsFighterFriend || IsNeutralFighter;
+            }
+            else if (target.IsPlayer || target.IsFighterFriend)
+            {
+                return IsEnemy || IsNeutralFighter;
+            }
+            else if (target.IsNeutralFighter)
+            {
+                return IsPlayer || IsFighterFriend || IsEnemy;
+            }
+
+            return false;
         }
 
         private void CheckStepMove()
@@ -2932,10 +2955,10 @@ namespace Engine
         /// don't walk to and follow new target
         /// </summary>
         /// <param name="target">The target</param>
-        public void NotifyEnemyAndAllNeighbor(Character target)
+        public void NotifyFighterAndAllNeighbor(Character target)
         {
-            if (target == null || !IsEnemy || !IsStanding()) return;
-            var characters = NpcManager.GetNeighborEnemy(this);
+            if (target == null || (!IsEnemy && !IsNeutralFighter) || !IsStanding()) return;
+            var characters = IsEnemy ? NpcManager.GetNeighborEnemy(this) : NpcManager.GetNeighborNuturalFighter(this);
             characters.Add(this);
             foreach (var character in characters)
             {

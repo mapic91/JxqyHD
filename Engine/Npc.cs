@@ -226,17 +226,21 @@ namespace Engine
             {
                 if (IsEnemy)
                 {
-                    FollowTarget = IsAIDisabled ? null : NpcManager.GetLiveClosestPlayerOrFighterFriend(PositionInWorld);
+                    FollowTarget = IsAIDisabled ? null : NpcManager.GetLiveClosestPlayerOrFighterFriend(PositionInWorld, true);
                 }
                 else if (IsFighterFriend)
                 {
-                    FollowTarget = IsAIDisabled ? null : NpcManager.GetClosestEnemyTypeCharacter(PositionInWorld);
+                    FollowTarget = IsAIDisabled ? null : NpcManager.GetClosestEnemyTypeCharacter(PositionInWorld, true);
                     //Fighter friend may be parter
                     if (FollowTarget == null && IsPartner)
                     {
                         //Can't find enemy, move to player
                         MoveToPlayer();
                     }
+                }
+                else if (IsNeutralFighter)
+                {
+                    FollowTarget = IsAIDisabled ? null : NpcManager.GetLiveClosestNonneturalFighter(PositionInWorld);
                 }
                 else if (IsPartner)
                 {

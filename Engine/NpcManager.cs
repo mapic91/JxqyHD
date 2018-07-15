@@ -116,9 +116,9 @@ namespace Engine
         /// <param name="positionInWorld">Target position</param>
         /// <param name="ignoreList">Ignore those character when finding</param>
         /// <returns>If not find, return null</returns>
-        public static Character GetClosestEnemyTypeCharacter(Vector2 positionInWorld, List<Character> ignoreList = null)
+        public static Character GetClosestEnemyTypeCharacter(Vector2 positionInWorld, bool withNetural, List<Character> ignoreList = null)
         {
-            return GetClosestEnemyTypeCharacter(NpcList, positionInWorld, ignoreList);
+            return GetClosestEnemyTypeCharacter(NpcList, positionInWorld, withNetural, ignoreList);
         }
 
         /// <summary>
@@ -128,13 +128,13 @@ namespace Engine
         /// <param name="positionInWorld">Target position</param>
         /// <param name="ignoreList">Ignore those character when finding</param>
         /// <returns>If not find, return null</returns>
-        public static Character GetClosestEnemyTypeCharacter(IEnumerable<Character> list, Vector2 positionInWorld, List<Character> ignoreList = null)
+        public static Character GetClosestEnemyTypeCharacter(IEnumerable<Character> list, Vector2 positionInWorld, bool withNetural, List<Character> ignoreList = null)
         {
             Character closed = null;
             var closedDistance = 99999999f;
             foreach (var npc in list)
             {
-                if ((ignoreList == null || ignoreList.All(item => npc != item)) && npc.IsEnemy)
+                if ((ignoreList == null || ignoreList.All(item => npc != item)) && (npc.IsEnemy ||(withNetural && npc.IsNeutralFighter)))
                 {
                     var distance = Vector2.Distance(positionInWorld, npc.PositionInWorld);
                     if (distance < closedDistance)
@@ -178,20 +178,21 @@ namespace Engine
         /// </summary>
         /// <param name="finder">The finder.</param>
         /// <param name="targetPositionInWorld">Target position to begin find.</param>
+        /// <param name="withNetural"></param>
         /// <param name="ignoreList">Ignore those character when finding</param>
         /// <returns></returns>
-        public static Character GetClosestEnemy(Character finder, Vector2 targetPositionInWorld, List<Character> ignoreList = null)
+        public static Character GetClosestEnemy(Character finder, Vector2 targetPositionInWorld, bool withNetural, List<Character> ignoreList = null)
         {
             if (finder == null) return null;
 
             if (finder.IsEnemy)
             {
-                return GetLiveClosestPlayerOrFighterFriend(targetPositionInWorld, ignoreList);
+                return GetLiveClosestPlayerOrFighterFriend(targetPositionInWorld, withNetural, ignoreList);
             }
 
             if (finder.IsPlayer || finder.IsFighterFriend)
             {
-                return GetClosestEnemyTypeCharacter(targetPositionInWorld, ignoreList);
+                return GetClosestEnemyTypeCharacter(targetPositionInWorld, withNetural, ignoreList);
             }
 
             return null;
@@ -203,13 +204,38 @@ namespace Engine
         /// <param name="positionInWorld">Target position</param>
         /// <param name="ignoreList">Ignore those character when finding</param>
         /// <returns>If not find, return null</returns>
-        public static Character GetLiveClosestPlayerOrFighterFriend(Vector2 positionInWorld, List<Character> ignoreList = null)
+        public static Character GetLiveClosestPlayerOrFighterFriend(Vector2 positionInWorld, bool withNetural, List<Character> ignoreList = null)
         {
             Character closed = null;
             var closedDistance = 99999999f;
             foreach (var npc in _list)
             {
-                if ((ignoreList == null || ignoreList.All(item => npc != item)) && npc.IsFighterFriend)
+                if ((ignoreList == null || ignoreList.All(item => npc != item)) && (npc.IsFighterFriend || (withNetural && npc.IsNeutralFighter)))
+                {
+                    var distance = Vector2.Distance(positionInWorld, npc.PositionInWorld);
+                    if (npc.IsDeathInvoked || !(distance < closedDistance)) continue;
+                    closed = npc;
+                    closedDistance = distance;
+                }
+            }
+
+            var character = Globals.PlayerKindCharacter;
+            if ((ignoreList == null || ignoreList.All(item => character != item)) &&
+                !character.IsDeathInvoked &&
+                Vector2.Distance(positionInWorld, character.PositionInWorld) < closedDistance)
+            {
+                closed = Globals.ThePlayer;
+            }
+            return closed;
+        }
+
+        public static Character GetLiveClosestNonneturalFighter(Vector2 positionInWorld, List<Character> ignoreList = null)
+        {
+            Character closed = null;
+            var closedDistance = 99999999f;
+            foreach (var npc in _list)
+            {
+                if ((ignoreList == null || ignoreList.All(item => npc != item)) && (npc.IsFighter && npc.Relation != (int)Character.RelationType.Neutral))
                 {
                     var distance = Vector2.Distance(positionInWorld, npc.PositionInWorld);
                     if (npc.IsDeathInvoked || !(distance < closedDistance)) continue;
@@ -262,10 +288,26 @@ namespace Engine
             var neighbors = PathFinder.FindAllNeighbors(character.TilePosition);
             foreach (var neighbor in neighbors)
             {
-                var enemy = GetEnemy(neighbor);
+                var enemy = GetEnemy(neighbor, false);
                 if (enemy != null)
                 {
                     list.Add(enemy);
+                }
+            }
+            return list;
+        }
+
+        public static List<Character> GetNeighborNuturalFighter(Character character)
+        {
+            var list = new List<Character>();
+            if (character == null) return list;
+            var neighbors = PathFinder.FindAllNeighbors(character.TilePosition);
+            foreach (var neighbor in neighbors)
+            {
+                var fighter = GetNeutralFighter(neighbor);
+                if (fighter != null)
+                {
+                    list.Add(fighter);
                 }
             }
             return list;
@@ -283,18 +325,11 @@ namespace Engine
             var enemies = new List<Character>();
             if (finder == null || tileDistance < 1) return enemies;
 
-            if (finder.IsEnemy)
-            {
-                enemies.AddRange(_list.Where(npc => npc.IsFighterFriend && PathFinder.GetViewTileDistance(beginTilePosition, npc.TilePosition) <= tileDistance));
+            enemies.AddRange(_list.Where(npc => finder.IsOpposite(npc) && PathFinder.GetViewTileDistance(beginTilePosition, npc.TilePosition) <= tileDistance));
 
-                if (PathFinder.GetViewTileDistance(beginTilePosition, Globals.ThePlayer.TilePosition) <= tileDistance)
-                {
-                    enemies.Add(Globals.ThePlayer);
-                }
-            }
-            else if (finder.IsPlayer || finder.IsFighterFriend)
+            if (finder.IsOpposite(Globals.ThePlayer) && PathFinder.GetViewTileDistance(beginTilePosition, Globals.ThePlayer.TilePosition) <= tileDistance)
             {
-                enemies.AddRange(_list.Where(npc => npc.IsEnemy && PathFinder.GetViewTileDistance(beginTilePosition, npc.TilePosition) <= tileDistance));
+                enemies.Add(Globals.ThePlayer);
             }
 
             return enemies;
@@ -338,6 +373,11 @@ namespace Engine
                 {
                     friends.Add(Globals.ThePlayer);
                 }
+            }
+            else if (finder.IsNeutralFighter)
+            {
+                friends.AddRange(_list.Where(npc => npc.IsNeutralFighter &&
+                                                    PathFinder.GetViewTileDistance(beginTilePosition, npc.TilePosition) <= tileDistance));
             }
             return friends;
         } 
@@ -515,12 +555,17 @@ namespace Engine
             return IsEnemy((int)tilePosition.X, (int)tilePosition.Y);
         }
 
-        public static Npc GetEnemy(int tileX, int tileY)
+        public static Npc GetEnemy(int tileX, int tileY, bool withNeutral)
         {
             foreach (var npc in _list)
             {
-                if (npc.MapX == tileX && npc.MapY == tileY && npc.IsEnemy)
-                    return npc;
+                if (npc.MapX == tileX && npc.MapY == tileY)
+                {
+                    if (npc.IsEnemy || (withNeutral && npc.IsNeutralFighter))
+                    {
+                        return npc;
+                    }
+                }
             }
             return null;
         }
@@ -549,17 +594,46 @@ namespace Engine
             return null;
         }
 
-        public static Npc GetEnemy(Vector2 tilePosition)
+        public static Npc GetEnemy(Vector2 tilePosition, bool withNeutral)
         {
-            return GetEnemy((int)tilePosition.X, (int)tilePosition.Y);
+            return GetEnemy((int)tilePosition.X, (int)tilePosition.Y, withNeutral);
         }
 
-        public static Character GetPlayerOrFighterFriend(Vector2 tilePosition)
+        public static Npc GetNeutralFighter(Vector2 tilePosotion)
+        {
+            foreach (var npc in _list)
+            {
+                if (npc.TilePosition == tilePosotion)
+                {
+                    if (npc.IsNeutralFighter)
+                    {
+                        return npc;
+                    }
+                }
+            }
+            return null;
+        }
+
+        public static Character GetPlayerOrFighterFriend(Vector2 tilePosition, bool withNetural)
         {
             if (tilePosition == Globals.PlayerTilePosition) return Globals.PlayerKindCharacter;
             foreach (var npc in _list)
             {
-                if (npc.IsFighterFriend && npc.TilePosition == tilePosition)
+                if (npc.TilePosition == tilePosition)
+                {
+                    if(npc.IsFighterFriend || (withNetural && npc.IsNeutralFighter))
+                    return npc;
+                }
+            }
+            return null;
+        }
+
+        public static Character GetNonneutralFighter(Vector2 tilePosition)
+        {
+            if (tilePosition == Globals.PlayerTilePosition) return Globals.PlayerKindCharacter;
+            foreach (var npc in _list)
+            {
+                if (npc.TilePosition == tilePosition && npc.IsFighter && npc.Relation != (int)Character.RelationType.Neutral)
                 {
                     return npc;
                 }

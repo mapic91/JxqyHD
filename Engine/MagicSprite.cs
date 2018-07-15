@@ -239,7 +239,7 @@ namespace Engine
                         else
                         {
                             npc.Kind = (int)Character.CharacterKind.Fighter;
-                            npc.Relation = (int)Character.RelationType.Enemy;
+                            npc.Relation = BelongCharacter.Relation;
                         }
                         npc.SummonedByMagicSprite = this;
                         _summonedNpc = npc;
@@ -397,6 +397,8 @@ namespace Engine
             var isInDeath = character.IsDeathInvoked;
             character.LastAttackerMagicSprite = this;
 
+            character.NotifyFighterAndAllNeighbor(BelongCharacter);
+
             //Hit ratio
             var targetEvade = character.Evade;
             var belongCharacterEvade = BelongCharacter.Evade;
@@ -541,7 +543,6 @@ namespace Engine
             //Exp
             if (BelongCharacter.IsPlayer || BelongCharacter.IsFighterFriend)
             {
-                character.NotifyEnemyAndAllNeighbor(BelongCharacter);
                 var isSummonedByPlayerorPartner = (BelongCharacter.SummonedByMagicSprite != null &&
                                                    (BelongCharacter.SummonedByMagicSprite.BelongCharacter.IsPlayer ||
                                                     BelongCharacter.SummonedByMagicSprite.BelongCharacter.IsPartner));
@@ -589,12 +590,16 @@ namespace Engine
             }
             else if (BelongCharacter.IsPlayer || BelongCharacter.IsFighterFriend)
             {
-                var target = NpcManager.GetEnemy(TilePosition);
+                var target = NpcManager.GetEnemy(TilePosition, true);
                 characterHited = CharacterHited(target);
             }
             else if (BelongCharacter.IsEnemy)
             {
-                characterHited = CharacterHited(NpcManager.GetPlayerOrFighterFriend(TilePosition));
+                characterHited = CharacterHited(NpcManager.GetPlayerOrFighterFriend(TilePosition, true));
+            }
+            else if (BelongCharacter.IsNeutralFighter)
+            {
+                characterHited = CharacterHited(NpcManager.GetNonneutralFighter(TilePosition));
             }
 
             if (!characterHited && !CheckMagicDiscard())
@@ -648,22 +653,12 @@ namespace Engine
 
         public bool IsOpposite(MagicSprite magicSprite)
         {
-            if (magicSprite.BelongCharacter.IsEnemy)
-            {
-                return BelongCharacter.IsPlayer || BelongCharacter.IsFighterFriend;
-            }
-
-            return BelongCharacter.IsEnemy;
+            return BelongCharacter.IsOpposite(magicSprite.BelongCharacter);
         }
 
         public bool IsOpposite(Character character)
         {
-            if (character.IsEnemy)
-            {
-                return BelongCharacter.IsPlayer || BelongCharacter.IsFighterFriend;
-            }
-
-            return BelongCharacter.IsEnemy;
+            return BelongCharacter.IsOpposite(character);
         }
 
         private void Begin()
@@ -747,9 +742,14 @@ namespace Engine
                 {
                     targets = NpcManager.NpcsInView.Where(npc => npc.IsEnemy).Cast<Character>().ToList();
                 }
-                else
+                else if(BelongCharacter.IsEnemy)
                 {
                     targets = NpcManager.NpcsInView.Where(npc => npc.IsFighterFriend).Cast<Character>().ToList();
+                    targets.Add(Globals.ThePlayer);
+                }
+                else //Neutral
+                {
+                    targets = NpcManager.NpcsInView.Where(npc => npc.IsFighter && npc.Relation != (int)Character.RelationType.Neutral).Cast<Character>().ToList();
                     targets.Add(Globals.ThePlayer);
                 }
                 foreach (var character in targets)
@@ -758,8 +758,8 @@ namespace Engine
                         character.PositionInWorld,
                         BelongMagic.VanishImage,
                         BelongMagic.VanishSound);
+                    character.NotifyFighterAndAllNeighbor(BelongCharacter);
                     CharacterHited(character);
-                    character.NotifyEnemyAndAllNeighbor(BelongCharacter);
                 }
                 if (_superModeDestroySprites.Count == 0) _isDestroyed = true;
             }
@@ -880,7 +880,7 @@ namespace Engine
             else
             {
                 nextTarget =
-                    NpcManager.GetClosestEnemy(BelongCharacter, hitedCharacter.PositionInWorld, _leapedCharacters);
+                    NpcManager.GetClosestEnemy(BelongCharacter, hitedCharacter.PositionInWorld, true, _leapedCharacters);
             }
             if (nextTarget == null)
             {
@@ -1056,12 +1056,16 @@ namespace Engine
                             {
                                 if (_closedCharecter == null || _closedCharecter.IsDeath)
                                 {
-                                    _closedCharecter = NpcManager.GetClosestEnemyTypeCharacter(PositionInWorld);
+                                    _closedCharecter = NpcManager.GetClosestEnemyTypeCharacter(PositionInWorld, true);
                                 }
                             }
-                            else
+                            else if(BelongCharacter.IsEnemy)
                             {
-                                _closedCharecter = NpcManager.GetLiveClosestPlayerOrFighterFriend(PositionInWorld);
+                                _closedCharecter = NpcManager.GetLiveClosestPlayerOrFighterFriend(PositionInWorld, true);
+                            }
+                            else if (BelongCharacter.IsNeutralFighter)
+                            {
+                                _closedCharecter = NpcManager.GetLiveClosestNonneturalFighter(PositionInWorld);
                             }
                         }
                         
