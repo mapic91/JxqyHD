@@ -252,7 +252,7 @@ namespace Engine
                         MoveToPlayer();
                     }
                 }
-                else if (IsNeutralFighter)
+                else if (IsNoneFighter)
                 {
                     if (StopFindingTarget == 0)
                     {

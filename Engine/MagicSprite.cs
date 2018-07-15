@@ -597,7 +597,7 @@ namespace Engine
             {
                 characterHited = CharacterHited(NpcManager.GetPlayerOrFighterFriend(TilePosition, true));
             }
-            else if (BelongCharacter.IsNeutralFighter)
+            else if (BelongCharacter.IsNoneFighter)
             {
                 characterHited = CharacterHited(NpcManager.GetNonneutralFighter(TilePosition));
             }
@@ -747,9 +747,9 @@ namespace Engine
                     targets = NpcManager.NpcsInView.Where(npc => npc.IsFighterFriend).Cast<Character>().ToList();
                     targets.Add(Globals.ThePlayer);
                 }
-                else //Neutral
+                else //None
                 {
-                    targets = NpcManager.NpcsInView.Where(npc => npc.IsFighter && npc.Relation != (int)Character.RelationType.Neutral).Cast<Character>().ToList();
+                    targets = NpcManager.NpcsInView.Where(npc => npc.IsFighter && npc.Relation != (int)Character.RelationType.None).Cast<Character>().ToList();
                     targets.Add(Globals.ThePlayer);
                 }
                 foreach (var character in targets)
@@ -1063,7 +1063,7 @@ namespace Engine
                             {
                                 _closedCharecter = NpcManager.GetLiveClosestPlayerOrFighterFriend(PositionInWorld, true);
                             }
-                            else if (BelongCharacter.IsNeutralFighter)
+                            else if (BelongCharacter.IsNoneFighter)
                             {
                                 _closedCharecter = NpcManager.GetLiveClosestNonneturalFighter(PositionInWorld);
                             }

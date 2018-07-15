@@ -29,7 +29,7 @@ namespace Engine
         public static Color NpcEdgeColor = Color.Yellow*0.6f;
         public static Color FriendEdgeColor = Color.Green*0.6f;
         public static Color EnemyEdgeColor = Color.Red*0.6f;
-        public static Color NeturalEdgeColor = Color.Blue * 0.6f;
+        public static Color NoneEdgeColor = Color.Blue * 0.6f;
         public static Color ObjEdgeColor = Color.Yellow*0.6f;
 
         // NPC OBJ

@@ -134,7 +134,7 @@ namespace Engine
             var closedDistance = 99999999f;
             foreach (var npc in list)
             {
-                if ((ignoreList == null || ignoreList.All(item => npc != item)) && (npc.IsEnemy ||(withNetural && npc.IsNeutralFighter)))
+                if ((ignoreList == null || ignoreList.All(item => npc != item)) && (npc.IsEnemy ||(withNetural && npc.IsNoneFighter)))
                 {
                     var distance = Vector2.Distance(positionInWorld, npc.PositionInWorld);
                     if (distance < closedDistance)
@@ -210,7 +210,7 @@ namespace Engine
             var closedDistance = 99999999f;
             foreach (var npc in _list)
             {
-                if ((ignoreList == null || ignoreList.All(item => npc != item)) && (npc.IsFighterFriend || (withNetural && npc.IsNeutralFighter)))
+                if ((ignoreList == null || ignoreList.All(item => npc != item)) && (npc.IsFighterFriend || (withNetural && npc.IsNoneFighter)))
                 {
                     var distance = Vector2.Distance(positionInWorld, npc.PositionInWorld);
                     if (npc.IsDeathInvoked || !(distance < closedDistance)) continue;
@@ -235,7 +235,7 @@ namespace Engine
             var closedDistance = 99999999f;
             foreach (var npc in _list)
             {
-                if ((ignoreList == null || ignoreList.All(item => npc != item)) && (npc.IsFighter && npc.Relation != (int)Character.RelationType.Neutral))
+                if ((ignoreList == null || ignoreList.All(item => npc != item)) && (npc.IsFighter && npc.Relation != (int)Character.RelationType.None))
                 {
                     var distance = Vector2.Distance(positionInWorld, npc.PositionInWorld);
                     if (npc.IsDeathInvoked || !(distance < closedDistance)) continue;
@@ -374,9 +374,9 @@ namespace Engine
                     friends.Add(Globals.ThePlayer);
                 }
             }
-            else if (finder.IsNeutralFighter)
+            else if (finder.IsNoneFighter)
             {
-                friends.AddRange(_list.Where(npc => npc.IsNeutralFighter &&
+                friends.AddRange(_list.Where(npc => npc.IsNoneFighter &&
                                                     PathFinder.GetViewTileDistance(beginTilePosition, npc.TilePosition) <= tileDistance));
             }
             return friends;
@@ -561,7 +561,7 @@ namespace Engine
             {
                 if (npc.MapX == tileX && npc.MapY == tileY)
                 {
-                    if (npc.IsEnemy || (withNeutral && npc.IsNeutralFighter))
+                    if (npc.IsEnemy || (withNeutral && npc.IsNoneFighter))
                     {
                         return npc;
                     }
@@ -605,7 +605,7 @@ namespace Engine
             {
                 if (npc.TilePosition == tilePosotion)
                 {
-                    if (npc.IsNeutralFighter)
+                    if (npc.IsNoneFighter)
                     {
                         return npc;
                     }
@@ -621,7 +621,7 @@ namespace Engine
             {
                 if (npc.TilePosition == tilePosition)
                 {
-                    if(npc.IsFighterFriend || (withNetural && npc.IsNeutralFighter))
+                    if(npc.IsFighterFriend || (withNetural && npc.IsNoneFighter))
                     return npc;
                 }
             }
@@ -633,7 +633,7 @@ namespace Engine
             if (tilePosition == Globals.PlayerTilePosition) return Globals.PlayerKindCharacter;
             foreach (var npc in _list)
             {
-                if (npc.TilePosition == tilePosition && npc.IsFighter && npc.Relation != (int)Character.RelationType.Neutral)
+                if (npc.TilePosition == tilePosition && npc.IsFighter && npc.Relation != (int)Character.RelationType.None)
                 {
                     return npc;
                 }

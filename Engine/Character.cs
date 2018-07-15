@@ -1002,9 +1002,9 @@ namespace Engine
             get { return Kind == 1 && Relation == 1; }
         }
 
-        public bool IsNeutralFighter
+        public bool IsNoneFighter
         {
-            get { return Relation == (int)RelationType.Neutral && Kind == 1; }
+            get { return Relation == (int)RelationType.None && Kind == 1; }
         }
 
         public bool IsEventCharacter
@@ -1041,7 +1041,7 @@ namespace Engine
 
         public bool IsInteractive
         {
-            get { return (HasInteractScript || IsEnemy || IsFighterFriend || IsNeutralFighter); }
+            get { return (HasInteractScript || IsEnemy || IsFighterFriend || IsNoneFighter); }
         }
 
        
@@ -1143,13 +1143,13 @@ namespace Engine
         {
             if (target.IsEnemy)
             {
-                return IsPlayer || IsFighterFriend || IsNeutralFighter;
+                return IsPlayer || IsFighterFriend || IsNoneFighter;
             }
             else if (target.IsPlayer || target.IsFighterFriend)
             {
-                return IsEnemy || IsNeutralFighter;
+                return IsEnemy || IsNoneFighter;
             }
-            else if (target.IsNeutralFighter)
+            else if (target.IsNoneFighter)
             {
                 return IsPlayer || IsFighterFriend || IsEnemy;
             }
@@ -2964,7 +2964,7 @@ namespace Engine
         /// <param name="target">The target</param>
         public void NotifyFighterAndAllNeighbor(Character target)
         {
-            if (target == null || (!IsEnemy && !IsNeutralFighter) || !IsStanding()) return;
+            if (target == null || (!IsEnemy && !IsNoneFighter) || !IsStanding()) return;
             var characters = IsEnemy ? NpcManager.GetNeighborEnemy(this) : NpcManager.GetNeighborNuturalFighter(this);
             characters.Add(this);
             foreach (var character in characters)
@@ -3395,7 +3395,8 @@ namespace Engine
         {
             Friend,
             Enemy,
-            Neutral
+            Neutral,
+            None //Attack all other types
         }
 
         public enum ActionType

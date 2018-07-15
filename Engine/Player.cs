@@ -1145,7 +1145,7 @@ namespace Engine
                         var edgeColor = Globals.NpcEdgeColor;
                         if (one.IsEnemy) edgeColor = Globals.EnemyEdgeColor;
                         else if (one.IsFighterFriend) edgeColor = Globals.FriendEdgeColor;
-                        else if (one.IsNeutralFighter) edgeColor = Globals.NeturalEdgeColor;
+                        else if (one.IsNoneFighter) edgeColor = Globals.NoneEdgeColor;
                         Globals.OutEdgeColor = edgeColor;
                         break;
                     }
@@ -1183,7 +1183,7 @@ namespace Engine
                     {
                         if (!IsFightDisabled &&
                             Globals.OutEdgeNpc != null &&
-                            (Globals.OutEdgeNpc.IsEnemy || Globals.OutEdgeNpc.IsNeutralFighter))
+                            (Globals.OutEdgeNpc.IsEnemy || Globals.OutEdgeNpc.IsNoneFighter))
                         {
                             character.Attacking(Globals.OutEdgeNpc.TilePosition, _isRun);
                         }
