@@ -1183,7 +1183,7 @@ namespace Engine
                     {
                         if (!IsFightDisabled &&
                             Globals.OutEdgeNpc != null &&
-                            Globals.OutEdgeNpc.IsEnemy)
+                            (Globals.OutEdgeNpc.IsEnemy || Globals.OutEdgeNpc.IsNeutralFighter))
                         {
                             character.Attacking(Globals.OutEdgeNpc.TilePosition, _isRun);
                         }

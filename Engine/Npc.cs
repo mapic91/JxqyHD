@@ -226,11 +226,25 @@ namespace Engine
             {
                 if (IsEnemy)
                 {
-                    FollowTarget = IsAIDisabled ? null : NpcManager.GetLiveClosestPlayerOrFighterFriend(PositionInWorld, true);
+                    if (StopFindingTarget == 0)
+                    {
+                        FollowTarget = IsAIDisabled ? null : NpcManager.GetLiveClosestPlayerOrFighterFriend(PositionInWorld, true);
+                    }
+                    else if(FollowTarget != null && FollowTarget.IsDeathInvoked)
+                    {
+                        FollowTarget = null;
+                    }
                 }
                 else if (IsFighterFriend)
                 {
-                    FollowTarget = IsAIDisabled ? null : NpcManager.GetClosestEnemyTypeCharacter(PositionInWorld, true);
+                    if (StopFindingTarget == 0)
+                    {
+                        FollowTarget = IsAIDisabled ? null : NpcManager.GetClosestEnemyTypeCharacter(PositionInWorld, true);
+                    }
+                    else if (FollowTarget != null && FollowTarget.IsDeathInvoked)
+                    {
+                        FollowTarget = null;
+                    }
                     //Fighter friend may be parter
                     if (FollowTarget == null && IsPartner)
                     {
@@ -240,7 +254,14 @@ namespace Engine
                 }
                 else if (IsNeutralFighter)
                 {
-                    FollowTarget = IsAIDisabled ? null : NpcManager.GetLiveClosestNonneturalFighter(PositionInWorld);
+                    if (StopFindingTarget == 0)
+                    {
+                        FollowTarget = IsAIDisabled ? null : NpcManager.GetLiveClosestNonneturalFighter(PositionInWorld);
+                    }
+                    else if (FollowTarget != null && FollowTarget.IsDeathInvoked)
+                    {
+                        FollowTarget = null;
+                    }
                 }
                 else if (IsPartner)
                 {

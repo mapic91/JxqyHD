@@ -84,6 +84,7 @@ namespace Engine
         private int _keepRadiusWhenLifeLow;
         private const int LifeLowPercentDefault = 20;
         private int _lifeLowPercent = LifeLowPercentDefault;
+        private int _stopFindingTarget;
         private int _keepRadiusWhenFriendDeath;
         private Magic _magicToUseWhenBeAttacked;
         private int _magicDirectionWhenBeAttacked;
@@ -793,6 +794,12 @@ namespace Engine
         {
             get { return _lifeLowPercent; }
             set { _lifeLowPercent = value; }
+        }
+
+        public int StopFindingTarget
+        {
+            get { return _stopFindingTarget; }
+            set { _stopFindingTarget = value; }
         }
 
         public int KeepRadiusWhenFriendDeath
