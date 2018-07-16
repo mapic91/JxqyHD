@@ -180,6 +180,7 @@ namespace Engine.Storage
                 BackgroundMusic.Stop();
                 Globals.IsInputDisabled = false;
                 Globals.IsSaveDisabled = false;
+                Npc.EnableAI();
             }
 
             LoadGameFile();
