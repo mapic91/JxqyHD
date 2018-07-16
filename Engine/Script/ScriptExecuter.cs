@@ -479,6 +479,7 @@ namespace Engine.Script
         public static void Add(List<string> parameters)
         {
             var variable = parameters[0];
+            if (variable[0] != '$') variable = "$" + variable;
             var value = int.Parse(parameters[1]);
             if (!Variables.ContainsKey(variable))
                 Variables[variable] = 0;
