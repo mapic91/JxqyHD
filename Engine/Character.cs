@@ -342,6 +342,8 @@ namespace Engine
             }
         }
 
+        public int PoisonByPlayer { set; get; }
+
         public float PetrifiedSeconds
         {
             get { return _petrifiedSeconds; }
@@ -1764,6 +1766,7 @@ namespace Engine
             AddKey(keyDataCollection, "Idle", _idle);
             AddKey(keyDataCollection, "NpcIni", _npcIniFileName);
             AddKey(keyDataCollection, "PoisonSeconds", _poisonSeconds);
+            AddKey(keyDataCollection, "PoisonByPlayer", PoisonByPlayer);
             AddKey(keyDataCollection, "PetrifiedSeconds", _petrifiedSeconds);
             AddKey(keyDataCollection, "FrozenSeconds", _frozenSeconds);
             AddKey(keyDataCollection, "IsPoisionVisualEffect", _isPoisionVisualEffect);
@@ -3101,7 +3104,14 @@ namespace Engine
                 {
                     _poisonedMilliSeconds = 0;
                     AddLife(-10);
+                    if (IsDeathInvoked && PoisonByPlayer > 0)
+                    {
+                        var exp = Utils.GetCharacterDeathExp(Globals.ThePlayer, this);
+                        Globals.ThePlayer.AddExp(exp, true);
+                        PoisonByPlayer = 0;
+                    }
                 }
+                if (PoisonSeconds <= 0) PoisonByPlayer = 0;
             }
 
             if (PetrifiedSeconds > 0)

@@ -340,6 +340,10 @@ namespace Engine
                     break;
                 case 2:
                     character.SetPoisonSeconds(BelongMagic.EffectLevel + 1, BelongMagic.NoSpecialKindEffect == 0);
+                    if (BelongCharacter.IsPlayer)
+                    {
+                        character.PoisonByPlayer = 1;
+                    }
                     break;
                 case 3:
                     character.SetPetrifySeconds(BelongMagic.EffectLevel + 1, BelongMagic.NoSpecialKindEffect == 0);
@@ -355,7 +359,13 @@ namespace Engine
                     break;
                 case Magic.AddonEffect.Poision:
                     if (!character.IsPoisoned)
+                    {
                         character.SetPoisonSeconds(BelongCharacter.Level / 10 + 1, BelongMagic.NoSpecialKindEffect == 0);
+                        if (BelongCharacter.IsPlayer)
+                        {
+                            character.PoisonByPlayer = 1;
+                        }
+                    }
                     break;
                 case Magic.AddonEffect.Petrified:
                     if (!character.IsPetrified)
@@ -1149,6 +1159,10 @@ namespace Engine
                                 if (BelongMagic.RangePoison > 0)
                                 {
                                     target.SetPoisonSeconds(BelongMagic.RangePoison/1000.0f, BelongMagic.NoSpecialKindEffect == 0);
+                                    if (BelongCharacter.IsPlayer)
+                                    {
+                                        target.PoisonByPlayer = 1;
+                                    }
                                 }
                                 if (BelongMagic.RangePetrify > 0)
                                 {
