@@ -659,8 +659,10 @@ namespace Engine
                 {
                     Attack += equip.Attack;
                     Attack2 += equip.Attack2;
+                    Attack3 += equip.Attack3;
                     Defend += equip.Defend;
                     Defend2 += equip.Defend2;
+                    Defend3 += equip.Defend3;
                     Evade += equip.Evade;
                     LifeMax += equip.LifeMax;
                     ThewMax += equip.ThewMax;
@@ -762,8 +764,10 @@ namespace Engine
                 {
                     Attack -= equip.Attack;
                     Attack2 -= equip.Attack2;
+                    Attack3 -= equip.Attack3;
                     Defend -= equip.Defend;
                     Defend2 -= equip.Defend2;
+                    Defend3 -= equip.Defend3;
                     Evade -= equip.Evade;
                     LifeMax -= equip.LifeMax;
                     ThewMax -= equip.ThewMax;
@@ -1067,8 +1071,10 @@ namespace Engine
                 Mana = ManaMax;
                 Attack += (detail.Attack - currentDetail.Attack);
                 Attack2 += (detail.Attack2 - currentDetail.Attack2);
+                Attack3 += (detail.Attack3 - currentDetail.Attack3);
                 Defend += (detail.Defend - currentDetail.Defend);
                 Defend2 += (detail.Defend2 - currentDetail.Defend2);
+                Defend3 += (detail.Defend3 - currentDetail.Defend3);
                 Evade += (detail.Evade - currentDetail.Evade);
                 LevelUpExp = detail.LevelUpExp;
                 if (!string.IsNullOrEmpty(detail.NewMagic))

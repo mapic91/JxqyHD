@@ -141,7 +141,7 @@ namespace Engine.Gui
                     effect += ("体 " + good.Thew.ToString("+#;-#") + "  ");
                 if (good.Mana != 0)
                     effect += ("气 " + good.Mana.ToString("+#;-#") + "  ");
-                if (good.Attack != 0 || good.Attack2 != 0)
+                if (good.Attack != 0 || good.Attack2 != 0 || good.Attack3 != 0)
                 {
                     var attack1 = "";
                     if (good.Attack != 0)
@@ -151,11 +151,11 @@ namespace Engine.Gui
                     var attack2 = "";
                     if (good.Attack2 != 0)
                     {
-                        attack2 = string.Format("({0:+#;-#})", good.Attack2);
+                        attack2 = string.Format("({0:+#;-#})({1:+#;-#})", good.Attack2, good.Attack3);
                     }
                     effect += ("攻 " + attack1 + attack2 + "  ");
                 }
-                if (good.Defend != 0 || good.Defend2 != 0)
+                if (good.Defend != 0 || good.Defend2 != 0 || good.Defend3 != 0)
                 {
                     var defend1 = "";
                     if (good.Defend != 0)
@@ -163,9 +163,9 @@ namespace Engine.Gui
                         defend1 = good.Defend.ToString("+#;-#");
                     }
                     var defend2 = "";
-                    if (good.Defend2 != 0)
+                    if (good.Defend2 != 0 || good.Defend3 != 0)
                     {
-                        defend2 = string.Format("({0:+#;-#})", good.Defend2);
+                        defend2 = string.Format("({0:+#;-#})({1:+#;-#})", good.Defend2, good.Defend3);
                     }
                     effect += ("防 " + defend1 + defend2 + "  ");
                 }

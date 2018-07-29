@@ -25,8 +25,10 @@ namespace Engine
         public int ManaMax { set; get; }
         public int Attack { set; get; }
         public int Attack2 { set; get; }
+        public int Attack3 { set; get; }
         public int Defend { set; get; }
         public int Defend2 { set; get; }
+        public int Defend3 { set; get; }
         public int Evade { set; get; }
         public int EffectType { set; get; }
         public int SpecialEffect { set; get; }
@@ -133,7 +135,7 @@ namespace Engine
                             return ( Thew*4 + Life*2 + Mana*2 ) *
                                    ( 1 + (EffectType == 0 ? 0 : 1) );
                         case GoodKind.Equipment:
-                            return ( Attack*20 + Attack2 * 20 + Defend*20 + Defend2 * 20 + Evade*40 + LifeMax*2 + ThewMax*3 + ManaMax*2 ) *
+                            return ( Attack*20 + Attack2 * 20 + Attack3 * 20 + Defend*20 + Defend2 * 20 + Defend3 * 20 + Evade*40 + LifeMax*2 + ThewMax*3 + ManaMax*2 ) *
                                 (1 + (EffectType == 0 ? 0 : 1));
                     }
                 }

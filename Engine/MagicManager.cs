@@ -831,6 +831,16 @@ namespace Engine
             return AddMagicEffect(magic, belongCharacter, effect);
         }
 
+        public static int GetEffectAmount3(Magic magic, Character belongCharacter)
+        {
+            //If magic effect not set(equal 0) use belong character attack value as amount.
+            if (magic == null || belongCharacter == null) return 0;
+            var effect = (magic.Effect3 == 0 || !belongCharacter.IsPlayer) ?
+                belongCharacter.Attack3 :
+                magic.Effect3;
+            return AddMagicEffect(magic, belongCharacter, effect);
+        }
+
         /// <summary>
         /// Use magic.
         /// </summary>
@@ -1012,7 +1022,7 @@ namespace Engine
             if (magic.SideEffectProbability > 0 && 
                 Globals.TheRandom.Next(0, 100) < magic.SideEffectProbability)
             {
-                var amount = ((GetEffectAmount(magic, user) + GetEffectAmount2(magic, user)) * magic.SideEffectPercent) / 100;
+                var amount = ((GetEffectAmount(magic, user) + GetEffectAmount2(magic, user) + GetEffectAmount3(magic, user)) * magic.SideEffectPercent) / 100;
                 switch ((Magic.SideEffectDamageType)magic.SideEffectType)
                 {
                     case Magic.SideEffectDamageType.Life:

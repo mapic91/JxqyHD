@@ -42,6 +42,7 @@ namespace Engine
         private int _effectLevel;
         private int _effect;
         private int _effect2;
+        private int _effect3;
         private int _effectExt;
         private int _effectMana;
         private int _manaCost;
@@ -356,6 +357,12 @@ namespace Engine
         {
             get { return _effect2; }
             set { _effect2 = value; }
+        }
+
+        public int Effect3
+        {
+            get { return _effect3; }
+            set { _effect3 = value; }
         }
 
         public int EffectMana

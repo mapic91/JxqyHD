@@ -159,14 +159,14 @@ namespace Engine.Gui
                     ? "1/1"
                     : player.Mana + "/" + player.ManaMax;
                 _items[6].Text = player.Attack.ToString();
-                if (player.Attack2 != 0)
+                if (player.Attack2 != 0 || player.Attack3 != 0)
                 {
-                    _items[6].Text += string.Format("({0})", player.Attack2);
+                    _items[6].Text += string.Format("({0})({1})", player.Attack2, player.Attack3);
                 }
                 _items[7].Text = player.Defend.ToString();
-                if (player.Defend2 != 0)
+                if (player.Defend2 != 0 || player.Defend3 != 0)
                 {
-                    _items[7].Text += string.Format("({0})", player.Defend2);
+                    _items[7].Text += string.Format("({0})({1})", player.Defend2, player.Defend3);
                 }
                 _items[8].Text = player.Evade.ToString();
             }

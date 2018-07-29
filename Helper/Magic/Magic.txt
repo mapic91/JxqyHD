@@ -104,6 +104,8 @@ EffectExt - 附加的武功伤害。比如Effect=30，EffectExt=90，则该武功的伤害是30+90=1
 
 Effect2 - 另外一套攻击值。计算方式：在原来伤害的基础上加上（Effect2 - Defend2），Defend2被击中人物的防御力属性，如果Defend2大于Effect2，即Effect2 - Defend2小于0，则取0。
 
+Effect3 - 另外一套攻击值。计算方式：在原来伤害的基础上加上（Effect3 - Defend3），Defend3被击中人物的防御力属性，如果Defend3大于Effect3，即Effect3 - Defend3小于0，则取0。
+
 EffectMana - 内力伤害，默认0。表示武功击中敌人后，敌人损失多少内力。
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

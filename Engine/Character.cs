@@ -61,9 +61,11 @@ namespace Engine
         private int _evade;
         private int _attack;
         private int _attack2;
+        private int _attack3;
         private int _attackLevel;
         private int _defend;
         private int _defend2;
+        private int _defend3;
         private int _exp;
         private int _levelUpExp;
         private int _level;
@@ -603,6 +605,12 @@ namespace Engine
             set { _attack2 = value; }
         }
 
+        public int Attack3
+        {
+            get { return _attack3; }
+            set { _attack3 = value; }
+        }
+
         public int AttackLevel
         {
             get { return _attackLevel; }
@@ -630,6 +638,12 @@ namespace Engine
         {
             get { return _defend2; }
             set { _defend2 = value; }
+        }
+
+        public int Defend3
+        {
+            get { return _defend3; }
+            set { _defend3 = value; }
         }
 
         public int Exp
@@ -2794,8 +2808,10 @@ namespace Engine
                 Mana = ManaMax;
                 Attack = detail.Attack;
                 Attack2 = detail.Attack2;
+                Attack3 = detail.Attack3;
                 Defend = detail.Defend;
                 Defend2 = detail.Defend2;
+                Defend3 = detail.Defend3;
                 Evade = detail.Evade;
                 LevelUpExp = detail.LevelUpExp;
             }

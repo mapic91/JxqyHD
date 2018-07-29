@@ -250,8 +250,10 @@ namespace Engine
             public int ManaMax;
             public int Attack;
             public int Attack2;
+            public int Attack3;
             public int Defend;
             public int Defend2;
+            public int Defend3;
             public int Evade;
             public string NewMagic;
             public string NewGood;
@@ -312,11 +314,17 @@ namespace Engine
                                 case "Attack2":
                                     detail.Attack2 = value;
                                     break;
+                                case "Attack3":
+                                    detail.Attack3 = value;
+                                    break;
                                 case "Defend":
                                     detail.Defend = value;
                                     break;
                                 case "Defend2":
                                     detail.Defend2 = value;
+                                    break;
+                                case "Defend3":
+                                    detail.Defend3 = value;
                                     break;
                                 case "Evade":
                                     detail.Evade = value;

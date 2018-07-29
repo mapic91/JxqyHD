@@ -124,10 +124,14 @@ namespace Engine.Gui
                     effect.AppendLine("攻" + good.Attack.ToString("+#;-#"));
                 if (good.Attack2 != 0)
                     effect.AppendLine("攻2 " + good.Attack2.ToString("+#;-#"));
+                if (good.Attack3 != 0)
+                    effect.AppendLine("攻3 " + good.Attack3.ToString("+#;-#"));
                 if (good.Defend != 0)
                     effect.AppendLine("防" + good.Defend.ToString("+#;-#"));
                 if (good.Defend2 != 0)
                     effect.AppendLine("防2" + good.Defend2.ToString("+#;-#"));
+                if (good.Defend3 != 0)
+                    effect.AppendLine("防3" + good.Defend3.ToString("+#;-#"));
                 if (good.Evade != 0)
                     effect.AppendLine("捷" + good.Evade.ToString("+#;-#"));
                 if (good.LifeMax != 0)
