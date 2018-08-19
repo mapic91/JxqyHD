@@ -336,12 +336,38 @@ namespace Engine.ListManager
 
         public static int GetGoodsNum(string fileName)
         {
-            var info = GetGoodsItemInfoFromFileName(fileName);
-            if (info != null)
+            switch (Type)
             {
-                return info.Count;
+                case ListType.TypeByGoodType:
+                {
+                    var info = GetGoodsItemInfoFromFileName(fileName);
+                    if (info != null)
+                    {
+                        return info.Count;
+                    }
+
+                    return 0;
+                }
+                case ListType.TypeByGoodItem:
+                {
+                    var count = 0;
+                    for (var i = ListIndexBegin; i <= ListIndexEnd; i++)
+                    {
+                        var info = GoodsList[i];
+                        if (info != null && info.TheGood != null)
+                        {
+                            if (Utils.EqualNoCase(info.TheGood.FileName, fileName))
+                            {
+                                count++;
+                            }
+                        }
+                    }
+
+                    return count;
+                }
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
-            return 0;
         }
 
         public static void DeleteGood(string fileName)
