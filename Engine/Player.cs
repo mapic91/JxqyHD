@@ -437,6 +437,12 @@ namespace Engine
                 return false;
             }
 
+            if (Thew < MagicUse.ThewCost)
+            {
+                GuiManager.ShowMessage("没有足够的体力使用这种武功");
+                return false;
+            }
+
             if (MagicUse.GoodsName != null && !string.IsNullOrEmpty(MagicUse.GoodsName.FileName))
             {
                 if (!GoodsListManager.DeleteGood(MagicUse.GoodsName.FileName, 1))
@@ -447,6 +453,7 @@ namespace Engine
             }
 
             Mana -= MagicUse.ManaCost;
+            Thew -= MagicUse.ThewCost;
             return true;
         }
 
@@ -718,11 +725,11 @@ namespace Engine
 
                 if (!string.IsNullOrEmpty(equip.FlyIni))
                 {
-                    FlyIniReplace = Utils.GetMagic(equip.FlyIni, IsMagicFromCache);
+                    FlyIniReplace = Utils.GetMagic(equip.FlyIni, IsMagicFromCache).GetLevel(AttackLevel);
                 }
                 if (!string.IsNullOrEmpty(equip.FlyIni2))
                 {
-                    FlyIni2Replace = Utils.GetMagic(equip.FlyIni2, IsMagicFromCache);
+                    FlyIni2Replace = Utils.GetMagic(equip.FlyIni2, IsMagicFromCache).GetLevel(AttackLevel);
                 }
 
                 if (!string.IsNullOrEmpty(equip.AddMagicEffectName))
