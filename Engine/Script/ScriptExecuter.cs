@@ -2008,5 +2008,10 @@ namespace Engine.Script
                 Globals.ThePlayer.UseMagic(magicInfo.TheMagic, new Vector2(mapX, mapY));
             }
         }
+
+        public static void IsEquipWeapon(List<string> parameters)
+        {
+            Variables[parameters[0]] = GoodsListManager.Get(205) == null ? 0 : 1;
+        }
     }
 }

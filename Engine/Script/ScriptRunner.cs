@@ -639,6 +639,9 @@ namespace Engine.Script
                         case "UseMagic":
                             ScriptExecuter.UseMagic(parameters);
                             break;
+                        case "IsEquipWeapon":
+                            ScriptExecuter.IsEquipWeapon(parameters);
+                            break;
                         default:
                             throw new Exception("无此函数");
                     }
