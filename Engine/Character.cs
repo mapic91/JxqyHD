@@ -170,6 +170,14 @@ namespace Engine
 
         public LinkedList<MagicSprite> MagicSpritesInEffect = new LinkedList<MagicSprite>();
 
+        public float InvisibleByMagicTime;
+        public bool IsVisibleWhenAttack;
+
+        public bool IsVisible
+        {
+            get { return InvisibleByMagicTime <= 0; }
+        }
+
         public Dictionary<int, Utils.LevelDetail> LevelIni
         {
             get { return _levelIni; }
@@ -288,7 +296,7 @@ namespace Engine
         {
             get
             {
-                return !(IsDeath || IsHide || IsInTransport ||
+                return !(IsDeath || IsHide || IsInTransport || !IsVisible ||
                          (MovedByMagicSprite != null && MovedByMagicSprite.BelongMagic.HideUserWhenCarry > 0));
             }
         }
@@ -2112,6 +2120,8 @@ namespace Engine
             if (IsDeathInvoked) return;
             IsDeathInvoked = true;
 
+            InvisibleByMagicTime = 0;
+
             NpcManager.AddDead(this);
 
             //When death speedup is cancled
@@ -3063,6 +3073,15 @@ namespace Engine
                 }
             }
 
+            if (InvisibleByMagicTime > 0)
+            {
+                InvisibleByMagicTime -= (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                if (InvisibleByMagicTime < 0)
+                {
+                    InvisibleByMagicTime = 0;
+                }
+            }
+
             if (SppedUpByMagicSprite != null)
             {
                 if (SppedUpByMagicSprite.IsInDestroy || SppedUpByMagicSprite.IsDestroyed)
@@ -3194,6 +3213,11 @@ namespace Engine
                     base.Update(gameTime);
                     if (IsPlayCurrentDirOnceEnd())
                     {
+                        if (IsVisibleWhenAttack)
+                        {
+                            InvisibleByMagicTime = 0;
+                        }
+
                         if (NpcIni.ContainsKey(State))
                         {
                             PlaySoundEffect(NpcIni[State].Sound);
@@ -3217,6 +3241,11 @@ namespace Engine
                     base.Update(gameTime);
                     if (IsPlayCurrentDirOnceEnd())
                     {
+                        if (IsVisibleWhenAttack)
+                        {
+                            InvisibleByMagicTime = 0;
+                        }
+
                         StandingImmediately();
                         if (NpcIni.ContainsKey((int)CharacterState.Magic))
                         {

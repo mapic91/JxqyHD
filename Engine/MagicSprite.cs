@@ -898,7 +898,7 @@ namespace Engine
             else
             {
                 nextTarget =
-                    NpcManager.GetClosestEnemy(BelongCharacter, hitedCharacter.PositionInWorld, true, _leapedCharacters);
+                    NpcManager.GetClosestEnemy(BelongCharacter, hitedCharacter.PositionInWorld, true, false, _leapedCharacters);
             }
             if (nextTarget == null)
             {
@@ -1079,12 +1079,12 @@ namespace Engine
                             {
                                 if (_closedCharecter == null || _closedCharecter.IsDeath)
                                 {
-                                    _closedCharecter = NpcManager.GetClosestEnemyTypeCharacter(PositionInWorld, true);
+                                    _closedCharecter = NpcManager.GetClosestEnemyTypeCharacter(PositionInWorld, true, false);
                                 }
                             }
                             else if(BelongCharacter.IsEnemy)
                             {
-                                _closedCharecter = NpcManager.GetLiveClosestPlayerOrFighterFriend(PositionInWorld, true);
+                                _closedCharecter = NpcManager.GetLiveClosestPlayerOrFighterFriend(PositionInWorld, true, false);
                             }
                             else if (BelongCharacter.IsNoneFighter)
                             {

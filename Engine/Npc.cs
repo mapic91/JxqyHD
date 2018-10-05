@@ -222,13 +222,14 @@ namespace Engine
             if (!IsFollowTargetFound || // Not find target.
                 FollowTarget == null || // Follow target not assign.
                 FollowTarget.IsDeathInvoked || //Follow target is death.
+                !FollowTarget.IsVisible ||
                 IsAIDisabled) //Npc AI is disabled.
             {
                 if (IsEnemy)
                 {
                     if (StopFindingTarget == 0)
                     {
-                        FollowTarget = IsAIDisabled ? null : NpcManager.GetLiveClosestPlayerOrFighterFriend(PositionInWorld, true);
+                        FollowTarget = IsAIDisabled ? null : NpcManager.GetLiveClosestPlayerOrFighterFriend(PositionInWorld, true, false);
                     }
                     else if(FollowTarget != null && FollowTarget.IsDeathInvoked)
                     {
@@ -239,7 +240,7 @@ namespace Engine
                 {
                     if (StopFindingTarget == 0)
                     {
-                        FollowTarget = IsAIDisabled ? null : NpcManager.GetClosestEnemyTypeCharacter(PositionInWorld, true);
+                        FollowTarget = IsAIDisabled ? null : NpcManager.GetClosestEnemyTypeCharacter(PositionInWorld, true, false);
                     }
                     else if (FollowTarget != null && FollowTarget.IsDeathInvoked)
                     {

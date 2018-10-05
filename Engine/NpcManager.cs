@@ -116,9 +116,9 @@ namespace Engine
         /// <param name="positionInWorld">Target position</param>
         /// <param name="ignoreList">Ignore those character when finding</param>
         /// <returns>If not find, return null</returns>
-        public static Character GetClosestEnemyTypeCharacter(Vector2 positionInWorld, bool withNetural, List<Character> ignoreList = null)
+        public static Character GetClosestEnemyTypeCharacter(Vector2 positionInWorld, bool withNetural, bool withInvisible, List<Character> ignoreList = null)
         {
-            return GetClosestEnemyTypeCharacter(NpcList, positionInWorld, withNetural, ignoreList);
+            return GetClosestEnemyTypeCharacter(NpcList, positionInWorld, withNetural, withInvisible, ignoreList);
         }
 
         /// <summary>
@@ -128,13 +128,13 @@ namespace Engine
         /// <param name="positionInWorld">Target position</param>
         /// <param name="ignoreList">Ignore those character when finding</param>
         /// <returns>If not find, return null</returns>
-        public static Character GetClosestEnemyTypeCharacter(IEnumerable<Character> list, Vector2 positionInWorld, bool withNetural, List<Character> ignoreList = null)
+        public static Character GetClosestEnemyTypeCharacter(IEnumerable<Character> list, Vector2 positionInWorld, bool withNetural, bool withInvisible, List<Character> ignoreList = null)
         {
             Character closed = null;
             var closedDistance = 99999999f;
             foreach (var npc in list)
             {
-                if ((ignoreList == null || ignoreList.All(item => npc != item)) && (npc.IsEnemy ||(withNetural && npc.IsNoneFighter)))
+                if ((ignoreList == null || ignoreList.All(item => npc != item)) && (withInvisible || npc.IsVisible) && (npc.IsEnemy ||(withNetural && npc.IsNoneFighter)))
                 {
                     var distance = Vector2.Distance(positionInWorld, npc.PositionInWorld);
                     if (distance < closedDistance)
@@ -181,18 +181,18 @@ namespace Engine
         /// <param name="withNetural"></param>
         /// <param name="ignoreList">Ignore those character when finding</param>
         /// <returns></returns>
-        public static Character GetClosestEnemy(Character finder, Vector2 targetPositionInWorld, bool withNetural, List<Character> ignoreList = null)
+        public static Character GetClosestEnemy(Character finder, Vector2 targetPositionInWorld, bool withNetural, bool withInvisible, List<Character> ignoreList = null)
         {
             if (finder == null) return null;
 
             if (finder.IsEnemy)
             {
-                return GetLiveClosestPlayerOrFighterFriend(targetPositionInWorld, withNetural, ignoreList);
+                return GetLiveClosestPlayerOrFighterFriend(targetPositionInWorld, withNetural, withInvisible, ignoreList);
             }
 
             if (finder.IsPlayer || finder.IsFighterFriend)
             {
-                return GetClosestEnemyTypeCharacter(targetPositionInWorld, withNetural, ignoreList);
+                return GetClosestEnemyTypeCharacter(targetPositionInWorld, withNetural, withInvisible, ignoreList);
             }
 
             return null;
@@ -204,13 +204,13 @@ namespace Engine
         /// <param name="positionInWorld">Target position</param>
         /// <param name="ignoreList">Ignore those character when finding</param>
         /// <returns>If not find, return null</returns>
-        public static Character GetLiveClosestPlayerOrFighterFriend(Vector2 positionInWorld, bool withNetural, List<Character> ignoreList = null)
+        public static Character GetLiveClosestPlayerOrFighterFriend(Vector2 positionInWorld, bool withNetural, bool withInvisible, List<Character> ignoreList = null)
         {
             Character closed = null;
             var closedDistance = 99999999f;
             foreach (var npc in _list)
             {
-                if ((ignoreList == null || ignoreList.All(item => npc != item)) && (npc.IsFighterFriend || (withNetural && npc.IsNoneFighter)))
+                if ((ignoreList == null || ignoreList.All(item => npc != item)) && (withInvisible || npc.IsVisible) && (npc.IsFighterFriend || (withNetural && npc.IsNoneFighter)))
                 {
                     var distance = Vector2.Distance(positionInWorld, npc.PositionInWorld);
                     if (npc.IsDeathInvoked || !(distance < closedDistance)) continue;
@@ -220,7 +220,7 @@ namespace Engine
             }
 
             var character = Globals.PlayerKindCharacter;
-            if ((ignoreList == null || ignoreList.All(item => character != item)) &&
+            if ((ignoreList == null || ignoreList.All(item => character != item)) && (withInvisible || character.IsVisible) &&
                 !character.IsDeathInvoked &&
                 Vector2.Distance(positionInWorld, character.PositionInWorld) < closedDistance)
             {

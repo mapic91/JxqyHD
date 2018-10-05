@@ -626,7 +626,7 @@ namespace Engine
                         user.Thew += (magic.Effect == 0 ? user.Attack : magic.Effect) + magic.EffectExt;
                         AddMagicSprite(sprite);
                         break;
-                    default:
+                    case 3:
                         {
                             MagicSprite spriteInEffect = null;
                             foreach (var item in user.MagicSpritesInEffect)
@@ -644,6 +644,14 @@ namespace Engine
                                 AddMagicSprite(sprite);
                             }
                         }
+                        break;
+                    case 4:
+                        user.InvisibleByMagicTime = (magic.Effect == 0 ? user.Attack : magic.Effect) + magic.EffectExt;
+                        user.IsVisibleWhenAttack = false;
+                        break;
+                    case 5:
+                        user.InvisibleByMagicTime = (magic.Effect == 0 ? user.Attack : magic.Effect) + magic.EffectExt;
+                        user.IsVisibleWhenAttack = true;
                         break;
                 }
             }

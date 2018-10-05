@@ -1147,7 +1147,7 @@ namespace Engine
 
                 foreach (var one in NpcManager.NpcsInView)
                 {
-                    if (!one.IsInteractive) continue;
+                    if (!one.IsInteractive || !one.IsVisible) continue;
                     var texture = one.GetCurrentTexture();
                     if (Collider.IsPixelCollideForNpcObj(mouseWorldPosition,
                         one.RegionInWorld,
@@ -1367,7 +1367,7 @@ namespace Engine
             if (keyboardState.IsKeyDown(Keys.LeftControl) ||
                 keyboardState.IsKeyDown(Keys.RightControl))
             {
-                var closedEnemy = NpcManager.GetClosestEnemy(attacker, PositionInWorld, true);
+                var closedEnemy = NpcManager.GetClosestEnemy(attacker, PositionInWorld, true, false);
                 if (closedEnemy != null)
                 {
                     UseMagic(CurrentMagicInUse.TheMagic, closedEnemy.TilePosition, closedEnemy);
