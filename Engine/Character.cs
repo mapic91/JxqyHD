@@ -2761,6 +2761,21 @@ namespace Engine
         public void DecreaseLifeAddHurt(int amount)
         {
             if (amount <= 0) return;
+
+            foreach (var magicSprite in MagicSpritesInEffect)
+            {
+                var magic = magicSprite.BelongMagic;
+                switch (magic.MoveKind)
+                {
+                    case 13:
+                        if (magic.SpecialKind == 6)
+                        {
+                            return;
+                        }
+                        break;
+                }
+            }
+
             AddLife(-amount);
             if (Life > 0)
             {

@@ -627,6 +627,7 @@ namespace Engine
                         AddMagicSprite(sprite);
                         break;
                     case 3:
+                    case 6:
                         {
                             MagicSprite spriteInEffect = null;
                             foreach (var item in user.MagicSpritesInEffect)
