@@ -139,6 +139,9 @@ namespace Engine
         private readonly LinkedList<Npc> _summonedNpcs = new LinkedList<Npc>();
         private int _rangeRadiusToShow;
 
+        private MagicSprite _changeCharacterByMagicSprite;
+        private float _changeCharacterByMagicSpriteTime;
+
         /// <summary>
         /// List of the fixed path tile position.
         /// When load <see cref="FixedPos"/>, <see cref="FixedPos"/> is converted to list and stored on this value.
@@ -541,7 +544,13 @@ namespace Engine
 
         public StateMapList NpcIni
         {
-            get { return _npcIni; }
+            get
+            {
+                return _changeCharacterByMagicSprite != null
+                    ? _changeCharacterByMagicSprite.BelongMagic.NpcIni
+                    : _npcIni;
+
+            }
             protected set { _npcIni = value; }
         }
 
@@ -601,10 +610,20 @@ namespace Engine
             set { _evade = value; }
         }
 
+        public int RealEvade
+        {
+            get { return (int) (_evade * (100 + (_changeCharacterByMagicSprite != null ? _changeCharacterByMagicSprite.BelongMagic.EvadeAddPercent : 0)) / 100.0f); }
+        }
+
         public int Attack
         {
             get { return _attack; }
             set { _attack = value; }
+        }
+
+        public int RealAttack
+        {
+            get { return (int) (_attack * (100 + (_changeCharacterByMagicSprite != null ? _changeCharacterByMagicSprite.BelongMagic.AttackAddPercent : 0)) / 100.0f); }
         }
 
         public int Attack2
@@ -640,6 +659,11 @@ namespace Engine
         {
             get { return _defend; }
             set { _defend = value; }
+        }
+
+        public int RealDefend
+        {
+            get { return (int) (_defend * (100 + (_changeCharacterByMagicSprite != null ? _changeCharacterByMagicSprite.BelongMagic.DefendAddPercent : 0)) / 100.0f); }
         }
 
         public int Defend2
@@ -1848,20 +1872,20 @@ namespace Engine
         #endregion Save load method
 
         #region Perform action
-        public void StandingImmediately()
+        public void StandingImmediately(bool forceRefreshShow=false)
         {
             if (IsDeathInvoked || IsDeath)
             {
                 return;
             }
             StateInitialize(false);
-            if (_isInFighting && NpcIni.ContainsKey((int)CharacterState.FightStand)) SetState(CharacterState.FightStand);
+            if (_isInFighting && NpcIni.ContainsKey((int)CharacterState.FightStand)) SetState(CharacterState.FightStand, forceRefreshShow);
             else
             {
                 if (NpcIni.ContainsKey((int)CharacterState.Stand1) &&
                     Globals.TheRandom.Next(4) == 1 &&
-                    State != (int)CharacterState.Stand1) SetState(CharacterState.Stand1);
-                else SetState(CharacterState.Stand);
+                    State != (int)CharacterState.Stand1) SetState(CharacterState.Stand1, forceRefreshShow);
+                else SetState(CharacterState.Stand, forceRefreshShow);
                 PlayCurrentDirOnce();
             }
         }
@@ -1958,7 +1982,9 @@ namespace Engine
         public virtual void WalkTo(Vector2 destinationTilePosition, PathFinder.PathType pathType = Engine.PathFinder.PathType.End)
         {
             if (PerformActionOk() &&
-                destinationTilePosition != TilePosition)
+                destinationTilePosition != TilePosition &&
+                (NpcIni.ContainsKey((int)CharacterState.FightWalk) ||
+                 NpcIni.ContainsKey((int)CharacterState.Walk)))
             {
                 //If in step move, alway find new path
                 if (IsWalking() && !IsInStepMove)
@@ -1985,7 +2011,9 @@ namespace Engine
         public virtual void RunTo(Vector2 destinationTilePosition, PathFinder.PathType pathType = Engine.PathFinder.PathType.End)
         {
             if (PerformActionOk() &&
-                destinationTilePosition != TilePosition)
+                destinationTilePosition != TilePosition &&
+                (NpcIni.ContainsKey((int)CharacterState.FightRun) ||
+                 NpcIni.ContainsKey((int)CharacterState.Run)))
             {
                 if (!NpcIni.ContainsKey((int) CharacterState.Run))
                 {
@@ -2014,7 +2042,9 @@ namespace Engine
             if (PerformActionOk() &&
                 destinationTilePosition != TilePosition &&
                 !MapBase.Instance.IsObstacleForCharacter(destinationTilePosition) &&
-                !HasObstacle(destinationTilePosition))
+                !HasObstacle(destinationTilePosition) &&
+                (NpcIni.ContainsKey((int)CharacterState.FightJump) ||
+                 NpcIni.ContainsKey((int)CharacterState.Jump)))
             {
                 if (!CanJump()) return;
 
@@ -2037,14 +2067,11 @@ namespace Engine
 
         public void Sitdown()
         {
-            if (PerformActionOk())
+            if (PerformActionOk() && NpcIni.ContainsKey((int)CharacterState.Sit))
             {
                 StateInitialize();
-                if (NpcIni.ContainsKey((int)CharacterState.Sit))
-                {
-                    SetState(CharacterState.Sit);
-                    PlayFrames(FrameEnd - FrameBegin);
-                }
+                SetState(CharacterState.Sit);
+                PlayFrames(FrameEnd - FrameBegin);
                 OnSitDown();
             }
         }
@@ -2056,7 +2083,7 @@ namespace Engine
 
         public void UseMagic(Magic magicUse, Vector2 magicDestinationTilePosition, Character target = null)
         {
-            if (PerformActionOk())
+            if (PerformActionOk() && NpcIni.ContainsKey((int)CharacterState.Magic))
             {
                 //Check use magic animations supporting current use magic direction or not.
                 var canUseMagicDirCount = magicUse.UseActionFile != null
@@ -2214,7 +2241,10 @@ namespace Engine
 
         public void Attacking(Vector2 destinationTilePosition, bool isRun = false)
         {
-            if (PerformActionOk())
+            if (PerformActionOk() && 
+                (NpcIni.ContainsKey((int)CharacterState.Attack) ||
+                 NpcIni.ContainsKey((int)CharacterState.Attack1) ||
+                 NpcIni.ContainsKey((int)CharacterState.Attack2)))
             {
                 _isRunToTarget = isRun;
                 DestinationAttackTilePosition = destinationTilePosition;
@@ -2901,6 +2931,13 @@ namespace Engine
             _relation = relation;
         }
 
+        public void ChangeCharacterBy(MagicSprite magicSprite)
+        {
+            _changeCharacterByMagicSprite = magicSprite;
+            _changeCharacterByMagicSpriteTime = magicSprite.BelongMagic.Effect;
+            StandingImmediately(true);
+        }
+
         /// <summary>
         /// Set NpcIni flle
         /// </summary>
@@ -3091,7 +3128,7 @@ namespace Engine
             if (InvisibleByMagicTime > 0)
             {
                 InvisibleByMagicTime -= (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-                if (InvisibleByMagicTime < 0)
+                if (InvisibleByMagicTime <= 0)
                 {
                     InvisibleByMagicTime = 0;
                 }
@@ -3103,14 +3140,27 @@ namespace Engine
                 {
                     SppedUpByMagicSprite = null;
                 }
-                else
-                {
-                    var fold = (100 + SppedUpByMagicSprite.BelongMagic.RangeSpeedUp) / 100f;
-                    gameTime = new GameTime(new TimeSpan((long)(gameTime.TotalGameTime.Ticks * fold)), 
-                        new TimeSpan((long)(gameTime.ElapsedGameTime.Ticks * fold)), 
-                        gameTime.IsRunningSlowly);
+            }
 
+            if (_changeCharacterByMagicSpriteTime > 0)
+            {
+                _changeCharacterByMagicSpriteTime -= (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                if (_changeCharacterByMagicSpriteTime <= 0)
+                {
+                    _changeCharacterByMagicSpriteTime = 0;
+                    _changeCharacterByMagicSprite = null;
+                    SetState((CharacterState)State, true);
                 }
+            }
+
+            if (SppedUpByMagicSprite != null || _changeCharacterByMagicSprite != null)
+            {
+                var fold = (100 + 
+                            (SppedUpByMagicSprite != null ? SppedUpByMagicSprite.BelongMagic.RangeSpeedUp : 0) +
+                            (_changeCharacterByMagicSprite != null ? _changeCharacterByMagicSprite.BelongMagic.SpeedAddPercent : 0)) / 100f;
+                gameTime = new GameTime(new TimeSpan((long)(gameTime.TotalGameTime.Ticks * fold)),
+                    new TimeSpan((long)(gameTime.ElapsedGameTime.Ticks * fold)),
+                    gameTime.IsRunningSlowly);
             }
             
             for (var node = _summonedNpcs.First; node != null;)

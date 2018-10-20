@@ -9,6 +9,8 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace Engine
 {
+    using StateMapList = Dictionary<int, ResStateInfo>;
+
     public class Magic
     {
         private string _name;
@@ -96,6 +98,12 @@ namespace Engine
         private int _attackAll;
         private int _discardOppositeMagic;
         private int _exchangeUser;
+
+        private StateMapList _npcIni;
+        private int _attackAddPercent;
+        private int _defendAddPercent;
+        private int _evadeAddPercent;
+        private int _speedAddPercent;
 
         private Asf _useActionFile;
 
@@ -776,6 +784,36 @@ namespace Engine
             set { _exchangeUser = value; }
         }
 
+        public StateMapList NpcIni
+        {
+            get { return _npcIni; }
+            set { _npcIni = value; }
+        }
+
+        public int AttackAddPercent
+        {
+            get { return _attackAddPercent; }
+            set { _attackAddPercent = value; }
+        }
+
+        public int DefendAddPercent
+        {
+            get { return _defendAddPercent; }
+            set { _defendAddPercent = value; }
+        }
+
+        public int EvadeAddPercent
+        {
+            get { return _evadeAddPercent; }
+            set { _evadeAddPercent = value; }
+        }
+
+        public int SpeedAddPercent
+        {
+            get { return _speedAddPercent; }
+            set { _speedAddPercent = value; }
+        }
+
         public Asf UseActionFile
         {
             get { return _useActionFile; }
@@ -837,6 +875,9 @@ namespace Engine
                     case "Image":
                     case "Icon":
                         info.SetValue(this, Utils.GetAsf(@"asf\magic\", nameValue[1]), null);
+                        break;
+                    case "NpcIni":
+                        NpcIni = ResFile.ReadFile(@"ini\npcres\" + nameValue[1], ResType.Npc);
                         break;
                     case "FlyingImage":
                     case "VanishImage":

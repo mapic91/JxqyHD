@@ -93,6 +93,12 @@ FlyingImage使用方向0，碰到敌人就爆炸，LifeFrame完也爆炸.
 [4] - 隐身Effect毫秒的时间
 [5] - 隐身Effect毫秒的时间，一但攻击敌人隐身消失。
 [6] - 无敌，时间长度LifeFrame，LifeFrame完爆炸
+[7] - 变身Effect毫秒的时间，
+      NpcIni-设置变身后的动作资源，比如 moc127_天池游鱼.ini ，文件在ini\npcres文件夹下
+      AttackAddPercent-设置变身后攻击力增加百分之多少，默认0
+      DefendAddPercent-设置变身后防御力增加百分之多少，默认0
+      EvadeAddPercent-设置变身后身法增加百分之多少，默认0
+      SpeedAddPercent-设置变身后移动速度增加百分之多少，默认0
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>：
 ThewCost - 消耗多少体力

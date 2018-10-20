@@ -412,8 +412,8 @@ namespace Engine
             character.NotifyFighterAndAllNeighbor(BelongCharacter);
 
             //Hit ratio
-            var targetEvade = character.Evade;
-            var belongCharacterEvade = BelongCharacter.Evade;
+            var targetEvade = character.RealEvade;
+            var belongCharacterEvade = BelongCharacter.RealEvade;
             const float maxOffset = 100f;
             const float baseHitRatio = 0.05f;
             const float belowRatio = 0.5f;
@@ -434,7 +434,7 @@ namespace Engine
             {
                 var effect3 = damage3 - character.Defend3;
                 var effect2 = damage2 - character.Defend2;
-                var effect = (damage - character.Defend);
+                var effect = (damage - character.RealDefend);
                 foreach (var magicSprite in character.MagicSpritesInEffect)
                 {
                     var magic = magicSprite.BelongMagic;
