@@ -49,6 +49,7 @@ namespace Engine
         private int _effectMana;
         private int _manaCost;
         private int _thewCost;
+        private int _lifeCost;
         private int _levelupExp;
         private bool _isOk;
         private MagicListManager.MagicItemInfo _iteminfo;
@@ -390,6 +391,12 @@ namespace Engine
         {
             get { return _thewCost; }
             set { _thewCost = value; }
+        }
+
+        public int LifeCost
+        {
+            get { return _lifeCost; }
+            set { _lifeCost = value; }
         }
 
         public int LevelupExp

@@ -2776,7 +2776,7 @@ namespace Engine
         /// Add amount of life. Amount can be negative.
         /// If list is less than 0.Character is death and <see cref="Death"/> is invoked.
         /// </summary>
-        /// <param name="amount">Amount to add. If amount is nagetive, life is decreased.</param>
+        /// <param name="amount">Amount to add. If amount is negative, life is decreased.</param>
         public void AddLife(int amount)
         {
             Life += amount;

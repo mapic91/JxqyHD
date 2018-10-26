@@ -454,6 +454,11 @@ namespace Engine
 
             Mana -= MagicUse.ManaCost;
             Thew -= MagicUse.ThewCost;
+            if (MagicUse.LifeCost != 0)
+            {
+                AddLife(-MagicUse.LifeCost);
+            }
+            
             return true;
         }
 
