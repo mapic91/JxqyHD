@@ -2946,6 +2946,7 @@ namespace Engine
 
         public void ChangeToOpposite(int milliseconds)
         {
+            if (IsPlayer) return;
             //if _changeToOppositeMilliseconds is greater than 0, change it back when call ChangeToOpposite second time.
             _changeToOppositeMilliseconds = _changeToOppositeMilliseconds > 0 ? 0 : milliseconds;
         }
