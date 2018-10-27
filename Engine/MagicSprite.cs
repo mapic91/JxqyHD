@@ -240,7 +240,7 @@ namespace Engine
                         else
                         {
                             npc.Kind = (int)Character.CharacterKind.Fighter;
-                            npc.Relation = BelongCharacter.Relation;
+                            npc.Relation = belongCharacter.Relation;
                         }
                         npc.SummonedByMagicSprite = this;
                         _summonedNpc = npc;
@@ -331,6 +331,11 @@ namespace Engine
             {
                 _parasitiferCharacter = character;
                 destroy = true;
+            }
+
+            if (BelongMagic.ChangeToFriendMilliseconds > 0 && BelongMagic.MaxLevel >= character.Level)
+            {
+                character.ChangeToOpposite(BelongMagic.ChangeToFriendMilliseconds);
             }
 
             //Apply magic special effect

@@ -454,3 +454,8 @@ SecondMagicFile=player-magic-第二套武功.ini
 SecondMagicDelay=100
 
 提示：SecondMagicFile里的武功也可以设置SecondMagicFile项，实现一下放3个武功。依此类推可以实现一下释放多个武功。
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+转换敌对关系：
+ChangeToFriendMilliseconds - 如果大于0，表示当武功击中敌人时，敌人会变成自己人，持续ChangeToFriendMilliseconds毫秒
+MaxLevel - 能转换的目标最大等级，默认0

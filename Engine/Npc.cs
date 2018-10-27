@@ -39,14 +39,14 @@ namespace Engine
                 {
                     return Engine.PathFinder.PathType.PerfectMaxNpcTry;
                 }
-                else if(IsInLoopWalk || IsEnemy)
-                {
-                    return Engine.PathFinder.PathType.PathOneStep;
-                }
                 else if (Kind == 0 || Kind == 5)
                 {
                     // Normal npc
                     return Engine.PathFinder.PathType.PerfectMaxPlayerTry;
+                }
+                else if (base.PathFinder == 0 || IsInLoopWalk || IsEnemy)
+                {
+                    return Engine.PathFinder.PathType.PathOneStep;
                 }
                 else
                 {
@@ -223,6 +223,8 @@ namespace Engine
                 FollowTarget == null || // Follow target not assign.
                 FollowTarget.IsDeathInvoked || //Follow target is death.
                 !FollowTarget.IsVisible ||
+                (IsEnemy && FollowTarget.IsEnemy) || // Follow target relation changed
+                (IsFighterFriend && (FollowTarget.IsFighterFriend || FollowTarget.IsPlayer)) || // Follow target relation changed
                 IsAIDisabled) //Npc AI is disabled.
             {
                 if (IsEnemy)

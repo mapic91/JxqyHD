@@ -138,6 +138,7 @@ namespace Engine
         private Vector2 _fixedPathMoveDestinationPixelPostion = Vector2.Zero;
         private readonly LinkedList<Npc> _summonedNpcs = new LinkedList<Npc>();
         private int _rangeRadiusToShow;
+        protected float _changeToOppositeMilliseconds;
 
         private MagicSprite _changeCharacterByMagicSprite;
         private float _changeCharacterByMagicSpriteTime;
@@ -530,6 +531,11 @@ namespace Engine
                     {
                         return (int)RelationType.Friend;
                     }
+                }
+
+                if (_changeToOppositeMilliseconds > 0)
+                {
+                    return _relation == (int) RelationType.Enemy ? (int) RelationType.Friend : (int) RelationType.Enemy;
                 }
                 return _relation;
             }
@@ -2249,7 +2255,7 @@ namespace Engine
                 _isRunToTarget = isRun;
                 DestinationAttackTilePosition = destinationTilePosition;
                 Magic magicToUse;
-                if (IsStanding() && AttackingIsOk(out magicToUse))
+                if (AttackingIsOk(out magicToUse))
                     PerformeAttack(magicToUse);
             }
         }
@@ -2938,6 +2944,12 @@ namespace Engine
             StandingImmediately(true);
         }
 
+        public void ChangeToOpposite(int milliseconds)
+        {
+            //if _changeToOppositeMilliseconds is greater than 0, change it back when call ChangeToOpposite second time.
+            _changeToOppositeMilliseconds = _changeToOppositeMilliseconds > 0 ? 0 : milliseconds;
+        }
+
         /// <summary>
         /// Set NpcIni flle
         /// </summary>
@@ -3122,6 +3134,15 @@ namespace Engine
                         }
                         ScriptManager.RunScript(_timeScriptParserCache, this);
                     }
+                }
+            }
+
+            if (_changeToOppositeMilliseconds > 0)
+            {
+                _changeToOppositeMilliseconds -= (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                if (_changeToOppositeMilliseconds < 0)
+                {
+                    _changeToOppositeMilliseconds = 0;
                 }
             }
 

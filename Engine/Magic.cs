@@ -84,6 +84,7 @@ namespace Engine
         private int _beginAtUserAddDirectionOffset;
         private int _beginAtUserAddUserDirectionOffset;
         private int _coldMilliSeconds;
+        private int _changeToFriendMilliseconds;
 
         private int _rangeEffect;
         private int _rangeAddLife;
@@ -705,6 +706,12 @@ namespace Engine
         {
             get { return _coldMilliSeconds; }
             set { _coldMilliSeconds = value; }
+        }
+
+        public int ChangeToFriendMilliseconds
+        {
+            get { return _changeToFriendMilliseconds; }
+            set { _changeToFriendMilliseconds = value; }
         }
 
         public int RangeEffect
