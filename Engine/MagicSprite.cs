@@ -338,6 +338,11 @@ namespace Engine
                 character.ChangeToOpposite(BelongMagic.ChangeToFriendMilliseconds);
             }
 
+            if (BelongMagic.WeakMilliseconds > 0)
+            {
+                character.WeakBy(this);
+            }
+
             //Apply magic special effect
             switch (BelongMagic.SpecialKind)
             {

@@ -459,3 +459,9 @@ SecondMagicDelay=100
 转换敌对关系：
 ChangeToFriendMilliseconds - 如果大于0，表示当武功击中敌人时，敌人会变成自己人，持续ChangeToFriendMilliseconds毫秒
 MaxLevel - 能转换的目标最大等级，默认0
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+削弱：
+WeakMilliseconds - 如果大于0，表示当武功击中敌人时，敌人的攻击力和防御力会被削弱，持续WeakMilliseconds毫秒
+WeakAttackPercent - 削弱百分之多少的攻击力，范围0-100，默认0
+WeakDefendPercent - 削弱百分之多少的防御力，范围0-100，默认0

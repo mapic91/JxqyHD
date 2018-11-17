@@ -107,6 +107,10 @@ namespace Engine
         private int _evadeAddPercent;
         private int _speedAddPercent;
 
+        private int _weakMilliseconds;
+        private int _weakAttackPercent;
+        private int _weakDefendPercent;
+
         private Asf _useActionFile;
 
         private int _bodyRadius;
@@ -826,6 +830,38 @@ namespace Engine
         {
             get { return _speedAddPercent; }
             set { _speedAddPercent = value; }
+        }
+
+        public int WeakMilliseconds
+        {
+            get { return _weakMilliseconds; }
+            set { _weakMilliseconds = value; }
+        }
+
+        public int WeakAttackPercent
+        {
+            get { return _weakAttackPercent; }
+            set
+            {
+                _weakAttackPercent = value;
+                if (_weakAttackPercent > 100)
+                {
+                    _weakAttackPercent = 100;
+                }
+            }
+        }
+
+        public int WeakDefendPercent
+        {
+            get { return _weakDefendPercent; }
+            set
+            {
+                _weakDefendPercent = value;
+                if (_weakDefendPercent > 100)
+                {
+                    _weakDefendPercent = 100;
+                }
+            }
         }
 
         public Asf UseActionFile

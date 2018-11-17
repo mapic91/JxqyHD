@@ -143,6 +143,9 @@ namespace Engine
         private MagicSprite _changeCharacterByMagicSprite;
         private float _changeCharacterByMagicSpriteTime;
 
+        private MagicSprite _weakByMagicSprite;
+        private float _weakByMagicSpriteTime;
+
         /// <summary>
         /// List of the fixed path tile position.
         /// When load <see cref="FixedPos"/>, <see cref="FixedPos"/> is converted to list and stored on this value.
@@ -623,13 +626,20 @@ namespace Engine
 
         public int Attack
         {
-            get { return _attack; }
+            get
+            {
+                if (_weakByMagicSprite != null)
+                {
+                    return _attack * (100 - _weakByMagicSprite.BelongMagic.WeakAttackPercent) / 100;
+                }
+                return _attack;
+            }
             set { _attack = value; }
         }
 
         public int RealAttack
         {
-            get { return (int) (_attack * (100 + (_changeCharacterByMagicSprite != null ? _changeCharacterByMagicSprite.BelongMagic.AttackAddPercent : 0)) / 100.0f); }
+            get { return (int) (Attack * (100 + (_changeCharacterByMagicSprite != null ? _changeCharacterByMagicSprite.BelongMagic.AttackAddPercent : 0)) / 100.0f); }
         }
 
         public int Attack2
@@ -663,13 +673,20 @@ namespace Engine
 
         public int Defend
         {
-            get { return _defend; }
+            get
+            {
+                if (_weakByMagicSprite != null)
+                {
+                    return _defend * (100 - _weakByMagicSprite.BelongMagic.WeakDefendPercent) / 100;
+                }
+                return _defend;
+            }
             set { _defend = value; }
         }
 
         public int RealDefend
         {
-            get { return (int) (_defend * (100 + (_changeCharacterByMagicSprite != null ? _changeCharacterByMagicSprite.BelongMagic.DefendAddPercent : 0)) / 100.0f); }
+            get { return (int) (Defend * (100 + (_changeCharacterByMagicSprite != null ? _changeCharacterByMagicSprite.BelongMagic.DefendAddPercent : 0)) / 100.0f); }
         }
 
         public int Defend2
@@ -2951,6 +2968,12 @@ namespace Engine
             _changeToOppositeMilliseconds = _changeToOppositeMilliseconds > 0 ? 0 : milliseconds;
         }
 
+        public void WeakBy(MagicSprite magicSprite)
+        {
+            _weakByMagicSprite = magicSprite;
+            _weakByMagicSpriteTime = magicSprite.BelongMagic.WeakMilliseconds;
+        }
+
         /// <summary>
         /// Set NpcIni flle
         /// </summary>
@@ -3144,6 +3167,16 @@ namespace Engine
                 if (_changeToOppositeMilliseconds < 0)
                 {
                     _changeToOppositeMilliseconds = 0;
+                }
+            }
+
+            if (_weakByMagicSpriteTime > 0)
+            {
+                _weakByMagicSpriteTime -= (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                if (_weakByMagicSpriteTime <= 0)
+                {
+                    _weakByMagicSpriteTime = 0;
+                    _weakByMagicSprite = null;
                 }
             }
 
