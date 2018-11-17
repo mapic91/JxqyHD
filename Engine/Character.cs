@@ -3426,6 +3426,10 @@ namespace Engine
                     }
                     else
                     {
+                        if (MovedByMagicSprite.BelongMagic.CarryUser == 2)
+                        {
+                            MovedByMagicSprite.Destroy();
+                        }
                         MovedByMagicSprite = null;
                     }
                 }

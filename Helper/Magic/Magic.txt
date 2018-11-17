@@ -323,7 +323,8 @@ MoveImitateUser - ´óÓÚ0±íÊ¾ÊÍ·ÅÕßÒÆ¶¯¶àÉÙ¾àÀë£¬ÏàÓ¦µÄÎä¹¦µ¥Î»Ò²»áÏàÓ¦µÄÒÆ¶¯Ò»Ñùµ
 CircleMoveColockwise - ´óÓÚ0±íÊ¾»áÒÔÊÍ·ÅÕßÎªÔ²ÐÄ×÷Ë³Ê±ÕëÔ²ÖÜÔË¶¯
 CircleMoveAnticlockwise - ´óÓÚ0±íÊ¾»áÒÔÊÍ·ÅÕßÎªÔ²ÐÄ×÷ÄæÊ±ÕëÔ²ÖÜÔË¶¯
 
-CarryUser - ´óÓÚ0±íÊ¾ÊÍ·ÅÕßÒ²¸ú×ÅÎä¹¦µ¥Î»Ò»ÆðÒÆ¶¯
+CarryUser - ´óÓÚ0£¬±íÊ¾ÊÍ·ÅÕßÒ²¸ú×ÅÎä¹¦µ¥Î»Ò»ÆðÒÆ¶¯£»
+            Èç¹ûÎª2£¬µ±ÊÍ·ÅÕßÒòÎª×èµ²£¬Í£ÏÂÔË¶¯£¬¼¼ÄÜÒ²±¬Õ¨ÏûÊ§¡£
 HideUserWhenCarry - ´óÓÚ0±íÊ¾CarryUserÉúÐ§Ê±£¬µ±Ê±±»ÒÆ¶¯µÄÊÍ·ÅÕßµÄ½ÇÉ«Í¼Ïñ²»»áÏÔÊ¾¡£
 CarryUserSpriteIndex - µ±Ò»¸öÎä¹¦Ê¹ÓÃ·Å³öÇòÌåÊ±£¬Ã¿¸öÇòÌå¶¼»áÓÐÒ»¸ö´Ó0¿ªÊ¼µÄË÷ÒýÖµ¡£±ÈÈç£ºÒ»´Î·Å³ö1¸öÇò£¬Ôò¸ÃÇòË÷ÒýÎª0£»Ò»´Î·Å³ö3¸öÇò£¬ÔòÃ¿¸öÇòË÷Òý·Ö±ðÎª0£¬1£¬2£»ÉèÖÃCarryUserSpriteIndex£¬±íÊ¾ÊÇÄÄ¸öÇòÐ¯´øÎä¹¦ÊÍ·ÅÕß£¬Ä¬ÈÏÖµÎª0¡£
 
