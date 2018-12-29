@@ -343,6 +343,11 @@ namespace Engine
                 character.WeakBy(this);
             }
 
+            if (BelongMagic.MorphMilliseconds > 0)
+            {
+                character.MorphBy(this);
+            }
+
             //Apply magic special effect
             switch (BelongMagic.SpecialKind)
             {

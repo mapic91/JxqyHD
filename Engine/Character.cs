@@ -143,6 +143,9 @@ namespace Engine
         private MagicSprite _changeCharacterByMagicSprite;
         private float _changeCharacterByMagicSpriteTime;
 
+        private MagicSprite _morphCharacterByMagicSprite;
+        private float _morphCharacterByMagicSpriteTime;
+
         private MagicSprite _weakByMagicSprite;
         private float _weakByMagicSpriteTime;
 
@@ -555,9 +558,17 @@ namespace Engine
         {
             get
             {
-                return _changeCharacterByMagicSprite != null
-                    ? _changeCharacterByMagicSprite.BelongMagic.NpcIni
-                    : _npcIni;
+                if (_changeCharacterByMagicSprite != null)
+                {
+                    return _changeCharacterByMagicSprite.BelongMagic.NpcIni;
+                }
+
+                if (_morphCharacterByMagicSprite != null)
+                {
+                    return _morphCharacterByMagicSprite.BelongMagic.MorphNpcIni;
+                }
+
+                return _npcIni;
 
             }
             protected set { _npcIni = value; }
@@ -2961,6 +2972,13 @@ namespace Engine
             StandingImmediately(true);
         }
 
+        public void MorphBy(MagicSprite magicSprite)
+        {
+            _morphCharacterByMagicSprite = magicSprite;
+            _morphCharacterByMagicSpriteTime = magicSprite.BelongMagic.MorphMilliseconds;
+            StandingImmediately(true);
+        }
+
         public void ChangeToOpposite(int milliseconds)
         {
             if (IsPlayer) return;
@@ -3204,6 +3222,17 @@ namespace Engine
                 {
                     _changeCharacterByMagicSpriteTime = 0;
                     _changeCharacterByMagicSprite = null;
+                    SetState((CharacterState)State, true);
+                }
+            }
+
+            if (_morphCharacterByMagicSpriteTime > 0)
+            {
+                _morphCharacterByMagicSpriteTime -= (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                if (_morphCharacterByMagicSpriteTime <= 0)
+                {
+                    _morphCharacterByMagicSpriteTime = 0;
+                    _morphCharacterByMagicSprite = null;
                     SetState((CharacterState)State, true);
                 }
             }
