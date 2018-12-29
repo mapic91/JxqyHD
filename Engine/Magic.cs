@@ -108,7 +108,6 @@ namespace Engine
         private int _speedAddPercent;
 
         private int _morphMilliseconds;
-        private StateMapList _morphNpcIni;
 
         private int _weakMilliseconds;
         private int _weakAttackPercent;
@@ -841,12 +840,6 @@ namespace Engine
             set { _morphMilliseconds = value; }
         }
 
-        public StateMapList MorphNpcIni
-        {
-            get { return _morphNpcIni; }
-            set { _morphNpcIni = value; }
-        }
-
         public int WeakMilliseconds
         {
             get { return _weakMilliseconds; }
@@ -943,9 +936,6 @@ namespace Engine
                         break;
                     case "NpcIni":
                         NpcIni = ResFile.ReadFile(@"ini\npcres\" + nameValue[1], ResType.Npc);
-                        break;
-                    case "MorphNpcIni":
-                        MorphNpcIni = ResFile.ReadFile(@"ini\npcres\" + nameValue[1], ResType.Npc);
                         break;
                     case "FlyingImage":
                     case "VanishImage":
