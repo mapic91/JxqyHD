@@ -660,6 +660,10 @@ namespace Engine
                         user.ChangeCharacterBy(sprite);
                         AddMagicSprite(sprite);
                         break;
+                    case 8:
+                        user.RemoveAbnormalState();
+                        AddMagicSprite(sprite);
+                        break;
                 }
             }
             else if (magic.MoveKind == 23)

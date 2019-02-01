@@ -2969,6 +2969,13 @@ namespace Engine
             StandingImmediately(true);
         }
 
+        public void RemoveAbnormalState()
+        {
+            ClearFrozen();
+            ClearPoison();
+            ClearPetrifaction();
+        }
+
         public void ChangeToOpposite(int milliseconds)
         {
             if (IsPlayer) return;
