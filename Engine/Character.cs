@@ -2107,6 +2107,23 @@ namespace Engine
 
         public void UseMagic(Magic magicUse, Vector2 magicDestinationTilePosition, Character target = null)
         {
+            if (magicUse.MoveKind == 13 && magicUse.SpecialKind == 8)
+            {
+                MagicUse = magicUse;
+                _magicDestination = MapBase.ToPixelPosition(magicDestinationTilePosition);
+                _magicTarget = target;
+                
+                if (CanUseMagic())
+                {
+                    if (NpcIni.ContainsKey((int)CharacterState.Magic))
+                    {
+                        PlaySoundEffect(NpcIni[(int)CharacterState.Magic].Sound);
+                    }
+                    MagicManager.UseMagic(this, MagicUse, PositionInWorld, _magicDestination, _magicTarget);
+                    MagicUsedHook(magicUse);
+                }
+                return;
+            }
             if (PerformActionOk() && NpcIni.ContainsKey((int)CharacterState.Magic))
             {
                 //Check use magic animations supporting current use magic direction or not.

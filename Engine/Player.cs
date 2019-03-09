@@ -1195,123 +1195,120 @@ namespace Engine
                 {
                     character = ControledCharacter;
                 }
-                if (!IsPetrified)
+                if (mouseState.LeftButton == ButtonState.Pressed)
                 {
-                    if (mouseState.LeftButton == ButtonState.Pressed)
-                    {
-                        if (!IsFightDisabled &&
-                            Globals.OutEdgeNpc != null &&
-                            (Globals.OutEdgeNpc.IsEnemy || Globals.OutEdgeNpc.IsNoneFighter))
-                        {
-                            character.Attacking(Globals.OutEdgeNpc.TilePosition, _isRun);
-                        }
-                        else if (Globals.OutEdgeNpc != null &&
-                            Globals.OutEdgeNpc != ControledCharacter &&
-                            Globals.OutEdgeNpc.HasInteractScript)
-                        {
-                            if (_lastMouseState.LeftButton == ButtonState.Released)
-                                character.InteractWith(Globals.OutEdgeNpc, _isRun);
-                        }
-                        else if (Globals.OutEdgeObj != null &&
-                                 Globals.OutEdgeObj.HasInteractScript)
-                        {
-                            if (_lastMouseState.LeftButton == ButtonState.Released)
-                                character.InteractWith(Globals.OutEdgeObj, _isRun);
-                        }
-                        else if (_isRun)
-                        {
-                            if (CanRun())
-                            {
-                                character.RunTo(mouseTilePosition);
-                            }
-                            else
-                            {
-                                character.WalkTo(mouseTilePosition);
-                            }
-                        }
-                        else if (keyboardState.IsKeyDown(Keys.LeftAlt) ||
-                                 keyboardState.IsKeyDown(Keys.RightAlt))
-                        {
-                            character.JumpTo(mouseTilePosition);
-                        }
-                        else if (keyboardState.IsKeyDown(Keys.LeftControl) ||
-                                 keyboardState.IsKeyDown(Keys.RightControl))
-                        {
-                            if (!IsFightDisabled)
-                            {
-                                character.PerformeAttack(mouseWorldPosition, GetRamdomMagicWithUseDistance(AttackRadius));
-                            }
-                        }
-                        else character.WalkTo(mouseTilePosition);
-                    }
-                    else
-                    {
-                        if (ControledCharacter == null)
-                        {
-                            HandleMoveKeyboardInput();
-                        }
-
-                        if (Globals.TheGame.LastKeyboardState.IsKeyUp(Keys.Q) && keyboardState.IsKeyDown(Keys.Q))
-                        {
-                            var closestObj =
-                                ObjManager.GetClosestCanInteractObj(character.TilePosition,
-                                    MaxAutoInteractTileDistance);
-                            if (closestObj != null)
-                            {
-                                character.InteractWith(closestObj, _isRun);
-                            }
-                        }
-                        else if (Globals.TheGame.LastKeyboardState.IsKeyUp(Keys.E) && keyboardState.IsKeyDown(Keys.E))
-                        {
-                            var closestNpc =
-                                NpcManager.GetClosestCanInteractChracter(character.TilePosition,
-                                    MaxAutoInteractTileDistance);
-                            if (closestNpc != null)
-                            {
-                                character.InteractWith(closestNpc, _isRun);
-                            }
-                        }
-                    }
-                    var rightButtonPressed = mouseState.RightButton == ButtonState.Pressed;
                     if (!IsFightDisabled &&
-                        ControledCharacter == null && //Can't use magic when controling other character
-                        (rightButtonPressed || _isUseMagicByKeyborad)
-                       )
+                        Globals.OutEdgeNpc != null &&
+                        (Globals.OutEdgeNpc.IsEnemy || Globals.OutEdgeNpc.IsNoneFighter))
                     {
-                        if (CurrentMagicInUse == null)
+                        character.Attacking(Globals.OutEdgeNpc.TilePosition, _isRun);
+                    }
+                    else if (Globals.OutEdgeNpc != null &&
+                        Globals.OutEdgeNpc != ControledCharacter &&
+                        Globals.OutEdgeNpc.HasInteractScript)
+                    {
+                        if (_lastMouseState.LeftButton == ButtonState.Released)
+                            character.InteractWith(Globals.OutEdgeNpc, _isRun);
+                    }
+                    else if (Globals.OutEdgeObj != null &&
+                             Globals.OutEdgeObj.HasInteractScript)
+                    {
+                        if (_lastMouseState.LeftButton == ButtonState.Released)
+                            character.InteractWith(Globals.OutEdgeObj, _isRun);
+                    }
+                    else if (_isRun)
+                    {
+                        if (CanRun())
                         {
-                            if (!_isUseMagicByKeyborad)
-                            {
-                                GuiManager.ShowMessage("请在武功栏使用鼠标右键选择武功");
-                            }
-                        }
-                        else if (CurrentMagicInUse.RemainColdMilliseconds > 0)
-                        {
-                            GuiManager.ShowMessage("武功尚未冷却");
+                            character.RunTo(mouseTilePosition);
                         }
                         else
                         {
-                            if(PerformActionOk() && !AttackClosedAnemy(character))
+                            character.WalkTo(mouseTilePosition);
+                        }
+                    }
+                    else if (keyboardState.IsKeyDown(Keys.LeftAlt) ||
+                             keyboardState.IsKeyDown(Keys.RightAlt))
+                    {
+                        character.JumpTo(mouseTilePosition);
+                    }
+                    else if (keyboardState.IsKeyDown(Keys.LeftControl) ||
+                             keyboardState.IsKeyDown(Keys.RightControl))
+                    {
+                        if (!IsFightDisabled)
+                        {
+                            character.PerformeAttack(mouseWorldPosition, GetRamdomMagicWithUseDistance(AttackRadius));
+                        }
+                    }
+                    else character.WalkTo(mouseTilePosition);
+                }
+                else
+                {
+                    if (ControledCharacter == null)
+                    {
+                        HandleMoveKeyboardInput();
+                    }
+
+                    if (Globals.TheGame.LastKeyboardState.IsKeyUp(Keys.Q) && keyboardState.IsKeyDown(Keys.Q))
+                    {
+                        var closestObj =
+                            ObjManager.GetClosestCanInteractObj(character.TilePosition,
+                                MaxAutoInteractTileDistance);
+                        if (closestObj != null)
+                        {
+                            character.InteractWith(closestObj, _isRun);
+                        }
+                    }
+                    else if (Globals.TheGame.LastKeyboardState.IsKeyUp(Keys.E) && keyboardState.IsKeyDown(Keys.E))
+                    {
+                        var closestNpc =
+                            NpcManager.GetClosestCanInteractChracter(character.TilePosition,
+                                MaxAutoInteractTileDistance);
+                        if (closestNpc != null)
+                        {
+                            character.InteractWith(closestNpc, _isRun);
+                        }
+                    }
+                }
+                var rightButtonPressed = mouseState.RightButton == ButtonState.Pressed && _lastMouseState.RightButton != ButtonState.Pressed;
+                if (!IsFightDisabled &&
+                    ControledCharacter == null && //Can't use magic when controling other character
+                    (rightButtonPressed || _isUseMagicByKeyborad)
+                   )
+                {
+                    if (CurrentMagicInUse == null)
+                    {
+                        if (!_isUseMagicByKeyborad)
+                        {
+                            GuiManager.ShowMessage("请在武功栏使用鼠标右键选择武功");
+                        }
+                    }
+                    else if (CurrentMagicInUse.RemainColdMilliseconds > 0)
+                    {
+                        GuiManager.ShowMessage("武功尚未冷却");
+                    }
+                    else
+                    {
+                        if (!AttackClosedAnemy(character))
+                        {
+                            if (CurrentMagicInUse.TheMagic.BodyRadius > 0 &&
+                                (Globals.OutEdgeNpc == null || !Globals.OutEdgeNpc.IsEnemy))
                             {
-                                if (CurrentMagicInUse.TheMagic.BodyRadius > 0 &&
-                                    (Globals.OutEdgeNpc == null || !Globals.OutEdgeNpc.IsEnemy))
-                                {
-                                    GuiManager.ShowMessage("无有效目标");
-                                }
-                                else if (CurrentMagicInUse.TheMagic.MoveKind == 21 && Globals.OutEdgeNpc == null)
-                                {
-                                    GuiManager.ShowMessage("无目标");
-                                }
-                                else
-                                {
-                                    if (Globals.OutEdgeNpc != null)
-                                        UseMagic(CurrentMagicInUse.TheMagic, Globals.OutEdgeNpc.TilePosition, Globals.OutEdgeNpc);
-                                    else UseMagic(CurrentMagicInUse.TheMagic, mouseTilePosition);
-                                }
+                                GuiManager.ShowMessage("无有效目标");
+                            }
+                            else if (CurrentMagicInUse.TheMagic.MoveKind == 21 && Globals.OutEdgeNpc == null)
+                            {
+                                GuiManager.ShowMessage("无目标");
+                            }
+                            else
+                            {
+                                if (Globals.OutEdgeNpc != null)
+                                    UseMagic(CurrentMagicInUse.TheMagic, Globals.OutEdgeNpc.TilePosition, Globals.OutEdgeNpc);
+                                else UseMagic(CurrentMagicInUse.TheMagic, mouseTilePosition);
                             }
                         }
-
                     }
+
                 }
 
                 if (keyboardState.IsKeyDown(Keys.V) &&
