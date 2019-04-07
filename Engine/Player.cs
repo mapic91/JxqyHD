@@ -1416,8 +1416,8 @@ namespace Engine
             if (IsDraw)
             {
                 var tilePosition = new Vector2(MapX, MapY);
-                var start = tilePosition - new Vector2(3, 15);
-                var end = tilePosition + new Vector2(3, 15);
+                var start = tilePosition - new Vector2(4, 20);
+                var end = tilePosition + new Vector2(4, 20);
                 if (start.X < 0) start.X = 0;
                 if (start.Y < 0) start.Y = 0;
                 if (end.X > MapBase.Instance.MapColumnCounts) end.X = MapBase.Instance.MapColumnCounts;
