@@ -2913,6 +2913,84 @@ namespace Engine
             }
         }
 
+        public void AddAttack(int value, int type)
+        {
+            if (type == 1)
+            {
+                _attack += value;
+            } else if (type == 2)
+            {
+                _attack2 += value;
+            } else if (type == 3)
+            {
+                _attack3 += value;
+            }
+        }
+
+        public void AddDefend(int value, int type)
+        {
+            if (type == 1)
+            {
+                _defend += value;
+                if (_defend < 0)
+                {
+                    _defend = 0;
+                }
+            }
+            else if (type == 2)
+            {
+                _defend2 += value;
+                if (_defend2 < 0)
+                {
+                    _defend2 = 0;
+                }
+            }
+            else if (type == 3)
+            {
+                _defend3 += value;
+                if (_defend3 < 0)
+                {
+                    _defend3 = 0;
+                }
+            }
+        }
+
+        public void AddEvade(int value)
+        {
+            _evade += value;
+            if (_evade < 0)
+            {
+                _evade = 0;
+            }
+        }
+
+        public void AddLifeMax(int value)
+        {
+            _lifeMax += value;
+            if (_lifeMax < 1)
+            {
+                _lifeMax = 1;
+            }
+        }
+
+        public void AddManaMax(int value)
+        {
+            _manaMax += value;
+            if (_manaMax < 1)
+            {
+                _manaMax = 1;
+            }
+        }
+
+        public void AddThewMax(int value)
+        {
+            _thewMax += value;
+            if (_thewMax < 1)
+            {
+                _thewMax = 1;
+            }
+        }
+
         public virtual void FullLife()
         {
             Life = LifeMax;

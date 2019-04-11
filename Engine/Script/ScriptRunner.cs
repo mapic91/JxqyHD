@@ -642,6 +642,27 @@ namespace Engine.Script
                         case "IsEquipWeapon":
                             ScriptExecuter.IsEquipWeapon(parameters);
                             break;
+                        case "AddAttack":
+                            ScriptExecuter.AddAttack(parameters);
+                            break;
+                        case "AddDefend":
+                            ScriptExecuter.AddDefend(parameters);
+                            break;
+                        case "AddEvade":
+                            ScriptExecuter.AddEvade(parameters);
+                            break;
+                        case "AddLifeMax":
+                            ScriptExecuter.AddLifeMax(parameters);
+                            break;
+                        case "AddManaMax":
+                            ScriptExecuter.AddManaMax(parameters);
+                            break;
+                        case "AddThewMax":
+                            ScriptExecuter.AddThewMax(parameters);
+                            break;
+                        case "DelMagic":
+                            ScriptExecuter.DelMagic(parameters);
+                            break;
                         default:
                             throw new Exception("无此函数");
                     }

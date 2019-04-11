@@ -560,6 +560,56 @@ IsEquipWeapon(a);
 a - 存到哪个变量
 比如：
 IsEquipWeapon($tmp)，如果装备了武器，$tmp为1，反之为0。
+
+AddAttack(a,b)
+增加或减少主角攻击力
+a - 多少
+b - 类型： 1-attack 2-attack2 3-attack3
+比如：
+AddAttack(33,1)
+AddAttack(-10,3)
+
+AddDefend(a,b)
+增加或减少主角防御力
+a - 多少
+b - 类型： 1-defend 2-defend2 3-defend3
+比如：
+AddDefend(33,1)
+AddDefend(-10,3)
+
+AddEvade(a)
+增加或减少主角身法
+a - 多少
+比如：
+AddEvade(10)
+AddEvade(-10)
+
+AddLifeMax(a)
+增加或减少主角最大生命值
+a - 多少
+比如：
+AddLifeMax(10)
+AddLifeMax(-10)
+
+AddManaMax(a)
+增加或减少主角内力最大值
+a - 多少
+比如：
+AddManaMax(10)
+AddManaMax(-10)
+
+AddThewMax(a)
+增加或减少主角体力最大值
+a - 多少
+比如：
+AddThewMax(10)
+AddThewMax(-10)
+
+DelMagic(a)
+删除主角的某个武功
+a - 武功文件名
+比如：
+DelMagic("player-magic-漫天花雨.ini")
 ///////////////////////////////////////////////////////////////////
 //////////////////    Implemented   End  /////////////////////////
 /////////////////////////////////////////////////////////////////

@@ -2013,5 +2013,50 @@ namespace Engine.Script
         {
             Variables[parameters[0]] = GoodsListManager.Get(205) == null ? 0 : 1;
         }
+
+        public static void AddAttack(List<string> parameters)
+        {
+            var type = 1;
+            if (parameters.Count == 2)
+            {
+                type = int.Parse(parameters[1]);
+            }
+            Globals.ThePlayer.AddAttack(int.Parse(parameters[0]), type);
+        }
+
+        public static void AddDefend(List<string> parameters)
+        {
+            var type = 1;
+            if (parameters.Count == 2)
+            {
+                type = int.Parse(parameters[1]);
+            }
+            Globals.ThePlayer.AddDefend(int.Parse(parameters[0]), type);
+        }
+
+        public static void AddEvade(List<string> parameters)
+        {
+            Globals.ThePlayer.AddEvade(int.Parse(parameters[0]));
+        }
+
+        public static void AddLifeMax(List<string> parameters)
+        {
+            Globals.ThePlayer.AddLifeMax(int.Parse(parameters[0]));
+        }
+
+        public static void AddManaMax(List<string> parameters)
+        {
+            Globals.ThePlayer.AddManaMax(int.Parse(parameters[0]));
+        }
+
+        public static void AddThewMax(List<string> parameters)
+        {
+            Globals.ThePlayer.AddThewMax(int.Parse(parameters[0]));
+        }
+
+        public static void DelMagic(List<string> parameters)
+        {
+            MagicListManager.DelMagic(Utils.RemoveStringQuotes(parameters[0]), Globals.ThePlayer);
+        }
     }
 }

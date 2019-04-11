@@ -356,6 +356,23 @@ namespace Engine.ListManager
             return false;
         }
 
+        public static void DelMagic(string fileName, Player player)
+        {
+            for (var i = 0; i < MagicList.Length; i++)
+            {
+                var info = MagicList[i];
+                if (info != null)
+                {
+                    if (info.TheMagic != null && Utils.EqualNoCase(fileName, info.TheMagic.FileName))
+                    {
+                        player.OnDeleteMagic(info);
+                        MagicList[i] = null;
+                    }
+                }
+            }
+            GuiManager.UpdateMagicView();
+        }
+
         public static void ClearLearnedMagic(Player player)
         {
             for (var i = 0; i < MagicList.Length; i++)
