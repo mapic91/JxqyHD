@@ -49,6 +49,7 @@ namespace Engine
         private MagicListManager.MagicItemInfo _xiuLianMagic;
 
         private bool _isUseMagicByKeyborad;
+        private Dictionary<string, Magic> _replacedMagic = new Dictionary<string, Magic>();
 
         #region Public properties
 
@@ -760,6 +761,11 @@ namespace Engine
                 }
 
                 ChangeMoveSpeedPercent += equip.ChangeMoveSpeedPercent;
+
+                if (!string.IsNullOrEmpty(equip.ReplaceMagic))
+                {
+                    _replacedMagic[equip.ReplaceMagic] = equip.UseReplaceMagic;
+                }
             }
 
             //Restore
@@ -856,6 +862,11 @@ namespace Engine
                 }
 
                 ChangeMoveSpeedPercent -= equip.ChangeMoveSpeedPercent;
+
+                if (!string.IsNullOrEmpty(equip.ReplaceMagic))
+                {
+                    _replacedMagic.Remove(equip.ReplaceMagic);
+                }
             }
         }
 
@@ -1105,6 +1116,21 @@ namespace Engine
             }
 
             Level = level;
+        }
+
+        public override void UseMagic(Magic magicUse, Vector2 magicDestinationTilePosition, Character target = null)
+        {
+            var magic = magicUse;
+            if (_replacedMagic.ContainsKey(magicUse.FileName))
+            {
+                magic = _replacedMagic[magicUse.FileName];
+                magic.CopyInfo(magicUse);
+                if (magic.CurrentLevel != magicUse.CurrentLevel)
+                {
+                    magic = magic.GetLevel(magicUse.CurrentLevel);
+                }
+            }
+            base.UseMagic(magic, magicDestinationTilePosition, target);
         }
 
         public void EndControlCharacter()

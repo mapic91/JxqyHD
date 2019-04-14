@@ -54,6 +54,8 @@ namespace Engine
 
         public int ChangeMoveSpeedPercent { set; get; }
         public int ColdMilliSeconds { set; get; }
+        public string ReplaceMagic { set; get; }
+        public Magic UseReplaceMagic { set; get; }
 
         public GoodEffectType TheEffectType
         {
@@ -174,6 +176,7 @@ namespace Engine
                     case "MagicIniWhenUse":
                     case "AddMagicEffectName":
                     case "AddMagicEffectType":
+                    case "ReplaceMagic":
                         info.SetValue(this, value, null);
                         break;
                     case "Kind":
@@ -218,6 +221,9 @@ namespace Engine
                         {
                             User = value.Split(',');
                         }
+                        break;
+                    case "UseReplaceMagic":
+                        UseReplaceMagic = Utils.GetMagic(value, false);
                         break;
                     default:
                         info.SetValue(this, int.Parse(value), null);

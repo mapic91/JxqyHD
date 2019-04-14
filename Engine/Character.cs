@@ -2105,7 +2105,7 @@ namespace Engine
             
         }
 
-        public void UseMagic(Magic magicUse, Vector2 magicDestinationTilePosition, Character target = null)
+        public  virtual void UseMagic(Magic magicUse, Vector2 magicDestinationTilePosition, Character target = null)
         {
             if (magicUse.MoveKind == 13 && magicUse.SpecialKind == 8)
             {

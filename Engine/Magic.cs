@@ -1085,6 +1085,12 @@ namespace Engine
             return magic;
         }
 
+        public void CopyInfo(Magic magic)
+        {
+            AdditionalEffect = magic.AdditionalEffect;
+            ItemInfo = magic.ItemInfo;
+        }
+
         public enum AddonEffect
         {
             None = 0,
