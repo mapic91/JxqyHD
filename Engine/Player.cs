@@ -1128,6 +1128,7 @@ namespace Engine
                 if (magic.CurrentLevel != magicUse.CurrentLevel)
                 {
                     magic = magic.GetLevel(magicUse.CurrentLevel);
+                    _replacedMagic[magicUse.FileName] = magic;
                 }
             }
             base.UseMagic(magic, magicDestinationTilePosition, target);

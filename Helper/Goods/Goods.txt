@@ -121,6 +121,6 @@ ChangeMoveSpeedPercent=-40
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-替换武功
+装备后替换武功
 ReplaceMagic - 替换哪个武功，比如：player-magic-漫天花雨.ini
 UseReplaceMagic - 使用哪个武功替换，比如：player-magic-漫天花雨改.ini
