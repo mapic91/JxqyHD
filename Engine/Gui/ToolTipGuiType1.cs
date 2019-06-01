@@ -120,7 +120,7 @@ namespace Engine.Gui
             _magicIntro.Text = intro;
         }
 
-        public override void ShowGood(Good good)
+        public override void ShowGood(Good good, bool isRecycle)
         {
             Clear();
             IsShow = true;
@@ -134,7 +134,7 @@ namespace Engine.Gui
                 texture = new Texture(good.Image);
                 if (!string.IsNullOrEmpty(good.Name))
                     name = good.Name;
-                cost = "价格： " + good.Cost;
+                cost = (isRecycle ? "回收价格： " : "价格： ") + (isRecycle ? good.SellPrice : good.Cost);
                 if (good.Life != 0)
                     effect += ("命 " + good.Life.ToString("+#;-#") + "  ");
                 if (good.Thew != 0)

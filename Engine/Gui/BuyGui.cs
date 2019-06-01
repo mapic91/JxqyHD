@@ -21,6 +21,8 @@ namespace Engine.Gui
         private int _goodTypeCountAtStart;
         private bool _numberValid;
         public bool CanSellSelfGoods = true;
+        public int BuyPercent = 100;
+        public int RecyclePercent = 100;
 
         public BuyGui()
         {
@@ -58,7 +60,7 @@ namespace Engine.Gui
                 var index = (int) item.Data;
                 if (_goods.ContainsKey(index))
                 {
-                    GuiManager.ToolTipInterface.ShowGood(_goods[index].TheGood);
+                    GuiManager.ToolTipInterface.ShowGood(_goods[index].TheGood, false);
                 }
             });
             _listView.RegisterItemMouseLeaveHandler(
@@ -100,6 +102,8 @@ namespace Engine.Gui
                 path = @"ini\buy\" + listFileName;
             }
             CanSellSelfGoods = canSellSelfGoods;
+            BuyPercent = 100;
+            RecyclePercent = 100;
             try
             {
                 _goods.Clear();
@@ -107,6 +111,15 @@ namespace Engine.Gui
                 var data =parser.ReadFile(path, Globals.LocalEncoding);
                 _goodTypeCountAtStart = _goodTypeCount = int.Parse(data["Header"]["Count"]);
                 _numberValid = !string.IsNullOrEmpty(data["Header"]["NumberValid"]) && int.Parse(data["Header"]["NumberValid"]) != 0;
+                if (!string.IsNullOrEmpty(data["Header"]["BuyPercent"]))
+                {
+                    BuyPercent = int.Parse(data["Header"]["BuyPercent"]);
+                }
+                if (!string.IsNullOrEmpty(data["Header"]["RecyclePercent"]))
+                {
+                    RecyclePercent = int.Parse(data["Header"]["RecyclePercent"]);
+                }
+
                 for (var i = 1; i <= _goodTypeCountAtStart; i++)
                 {
                     var count = 0;
@@ -132,6 +145,8 @@ namespace Engine.Gui
             if (IsShow)
             {
                 IsShow = false;
+                BuyPercent = 100;
+                RecyclePercent = 100;
                 if (_numberValid)
                 {
                     var data = new IniData();

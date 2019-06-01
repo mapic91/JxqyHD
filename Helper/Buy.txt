@@ -3,6 +3,8 @@ int/buy/*.ini:
 [Header]
 Count=1
 NumberValid=1 -- 0 表示不限量，1表示限量（使用 Number 里的数量）
+BuyPercent=150 -- 表示物品卖的价格百分比，默认100，比如桃木剑的正常售价是20，百分比为200，则实际售价为40
+RecyclePercent=50   -- 表示物品回收价格百分比，默认100，比如桃木剑的正常售价是20，百分比为50，则实际回收价为10
 
 [1]
 IniFile=Goods-h06-轩辕冠.ini

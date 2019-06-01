@@ -13,7 +13,7 @@ namespace Engine.Gui
 
         }
 
-        public virtual void ShowGood(Good good)
+        public virtual void ShowGood(Good good, bool isRecycle)
         {
 
         }

@@ -44,7 +44,7 @@ namespace Engine.Gui
             {
                 var info = GoodsListManager.GetItemInfo(data.Index);
                 if (info != null)
-                    GuiManager.ToolTipInterface.ShowGood(info.TheGood);
+                    GuiManager.ToolTipInterface.ShowGood(info.TheGood, GuiManager.BuyInterface.IsShow);
             }
         }
 

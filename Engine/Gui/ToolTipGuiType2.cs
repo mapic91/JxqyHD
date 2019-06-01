@@ -93,7 +93,7 @@ namespace Engine.Gui
             RePose();
         }
 
-        public override void ShowGood(Good good)
+        public override void ShowGood(Good good, bool isRecycle)
         {
             IsShow = true;
             var name = "无名称";
@@ -105,7 +105,7 @@ namespace Engine.Gui
             {
                 if (!string.IsNullOrEmpty(good.Name))
                     name = good.Name;
-                cost = "价格： " + good.Cost;
+                cost = (isRecycle ? "回收价格： " : "价格： ") + (isRecycle ? good.SellPrice : good.Cost);
                 if (good.IsSellPriceSetted)
                     cost += "\n" + "卖出价： " + good.SellPrice;
 

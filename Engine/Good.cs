@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Engine.Gui;
 using IniParser;
 
 namespace Engine
@@ -124,30 +125,45 @@ namespace Engine
             }
         }
 
+        public int CostRaw
+        {
+            get
+            {
+                int cost = _cost;
+                if (cost == 0)
+                {
+                    switch (Kind)
+                    {
+                        case GoodKind.Drug:
+                            cost = (Thew * 4 + Life * 2 + Mana * 2) *
+                                   (1 + (EffectType == 0 ? 0 : 1));
+                            break;
+                        case GoodKind.Equipment:
+                            cost = (Attack * 20 + Attack2 * 20 + Attack3 * 20 + Defend * 20 + Defend2 * 20 + Defend3 * 20 + Evade * 40 + LifeMax * 2 + ThewMax * 3 + ManaMax * 2) *
+                                   (1 + (EffectType == 0 ? 0 : 1));
+                            break;
+                    }
+                }
+
+                return cost;
+            }
+        }
+
         public int Cost
         {
             set { _cost = value; }
             get
             {
-                if (_cost == 0)
-                {
-                    switch (Kind)
-                    {
-                        case GoodKind.Drug:
-                            return ( Thew*4 + Life*2 + Mana*2 ) *
-                                   ( 1 + (EffectType == 0 ? 0 : 1) );
-                        case GoodKind.Equipment:
-                            return ( Attack*20 + Attack2 * 20 + Attack3 * 20 + Defend*20 + Defend2 * 20 + Defend3 * 20 + Evade*40 + LifeMax*2 + ThewMax*3 + ManaMax*2 ) *
-                                (1 + (EffectType == 0 ? 0 : 1));
-                    }
-                }
-                return _cost;
+                return CostRaw * GuiManager.BuyInterface.BuyPercent / 100;
             }
         }
 
         public int SellPrice
         {
-            get { return _sellPrice > 0 ? _sellPrice : Cost / 2; }
+            get
+            {
+                return (_sellPrice > 0 ? _sellPrice : CostRaw / 2) * GuiManager.BuyInterface.RecyclePercent / 100;
+            }
             set { _sellPrice = value; }
         }
 
