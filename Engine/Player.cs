@@ -1298,9 +1298,10 @@ namespace Engine
                     }
                 }
                 var rightButtonPressed = mouseState.RightButton == ButtonState.Pressed && _lastMouseState.RightButton != ButtonState.Pressed;
+                var isNoDelayMagic = CurrentMagicInUse != null && CurrentMagicInUse.TheMagic.MoveKind == 13 && CurrentMagicInUse.TheMagic.SpecialKind == 8;
                 if (!IsFightDisabled &&
                     ControledCharacter == null && //Can't use magic when controling other character
-                    (rightButtonPressed || _isUseMagicByKeyborad)
+                    ((isNoDelayMagic && rightButtonPressed) || (!isNoDelayMagic && mouseState.RightButton == ButtonState.Pressed) || _isUseMagicByKeyborad)
                    )
                 {
                     if (CurrentMagicInUse == null)
