@@ -3527,7 +3527,7 @@ namespace Engine
                 {
                     if (MovedByMagicSprite.BelongMagic.CarryUser == 3)
                     {
-                        var fp = Engine.PathFinder.FindPosMeet(TilePosition, p => !HasObstacle(p));
+                        var fp = Engine.PathFinder.FindPosMeet(TilePosition, p => !HasObstacle(p) && !MapBase.Instance.IsObstacleForCharacter(p));
                         TilePosition = fp;
                     }
                     MovedByMagicSprite = null;
@@ -3538,7 +3538,7 @@ namespace Engine
                     {
                         if(MapBase.Instance.IsObstacleForCharacter(MovedByMagicSprite.TilePosition))
                         {
-                            var fp = Engine.PathFinder.FindPosMeet(TilePosition, p => !HasObstacle(p));
+                            var fp = Engine.PathFinder.FindPosMeet(TilePosition, p => !HasObstacle(p) && !MapBase.Instance.IsObstacleForCharacter(p));
                             TilePosition = fp;
                             SetDirection(MovedByMagicSprite.MoveDirection);
                         } 
