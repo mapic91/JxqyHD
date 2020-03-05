@@ -3525,22 +3525,44 @@ namespace Engine
             {
                 if ((MovedByMagicSprite.IsInDestroy && MovedByMagicSprite.BelongMagic.HideUserWhenCarry == 0) || MovedByMagicSprite.IsDestroyed)
                 {
+                    if (MovedByMagicSprite.BelongMagic.CarryUser == 3)
+                    {
+                        var fp = Engine.PathFinder.FindPosMeet(TilePosition, p => !HasObstacle(p));
+                        TilePosition = fp;
+                    }
                     MovedByMagicSprite = null;
                 }
                 else
                 {
-                    if (CheckLinearlyMove(TilePosition, MovedByMagicSprite.TilePosition))
+                    if(MovedByMagicSprite.BelongMagic.CarryUser == 3)
                     {
-                        PositionInWorld = MovedByMagicSprite.PositionInWorld;
-                        SetDirection(MovedByMagicSprite.MoveDirection);
+                        if(MapBase.Instance.IsObstacleForCharacter(MovedByMagicSprite.TilePosition))
+                        {
+                            var fp = Engine.PathFinder.FindPosMeet(TilePosition, p => !HasObstacle(p));
+                            TilePosition = fp;
+                            SetDirection(MovedByMagicSprite.MoveDirection);
+                        } 
+                        else
+                        {
+                            PositionInWorld = MovedByMagicSprite.PositionInWorld;
+                            SetDirection(MovedByMagicSprite.MoveDirection);
+                        }
                     }
                     else
                     {
-                        if (MovedByMagicSprite.BelongMagic.CarryUser == 2)
+                        if (CheckLinearlyMove(TilePosition, MovedByMagicSprite.TilePosition))
                         {
-                            MovedByMagicSprite.Destroy();
+                            PositionInWorld = MovedByMagicSprite.PositionInWorld;
+                            SetDirection(MovedByMagicSprite.MoveDirection);
                         }
-                        MovedByMagicSprite = null;
+                        else
+                        {
+                            if (MovedByMagicSprite.BelongMagic.CarryUser == 2)
+                            {
+                                MovedByMagicSprite.Destroy();
+                            }
+                            MovedByMagicSprite = null;
+                        }
                     }
                 }
             }

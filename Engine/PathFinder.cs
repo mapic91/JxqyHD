@@ -100,6 +100,49 @@ namespace Engine
             }
         }
 
+        public static Vector2 FindPosMeet(Vector2 startTile, Func<Vector2, bool> condition)
+        {
+            if (condition(startTile)) return startTile;
+            var visted = new LinkedList<Vector2>();
+            var findedNeighbors = new LinkedList<Vector2>();
+            var needFindNeighbors = new LinkedList<Vector2>();
+            needFindNeighbors.AddLast(startTile);
+            visted.AddLast(startTile);
+            while(true)
+            {
+                while(true)
+                {
+                    if(needFindNeighbors.First != null)
+                    {
+                        if(!findedNeighbors.Contains(needFindNeighbors.First.Value))
+                        {
+                            break;
+                        } 
+                        else
+                        {
+                            needFindNeighbors.RemoveFirst();
+                        }
+                    } 
+                    else
+                    {
+                        return startTile;
+                    }
+                }
+                var current = needFindNeighbors.First.Value;
+                var neighbors = FindAllNeighbors(current);
+                findedNeighbors.AddLast(current);
+                foreach(var neighbor in neighbors)
+                {
+                    if(!visted.Contains(neighbor) && condition(neighbor))
+                    {
+                        return neighbor;
+                    }
+                    visted.AddLast(neighbor);
+                }
+            }
+            
+        }
+
         //Returned path is in pixel position
         public static LinkedList<Vector2> FindPathStep(Character finder, Vector2 startTile, Vector2 endTile, int stepCount)
         {

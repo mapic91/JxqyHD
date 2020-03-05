@@ -613,6 +613,12 @@ namespace Engine
                 return;
             }
 
+            if(BelongMagic.CarryUser == 3)
+            {
+                //Pass through enemy when CarryUser is equal 3
+                return;
+            }
+
 
             bool characterHited = false;
             if (BelongMagic.AttackAll > 0)
