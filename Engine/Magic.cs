@@ -113,6 +113,8 @@ namespace Engine
         private int _weakAttackPercent;
         private int _weakDefendPercent;
 
+        private int _blindMilliseconds;
+
         private Asf _useActionFile;
 
         private int _bodyRadius;
@@ -870,6 +872,12 @@ namespace Engine
                     _weakDefendPercent = 100;
                 }
             }
+        }
+
+        public int BlindMilliseconds
+        {
+            get { return _blindMilliseconds; }
+            set{ _blindMilliseconds = value; }
         }
 
         public Asf UseActionFile

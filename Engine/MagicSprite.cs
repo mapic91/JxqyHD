@@ -282,6 +282,15 @@ namespace Engine
             if (character == null) return false;
             var destroy = true;
 
+            if(BelongMagic.BlindMilliseconds > 0)
+            {
+                var npc = character as Npc;
+                if(npc != null)
+                {
+                    npc.BlindMilliseconds = BelongMagic.BlindMilliseconds;
+                }
+            }
+
             if (BelongMagic.Bounce > 0)
             {
                 var direction = (RealMoveDirection == Vector2.Zero) ? (character.PositionInWorld - PositionInWorld) : RealMoveDirection;

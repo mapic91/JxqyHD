@@ -11,6 +11,7 @@ namespace Engine
         private List<Vector2> _actionPathTilePositionList;
         private int _idledFrame;
         private Character _keepDistanceCharacterWhenFriendDeath;
+        private float _blindMilliseconds;
 
         private List<Vector2> ActionPathTilePositionList
         {
@@ -54,6 +55,13 @@ namespace Engine
                 }
             }
         }
+
+        public float BlindMilliseconds
+        {
+            get { return _blindMilliseconds; }
+            set { _blindMilliseconds = value; }
+        }
+
 
         public static bool IsAIDisabled { protected set; get; }
         #endregion
@@ -110,7 +118,7 @@ namespace Engine
 
         protected override void FollowTargetFound(bool attackCanReach)
         {
-            if (IsAIDisabled)
+            if (IsAIDisabled || _blindMilliseconds > 0)
             {
                 CancleAttackTarget();
             }
@@ -218,6 +226,11 @@ namespace Engine
                 return;
             }
 
+            if(_blindMilliseconds > 0)
+            {
+                _blindMilliseconds -= (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            }
+
             //Find follow target
             if (!IsFollowTargetFound || // Not find target.
                 FollowTarget == null || // Follow target not assign.
@@ -225,13 +238,14 @@ namespace Engine
                 !FollowTarget.IsVisible ||
                 (IsEnemy && FollowTarget.IsEnemy) || // Follow target relation changed
                 (IsFighterFriend && (FollowTarget.IsFighterFriend || FollowTarget.IsPlayer)) || // Follow target relation changed
-                IsAIDisabled) //Npc AI is disabled.
+                IsAIDisabled || //Npc AI is disabled.
+                _blindMilliseconds > 0) 
             {
                 if (IsEnemy)
                 {
                     if (StopFindingTarget == 0)
                     {
-                        FollowTarget = IsAIDisabled ? null : NpcManager.GetLiveClosestPlayerOrFighterFriend(PositionInWorld, true, false);
+                        FollowTarget = (IsAIDisabled || _blindMilliseconds > 0) ? null : NpcManager.GetLiveClosestPlayerOrFighterFriend(PositionInWorld, true, false);
                     }
                     else if(FollowTarget != null && FollowTarget.IsDeathInvoked)
                     {
@@ -242,7 +256,7 @@ namespace Engine
                 {
                     if (StopFindingTarget == 0)
                     {
-                        FollowTarget = IsAIDisabled ? null : NpcManager.GetClosestEnemyTypeCharacter(PositionInWorld, true, false);
+                        FollowTarget = (IsAIDisabled || _blindMilliseconds > 0) ? null : NpcManager.GetClosestEnemyTypeCharacter(PositionInWorld, true, false);
                     }
                     else if (FollowTarget != null && FollowTarget.IsDeathInvoked)
                     {
@@ -259,7 +273,7 @@ namespace Engine
                 {
                     if (StopFindingTarget == 0)
                     {
-                        FollowTarget = IsAIDisabled ? null : NpcManager.GetLiveClosestNonneturalFighter(PositionInWorld);
+                        FollowTarget = (IsAIDisabled || _blindMilliseconds > 0) ? null : NpcManager.GetLiveClosestNonneturalFighter(PositionInWorld);
                     }
                     else if (FollowTarget != null && FollowTarget.IsDeathInvoked)
                     {
