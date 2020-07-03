@@ -146,6 +146,8 @@ namespace Engine
         private MagicSprite _weakByMagicSprite;
         private float _weakByMagicSpriteTime;
 
+        private int _noDropWhenDie;
+
         /// <summary>
         /// List of the fixed path tile position.
         /// When load <see cref="FixedPos"/>, <see cref="FixedPos"/> is converted to list and stored on this value.
@@ -988,6 +990,12 @@ namespace Engine
         {
             get { return _idle; }
             set { _idle = value; }
+        }
+
+        public int NoDropWhenDie
+        {
+            get { return _noDropWhenDie; }
+            set { _noDropWhenDie = value; }
         }
 
         public bool IsObstacle

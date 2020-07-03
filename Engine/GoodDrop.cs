@@ -105,7 +105,7 @@ namespace Engine
         static public Obj GetDropObj(Character character)
         {
             //Just enemy can drop
-            if (Globals.IsDropGoodWhenDefeatEnemyDisabled || !character.IsEnemy) return null;
+            if (Globals.IsDropGoodWhenDefeatEnemyDisabled || !character.IsEnemy || character.NoDropWhenDie > 0) return null;
 
             if (!string.IsNullOrEmpty(character.DropIni))
             {
