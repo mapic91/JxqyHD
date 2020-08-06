@@ -223,16 +223,16 @@ namespace Engine
                             _isDestroyed = true;
                             break;
                         }
-                        if (belongCharacter.SummonedNpcsCount >= belongMagic.MaxCount)
+                        if (belongCharacter.SummonedNpcsCount(belongMagic) >= belongMagic.MaxCount)
                         {
                             //Reach max count
-                            belongCharacter.RemoveFirstSummonedNpc();
+                            belongCharacter.RemoveFirstSummonedNpc(belongMagic);
                         }
                         var npc = NpcManager.AddNpc(belongMagic.NpcFile,
                             (int)tilePosition.X,
                             (int)tilePosition.Y,
                             Utils.GetDirectionIndex(positionInWorld - belongCharacter.PositionInWorld, 8));
-                        belongCharacter.AddSummonedNpc(npc);
+                        belongCharacter.AddSummonedNpc(belongMagic, npc);
                         if (belongCharacter.IsPlayer || belongCharacter.IsFighterFriend)
                         {
                             npc.Relation = (int)Character.RelationType.Friend;

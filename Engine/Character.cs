@@ -136,7 +136,7 @@ namespace Engine
         private int _specialActionLastDirection; //Direction before play special action
         private float _fixedPathDistanceToMove;
         private Vector2 _fixedPathMoveDestinationPixelPostion = Vector2.Zero;
-        private readonly LinkedList<Npc> _summonedNpcs = new LinkedList<Npc>();
+        private readonly Dictionary<string, LinkedList<Npc>> _summonedNpcs = new Dictionary<string, LinkedList<Npc>>();
         private int _rangeRadiusToShow;
         protected float _changeToOppositeMilliseconds;
 
@@ -253,26 +253,41 @@ namespace Engine
 
         //Summon begin
         public MagicSprite SummonedByMagicSprite { set; get; }
-        public int SummonedNpcsCount { get { return _summonedNpcs.Count; } }
+        public int SummonedNpcsCount(Magic magic)
+        {
+            if (!_summonedNpcs.ContainsKey(magic.FileName))
+            {
+                return 0;
+            }
+            return _summonedNpcs[magic.FileName].Count;
+        }
 
-        public void AddSummonedNpc(Npc npc)
+        public void AddSummonedNpc(Magic magic, Npc npc)
         {
             if (npc == null)
             {
                 return;
             }
-            _summonedNpcs.AddLast(npc);
+            if(!_summonedNpcs.ContainsKey(magic.FileName))
+            {
+                _summonedNpcs[magic.FileName] = new LinkedList<Npc>();
+            }
+            _summonedNpcs[magic.FileName].AddLast(npc);
         }
 
-        public void RemoveFirstSummonedNpc()
+        public void RemoveFirstSummonedNpc(Magic magic)
         {
-            var node = _summonedNpcs.First;
+            if(!_summonedNpcs.ContainsKey(magic.FileName))
+            {
+                return;
+            }
+            var node = _summonedNpcs[magic.FileName].First;
             if (node != null)
             {
                 var npc = node.Value;
                 npc.Death();
             }
-            _summonedNpcs.RemoveFirst();
+            _summonedNpcs[magic.FileName].RemoveFirst();
         }
         //Summon end
 
@@ -3336,15 +3351,18 @@ namespace Engine
                     gameTime.IsRunningSlowly);
             }
             
-            for (var node = _summonedNpcs.First; node != null;)
+            foreach(var item in _summonedNpcs)
             {
-                var next = node.Next;
-                var npc = node.Value;
-                if (npc.IsDeath)
+                for (var node = item.Value.First; node != null;)
                 {
-                    _summonedNpcs.Remove(node);
+                    var next = node.Next;
+                    var npc = node.Value;
+                    if (npc.IsDeath)
+                    {
+                        item.Value.Remove(node);
+                    }
+                    node = next;
                 }
-                node = next;
             }
 
             if (IsInSpecialAction)
