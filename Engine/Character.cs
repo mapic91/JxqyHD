@@ -148,6 +148,8 @@ namespace Engine
 
         private int _noDropWhenDie;
 
+        private int _invincible;
+
         /// <summary>
         /// List of the fixed path tile position.
         /// When load <see cref="FixedPos"/>, <see cref="FixedPos"/> is converted to list and stored on this value.
@@ -1011,6 +1013,12 @@ namespace Engine
         {
             get { return _noDropWhenDie; }
             set { _noDropWhenDie = value; }
+        }
+
+        public int Invincible
+        {
+            get { return _invincible; }
+            set { _invincible = value; }
         }
 
         public bool IsObstacle
@@ -2854,7 +2862,7 @@ namespace Engine
         /// <param name="amount">Amount must be positive, oherwise no effect.</param>
         public void DecreaseLifeAddHurt(int amount)
         {
-            if (amount <= 0) return;
+            if (amount <= 0 || Invincible > 0) return;
 
             foreach (var magicSprite in MagicSpritesInEffect)
             {
