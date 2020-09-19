@@ -291,6 +291,16 @@ namespace Engine
                 }
             }
 
+            if(BelongMagic.DisableMoveMilliseconds > 0)
+            {
+                character.DisableMoveMilliseconds = BelongMagic.DisableMoveMilliseconds;
+            }
+
+            if(BelongMagic.DisableSkillMilliseconds > 0)
+            {
+                character.DisableSkillMilliseconds = BelongMagic.DisableSkillMilliseconds;
+            }
+
             if (BelongMagic.Bounce > 0)
             {
                 var direction = (RealMoveDirection == Vector2.Zero) ? (character.PositionInWorld - PositionInWorld) : RealMoveDirection;

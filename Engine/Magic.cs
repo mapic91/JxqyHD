@@ -101,6 +101,9 @@ namespace Engine
         private int _discardOppositeMagic;
         private int _exchangeUser;
 
+        private int _disableMoveMilliseconds;
+        private int _disableSkillMilliseconds;
+
         private StateMapList _npcIni;
         private int _attackAddPercent;
         private int _defendAddPercent;
@@ -804,6 +807,18 @@ namespace Engine
         {
             get { return _exchangeUser; }
             set { _exchangeUser = value; }
+        }
+
+        public int DisableMoveMilliseconds
+        {
+            get { return _disableMoveMilliseconds; }
+            set { _disableMoveMilliseconds = value; }
+        }
+
+        public int DisableSkillMilliseconds
+        {
+            get { return _disableSkillMilliseconds; }
+            set { _disableSkillMilliseconds = value; }
         }
 
         public StateMapList NpcIni

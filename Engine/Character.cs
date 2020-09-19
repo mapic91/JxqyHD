@@ -184,6 +184,9 @@ namespace Engine
         public float InvisibleByMagicTime;
         public bool IsVisibleWhenAttack;
 
+        public float DisableMoveMilliseconds;
+        public float DisableSkillMilliseconds;
+
         public bool IsVisible
         {
             get { return InvisibleByMagicTime <= 0; }
@@ -1290,6 +1293,11 @@ namespace Engine
                 return;
             }
 
+            if(DisableMoveMilliseconds > 0)
+            {
+                return;
+            }
+
             var from = Path.First.Value;
             var to = Path.First.Next.Value;
             var tileFrom = MapBase.ToTilePosition(from);
@@ -1427,6 +1435,10 @@ namespace Engine
             if (Path == null)
             {
                 StandingImmediately();
+                return;
+            }
+            if (DisableMoveMilliseconds > 0)
+            {
                 return;
             }
             if (Path.Count == 2)
@@ -1721,7 +1733,7 @@ namespace Engine
 
         protected virtual bool CanUseMagic()
         {
-            return true;
+            return DisableSkillMilliseconds <= 0;
         }
 
         protected virtual bool CanRunning()
@@ -2155,7 +2167,7 @@ namespace Engine
                 }
                 return;
             }
-            if (PerformActionOk() && NpcIni.ContainsKey((int)CharacterState.Magic))
+            if (PerformActionOk() && NpcIni.ContainsKey((int)CharacterState.Magic) && DisableSkillMilliseconds <= 0)
             {
                 //Check use magic animations supporting current use magic direction or not.
                 var canUseMagicDirCount = magicUse.UseActionFile != null
@@ -2502,7 +2514,7 @@ namespace Engine
 
         protected virtual bool CanPerformeAttack()
         {
-            return true;
+            return DisableSkillMilliseconds <= 0;
         }
 
         protected virtual void OnPerformeAttack()
@@ -3394,6 +3406,16 @@ namespace Engine
             }
 
             var elapsedGameTime = gameTime.ElapsedGameTime;
+
+            if(DisableMoveMilliseconds > 0)
+            {
+                DisableMoveMilliseconds -= (float)elapsedGameTime.TotalMilliseconds;
+            }
+
+            if(DisableSkillMilliseconds > 0)
+            {
+                DisableSkillMilliseconds -= (float)elapsedGameTime.TotalMilliseconds;
+            }
 
             if (PoisonSeconds > 0)
             {

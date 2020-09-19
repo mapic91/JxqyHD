@@ -422,7 +422,7 @@ namespace Engine
             else
             {
                 Thew -= ThewUseAmountWhenAttack;
-                return true;
+                return base.CanPerformeAttack();
             }
         }
 
@@ -460,7 +460,7 @@ namespace Engine
                 AddLife(-MagicUse.LifeCost);
             }
             
-            return true;
+            return base.CanUseMagic();
         }
 
         protected override void MagicUsedHook(Magic magic)
