@@ -24,6 +24,7 @@ namespace Engine
         }
 
         private static LinkedList<Npc> _list = new LinkedList<Npc>();
+        private static LinkedList<Npc> _hideList = new LinkedList<Npc>();
         private static List<Npc> _npcInView = new List<Npc>();
         public static readonly LinkedList<DeathInfo> DeathInfos = new LinkedList<DeathInfo>();
         private static string _fileName;
@@ -92,6 +93,16 @@ namespace Engine
 
                 var index = 0;
                 foreach (var npc in _list)
+                {
+                    if ((isSaveParter && !npc.IsPartner) ||
+                        (!isSaveParter && npc.IsPartner) ||
+                        npc.SummonedByMagicSprite != null) continue;
+                    var sectionName = "NPC" + string.Format("{0:000}", index++);
+                    data.Sections.AddSection(sectionName);
+                    npc.Save(data[sectionName]);
+                    count++;
+                }
+                foreach (var npc in _hideList)
                 {
                     if ((isSaveParter && !npc.IsPartner) ||
                         (!isSaveParter && npc.IsPartner) ||
@@ -393,6 +404,15 @@ namespace Engine
                 }
                 node = next;
             }
+            for (var node = _hideList.First; node != null;)
+            {
+                var next = node.Next;
+                if (node.Value.Kind == (int)Character.CharacterKind.Follower)
+                {
+                    _hideList.Remove(node);
+                }
+                node = next;
+            }
         }
 
         public static List<Npc> GetAllPartner()
@@ -527,10 +547,22 @@ namespace Engine
                     }
                     node = next;
                 }
+                for (var node = _hideList.First; node != null;)
+                {
+                    var npc = node.Value;
+                    var next = node.Next;
+
+                    if (!npc.IsPartner)
+                    {
+                        _hideList.Remove(node);
+                    }
+                    node = next;
+                }
             }
             else
             {
                 _list.Clear();
+                _hideList.Clear();
             }
             DeathInfos.Clear();
         }
@@ -780,6 +812,18 @@ namespace Engine
 
         public static void Update(GameTime gameTime)
         {
+            for (var node = _hideList.First; node != null;)
+            {
+                var npc = node.Value;
+                var next = node.Next;
+                npc.Update(gameTime);
+                if (npc.IsVisibleByVariable)
+                {
+                    _list.AddLast(npc);
+                    _hideList.Remove(node);
+                }
+                node = next;
+            }
             for (var node = _list.First; node != null; )
             {
                 var npc = node.Value;
@@ -797,6 +841,17 @@ namespace Engine
                     }
                     ObjManager.AddObj(GoodDrop.GetDropObj(npc));
                     DeleteNpc(node);
+                }
+                node = next;
+            }
+            for (var node = _list.First; node != null;)
+            {
+                var npc = node.Value;
+                var next = node.Next;
+                if (!npc.IsVisibleByVariable)
+                {
+                    _list.Remove(node);
+                    _hideList.AddLast(npc);
                 }
                 node = next;
             }

@@ -150,6 +150,9 @@ namespace Engine
 
         private int _invincible;
 
+        private string _visibleVariableName;
+        private int _visibleVariableValue;
+
         /// <summary>
         /// List of the fixed path tile position.
         /// When load <see cref="FixedPos"/>, <see cref="FixedPos"/> is converted to list and stored on this value.
@@ -325,7 +328,7 @@ namespace Engine
         {
             get
             {
-                return !(IsDeath || IsHide || IsInTransport || !IsVisible ||
+                return !(IsDeath || IsHide || IsInTransport || !IsVisible ||  !IsVisibleByVariable ||
                          (MovedByMagicSprite != null && MovedByMagicSprite.BelongMagic.HideUserWhenCarry > 0));
             }
         }
@@ -1024,9 +1027,23 @@ namespace Engine
             set { _invincible = value; }
         }
 
+        public string VisibleVariableName
+        {
+            get { return _visibleVariableName; }
+            set { _visibleVariableName = value; }
+        }
+
+        public int VisibleVariableValue
+        {
+            get { return _visibleVariableValue; }
+            set { _visibleVariableValue = value; }
+        }
+
+        public bool IsVisibleByVariable = true;
+
         public bool IsObstacle
         {
-            get { return (Kind != 7); }
+            get { return (Kind != 7 && IsVisibleByVariable); }
         }
 
         public bool IsPlayer
@@ -1609,6 +1626,7 @@ namespace Engine
                     case "TimerScriptFile":
                     case "FlyInis":
                     case "DropIni":
+                    case "VisibleVariableName":
                         info.SetValue(this, keyData.Value, null);
                         break;
                     case "NpcIni":
@@ -3295,6 +3313,15 @@ namespace Engine
         private ScriptParser _timeScriptParserCache;
         public override void Update(GameTime gameTime)
         {
+            if(!string.IsNullOrEmpty(VisibleVariableName))
+            {
+                IsVisibleByVariable = ScriptExecuter.GetVariablesValue("$" + VisibleVariableName) >= VisibleVariableValue;
+            }
+            if(!IsVisibleByVariable)
+            {
+                return;
+            }
+
             if (!IsDeathInvoked && !IsDeath)
             {
                 if (!string.IsNullOrEmpty(_timerScriptFile))

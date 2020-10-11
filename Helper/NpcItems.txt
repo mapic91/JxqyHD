@@ -162,3 +162,14 @@ KeepRadiusWhenFriendDeath - Ä¬ÈÏ0¡£¶ÔµĞÈËºÍÓÑ·½ÓĞĞ§£¬¶Ô¸úËæÀàÎŞĞ§£¨ÒòÎªÒª¸ú×ÅÖ÷½
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ÎŞµĞ£º
 Invincible - Ä¬ÈÏ0£¬´óÓÚ0±íÊ¾¸ÃÈËÎïÎŞµĞ£¬²»»áÊÜÉË
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+ÏÔÊ¾£º
+VisibleVariableName - µ±±äÁ¿ÃûÎª¸ÃÃû×ÖµÄÖµ´óÓÚµÈÓÚVisibleVariableValueÊÇ£¬¸Ãnpc¿É¼û£¬·ñÔò²»¿É¼û
+VisibleVariableValue - ±äÁ¿Öµ£¬Ä¬ÈÏ0
+±ÈÈç£º
+VisibleVariableName=foo
+VisibleVariableValue=10
+Ôò
+Assign($foo, 10);
+¸Ãnpc¿É¼û

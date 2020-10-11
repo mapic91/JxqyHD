@@ -412,6 +412,15 @@ namespace Engine.Script
             }
         }
 
+        public static int GetVariablesValue(string key)
+        {
+            if(Variables.ContainsKey(key))
+            {
+                return Variables[key];
+            }
+            return 0;
+        }
+
         public static void Say(List<string> parameters)
         {
             Globals.IsInputDisabled = true;
