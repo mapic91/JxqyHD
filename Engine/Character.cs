@@ -41,6 +41,12 @@ namespace Engine
         }
     }
 
+    public struct MagicToUseInfoItem
+    {
+        public Magic Magic;
+        public int Dir;
+    }
+
     public abstract class Character : Sprite
     {
         #region Field
@@ -189,6 +195,8 @@ namespace Engine
 
         public float DisableMoveMilliseconds;
         public float DisableSkillMilliseconds;
+
+        public LinkedList<MagicToUseInfoItem> MagicToUseWhenAttackedList = new LinkedList<MagicToUseInfoItem>();
 
         public bool IsVisible
         {

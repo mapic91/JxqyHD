@@ -124,3 +124,17 @@ ChangeMoveSpeedPercent=-40
 装备后替换武功
 ReplaceMagic - 替换哪个武功，比如：player-magic-漫天花雨.ini
 UseReplaceMagic - 使用哪个武功替换，比如：player-magic-漫天花雨改.ini
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+被攻击时：
+
+MagicToUseWhenBeAttacked - 当NPC的被攻击时，会释放该武功。
+                           释放的方向由MagicDirectionWhenBeAttacked决定。
+                           武功的等级由AttackLevel决定。
+MagicDirectionWhenBeAttacked - 默认0，当值为：
+    0 ：  目标位置为攻击该NPC的攻击者位置
+    1 ：  释放方向为被攻击到的武功的反方向，比如攻击该NPC的武功是往右飞的，
+          则该释放的武功方向往左。
+          如果武功是固定类的，不飞行的，则释放的方向为该NPC的当前朝向。
+    2 ：  释放的方向为该NPC的当前朝向

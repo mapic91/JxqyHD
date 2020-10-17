@@ -58,6 +58,9 @@ namespace Engine
         public string ReplaceMagic { set; get; }
         public Magic UseReplaceMagic { set; get; }
 
+        public Magic MagicToUseWhenBeAttacked { set; get; }
+        public int MagicDirectionWhenBeAttacked { set; get; }
+
         public GoodEffectType TheEffectType
         {
             get
@@ -240,6 +243,9 @@ namespace Engine
                         break;
                     case "UseReplaceMagic":
                         UseReplaceMagic = Utils.GetMagic(value, false);
+                        break;
+                    case "MagicToUseWhenBeAttacked":
+                        MagicToUseWhenBeAttacked = Utils.GetMagic(value, false);
                         break;
                     default:
                         info.SetValue(this, int.Parse(value), null);

@@ -30,6 +30,10 @@ namespace Engine
         private float _standingMilliseconds;
         private float _sittedMilliseconds;
         private bool _isRun;
+
+        private float _autoAttackTimer;
+        private Character _autoAttackTarget;
+        private bool _autoAttackIsRun;
         /// <summary>
         /// Used to add extra life restore when equiping special equipment
         /// </summary>
@@ -766,6 +770,15 @@ namespace Engine
                 {
                     _replacedMagic[equip.ReplaceMagic] = equip.UseReplaceMagic;
                 }
+
+                if(equip.MagicToUseWhenBeAttacked != null)
+                {
+                    MagicToUseWhenAttackedList.AddLast(new MagicToUseInfoItem
+                    {
+                        Magic = equip.MagicToUseWhenBeAttacked.GetLevel(AttackLevel),
+                        Dir = equip.MagicDirectionWhenBeAttacked
+                    });
+                }
             }
 
             //Restore
@@ -866,6 +879,21 @@ namespace Engine
                 if (!string.IsNullOrEmpty(equip.ReplaceMagic))
                 {
                     _replacedMagic.Remove(equip.ReplaceMagic);
+                }
+
+                if (equip.MagicToUseWhenBeAttacked != null)
+                {
+                    for (var node = MagicToUseWhenAttackedList.First; node != null;)
+                    {
+                        var info = node.Value;
+                        var next = node.Next;
+                        if(info.Magic.FileName == equip.MagicToUseWhenBeAttacked.FileName)
+                        {
+                            MagicToUseWhenAttackedList.Remove(node);
+                            break;
+                        }
+                        node = next;
+                    }
                 }
             }
         }
@@ -1155,6 +1183,27 @@ namespace Engine
 
         #endregion Public method
 
+        public void UpdateAutoAttack(GameTime gameTime)
+        {
+            if(_autoAttackTarget != null)
+            {
+                if (_autoAttackTarget.IsDeath)
+                {
+                    _autoAttackTarget = null;
+                }
+                else
+                {
+                    _autoAttackTimer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                    if (_autoAttackTimer >= 100)
+                    {
+                        _autoAttackTimer -= 100;
+                        Attacking(_autoAttackTarget.TilePosition, _autoAttackIsRun);
+                    }
+                }
+            }
+           
+        }
+
         public override void Update(GameTime gameTime)
         {
             var mouseState = Mouse.GetState();
@@ -1163,6 +1212,8 @@ namespace Engine
             var mouseWorldPosition = Globals.TheCarmera.ToWorldPosition(mouseScreenPosition);
             var mouseTilePosition = MapBase.ToTilePosition(mouseWorldPosition);
             _isUseMagicByKeyborad = false;
+
+            UpdateAutoAttack(gameTime);
 
             _isRun = canRun(keyboardState);
 
@@ -1229,34 +1280,45 @@ namespace Engine
                         (Globals.OutEdgeNpc.IsEnemy || Globals.OutEdgeNpc.IsNoneFighter))
                     {
                         character.Attacking(Globals.OutEdgeNpc.TilePosition, _isRun);
+                        _autoAttackTarget = Globals.OutEdgeNpc;
+                        _autoAttackIsRun = _isRun;
                     }
                     else if (Globals.OutEdgeNpc != null &&
                         Globals.OutEdgeNpc != ControledCharacter &&
                         Globals.OutEdgeNpc.HasInteractScript)
                     {
                         if (_lastMouseState.LeftButton == ButtonState.Released)
+                        {
+                            _autoAttackTarget = null;
                             character.InteractWith(Globals.OutEdgeNpc, _isRun);
+                        }
                     }
                     else if (Globals.OutEdgeObj != null &&
                              Globals.OutEdgeObj.HasInteractScript)
                     {
                         if (_lastMouseState.LeftButton == ButtonState.Released)
+                        {
+                            _autoAttackTarget = null;
                             character.InteractWith(Globals.OutEdgeObj, _isRun);
+                        }
                     }
                     else if (_isRun)
                     {
                         if (CanRun())
                         {
+                            _autoAttackTarget = null;
                             character.RunTo(mouseTilePosition);
                         }
                         else
                         {
+                            _autoAttackTarget = null;
                             character.WalkTo(mouseTilePosition);
                         }
                     }
                     else if (keyboardState.IsKeyDown(Keys.LeftAlt) ||
                              keyboardState.IsKeyDown(Keys.RightAlt))
                     {
+                        _autoAttackTarget = null;
                         character.JumpTo(mouseTilePosition);
                     }
                     else if (keyboardState.IsKeyDown(Keys.LeftControl) ||
@@ -1264,10 +1326,15 @@ namespace Engine
                     {
                         if (!IsFightDisabled)
                         {
+                            _autoAttackTarget = null;
                             character.PerformeAttack(mouseWorldPosition, GetRamdomMagicWithUseDistance(AttackRadius));
                         }
                     }
-                    else character.WalkTo(mouseTilePosition);
+                    else
+                    {
+                        _autoAttackTarget = null;
+                        character.WalkTo(mouseTilePosition);
+                    }
                 }
                 else
                 {
@@ -1283,6 +1350,7 @@ namespace Engine
                                 MaxAutoInteractTileDistance);
                         if (closestObj != null)
                         {
+                            _autoAttackTarget = null;
                             character.InteractWith(closestObj, _isRun);
                         }
                     }
@@ -1293,6 +1361,7 @@ namespace Engine
                                 MaxAutoInteractTileDistance);
                         if (closestNpc != null)
                         {
+                            _autoAttackTarget = null;
                             character.InteractWith(closestNpc, _isRun);
                         }
                     }
@@ -1330,6 +1399,7 @@ namespace Engine
                             }
                             else
                             {
+                                _autoAttackTarget = null;
                                 if (Globals.OutEdgeNpc != null)
                                     UseMagic(CurrentMagicInUse.TheMagic, Globals.OutEdgeNpc.TilePosition, Globals.OutEdgeNpc);
                                 else UseMagic(CurrentMagicInUse.TheMagic, mouseTilePosition);
@@ -1344,6 +1414,7 @@ namespace Engine
                 !IsPetrified &&
                 ControledCharacter == null)
                 {
+                    _autoAttackTarget = null;
                     if (IsSitting()) StandingImmediately();
                     else Sitdown();
                 }
