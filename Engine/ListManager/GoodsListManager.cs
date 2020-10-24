@@ -7,6 +7,7 @@ using Engine.Gui.Base;
 using Engine.Script;
 using IniParser;
 using IniParser.Model;
+using Microsoft.Xna.Framework;
 
 namespace Engine.ListManager
 {
@@ -534,18 +535,15 @@ namespace Engine.ListManager
                 {
                     case Good.GoodKind.Drug:
                         {
-                            if (IsInBottomGoodsRange(goodIndex))
+                            if (info.RemainColdMilliseconds > 0)
                             {
-                                if (info.RemainColdMilliseconds > 0)
-                                {
-                                    GuiManager.ShowMessage("该物品尚未冷却");
-                                    return;
-                                }
+                                GuiManager.ShowMessage("该物品尚未冷却");
+                                return;
+                            }
 
-                                if (info.TheGood.ColdMilliSeconds > 0)
-                                {
-                                    info.RemainColdMilliseconds = info.TheGood.ColdMilliSeconds;
-                                }
+                            if (info.TheGood.ColdMilliSeconds > 0)
+                            {
+                                info.RemainColdMilliseconds = info.TheGood.ColdMilliSeconds;
                             }
 
                             if (Globals.ThePlayer.UseDrug(good))
@@ -620,6 +618,21 @@ namespace Engine.ListManager
         public static GoodsItemInfo GetItemInfo(int index)
         {
             return IndexInRange(index) ? GoodsList[index] : null;
+        }
+
+        public static void Update(GameTime gameTime)
+        {
+            if(GoodsList != null)
+            {
+                var t = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                foreach (var info in GoodsList)
+                {
+                    if (info != null && info.RemainColdMilliseconds > 0)
+                    {
+                        info.RemainColdMilliseconds -= t;
+                    }
+                }
+            }
         }
 
         public class GoodsItemInfo

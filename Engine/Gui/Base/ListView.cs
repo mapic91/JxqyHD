@@ -84,6 +84,11 @@ namespace Engine.Gui.Base
             _items[8] = new DragDropItem(this, new Vector2(int.Parse(c["Item_Left_9"]), int.Parse(c["Item_Top_9"])), int.Parse(c["Item_Width_9"]), int.Parse(c["Item_Height_9"]), null, null, useTopLeftText);
         }
 
+        public DragDropItem GetItem(int index)
+        {
+            return _items[index];
+        }
+
         public void RegisterItemDragHandler(Action<object, DragDropItem.DragEvent> handler)
         {
             foreach (var dragDropItem in _items)

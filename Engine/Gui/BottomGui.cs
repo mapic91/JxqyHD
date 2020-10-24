@@ -93,13 +93,13 @@ namespace Engine.Gui
                 _items[i].MouseLeave += GoodsGui.MouseLeaveHandler;
                 _items[i].OnUpdate += (arg1, arg2) =>
                 {
-                    var data = (GoodsGui.GoodItemData)(((DragDropItem)arg1).Data);
-                    var info = GoodsListManager.GetItemInfo(data.Index);
-                    if (info != null)
-                    {
-                        var gameTime = (GameTime)arg2;
-                        info.RemainColdMilliseconds -= (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-                    }
+                    //var data = (GoodsGui.GoodItemData)(((DragDropItem)arg1).Data);
+                    //var info = GoodsListManager.GetItemInfo(data.Index);
+                    //if (info != null)
+                    //{
+                    //    var gameTime = (GameTime)arg2;
+                    //    info.RemainColdMilliseconds -= (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                    //}
                 };
             }
 

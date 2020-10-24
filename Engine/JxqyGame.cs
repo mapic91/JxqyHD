@@ -513,6 +513,7 @@ namespace Engine
                     case GameState.StateType.Playing:
                         if (IsGamePlayPaused) break;
                         UpdatePlaying(gameTime);
+                        GoodsListManager.Update(gameTime);
                         break;
                     case GameState.StateType.EndAds:
                         _elapsedSecondsAd += (float)gameTime.ElapsedGameTime.TotalSeconds;

@@ -10,6 +10,8 @@ namespace Engine.Gui
     {
         private ListView _listView;
         private TextGui _money;
+        private Texture2D _coldTimeBackground;
+        private Color _colodTimeFontColor = Color.White;
 
         public static void DropHandler(object arg1, DragDropItem.DropEvent arg2)
         {
@@ -206,6 +208,34 @@ namespace Engine.Gui
 
             _listView.Draw(spriteBatch);
             _money.Draw(spriteBatch);
+
+            for (var i = 0; i < 9; i++)
+            {
+                var index = _listView.ToListIndex(i) + GoodsListManager.StoreIndexBegin - 1;
+                var info = GoodsListManager.GetItemInfo(index);
+                if(info != null && info.RemainColdMilliseconds > 0)
+                {
+                    var item = _listView.GetItem(i);
+                    if (_coldTimeBackground == null)
+                    {
+                        _coldTimeBackground = TextureGenerator.GetColorTexture(new Color(0, 0, 0, 180), item.Width,
+                            item.Height);
+                    }
+
+                    var timeTxt = (info.RemainColdMilliseconds / 1000f).ToString("0.0");
+                    var font = Globals.FontSize10;
+
+                    spriteBatch.Draw(
+                     _coldTimeBackground,
+                     item.ScreenPosition,
+                     Color.White);
+
+                    spriteBatch.DrawString(font,
+                    timeTxt,
+                    item.CenterScreenPosition - font.MeasureString(timeTxt) / 2,
+                    _colodTimeFontColor);
+                }
+            }
         }
 
         public class GoodItemData
