@@ -5,6 +5,7 @@ using Engine.Gui.Base;
 using Engine.ListManager;
 using IniParser;
 using IniParser.Model;
+using IniParser.Parser;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Texture = Engine.Gui.Base.Texture;
@@ -17,6 +18,7 @@ namespace Engine.Gui
         private GuiItem _closeButton;
         private readonly Dictionary<int, GoodsListManager.GoodsItemInfo> _goods = new Dictionary<int, GoodsListManager.GoodsItemInfo>();
         private string _fileName;
+        private Character _target;
         private int _goodTypeCount;
         private int _goodTypeCountAtStart;
         private bool _numberValid;
@@ -93,24 +95,36 @@ namespace Engine.Gui
             IsShow = false;
         }
 
-        public void BeginBuy(string listFileName, bool canSellSelfGoods)
+        public void BeginBuy(string listFileName, Character target, bool canSellSelfGoods)
         {
             _fileName = listFileName;
-            var path = @"save\game\" + listFileName;
-            if (!File.Exists(path))
-            {
-                path = @"ini\buy\" + listFileName;
-            }
+            _target = target;
             CanSellSelfGoods = canSellSelfGoods;
             BuyPercent = 100;
             RecyclePercent = 100;
             try
             {
                 _goods.Clear();
-                var parser = new FileIniDataParser();
-                var data =parser.ReadFile(path, Globals.LocalEncoding);
+                IniData data;
+                if (_target != null && !string.IsNullOrEmpty(_target.BuyIniString))
+                {
+                    var str = Utils.Base64Decode(_target.BuyIniString);
+                    var parser = new IniDataParser();
+                    data = parser.Parse(str);
+                } else
+                {
+                    var path = @"save\game\" + listFileName;
+                    if (!File.Exists(path))
+                    {
+                        path = @"ini\buy\" + listFileName;
+                    }
+
+                    var parser = new FileIniDataParser();
+                    data = parser.ReadFile(path, Globals.LocalEncoding);
+                }
+               
                 _goodTypeCountAtStart = _goodTypeCount = int.Parse(data["Header"]["Count"]);
-                _numberValid = !string.IsNullOrEmpty(data["Header"]["NumberValid"]) && int.Parse(data["Header"]["NumberValid"]) != 0;
+                _numberValid = (_target != null && !string.IsNullOrEmpty(_target.BuyIniString)) || (!string.IsNullOrEmpty(data["Header"]["NumberValid"]) && int.Parse(data["Header"]["NumberValid"]) != 0);
                 if (!string.IsNullOrEmpty(data["Header"]["BuyPercent"]))
                 {
                     BuyPercent = int.Parse(data["Header"]["BuyPercent"]);
@@ -136,7 +150,7 @@ namespace Engine.Gui
             }
             catch (Exception exception)
             {
-                Log.LogFileLoadError("BuySell", path, exception);
+                Log.LogFileLoadError("BuySell", listFileName, exception);
             }
         }
 
@@ -151,10 +165,11 @@ namespace Engine.Gui
                 {
                     var data = new IniData();
                     data.Sections.AddSection("Header");
-                    data["Header"].AddKey("Count", _goodTypeCountAtStart.ToString());
+                    var count = (_target != null && !string.IsNullOrEmpty(_target.BuyIniString)) ? _goodTypeCount : _goodTypeCountAtStart;
+                    data["Header"].AddKey("Count", count.ToString());
                     data["Header"].AddKey("NumberValid", "1");
 
-                    for (var i = 1; i <= _goodTypeCountAtStart; i++)
+                    for (var i = 1; i <= count; i++)
                     {
                         data.Sections.AddSection(i.ToString());
                         var s = data[i.ToString()];
@@ -162,7 +177,13 @@ namespace Engine.Gui
                         s.AddKey("Number", _goods[i].Count.ToString());
                     }
 
-                    File.WriteAllText(@"save\game\" + _fileName, data.ToString(), Globals.LocalEncoding);
+                    if(_target != null && !string.IsNullOrEmpty(_target.BuyIniString))
+                    {
+                        _target.BuyIniString = Utils.Base64Encode(data.ToString());
+                    } else
+                    {
+                        File.WriteAllText(@"save\game\" + _fileName, data.ToString(), Globals.LocalEncoding);
+                    }
                 }
             }
         }

@@ -1701,9 +1701,9 @@ namespace Engine.Script
             GuiManager.EquipGoods(index, part);
         }
 
-        public static void BuyGoods(List<string> parameters, bool canSellSelfGoods)
+        public static void BuyGoods(List<string> parameters, bool canSellSelfGoods, object belongObject)
         {
-            GuiManager.BuyGoods(Utils.RemoveStringQuotes(parameters[0]), canSellSelfGoods);
+            GuiManager.BuyGoods(parameters.Count > 0 ? Utils.RemoveStringQuotes(parameters[0]) : "", belongObject as Character, canSellSelfGoods);
             Globals.IsInputDisabled = true;
         }
 

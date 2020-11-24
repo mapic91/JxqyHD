@@ -538,11 +538,11 @@ namespace Engine.Script
                             break;
                         case "SellGoods":
                         case "BuyGoods":
-                            ScriptExecuter.BuyGoods(parameters, true);
+                            ScriptExecuter.BuyGoods(parameters, true, BelongObject);
                             isEnd = ScriptExecuter.IsBuyGoodsEnd();
                             break;
                         case "BuyGoodsOnly":
-                            ScriptExecuter.BuyGoods(parameters, false);
+                            ScriptExecuter.BuyGoods(parameters, false, BelongObject);
                             isEnd = ScriptExecuter.IsBuyGoodsEnd();
                             break;
                         case "OpenTimeLimit":

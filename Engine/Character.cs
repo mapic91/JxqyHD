@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Globalization;
 using Engine.Gui;
@@ -10,6 +11,7 @@ using IniParser.Model;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
+using IniParser.Parser;
 
 namespace Engine
 {
@@ -145,6 +147,8 @@ namespace Engine
         private readonly Dictionary<string, LinkedList<Npc>> _summonedNpcs = new Dictionary<string, LinkedList<Npc>>();
         private int _rangeRadiusToShow;
         protected float _changeToOppositeMilliseconds;
+        private string _buyIniFile;
+        private string _buyIniString;
 
         private MagicSprite _changeCharacterByMagicSprite;
         private float _changeCharacterByMagicSpriteTime;
@@ -339,6 +343,17 @@ namespace Engine
                 return !(IsDeath || IsHide || IsInTransport || !IsVisible ||  !IsVisibleByVariable ||
                          (MovedByMagicSprite != null && MovedByMagicSprite.BelongMagic.HideUserWhenCarry > 0));
             }
+        }
+
+        public string BuyIniFile
+        {
+            get { return _buyIniFile; }
+            set { _buyIniFile = value; }
+        }
+        public string BuyIniString
+        {
+            get { return _buyIniString; }
+            set { _buyIniString = value; }
         }
 
         /// <summary>
@@ -1635,6 +1650,7 @@ namespace Engine
                     case "FlyInis":
                     case "DropIni":
                     case "VisibleVariableName":
+                    case "BuyIniString":
                         info.SetValue(this, keyData.Value, null);
                         break;
                     case "NpcIni":
@@ -1686,6 +1702,14 @@ namespace Engine
                     case "IsPetrifiedVisualEffect":
                     case "IsFronzenVisualEffect":
                         info.SetValue(this, int.Parse(keyData.Value) == 1, null);
+                        break;
+                    case "BuyIniFile":
+                        var path = @"ini\buy\" + keyData.Value;
+                        var str = File.ReadAllText(path, Globals.LocalEncoding);
+                        if(string.IsNullOrEmpty(BuyIniString))
+                        {
+                            BuyIniString = Utils.Base64Encode(str);
+                        }
                         break;
                     default:
                         {
@@ -1911,6 +1935,8 @@ namespace Engine
             AddKey(keyDataCollection, "IsPoisionVisualEffect", _isPoisionVisualEffect);
             AddKey(keyDataCollection, "IsPetrifiedVisualEffect", _isPetrifiedVisualEffect);
             AddKey(keyDataCollection, "IsFronzenVisualEffect", _isFronzenVisualEffect);
+            AddKey(keyDataCollection, "BuyIniFile", _buyIniFile);
+            AddKey(keyDataCollection, "BuyIniString", _buyIniString);
             if (_bodyIni != null)
             {
                 AddKey(keyDataCollection,
@@ -2261,6 +2287,8 @@ namespace Engine
 
             NpcManager.AddDead(this);
 
+            CheckDropBuyGood();
+
             //When death speedup is cancled
             SppedUpByMagicSprite = null;
 
@@ -2347,6 +2375,25 @@ namespace Engine
                 PlayCurrentDirOnce();
             }
             else IsDeath = true;
+        }
+
+        private void CheckDropBuyGood()
+        {
+            if(!string.IsNullOrEmpty(BuyIniString))
+            {
+                var parser = new IniDataParser();
+                var data = parser.Parse(Utils.Base64Decode(BuyIniString));
+                var goodTypeCount = int.Parse(data["Header"]["Count"]);
+                for(var i = 1; i <= goodTypeCount; i++)
+                {
+                    var iniFile = data[i.ToString()]["IniFile"];
+                    var number = int.Parse(data[i.ToString()]["Number"]);
+                    for(var j = 0; j < number; j++)
+                    {
+                        ScriptExecuter.AddGoods(iniFile);
+                    }
+                }
+            }
         }
 
         public void Attacking(Vector2 destinationTilePosition, bool isRun = false)
@@ -3138,6 +3185,8 @@ namespace Engine
             ClearFrozen();
             ClearPoison();
             ClearPetrifaction();
+            DisableMoveMilliseconds = 0;
+            DisableSkillMilliseconds = 0;
         }
 
         public void ChangeToOpposite(int milliseconds)

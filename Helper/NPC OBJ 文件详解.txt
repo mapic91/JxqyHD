@@ -175,5 +175,10 @@ CanInteractDirectly - ´óÓÚ0±íÊ¾£¬Ö»ÒªÓÃÊó±êµã»÷Ëû£¨Ëü£©¾Í¿ÉÒÔ´¥·¢½Å±¾£¬¶ø²»ÐèÒªÖ
 NoDropWhenDie - ´óÓÚ0±íÊ¾£¬¸Ã½ÇÉ«ËÀÍöºó²»»áµôÂäÎïÆ·£¬Ä¬ÈÏ0
 
 
-
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+[NPC]ÎÄ¼þÊÊÓÃ
+BuyIniFile - ÉèÖÃÎÄ¼þ¼Ðint/buy/*.iniÄÚµÄÎÄ¼þ£¬Èç¹û¸Ã½ÇÉ«ScriptFileÀïÊ¹ÓÃÁËBuyGoods()º¯Êý£¨BuyGoods²»ÓÃ´«²ÎÊý£©£¬ÔòÊ¹ÓÃBuyIniFileÉèÖÃµÄÎÄ¼þ½øÐÐÂòÂô£¬Âô¸øËûµÄÎïÆ·»á±£´æÆðÀ´¡£Ö®ºóÈç¹ûÉ±ËÀÁËËû£¬Ôò»ñµÃËûËùÓÐÂòÂôµÄÎïÆ·¡£
+±ÈÈç£º
+BuyIniFile=¼éÉÌ.ini
 

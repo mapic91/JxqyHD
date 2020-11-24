@@ -449,10 +449,10 @@ namespace Engine.Gui
             EquipInterface.EquipGood(goodListIndex);
         }
 
-        public static void BuyGoods(string listFileName, bool canSellSelfGoods)
+        public static void BuyGoods(string listFileName, Character target, bool canSellSelfGoods)
         {
             ShowAllPanels(false);
-            BuyInterface.BeginBuy(listFileName, canSellSelfGoods);
+            BuyInterface.BeginBuy(listFileName, target, canSellSelfGoods);
             GoodsInterface.IsShow = true;
         }
 
