@@ -122,6 +122,8 @@ namespace Engine
 
         private int _bodyRadius;
 
+        private int _reviveBodyRadius;
+
         private int _noSpecialKindEffect;
 
         private Good _goodsName;
@@ -905,6 +907,12 @@ namespace Engine
         {
             get { return _bodyRadius; }
             set { _bodyRadius = value; }
+        }
+
+        public int ReviveBodyRadius
+        {
+            get { return _reviveBodyRadius; }
+            set { _reviveBodyRadius = value; }
         }
 
         public int NoSpecialKindEffect

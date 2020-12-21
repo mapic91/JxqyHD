@@ -887,6 +887,21 @@ namespace Engine
                 return;
             }
 
+            if(magic.ReviveBodyRadius > 0)
+            {
+                foreach (var body in ObjManager.GetBodyInRaidus(MapBase.ToTilePosition(destination), magic.ReviveBodyRadius, true))
+                {
+                    if (!string.IsNullOrEmpty(body.ReviveNpcIni))
+                    {
+                        var npc = new Npc(@"ini\npc\" + body.ReviveNpcIni);
+                        npc.Relation = ((user as Player != null) || (user.Relation == (int)Character.RelationType.Friend)) ? (int)Character.RelationType.Friend : (int)Character.RelationType.Enemy;
+                        npc.TilePosition = body.TilePosition;
+                        NpcManager.AddNpc(npc);
+                    }
+                }
+                return;
+            }
+
             _maigicSpriteIndex = 0;
 
             if (magic.FlyingSound != null)

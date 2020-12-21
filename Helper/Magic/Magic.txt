@@ -488,3 +488,9 @@ DisableMoveMilliseconds - Èç¹û´óÓÚ0£¬ÔòÎä¹¦»÷ÖÐµÐÈËºó£¬µÐÈË½«ÎÞ·¨ÒÆ¶¯¸ÃºÁÃë£¬Ä¬È
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ÎÞ·¨Ê¹ÓÃ¼¼ÄÜ£º
 DisableSkillMilliseconds - Èç¹û´óÓÚ0£¬ÔòÎä¹¦»÷ÖÐµÐÈËºó£¬µÐÈË½«ÎÞ·¨Ê¹ÓÃ¼¼ÄÜ¸ÃºÁÃë£¬Ä¬ÈÏ0
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+¸´»îÊ¬Ìå£º
+
+ReviveBodyRadius - Ä¬ÈÏ0¡£´óÓÚ0±íÊ¾µ±¶ÔÄ¿±êÎ»ÖÃÎä¹¦Ê±£¬Ê¹ÒÔÄ¿±êÎ»ÖÃµÄReviveBodyRadius·¶Î§ÄÚµÄÊ¬Ìå¸´»î£¬¸´»îºóµÄÈËÎïÔÚini\obj\*.iniÎÄ¼þÄÚµÄReviveNpcIniÏîÉèÖÃ£¨ini\npc\*.iniµÄÎÄ¼þÃû£¬±ÈÈçReviveNpcIni=ºÚÒÂÈË.ini£©

@@ -31,6 +31,7 @@ namespace Engine
         private string _wavFileName;
         private int _offX;
         private int _offY;
+        private string _reviveNpcIni;
 
         #region Public properties
 
@@ -120,6 +121,12 @@ namespace Engine
         {
             get { return _timerScriptInterval; }
             set { _timerScriptInterval = value; }
+        }
+
+        public string ReviveNpcIni
+        {
+            get { return _reviveNpcIni; }
+            set { _reviveNpcIni = value; }
         }
 
         public string WavFile
@@ -330,6 +337,7 @@ namespace Engine
                     case "ScriptFile":
                     case "WavFile":
                     case "TimerScriptFile":
+                    case "ReviveNpcIni":
                         info.SetValue(this, nameValue[1], null);
                         break;
                     case "ObjFile":
