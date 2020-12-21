@@ -896,6 +896,7 @@ namespace Engine
                         var npc = new Npc(@"ini\npc\" + body.ReviveNpcIni);
                         npc.Relation = ((user as Player != null) || (user.Relation == (int)Character.RelationType.Friend)) ? (int)Character.RelationType.Friend : (int)Character.RelationType.Enemy;
                         npc.TilePosition = body.TilePosition;
+                        npc.Dir = body.Dir;
                         NpcManager.AddNpc(npc);
                     }
                 }
