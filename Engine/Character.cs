@@ -1937,6 +1937,8 @@ namespace Engine
             AddKey(keyDataCollection, "IsFronzenVisualEffect", _isFronzenVisualEffect);
             AddKey(keyDataCollection, "BuyIniFile", _buyIniFile);
             AddKey(keyDataCollection, "BuyIniString", _buyIniString);
+            AddKey(keyDataCollection, "VisibleVariableName", _visibleVariableName);
+            AddKey(keyDataCollection, "VisibleVariableValue", _visibleVariableValue);
             if (_bodyIni != null)
             {
                 AddKey(keyDataCollection,
