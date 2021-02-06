@@ -445,11 +445,6 @@ namespace Engine
 
             character.NotifyFighterAndAllNeighbor(BelongCharacter);
 
-            if(character.ChangeTargetToAttacker > 0)
-            {
-                character.FollowTarget = BelongCharacter;
-            }
-
             //Hit ratio
             var targetEvade = character.RealEvade;
             var belongCharacterEvade = BelongCharacter.RealEvade;

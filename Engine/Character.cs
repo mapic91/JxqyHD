@@ -58,7 +58,6 @@ namespace Engine
         private int _kind;
         private int _group;
         private int _noAutoAttackPlayer;
-        private int _changeTargetToAttacker;
         private int _relation;
         private int _pathFinder;
         private int _state;
@@ -606,12 +605,6 @@ namespace Engine
         {
             get { return _noAutoAttackPlayer; }
             set { _noAutoAttackPlayer = value; }
-        }
-
-        public int ChangeTargetToAttacker
-        {
-            get { return _changeTargetToAttacker; }
-            set { _changeTargetToAttacker = value; }
         }
 
         public int State
@@ -1960,6 +1953,8 @@ namespace Engine
             AddKey(keyDataCollection, "BuyIniString", _buyIniString);
             AddKey(keyDataCollection, "VisibleVariableName", _visibleVariableName);
             AddKey(keyDataCollection, "VisibleVariableValue", _visibleVariableValue);
+            AddKey(keyDataCollection, "Group", _group);
+            AddKey(keyDataCollection, "NoAutoAttackPlayer", _noAutoAttackPlayer);
             if (_bodyIni != null)
             {
                 AddKey(keyDataCollection,
