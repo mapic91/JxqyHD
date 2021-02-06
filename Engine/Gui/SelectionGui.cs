@@ -9,8 +9,8 @@ namespace Engine.Gui
     {
         private LineText _messageText;
         private List<LineText> _selectionLineTexts;
-        private Color _normalColor = Color.Blue*0.8f;
-        private Color _selectionColor = Color.Red*0.8f;
+        private Color _normalColor = new Color(0,255,0)*0.8f;
+        private Color _selectionColor = Color.Yellow*0.8f;
         private Texture2D _fadeTexture = TextureGenerator.GetColorTexture(
                     Color.Black * 0.8f,
                     1,
