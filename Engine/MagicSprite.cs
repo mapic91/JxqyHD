@@ -445,6 +445,11 @@ namespace Engine
 
             character.NotifyFighterAndAllNeighbor(BelongCharacter);
 
+            if(character.ChangeTargetToAttacker > 0)
+            {
+                character.FollowTarget = BelongCharacter;
+            }
+
             //Hit ratio
             var targetEvade = character.RealEvade;
             var belongCharacterEvade = BelongCharacter.RealEvade;
@@ -677,7 +682,12 @@ namespace Engine
             }
             else if (BelongCharacter.IsEnemy)
             {
-                characterHited = CharacterHited(NpcManager.GetPlayerOrFighterFriend(TilePosition, true));
+                var target = NpcManager.GetPlayerOrFighterFriend(TilePosition, true);
+                if(target == null)
+                {
+                    target = NpcManager.GetOtherGropEnemy(BelongCharacter.Group, TilePosition);
+                }
+                characterHited = CharacterHited(target);
             }
             else if (BelongCharacter.IsNoneFighter)
             {
@@ -963,8 +973,7 @@ namespace Engine
             }
             else
             {
-                nextTarget =
-                    NpcManager.GetClosestEnemy(BelongCharacter, hitedCharacter.PositionInWorld, true, false, _leapedCharacters);
+                nextTarget = NpcManager.GetClosestEnemy(BelongCharacter, hitedCharacter.PositionInWorld, true, false, _leapedCharacters);
             }
             if (nextTarget == null)
             {

@@ -236,7 +236,7 @@ namespace Engine
                 FollowTarget == null || // Follow target not assign.
                 FollowTarget.IsDeathInvoked || //Follow target is death.
                 !FollowTarget.IsVisible ||
-                (IsEnemy && FollowTarget.IsEnemy) || // Follow target relation changed
+                (IsEnemy && FollowTarget.IsEnemy && FollowTarget.Group == Group) || // Follow target relation changed
                 (IsFighterFriend && (FollowTarget.IsFighterFriend || FollowTarget.IsPlayer)) || // Follow target relation changed
                 IsAIDisabled || //Npc AI is disabled.
                 _blindMilliseconds > 0) 
@@ -245,7 +245,11 @@ namespace Engine
                 {
                     if (StopFindingTarget == 0)
                     {
-                        FollowTarget = (IsAIDisabled || _blindMilliseconds > 0) ? null : NpcManager.GetLiveClosestPlayerOrFighterFriend(PositionInWorld, true, false);
+                        FollowTarget = (IsAIDisabled || _blindMilliseconds > 0) ? null : NpcManager.GetLiveClosestOtherGropEnemy(Group, PositionInWorld);
+                        if (NoAutoAttackPlayer == 0 && FollowTarget == null)
+                        {
+                            FollowTarget = (IsAIDisabled || _blindMilliseconds > 0) ? null : NpcManager.GetLiveClosestPlayerOrFighterFriend(PositionInWorld, true, false);
+                        }
                     }
                     else if(FollowTarget != null && FollowTarget.IsDeathInvoked)
                     {

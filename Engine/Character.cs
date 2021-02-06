@@ -56,6 +56,9 @@ namespace Engine
         private int _dir;
         private string _name;
         private int _kind;
+        private int _group;
+        private int _noAutoAttackPlayer;
+        private int _changeTargetToAttacker;
         private int _relation;
         private int _pathFinder;
         private int _state;
@@ -267,7 +270,7 @@ namespace Engine
         public bool IsFightDisabled { protected set; get; }
         public bool IsJumpDisabled { protected set; get; }
         public bool IsRunDisabled { protected set; get; }
-        public Character FollowTarget { protected set; get; }
+        public Character FollowTarget { set; get; }
         public bool IsFollowTargetFound { protected set; get; }
         public bool IsInSpecialAction { protected set; get; }
 
@@ -591,6 +594,24 @@ namespace Engine
                 return _relation;
             }
             set { _relation = value; }
+        }
+
+        public int Group
+        {
+            get { return _group; }
+            set { _group = value; }
+        }
+
+        public int NoAutoAttackPlayer
+        {
+            get { return _noAutoAttackPlayer; }
+            set { _noAutoAttackPlayer = value; }
+        }
+
+        public int ChangeTargetToAttacker
+        {
+            get { return _changeTargetToAttacker; }
+            set { _changeTargetToAttacker = value; }
         }
 
         public int State
@@ -1993,21 +2014,49 @@ namespace Engine
         #endregion Save load method
 
         #region Perform action
-        public void StandingImmediately(bool forceRefreshShow=false)
+        public void StandingImmediately(bool forceRefreshShow=false, bool noChangeStateIfAlreadyStand = false)
         {
             if (IsDeathInvoked || IsDeath)
             {
                 return;
             }
-            StateInitialize(false);
-            if (_isInFighting && NpcIni.ContainsKey((int)CharacterState.FightStand)) SetState(CharacterState.FightStand, forceRefreshShow);
+            StateInitialize(false, true);
+            var isStateSame = true;
+            if (_isInFighting && NpcIni.ContainsKey((int)CharacterState.FightStand))
+            {
+                if(noChangeStateIfAlreadyStand)
+                {
+                    if(State != (int)CharacterState.FightStand)
+                    {
+                        isStateSame = SetState(CharacterState.FightStand, forceRefreshShow);
+                    }
+                }
+                else
+                {
+                    isStateSame = SetState(CharacterState.FightStand, forceRefreshShow);
+                }
+            }
             else
             {
-                if (NpcIni.ContainsKey((int)CharacterState.Stand1) &&
-                    Globals.TheRandom.Next(4) == 1 &&
-                    State != (int)CharacterState.Stand1) SetState(CharacterState.Stand1, forceRefreshShow);
-                else SetState(CharacterState.Stand, forceRefreshShow);
-                PlayCurrentDirOnce();
+                if (noChangeStateIfAlreadyStand)
+                {
+                    if (State != (int)CharacterState.Stand && State != (int)CharacterState.Stand1)
+                    {
+                        isStateSame = SetState(CharacterState.Stand, forceRefreshShow);
+                    }
+                }
+                else
+                {
+                    if (NpcIni.ContainsKey((int)CharacterState.Stand1) &&
+                       Globals.TheRandom.Next(4) == 1 &&
+                       State != (int)CharacterState.Stand1) isStateSame = SetState(CharacterState.Stand1, forceRefreshShow);
+                    else isStateSame = SetState(CharacterState.Stand, forceRefreshShow);
+                }
+
+                if (!isStateSame || forceRefreshShow)
+                {
+                    PlayCurrentDirOnce();
+                }
             }
         }
 
@@ -2044,9 +2093,13 @@ namespace Engine
         /// Before set character state initialize character state. 
         /// </summary>
         /// <param name="endInteract">Is true end interact if character is in interacting.</param>
-        public void StateInitialize(bool endInteract = true)
+        public void StateInitialize(bool endInteract = true, bool noEndPlayCurrentDir = false)
         {
-            EndPlayCurrentDirOnce();
+            if(!noEndPlayCurrentDir)
+            {
+                EndPlayCurrentDirOnce();
+            }
+            
             DestinationMoveTilePosition = Vector2.Zero;
             Path = null;
             CancleAttackTarget();
@@ -2115,11 +2168,12 @@ namespace Engine
                 }
                 else
                 {
-                    StateInitialize();
-                    Path = Engine.PathFinder.FindPath(this, TilePosition, destinationTilePosition, pathType == Engine.PathFinder.PathType.End ? PathType : pathType);
-                    if (Path == null) StandingImmediately();
+                    var path = Engine.PathFinder.FindPath(this, TilePosition, destinationTilePosition, pathType == Engine.PathFinder.PathType.End ? PathType : pathType);
+                    if (path == null) StandingImmediately(false, true);
                     else
                     {
+                        StateInitialize();
+                        Path = path;
                         DestinationMoveTilePosition = destinationTilePosition;
                         if (_isInFighting && NpcIni.ContainsKey((int)CharacterState.FightWalk)) SetState(CharacterState.FightWalk);
                         else SetState(CharacterState.Walk);
@@ -2845,8 +2899,9 @@ namespace Engine
         /// <param name="state">State to set</param>
         /// <param name="setIfStateSame">If true renew state if current state is same as the setting state</param>
         /// <param name="setNullTexturn">Set texture to null is state not exist.Otherwise do nothing.</param>
-        public void SetState(CharacterState state, bool setIfStateSame = false, bool setNullTexturn = false)
+        public bool SetState(CharacterState state, bool setIfStateSame = false, bool setNullTexturn = false)
         {
+            var isSameState = State == (int)state;
             if ((State != (int)state || setIfStateSame) &&
                 NpcIni.ContainsKey((int)state))
             {
@@ -2897,6 +2952,7 @@ namespace Engine
                     Texture = null;
                 }
             }
+            return isSameState;
         }
 
         /// <summary>

@@ -198,7 +198,11 @@ namespace Engine
 
             if (finder.IsEnemy)
             {
-                return GetLiveClosestPlayerOrFighterFriend(targetPositionInWorld, withNetural, withInvisible, ignoreList);
+                var target = GetLiveClosestPlayerOrFighterFriend(targetPositionInWorld, withNetural, withInvisible, ignoreList);
+                if(target == null)
+                {
+                    target = GetLiveClosestOtherGropEnemy(finder.Group, targetPositionInWorld);
+                }
             }
 
             if (finder.IsPlayer || finder.IsFighterFriend)
@@ -207,6 +211,23 @@ namespace Engine
             }
 
             return null;
+        }
+
+        public static Character GetLiveClosestOtherGropEnemy(int group, Vector2 positionInWorld)
+        {
+            Character closed = null;
+            var closedDistance = 99999999f;
+            foreach (var npc in _list)
+            {
+                if (npc.Group != group && npc.IsVisible && npc.IsEnemy)
+                {
+                    var distance = Vector2.Distance(positionInWorld, npc.PositionInWorld);
+                    if (npc.IsDeathInvoked || !(distance < closedDistance)) continue;
+                    closed = npc;
+                    closedDistance = distance;
+                }
+            }
+            return closed;
         }
 
         /// <summary>
@@ -655,6 +676,19 @@ namespace Engine
                 {
                     if(npc.IsFighterFriend || (withNetural && npc.IsNoneFighter))
                     return npc;
+                }
+            }
+            return null;
+        }
+
+        public static Character GetOtherGropEnemy(int group, Vector2 tilePosition)
+        {
+            foreach (var npc in _list)
+            {
+                if (npc.TilePosition == tilePosition)
+                {
+                    if (npc.Group != group && npc.IsEnemy)
+                        return npc;
                 }
             }
             return null;
