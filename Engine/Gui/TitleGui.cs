@@ -16,18 +16,34 @@ namespace Engine.Gui
         private readonly GuiItem[] _guiItems;
         public TitleGui()
         {
-            using (var fs = File.Open(GuiManager.Setttings.Sections["Title"]["BackgroundImage"], FileMode.Open))
+
+            var cfg = GuiManager.Setttings.Sections["Title"];
+            var ImageType = int.Parse(cfg["ImageType"]);
+            if (ImageType == 0)
+             {
+                using (var fs = File.Open(cfg["BackgroundImage"], FileMode.Open))
+                {
+                    BaseTexture = new Texture(new Asf(
+                    Texture2D.FromStream(Globals.TheGame.GraphicsDevice, fs)));
+                }
+
+                Width = BaseTexture.Width;
+                Height = BaseTexture.Height;
+                Position = new Vector2(
+                    (Globals.WindowWidth - Width) / 2f,
+                    (Globals.WindowHeight - Height) / 2f);
+            }
+            else
             {
-                BaseTexture = new Texture(new Asf(
-                Texture2D.FromStream(Globals.TheGame.GraphicsDevice, fs)));
+                BaseTexture = new Texture(Utils.GetAsf(null, cfg["Image"]));
+                Width = BaseTexture.Width;
+                Height = BaseTexture.Height;
+                Position = new Vector2(
+                    (Globals.WindowWidth - Width) / 2f + int.Parse(cfg["LeftAdjust"]),
+                    (Globals.WindowHeight - Height) / 2f + int.Parse(cfg["TopAdjust"]));
             }
 
-            Width = BaseTexture.Width;
-            Height = BaseTexture.Height;
-            Position = new Vector2(
-                (Globals.WindowWidth - Width)/2f,
-                (Globals.WindowHeight - Height)/2f);
-            var cfg = GuiManager.Setttings.Sections["Title_Btn_Begin"];
+            cfg = GuiManager.Setttings.Sections["Title_Btn_Begin"];
             var asf = Utils.GetAsf(null, cfg["Image"]);
             var sound = Utils.GetSoundEffect(cfg["Sound"]);
             _initButton = new GuiItem(this,
