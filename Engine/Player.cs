@@ -57,6 +57,11 @@ namespace Engine
 
         #region Public properties
 
+        public Character AutoAttackTarget
+        {
+            set { _autoAttackTarget = value; }
+        }
+
         public Magic FlyIniReplace
         {
             get { return _flyIniReplace; }
@@ -1187,7 +1192,7 @@ namespace Engine
         {
             if(_autoAttackTarget != null)
             {
-                if (_autoAttackTarget.IsDeath)
+                if (_autoAttackTarget.IsDeathInvoked)
                 {
                     _autoAttackTarget = null;
                 }

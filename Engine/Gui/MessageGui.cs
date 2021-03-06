@@ -57,7 +57,7 @@ namespace Engine.Gui
 
         public void ShowMessage(string message)
         {
-            _msgs.AddLast(message);
+            //_msgs.AddLast(message);
             _message.Text = message;
             IsShow = true;
         }
