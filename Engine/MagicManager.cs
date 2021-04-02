@@ -889,16 +889,22 @@ namespace Engine
 
             if(magic.ReviveBodyRadius > 0)
             {
+                var count = 0;
                 foreach (var body in ObjManager.GetBodyInRaidus(MapBase.ToTilePosition(destination), magic.ReviveBodyRadius, true))
                 {
-                    if (!string.IsNullOrEmpty(body.ReviveNpcIni))
+                    if (!string.IsNullOrEmpty(body.ReviveNpcIni) && (magic.ReviveBodyMaxCount == 0 || magic.ReviveBodyMaxCount > count))
                     {
+                        count++;
                         var npc = new Npc(@"ini\npc\" + body.ReviveNpcIni);
                         npc.Relation = ((user as Player != null) || (user.Relation == (int)Character.RelationType.Friend)) ? (int)Character.RelationType.Friend : (int)Character.RelationType.Enemy;
                         npc.TilePosition = body.TilePosition;
                         npc.Dir = body.Dir;
                         npc.LifeMilliseconds = magic.ReviveBodyLifeMilliSeconds;
                         NpcManager.AddNpc(npc);
+                    }
+                    if(magic.ReviveBodyMaxCount > 0 && magic.ReviveBodyMaxCount <= count)
+                    {
+                        break;
                     }
                 }
                 return;

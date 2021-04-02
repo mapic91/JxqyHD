@@ -494,4 +494,5 @@ DisableSkillMilliseconds - 如果大于0，则武功击中敌人后，敌人将无法使用技能该毫秒
 复活尸体：
 
 ReviveBodyRadius - 默认0。大于0表示当对目标位置使用武功时，使以目标位置的ReviveBodyRadius范围内的尸体复活，复活后的人物在ini\obj\*.ini文件内的ReviveNpcIni项设置（ini\npc\*.ini的文件名，比如ReviveNpcIni=黑衣人.ini）
+ReviveBodyMaxCount - 默认0，如果大于0，则复活的最大人数为该值
 ReviveBodyLifeMilliSeconds - 默认0，如果大于0，则复活的尸体存活时间为该毫秒

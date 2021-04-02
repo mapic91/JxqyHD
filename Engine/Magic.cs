@@ -123,6 +123,7 @@ namespace Engine
         private int _bodyRadius;
 
         private int _reviveBodyRadius;
+        private int _reviveBodyMaxCount;
         private int _reviveBodyLifeMilliSeconds;
 
         private int _noSpecialKindEffect;
@@ -914,6 +915,12 @@ namespace Engine
         {
             get { return _reviveBodyRadius; }
             set { _reviveBodyRadius = value; }
+        }
+
+        public int ReviveBodyMaxCount
+        {
+            get { return _reviveBodyMaxCount; }
+            set { _reviveBodyMaxCount = value; }
         }
 
         public int ReviveBodyLifeMilliSeconds
