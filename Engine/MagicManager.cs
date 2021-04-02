@@ -897,6 +897,7 @@ namespace Engine
                         npc.Relation = ((user as Player != null) || (user.Relation == (int)Character.RelationType.Friend)) ? (int)Character.RelationType.Friend : (int)Character.RelationType.Enemy;
                         npc.TilePosition = body.TilePosition;
                         npc.Dir = body.Dir;
+                        npc.LifeMilliseconds = magic.ReviveBodyLifeMilliSeconds;
                         NpcManager.AddNpc(npc);
                     }
                 }

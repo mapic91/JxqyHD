@@ -152,6 +152,8 @@ namespace Engine
         private string _buyIniFile;
         private string _buyIniString;
 
+        private float _lifeMilliseconds;
+
         private MagicSprite _changeCharacterByMagicSprite;
         private float _changeCharacterByMagicSpriteTime;
 
@@ -638,6 +640,18 @@ namespace Engine
         {
             get { return _visionRadius == 0 ? 9 : _visionRadius; }
             set { _visionRadius = value; }
+        }
+
+        public int LifeMilliseconds
+        {
+            set
+            {
+                _lifeMilliseconds = value;
+            }
+            get
+            {
+                return (int)_lifeMilliseconds;
+            }
         }
 
         public int DialogRadius
@@ -3544,7 +3558,17 @@ namespace Engine
 
             var elapsedGameTime = gameTime.ElapsedGameTime;
 
-            if(DisableMoveMilliseconds > 0)
+            if (_lifeMilliseconds > 0)
+            {
+                _lifeMilliseconds -= (float)elapsedGameTime.TotalMilliseconds;
+                if(_lifeMilliseconds <= 0)
+                {
+                    Death();
+                    return;
+                }
+            }
+
+            if (DisableMoveMilliseconds > 0)
             {
                 DisableMoveMilliseconds -= (float)elapsedGameTime.TotalMilliseconds;
             }
