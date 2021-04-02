@@ -613,7 +613,7 @@ DelMagic("player-magic-漫天花雨.ini")
 
 SetNpcScript(a,b,c)
 改变npc文件c里的所有Name为a的ScriptFile为b
-a - npc名字（name）
+a - npc名字（Name）
 b - 要设置的脚本文件名
 c - 要改变的npc文件名
 比如：
@@ -621,7 +621,7 @@ SetNpcScript("小叁子","悦来客栈伙计对话2.txt","huianzhen.npc");
 
 SetNpcDeathScript(a,b,c)
 改变npc文件c里的所有Name为a的DeathScript为b
-a - npc名字（name）
+a - npc名字（Name）
 b - 要设置的脚本文件名
 c - 要改变的npc文件名
 比如：
