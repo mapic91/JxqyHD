@@ -188,6 +188,23 @@ namespace Engine
             return null;
         }
 
+        public static List<Obj> getObj(Vector2 tilePos)
+        {
+            List<Obj> objs = null;
+            foreach (var obj in _list)
+            {
+                if (obj.TilePosition == tilePos)
+                {
+                    if(objs == null)
+                    {
+                        objs = new List<Obj>();
+                    }
+                    objs.Add(obj);
+                }
+            }
+            return objs;
+        }
+
         public static void DeleteObj(string objName)
         {
             for (var node = _list.First; node != null;)

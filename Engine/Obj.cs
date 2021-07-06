@@ -32,6 +32,7 @@ namespace Engine
         private int _offX;
         private int _offY;
         private string _reviveNpcIni;
+        private int _scriptFileJustTouch;
 
         #region Public properties
 
@@ -127,6 +128,12 @@ namespace Engine
         {
             get { return _reviveNpcIni; }
             set { _reviveNpcIni = value; }
+        }
+
+        public int ScriptFileJustTouch
+        {
+            get { return _scriptFileJustTouch; }
+            set { _scriptFileJustTouch = value; }
         }
 
         public string WavFile
@@ -390,6 +397,7 @@ namespace Engine
             AddKey(keyDataCollection, "ObjFile", _objFileName);
             AddKey(keyDataCollection, "OffX", _offX);
             AddKey(keyDataCollection, "OffY", _offY);
+            AddKey(keyDataCollection, "ScriptFileJustTouch", _scriptFileJustTouch);
             if (_scriptFile != null)
             {
                 AddKey(keyDataCollection, "ScriptFile", _scriptFile);

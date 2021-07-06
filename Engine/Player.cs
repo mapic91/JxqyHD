@@ -1209,6 +1209,21 @@ namespace Engine
            
         }
 
+        public void UpdateTouchObj()
+        {
+            var objs = ObjManager.getObj(this.TilePosition);
+            if(objs != null)
+            {
+                foreach(var obj in objs)
+                {
+                    if(obj.ScriptFileJustTouch > 0 && !string.IsNullOrEmpty(obj.ScriptFile))
+                    {
+                        obj.StartInteract();
+                    }
+                }
+            }
+        }
+
         public override void Update(GameTime gameTime)
         {
             var mouseState = Mouse.GetState();
@@ -1219,6 +1234,7 @@ namespace Engine
             _isUseMagicByKeyborad = false;
 
             UpdateAutoAttack(gameTime);
+            UpdateTouchObj();
 
             _isRun = canRun(keyboardState);
 
@@ -1255,7 +1271,7 @@ namespace Engine
                 {
                     foreach (var one in ObjManager.ObjsInView)
                     {
-                        if (!one.IsInteractive) continue;
+                        if (!one.IsInteractive || one.ScriptFileJustTouch > 0) continue;
                         var texture = one.GetCurrentTexture();
                         if (mouseTilePosition == one.TilePosition ||
                             Collider.IsPixelCollideForNpcObj(mouseWorldPosition,
