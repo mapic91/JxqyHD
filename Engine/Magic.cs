@@ -37,6 +37,8 @@ namespace Engine
         private string _actionFile;
         private Magic _attackFile;
         private Magic _explodeMagicFile;
+        private Magic _randMagicFile;
+        private int _randMagicProbability;
         private Magic _flyMagic;
         private int _flyInterval;
         private Dictionary<int, Magic> _level;
@@ -196,6 +198,18 @@ namespace Engine
         {
             get { return _explodeMagicFile; }
             set { _explodeMagicFile = value; }
+        }
+
+        public Magic RandMagicFile
+        {
+            get { return _randMagicFile; }
+            set { _randMagicFile = value; }
+        }
+
+        public int RandMagicProbability
+        {
+            get { return _randMagicProbability; }
+            set { _randMagicProbability = value; }
         }
 
         public Magic FlyMagic
@@ -1000,6 +1014,7 @@ namespace Engine
                     case "FlyMagic":
                     case "ParasiticMagic":
                     case "SecondMagicFile":
+                    case "RandMagicFile":
                         info.SetValue(this, Utils.GetMagic(nameValue[1], false), null);
                         break;
                     case "RegionFile":
@@ -1109,6 +1124,10 @@ namespace Engine
             if (magic.ExplodeMagicFile != null)
             {
                 magic.ExplodeMagicFile = magic.ExplodeMagicFile.GetLevel(level);
+            }
+            if(magic.RandMagicFile != null)
+            {
+                magic.RandMagicFile = magic.RandMagicFile.GetLevel(level);
             }
             //Assign FlyMagic level
             if (magic.FlyMagic != null)

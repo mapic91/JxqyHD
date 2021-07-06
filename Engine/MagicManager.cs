@@ -878,6 +878,14 @@ namespace Engine
                 AddUseMagicItem(new UseMagicInfoItem(magic.SecondMagicDelay, user, magic.SecondMagicFile, origin, destination, target));
             }
 
+            if(magic.RandMagicProbability > 0 && magic.RandMagicFile != null)
+            {
+                if(Globals.TheRandom.Next(100) < magic.RandMagicProbability)
+                {
+                    UseMagic(user, magic.RandMagicFile, origin, destination, target);
+                }
+            }
+
             if (magic.BodyRadius > 0 && target != null && recursiveCounter == 0)
             {
                 foreach (var body in ObjManager.GetBodyInRaidus(target.TilePosition, magic.BodyRadius, true))
