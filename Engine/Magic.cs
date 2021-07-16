@@ -135,6 +135,10 @@ namespace Engine
         private int _noInterruption;
         private Dictionary<int, List<MagicRegionFileReader.Item>> _regionFile;
 
+        private int _traceEnemy;
+        private int _traceSpeed;
+        private int _traceEnemyDelayMilliseconds;
+
         #region Leap
         private int _leapTimes;
         private int _leapFrame;
@@ -965,6 +969,24 @@ namespace Engine
         {
             get { return _regionFile; }
             set { _regionFile = value; }
+        }
+
+        public int TraceEnemy
+        {
+            get { return _traceEnemy; }
+            set { _traceEnemy = value; }
+        }
+
+        public int TraceSpeed
+        {
+            get { return _traceSpeed; }
+            set { _traceSpeed = value; }
+        }
+
+        public int TraceEnemyDelayMilliseconds
+        {
+            get { return _traceEnemyDelayMilliseconds; }
+            set { _traceEnemyDelayMilliseconds = value; }
         }
 
         #endregion

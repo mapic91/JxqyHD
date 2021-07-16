@@ -188,6 +188,55 @@ namespace Engine
             }
         }
 
+        private static void AddVMoveMagicSprite(Character user, Magic magic, Vector2 origin, Vector2 destination, bool destroyOnEnd)
+        {
+            var directionIndex = Utils.GetDirectionIndex(destination - origin, 8);
+            var dir = Utils.GetDirection8(directionIndex);
+            var speedRatio = GetSpeedRatio(dir);
+            var level = magic.EffectLevel < 1 ? 1 : magic.EffectLevel;
+            AddMagicSprite(GetMoveMagicSpriteOnDirection(user, magic, origin, dir, destroyOnEnd, speedRatio));
+            
+            for (var i = 1; i <= level; i++)
+            {
+                switch (directionIndex)
+                {
+                    case 0:
+                        AddMagicSprite(GetMoveMagicSpriteOnDirection(user, magic, origin - i * new Vector2(32, 16), dir, destroyOnEnd, speedRatio));
+                        AddMagicSprite(GetMoveMagicSpriteOnDirection(user, magic, origin - i * new Vector2(-32, 16), dir, destroyOnEnd, speedRatio));
+                        break;
+                    case 1:
+                        AddMagicSprite(GetMoveMagicSpriteOnDirection(user, magic, origin - i * new Vector2(0, 32), dir, destroyOnEnd, speedRatio));
+                        AddMagicSprite(GetMoveMagicSpriteOnDirection(user, magic, origin - i * new Vector2(-64, 0), dir, destroyOnEnd, speedRatio));
+                        break;
+                    case 2:
+                        AddMagicSprite(GetMoveMagicSpriteOnDirection(user, magic, origin - i * new Vector2(-32, 16), dir, destroyOnEnd, speedRatio));
+                        AddMagicSprite(GetMoveMagicSpriteOnDirection(user, magic, origin - i * new Vector2(-32, -16), dir, destroyOnEnd, speedRatio));
+                        break;
+                    case 3:
+                        AddMagicSprite(GetMoveMagicSpriteOnDirection(user, magic, origin - i * new Vector2(0, -32), dir, destroyOnEnd, speedRatio));
+                        AddMagicSprite(GetMoveMagicSpriteOnDirection(user, magic, origin - i * new Vector2(-64, 0), dir, destroyOnEnd, speedRatio));
+                        break;
+                    case 4:
+                        AddMagicSprite(GetMoveMagicSpriteOnDirection(user, magic, origin - i * new Vector2(32, -16), dir, destroyOnEnd, speedRatio));
+                        AddMagicSprite(GetMoveMagicSpriteOnDirection(user, magic, origin - i * new Vector2(-32, -16), dir, destroyOnEnd, speedRatio));
+                        break;
+                    case 5:
+                        AddMagicSprite(GetMoveMagicSpriteOnDirection(user, magic, origin - i * new Vector2(64, 0), dir, destroyOnEnd, speedRatio));
+                        AddMagicSprite(GetMoveMagicSpriteOnDirection(user, magic, origin - i * new Vector2(0, -32), dir, destroyOnEnd, speedRatio));
+                        break;
+                    case 6:
+                        AddMagicSprite(GetMoveMagicSpriteOnDirection(user, magic, origin - i * new Vector2(32, 16), dir, destroyOnEnd, speedRatio));
+                        AddMagicSprite(GetMoveMagicSpriteOnDirection(user, magic, origin - i * new Vector2(32, -16), dir, destroyOnEnd, speedRatio));
+                        break;
+                    case 7:
+                        AddMagicSprite(GetMoveMagicSpriteOnDirection(user, magic, origin - i * new Vector2(0, 32), dir, destroyOnEnd, speedRatio));
+                        AddMagicSprite(GetMoveMagicSpriteOnDirection(user, magic, origin - i * new Vector2(64, 0), dir, destroyOnEnd, speedRatio));
+                        break;
+                }
+                
+            }
+        }
+
         private static void AddCircleMoveMagicSprite(Character user, Magic magic, Vector2 origin, bool destroyOnEnd)
         {
             var list = Utils.GetDirection32List();
@@ -1066,6 +1115,12 @@ namespace Engine
                     AddFixedPositionMagicSprite(user, magic, destination, true);
                 }
                     break;
+                case 24:
+                {
+                    AddVMoveMagicSprite(user, magic, origin, destination, false);
+                }
+                    break;
+
             }
 
             //Magic side effect

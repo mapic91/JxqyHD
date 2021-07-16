@@ -54,6 +54,8 @@ namespace Engine
 
         public const int MinimalDamage = 5;
 
+        private double _elaspedMillisecond;
+
         public int Index
         {
             get { return _index; }
@@ -1021,6 +1023,8 @@ namespace Engine
         {
             if (IsDestroyed) return;
 
+            _elaspedMillisecond += gameTime.ElapsedGameTime.TotalMilliseconds;
+
             if (_waitMilliSeconds > 0)
             {
                 _waitMilliSeconds -= (float)gameTime.ElapsedGameTime.TotalMilliseconds;
@@ -1135,9 +1139,9 @@ namespace Engine
                     }
                 }
 
-                if (BelongMagic.MoveKind == 16)
+                if (BelongMagic.MoveKind == 16 || BelongMagic.TraceEnemy > 0)
                 {
-                    if (MovedDistance > 200f) //First move 200, than find target
+                    if (MovedDistance > 200f || (BelongMagic.TraceEnemy > 0 && _elaspedMillisecond >= BelongMagic.TraceEnemyDelayMilliseconds)) //First move 200, than find target
                     {
                         if (BelongMagic.AttackAll > 0)
                         {
@@ -1161,10 +1165,18 @@ namespace Engine
                                 _closedCharecter = NpcManager.GetLiveClosestNonneturalFighter(PositionInWorld);
                             }
                         }
-                        
+
 
                         if (_closedCharecter != null)
+                        {
+                            if (BelongMagic.TraceSpeed > 0)
+                            {
+                                Velocity = Globals.MagicBasespeed * BelongMagic.TraceSpeed;
+                            }
+                            
                             MoveDirection = _closedCharecter.PositionInWorld - PositionInWorld;
+                        }
+                            
                     }
                     MoveToNoNormalizeDirection(RealMoveDirection,
                         (float)gameTime.ElapsedGameTime.TotalSeconds,
