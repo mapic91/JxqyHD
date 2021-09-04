@@ -21,6 +21,7 @@ namespace Engine
         private int _moveKind;
         private int _specialKind;
         private int _specialKindValue;
+        private int _specialKindMilliSeconds;
         private int _alphaBlend;
         private int _flyingLum;
         private int _vanishLum;
@@ -287,6 +288,12 @@ namespace Engine
         {
             get { return _specialKind; }
             set { _specialKind = value; }
+        }
+
+        public int SpecialKindMilliSeconds
+        {
+            get { return _specialKindMilliSeconds; }
+            set { _specialKindMilliSeconds = value; }
         }
 
         public int SpecialKindValue

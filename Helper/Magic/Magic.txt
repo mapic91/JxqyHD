@@ -513,3 +513,6 @@ RandMagicProbability - 释放几率 0 到 100，默认值0
 TraceEnemy - 大于0表示会追踪敌人，默认0
 TraceSpeed - 大于0表示会使用该速度，如果为0则使用弹幕原来的速度，默认0
 TraceEnemyDelayMilliseconds - 多少毫秒后开始追踪敌人，默认0
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+SpecialKindMilliSeconds - 额外特效（SpecialKind=1，2，3时，冰冻，中毒，石化）的持续时间（毫秒），默认0，如果0，使用默认设定（Level+1）秒，如果大于0，持续时间使用该毫秒值

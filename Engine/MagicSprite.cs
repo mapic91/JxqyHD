@@ -373,17 +373,17 @@ namespace Engine
             switch (BelongMagic.SpecialKind)
             {
                 case 1:
-                    character.SetFrozenSeconds(BelongMagic.EffectLevel + 1, BelongMagic.NoSpecialKindEffect == 0);
+                    character.SetFrozenSeconds(BelongMagic.SpecialKindMilliSeconds >0 ? BelongMagic.SpecialKindMilliSeconds/1000.0f : BelongMagic.EffectLevel + 1, BelongMagic.NoSpecialKindEffect == 0);
                     break;
                 case 2:
-                    character.SetPoisonSeconds(BelongMagic.EffectLevel + 1, BelongMagic.NoSpecialKindEffect == 0);
+                    character.SetPoisonSeconds(BelongMagic.SpecialKindMilliSeconds > 0 ? BelongMagic.SpecialKindMilliSeconds / 1000.0f : BelongMagic.EffectLevel + 1, BelongMagic.NoSpecialKindEffect == 0);
                     if (BelongCharacter.IsPlayer)
                     {
                         character.PoisonByPlayer = 1;
                     }
                     break;
                 case 3:
-                    character.SetPetrifySeconds(BelongMagic.EffectLevel + 1, BelongMagic.NoSpecialKindEffect == 0);
+                    character.SetPetrifySeconds(BelongMagic.SpecialKindMilliSeconds > 0 ? BelongMagic.SpecialKindMilliSeconds / 1000.0f : BelongMagic.EffectLevel + 1, BelongMagic.NoSpecialKindEffect == 0);
                     break;
             }
 
