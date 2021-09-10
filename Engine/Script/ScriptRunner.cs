@@ -663,6 +663,12 @@ namespace Engine.Script
                         case "DelMagic":
                             ScriptExecuter.DelMagic(parameters);
                             break;
+                        case "SetPlayerMagicToUseWhenBeAttacked":
+                            ScriptExecuter.SetPlayerMagicToUseWhenBeAttacked(parameters);
+                            break;
+                        case "SetNpcMagicToUseWhenBeAttacked":
+                            ScriptExecuter.SetNpcMagicToUseWhenBeAttacked(parameters);
+                            break;
                         default:
                             throw new Exception("无此函数");
                     }

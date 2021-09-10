@@ -123,7 +123,7 @@ LifeLowPercent - 血量百分比，范围0-100，默认20
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 被攻击时：
 
-MagicToUseWhenBeAttacked - 当NPC的被攻击时，会释放该武功。
+MagicToUseWhenBeAttacked - 当NPC被攻击时，会释放该武功。
                            释放的方向由MagicDirectionWhenBeAttacked决定。
                            武功的等级由AttackLevel决定。
 MagicDirectionWhenBeAttacked - 默认0，当值为：

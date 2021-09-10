@@ -633,6 +633,27 @@ a - obj名字（ObjName）
 b - 要设置的脚本文件名
 c - 要改变的obj文件名
 SetObjScript("宝箱", "捡东西1.txt", "map003_obj.obj");
+
+
+SetPlayerMagicToUseWhenBeAttacked(a,b)
+a - 武功文件名
+b - 0 ：  目标位置为攻击该NPC的攻击者位置
+    1 ：  释放方向为被攻击到的武功的反方向，比如攻击该NPC的武功是往右飞的，
+          则该释放的武功方向往左。
+          如果武功是固定类的，不飞行的，则释放的方向为该NPC的当前朝向。
+    2 ：  释放的方向为该NPC的当前朝向
+比如：SetPlayerMagicToUseWhenBeAttacked("magic-毒液.ini", 0)
+
+SetNpcMagicToUseWhenBeAttacked(a,b,c)
+设置当NPC被攻击时，会释放的武功。
+a - npc名字（Name）
+b - 武功文件名
+c - 0 ：  目标位置为攻击该NPC的攻击者位置
+    1 ：  释放方向为被攻击到的武功的反方向，比如攻击该NPC的武功是往右飞的，
+          则该释放的武功方向往左。
+          如果武功是固定类的，不飞行的，则释放的方向为该NPC的当前朝向。
+    2 ：  释放的方向为该NPC的当前朝向
+SetNpcMagicToUseWhenBeAttacked("刺客","magic-毒液.ini", 0)
 ///////////////////////////////////////////////////////////////////
 //////////////////    Implemented   End  /////////////////////////
 /////////////////////////////////////////////////////////////////

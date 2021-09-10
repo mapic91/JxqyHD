@@ -2191,5 +2191,29 @@ namespace Engine.Script
         {
             MagicListManager.DelMagic(Utils.RemoveStringQuotes(parameters[0]), Globals.ThePlayer);
         }
+
+        public static void SetPlayerMagicToUseWhenBeAttacked(List<string> parameters)
+        {
+            var magicFileName = Utils.RemoveStringQuotes(parameters[0]);
+            var magicDirectionWhenBeAttacked = int.Parse(parameters[1]);
+            if (Globals.ThePlayer != null)
+            {
+                Globals.ThePlayer.MagicToUseWhenBeAttacked = Utils.GetMagic(magicFileName, false).GetLevel(Globals.ThePlayer.AttackLevel);
+                Globals.ThePlayer.MagicDirectionWhenBeAttacked = magicDirectionWhenBeAttacked;
+            }
+        }
+
+        public static void SetNpcMagicToUseWhenBeAttacked(List<string> parameters)
+        {
+            var npcName = Utils.RemoveStringQuotes(parameters[0]);
+            var magicFileName = Utils.RemoveStringQuotes(parameters[1]);
+            var magicDirectionWhenBeAttacked = int.Parse(parameters[2]);
+            var npcs = NpcManager.GetAllNpcs(npcName);
+            foreach (var npc in npcs)
+            {
+                npc.MagicToUseWhenBeAttacked = Utils.GetMagic(magicFileName, true).GetLevel(npc.AttackLevel);
+                npc.MagicDirectionWhenBeAttacked = magicDirectionWhenBeAttacked;
+            }
+        }
     }
 }
