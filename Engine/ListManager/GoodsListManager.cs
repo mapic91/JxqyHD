@@ -139,6 +139,18 @@ namespace Engine.ListManager
             {
                 player.Equiping(Get(i), null, true);
             }
+
+            foreach (var goodsItemInfo in GoodsList)
+            {
+                if (goodsItemInfo != null && goodsItemInfo.TheGood.Kind == Good.GoodKind.Equipment &&
+                    goodsItemInfo.TheGood.NoNeedToEquip > 0)
+                {
+                    for (var i = 0; i < goodsItemInfo.Count; i++)
+                    {
+                        player.Equiping(goodsItemInfo.TheGood, null, true);
+                    }
+                }
+            }
         }
 
         public static void UnEquipAllEquipWithoutTakeOff(Player player)
@@ -246,6 +258,14 @@ namespace Engine.ListManager
             return AddGoodToList(fileName, out i, out g);
         }
 
+        private static void CheckAddNoEquipGood(Good good)
+        {
+            if (good.Kind == Good.GoodKind.Equipment && good.NoNeedToEquip > 0 && Globals.ThePlayer != null)
+            {
+                Globals.ThePlayer.Equiping(good, null, false);
+            }
+        }
+
         public static bool AddGoodToList(string fileName, out int index, out Good outGood)
         {
             index = -1;
@@ -264,6 +284,7 @@ namespace Engine.ListManager
                                 info.Count += 1;
                                 index = i;
                                 outGood = info.TheGood;
+                                CheckAddNoEquipGood(outGood);
                                 return true;
                             }
                         }
@@ -277,10 +298,11 @@ namespace Engine.ListManager
                             GoodsList[i] = new GoodsItemInfo(fileName, 1);
                             index = i;
                             outGood = GoodsList[i].TheGood;
+                            CheckAddNoEquipGood(outGood);
                             return true;
                         }
                     }
-                    }
+                }
                     break;
                 case ListType.TypeByGoodItem:
                 {
@@ -292,6 +314,7 @@ namespace Engine.ListManager
                             GoodsList[i] = new GoodsItemInfo(fileName, 1);
                             index = i;
                             outGood = GoodsList[i].TheGood;
+                            CheckAddNoEquipGood(outGood);
                             return true;
                         }
                     }
@@ -304,6 +327,7 @@ namespace Engine.ListManager
                             GoodsList[i] = new GoodsItemInfo(fileName, 1);
                             index = i;
                             outGood = GoodsList[i].TheGood;
+                            CheckAddNoEquipGood(outGood);
                             return true;
                         }
                     }
@@ -392,6 +416,11 @@ namespace Engine.ListManager
 
                 //if goods is unequiped
                 if (i >= EquipIndexBegin && i <= EquipIndexEnd && GoodsList[i] == null)
+                {
+                    if (Globals.ThePlayer != null)
+                        Globals.ThePlayer.UnEquiping(good);
+                }
+                else if (good.Kind == Good.GoodKind.Equipment && good.NoNeedToEquip > 0)
                 {
                     if (Globals.ThePlayer != null)
                         Globals.ThePlayer.UnEquiping(good);
@@ -562,7 +591,10 @@ namespace Engine.ListManager
                         }
                         break;
                     case Good.GoodKind.Equipment:
-                        GuiManager.EquipInterface.EquipGood(goodIndex);
+                        if (good.NoNeedToEquip == 0)
+                        {
+                            GuiManager.EquipInterface.EquipGood(goodIndex);
+                        }
                         break;
                     case Good.GoodKind.Event:
                         {

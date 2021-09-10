@@ -61,6 +61,8 @@ namespace Engine
         public Magic MagicToUseWhenBeAttacked { set; get; }
         public int MagicDirectionWhenBeAttacked { set; get; }
 
+        public int NoNeedToEquip { set; get; }
+
         public GoodEffectType TheEffectType
         {
             get
@@ -142,8 +144,15 @@ namespace Engine
                                    (1 + (EffectType == 0 ? 0 : 1));
                             break;
                         case GoodKind.Equipment:
-                            cost = (Attack * 20 + Attack2 * 20 + Attack3 * 20 + Defend * 20 + Defend2 * 20 + Defend3 * 20 + Evade * 40 + LifeMax * 2 + ThewMax * 3 + ManaMax * 2) *
-                                   (1 + (EffectType == 0 ? 0 : 1));
+                            if (NoNeedToEquip > 0)
+                            {
+                                cost = 0;
+                            }
+                            else
+                            {
+                                cost = (Attack * 20 + Attack2 * 20 + Attack3 * 20 + Defend * 20 + Defend2 * 20 + Defend3 * 20 + Evade * 40 + LifeMax * 2 + ThewMax * 3 + ManaMax * 2) *
+                                       (1 + (EffectType == 0 ? 0 : 1));
+                            }
                             break;
                     }
                 }
