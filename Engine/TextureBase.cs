@@ -67,6 +67,11 @@ namespace Engine
             protected set { _filePath = value; }
         }
 
+        public string FileName
+        {
+            get { return Path.GetFileName(_filePath); }
+        }
+
         #endregion Properties
 
         private void LoadTexture(string path)

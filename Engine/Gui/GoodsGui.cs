@@ -65,11 +65,11 @@ namespace Engine.Gui
 
             if (GuiManager.BuyInterface.IsShow)
             {
-                if (good.SellPrice > 0)
+                if (good.SellPrice.GetMaxValue() > 0)
                 {
                     if (GuiManager.BuyInterface.CanSellSelfGoods)
                     {
-                        Globals.ThePlayer.AddMoneyValue(good.SellPrice);
+                        Globals.ThePlayer.AddMoneyValue(good.SellPrice.GetMaxValue());
                         GuiManager.DeleteGood(good.FileName);
                         GuiManager.BuyInterface.AddGood(good);
                     }

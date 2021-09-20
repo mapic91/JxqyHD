@@ -105,54 +105,54 @@ namespace Engine.Gui
             {
                 if (!string.IsNullOrEmpty(good.Name))
                     name = good.Name;
-                cost = (isRecycle ? "回收价格： " : "价格： ") + (isRecycle ? good.SellPrice : good.Cost);
+                cost = (isRecycle ? "回收价格： " : "价格： ") + (isRecycle ? good.SellPrice.GetMaxValue() : good.Cost.GetMaxValue());
                 if (good.IsSellPriceSetted)
-                    cost += "\n" + "卖出价： " + good.SellPrice;
+                    cost += "\n" + "卖出价： " + good.SellPrice.GetMaxValue();
 
                 if (good.User != null && good.User.Length > 0)
                     user = ("使用者：" + string.Join("，", good.User));
-                if (good.MinUserLevel > 0)
-                    user += (string.IsNullOrEmpty(user) ? "" : Environment.NewLine) + "等级需求：" + good.MinUserLevel;
+                if (good.MinUserLevel.GetMaxValue() > 0)
+                    user += (string.IsNullOrEmpty(user) ? "" : Environment.NewLine) + "等级需求：" + good.MinUserLevel.GetUIString();
 
-                if (good.Life != 0)
-                    effect.AppendLine("命" + good.Life.ToString("+#;-#"));
-                if (good.Thew != 0)
-                    effect.AppendLine("体" + good.Thew.ToString("+#;-#"));
-                if (good.Mana != 0)
-                    effect.AppendLine("气" + good.Mana.ToString("+#;-#"));
-                if (good.Attack != 0)
-                    effect.AppendLine("攻" + good.Attack.ToString("+#;-#"));
-                if (good.Attack2 != 0)
-                    effect.AppendLine("攻2 " + good.Attack2.ToString("+#;-#"));
-                if (good.Attack3 != 0)
-                    effect.AppendLine("攻3 " + good.Attack3.ToString("+#;-#"));
-                if (good.Defend != 0)
-                    effect.AppendLine("防" + good.Defend.ToString("+#;-#"));
-                if (good.Defend2 != 0)
-                    effect.AppendLine("防2" + good.Defend2.ToString("+#;-#"));
-                if (good.Defend3 != 0)
-                    effect.AppendLine("防3" + good.Defend3.ToString("+#;-#"));
-                if (good.Evade != 0)
-                    effect.AppendLine("捷" + good.Evade.ToString("+#;-#"));
-                if (good.LifeMax != 0)
-                    effect.AppendLine("命" + good.LifeMax.ToString("+#;-#"));
-                if (good.ThewMax != 0)
-                    effect.AppendLine("体" + good.ThewMax.ToString("+#;-#"));
-                if (good.ManaMax != 0)
-                    effect.AppendLine("气" + good.ManaMax.ToString("+#;-#"));
-                if (good.SpecialEffect == 1)
+                if (good.Life.GetMaxValue() != 0)
+                    effect.AppendLine("命" + good.Life.GetUIString());
+                if (good.Thew.GetMaxValue() != 0)
+                    effect.AppendLine("体" + good.Thew.GetUIString());
+                if (good.Mana.GetMaxValue() != 0)
+                    effect.AppendLine("气" + good.Mana.GetUIString());
+                if (good.Attack.GetMaxValue() != 0)
+                    effect.AppendLine("攻" + good.Attack.GetUIString());
+                if (good.Attack2.GetMaxValue() != 0)
+                    effect.AppendLine("攻2 " + good.Attack2.GetUIString());
+                if (good.Attack3.GetMaxValue() != 0)
+                    effect.AppendLine("攻3 " + good.Attack3.GetUIString());
+                if (good.Defend.GetMaxValue() != 0)
+                    effect.AppendLine("防" + good.Defend.GetUIString());
+                if (good.Defend2.GetMaxValue() != 0)
+                    effect.AppendLine("防2" + good.Defend2.GetUIString());
+                if (good.Defend3.GetMaxValue() != 0)
+                    effect.AppendLine("防3" + good.Defend3.GetUIString());
+                if (good.Evade.GetMaxValue() != 0)
+                    effect.AppendLine("捷" + good.Evade.GetUIString());
+                if (good.LifeMax.GetMaxValue() != 0)
+                    effect.AppendLine("命" + good.LifeMax.GetUIString());
+                if (good.ThewMax.GetMaxValue() != 0)
+                    effect.AppendLine("体" + good.ThewMax.GetUIString());
+                if (good.ManaMax.GetMaxValue() != 0)
+                    effect.AppendLine("气" + good.ManaMax.GetUIString());
+                if (good.SpecialEffect.GetMaxValue() == 1)
                     effect.AppendLine(string.Format("不断恢复生命 {0}%/秒", good.SpecialEffectValue));
-                if (good.ChangeMoveSpeedPercent != 0)
+                if (good.ChangeMoveSpeedPercent.GetMaxValue() != 0)
                     effect.AppendLine(string.Format("移动速度 {0:+#;-#}%", good.ChangeMoveSpeedPercent));
-                if (good.AddMagicEffectPercent > 0 || good.AddMagicEffectAmount > 0)
+                if (good.AddMagicEffectPercent.GetMaxValue() > 0 || good.AddMagicEffectAmount.GetMaxValue() > 0)
                 {
                     var showName = "所有武功";
                     if (!string.IsNullOrEmpty(good.AddMagicEffectName)) showName = good.AddMagicEffectName;
                     else if (!string.IsNullOrEmpty(good.AddMagicEffectType)) showName = good.AddMagicEffectType;
                     effect.AppendLine(string.Format("{0} 攻击{1}{2}",
                         showName,
-                        good.AddMagicEffectPercent > 0 ? (" +" + good.AddMagicEffectPercent + "%") : "",
-                        good.AddMagicEffectAmount > 0 ? (" +" + good.AddMagicEffectAmount) : ""));
+                        good.AddMagicEffectPercent.GetMaxValue() > 0 ? (" +" + good.AddMagicEffectPercent.GetUIString() + "%") : "",
+                        good.AddMagicEffectAmount.GetMaxValue() > 0 ? (" +" + good.AddMagicEffectAmount.GetUIString()) : ""));
                 }
                 if (!string.IsNullOrEmpty(good.Intro))
                     intro = good.Intro;

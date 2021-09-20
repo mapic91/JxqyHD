@@ -73,6 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Asf.cs" />
+    <Compile Include="AttrInt.cs" />
     <Compile Include="BackgroundMusic.cs" />
     <Compile Include="Benchmark\Fps.cs">
       <SubType>Code</SubType>

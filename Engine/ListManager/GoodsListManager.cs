@@ -5,6 +5,7 @@ using System.Linq;
 using Engine.Gui;
 using Engine.Gui.Base;
 using Engine.Script;
+using Engine.Storage;
 using IniParser;
 using IniParser.Model;
 using Microsoft.Xna.Framework;
@@ -143,7 +144,7 @@ namespace Engine.ListManager
             foreach (var goodsItemInfo in GoodsList)
             {
                 if (goodsItemInfo != null && goodsItemInfo.TheGood.Kind == Good.GoodKind.Equipment &&
-                    goodsItemInfo.TheGood.NoNeedToEquip > 0)
+                    goodsItemInfo.TheGood.NoNeedToEquip.GetOneValue() > 0)
                 {
                     for (var i = 0; i < goodsItemInfo.Count; i++)
                     {
@@ -260,7 +261,7 @@ namespace Engine.ListManager
 
         private static void CheckAddNoEquipGood(Good good)
         {
-            if (good.Kind == Good.GoodKind.Equipment && good.NoNeedToEquip > 0 && Globals.ThePlayer != null)
+            if (good.Kind == Good.GoodKind.Equipment && good.NoNeedToEquip.GetOneValue() > 0 && Globals.ThePlayer != null)
             {
                 Globals.ThePlayer.Equiping(good, null, false);
             }
@@ -270,6 +271,15 @@ namespace Engine.ListManager
         {
             index = -1;
             outGood = null;
+            var good = Utils.GetGood(fileName);
+            var needSaveToGame = false;
+            if (good.Kind == Good.GoodKind.Equipment && good.HasRandAttr)
+            {
+                good = good.GetOneNonRandom();
+                needSaveToGame = true;
+            }
+
+            fileName = good.FileName;
             switch (Type)
             {
                 case ListType.TypeByGoodType:
@@ -295,6 +305,10 @@ namespace Engine.ListManager
                         var info = GoodsList[i];
                         if (info == null)
                         {
+                            if (needSaveToGame)
+                            {
+                                good.Save(Path.Combine(StorageBase.SaveGameDirectory, good.FileName));
+                            }
                             GoodsList[i] = new GoodsItemInfo(fileName, 1);
                             index = i;
                             outGood = GoodsList[i].TheGood;
@@ -311,6 +325,10 @@ namespace Engine.ListManager
                         var info = GoodsList[i];
                         if (info == null)
                         {
+                            if (needSaveToGame)
+                            {
+                                good.Save(Path.Combine(StorageBase.SaveGameDirectory, good.FileName));
+                            }
                             GoodsList[i] = new GoodsItemInfo(fileName, 1);
                             index = i;
                             outGood = GoodsList[i].TheGood;
@@ -324,6 +342,10 @@ namespace Engine.ListManager
                         var info = GoodsList[i];
                         if (info == null)
                         {
+                            if (needSaveToGame)
+                            {
+                                good.Save(Path.Combine(StorageBase.SaveGameDirectory, good.FileName));
+                            }
                             GoodsList[i] = new GoodsItemInfo(fileName, 1);
                             index = i;
                             outGood = GoodsList[i].TheGood;
@@ -420,7 +442,7 @@ namespace Engine.ListManager
                     if (Globals.ThePlayer != null)
                         Globals.ThePlayer.UnEquiping(good);
                 }
-                else if (good.Kind == Good.GoodKind.Equipment && good.NoNeedToEquip > 0)
+                else if (good.Kind == Good.GoodKind.Equipment && good.NoNeedToEquip.GetOneValue() > 0)
                 {
                     if (Globals.ThePlayer != null)
                         Globals.ThePlayer.UnEquiping(good);
@@ -553,7 +575,7 @@ namespace Engine.ListManager
                     return;
                 }
             }
-            if (good.MinUserLevel > 0 && Globals.ThePlayer.Level < good.MinUserLevel)
+            if (good.MinUserLevel.GetOneValue() > 0 && Globals.ThePlayer.Level < good.MinUserLevel.GetOneValue())
             {
                 GuiManager.ShowMessage("需要等级" + good.MinUserLevel);
                 return;
@@ -570,9 +592,9 @@ namespace Engine.ListManager
                                 return;
                             }
 
-                            if (info.TheGood.ColdMilliSeconds > 0)
+                            if (info.TheGood.ColdMilliSeconds.GetOneValue() > 0)
                             {
-                                info.RemainColdMilliseconds = info.TheGood.ColdMilliSeconds;
+                                info.RemainColdMilliseconds = info.TheGood.ColdMilliSeconds.GetOneValue();
                             }
 
                             if (Globals.ThePlayer.UseDrug(good))
@@ -591,7 +613,7 @@ namespace Engine.ListManager
                         }
                         break;
                     case Good.GoodKind.Equipment:
-                        if (good.NoNeedToEquip == 0)
+                        if (good.NoNeedToEquip.GetOneValue() == 0)
                         {
                             GuiManager.EquipInterface.EquipGood(goodIndex);
                         }

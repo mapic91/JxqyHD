@@ -134,49 +134,49 @@ namespace Engine.Gui
                 texture = new Texture(good.Image);
                 if (!string.IsNullOrEmpty(good.Name))
                     name = good.Name;
-                cost = (isRecycle ? "回收价格： " : "价格： ") + (isRecycle ? good.SellPrice : good.Cost);
-                if (good.Life != 0)
-                    effect += ("命 " + good.Life.ToString("+#;-#") + "  ");
-                if (good.Thew != 0)
-                    effect += ("体 " + good.Thew.ToString("+#;-#") + "  ");
-                if (good.Mana != 0)
-                    effect += ("气 " + good.Mana.ToString("+#;-#") + "  ");
-                if (good.Attack != 0 || good.Attack2 != 0 || good.Attack3 != 0)
+                cost = (isRecycle ? "回收价格： " : "价格： ") + (isRecycle ? good.SellPrice.GetMaxValue() : good.Cost.GetMaxValue());
+                if (good.Life.GetMaxValue() != 0)
+                    effect += ("命 " + good.Life.GetUIString() + "  ");
+                if (good.Thew.GetMaxValue() != 0)
+                    effect += ("体 " + good.Thew.GetUIString() + "  ");
+                if (good.Mana.GetMaxValue() != 0)
+                    effect += ("气 " + good.Mana.GetUIString() + "  ");
+                if (good.Attack.GetMaxValue() != 0 || good.Attack2.GetMaxValue() != 0 || good.Attack3.GetMaxValue() != 0)
                 {
                     var attack1 = "";
-                    if (good.Attack != 0)
+                    if (good.Attack.GetMaxValue() != 0)
                     {
-                        attack1 = good.Attack.ToString("+#;-#");
+                        attack1 = good.Attack.GetUIString();
                     }
                     var attack2 = "";
-                    if (good.Attack2 != 0)
+                    if (good.Attack2.GetMaxValue() != 0 || good.Attack3.GetMaxValue() != 0)
                     {
-                        attack2 = string.Format("({0:+#;-#})({1:+#;-#})", good.Attack2, good.Attack3);
+                        attack2 = string.Format("({0})({1})", good.Attack2.GetUIString(), good.Attack3.GetUIString());
                     }
                     effect += ("攻 " + attack1 + attack2 + "  ");
                 }
-                if (good.Defend != 0 || good.Defend2 != 0 || good.Defend3 != 0)
+                if (good.Defend.GetMaxValue() != 0 || good.Defend2.GetMaxValue() != 0 || good.Defend3.GetMaxValue() != 0)
                 {
                     var defend1 = "";
-                    if (good.Defend != 0)
+                    if (good.Defend.GetMaxValue() != 0)
                     {
-                        defend1 = good.Defend.ToString("+#;-#");
+                        defend1 = good.Defend.GetUIString();
                     }
                     var defend2 = "";
-                    if (good.Defend2 != 0 || good.Defend3 != 0)
+                    if (good.Defend2.GetMaxValue() != 0 || good.Defend3.GetMaxValue() != 0)
                     {
-                        defend2 = string.Format("({0:+#;-#})({1:+#;-#})", good.Defend2, good.Defend3);
+                        defend2 = string.Format("({0})({1})", good.Defend2.GetUIString(), good.Defend3.GetUIString());
                     }
                     effect += ("防 " + defend1 + defend2 + "  ");
                 }
-                if (good.Evade != 0)
-                    effect += ("捷 " + good.Evade.ToString("+#;-#") + "  ");
-                if(good.LifeMax != 0)
-                    effect += ("命 " + good.LifeMax.ToString("+#;-#") + "  ");
-                if(good.ThewMax != 0)
-                    effect += ("体 " + good.ThewMax.ToString("+#;-#") + "  ");
-                if(good.ManaMax != 0)
-                    effect += ("气 " + good.ManaMax.ToString("+#;-#") + "  ");
+                if (good.Evade.GetMaxValue() != 0)
+                    effect += ("捷 " + good.Evade.GetUIString() + "  ");
+                if(good.LifeMax.GetMaxValue() != 0)
+                    effect += ("命 " + good.LifeMax.GetUIString() + "  ");
+                if(good.ThewMax.GetMaxValue() != 0)
+                    effect += ("体 " + good.ThewMax.GetUIString() + "  ");
+                if(good.ManaMax.GetMaxValue() != 0)
+                    effect += ("气 " + good.ManaMax.GetUIString() + "  ");
                 if (!string.IsNullOrEmpty(good.Intro))
                     intro = good.Intro;
             }

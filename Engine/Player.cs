@@ -679,16 +679,16 @@ namespace Engine
             {
                 if (!justEffectType)
                 {
-                    Attack += equip.Attack;
-                    Attack2 += equip.Attack2;
-                    Attack3 += equip.Attack3;
-                    Defend += equip.Defend;
-                    Defend2 += equip.Defend2;
-                    Defend3 += equip.Defend3;
-                    Evade += equip.Evade;
-                    LifeMax += equip.LifeMax;
-                    ThewMax += equip.ThewMax;
-                    ManaMax += equip.ManaMax;
+                    Attack += equip.Attack.GetOneValue();
+                    Attack2 += equip.Attack2.GetOneValue();
+                    Attack3 += equip.Attack3.GetOneValue();
+                    Defend += equip.Defend.GetOneValue();
+                    Defend2 += equip.Defend2.GetOneValue();
+                    Defend3 += equip.Defend3.GetOneValue();
+                    Evade += equip.Evade.GetOneValue();
+                    LifeMax += equip.LifeMax.GetOneValue();
+                    ThewMax += equip.ThewMax.GetOneValue();
+                    ManaMax += equip.ManaMax.GetOneValue();
 
                     if (!string.IsNullOrEmpty(equip.MagicIniWhenUse))
                     {
@@ -731,10 +731,10 @@ namespace Engine
                         break;
                 }
 
-                switch (equip.SpecialEffect)
+                switch (equip.SpecialEffect.GetOneValue())
                 {
                     case 1://不断恢复生命
-                        _extraLifeRestorePercent = equip.SpecialEffectValue/100.0f;
+                        _extraLifeRestorePercent = equip.SpecialEffectValue.GetOneValue() / 100.0f;
                         break;
                 }
 
@@ -753,7 +753,7 @@ namespace Engine
                     {
                         AddMagicEffectWithName[equip.AddMagicEffectName] = new Dictionary<string, AddmagicEffectInfo>();
                     }
-                    AddMagicEffectWithName[equip.AddMagicEffectName][equip.Name] = new AddmagicEffectInfo(equip.AddMagicEffectPercent, equip.AddMagicEffectAmount);
+                    AddMagicEffectWithName[equip.AddMagicEffectName][equip.Name] = new AddmagicEffectInfo(equip.AddMagicEffectPercent.GetOneValue(), equip.AddMagicEffectAmount.GetOneValue());
                 }
                 else if (!string.IsNullOrEmpty(equip.AddMagicEffectType))
                 {
@@ -761,15 +761,15 @@ namespace Engine
                     {
                         AddMagicEffectWithType[equip.AddMagicEffectType] = new Dictionary<string, AddmagicEffectInfo>();
                     }
-                    AddMagicEffectWithType[equip.AddMagicEffectType][equip.Name] = new AddmagicEffectInfo(equip.AddMagicEffectPercent, equip.AddMagicEffectAmount);
+                    AddMagicEffectWithType[equip.AddMagicEffectType][equip.Name] = new AddmagicEffectInfo(equip.AddMagicEffectPercent.GetOneValue(), equip.AddMagicEffectAmount.GetOneValue());
                 }
                 else
                 {
-                    AddMagicEffectPercent += equip.AddMagicEffectPercent;
-                    AddMagicEffectAmount += equip.AddMagicEffectAmount;
+                    AddMagicEffectPercent += equip.AddMagicEffectPercent.GetOneValue();
+                    AddMagicEffectAmount += equip.AddMagicEffectAmount.GetOneValue();
                 }
 
-                ChangeMoveSpeedPercent += equip.ChangeMoveSpeedPercent;
+                ChangeMoveSpeedPercent += equip.ChangeMoveSpeedPercent.GetOneValue();
 
                 if (!string.IsNullOrEmpty(equip.ReplaceMagic))
                 {
@@ -781,7 +781,7 @@ namespace Engine
                     MagicToUseWhenAttackedList.AddLast(new MagicToUseInfoItem
                     {
                         Magic = equip.MagicToUseWhenBeAttacked.GetLevel(AttackLevel),
-                        Dir = equip.MagicDirectionWhenBeAttacked
+                        Dir = equip.MagicDirectionWhenBeAttacked.GetOneValue()
                     });
                 }
             }
@@ -798,16 +798,16 @@ namespace Engine
             {
                 if (!justEffectType)
                 {
-                    Attack -= equip.Attack;
-                    Attack2 -= equip.Attack2;
-                    Attack3 -= equip.Attack3;
-                    Defend -= equip.Defend;
-                    Defend2 -= equip.Defend2;
-                    Defend3 -= equip.Defend3;
-                    Evade -= equip.Evade;
-                    LifeMax -= equip.LifeMax;
-                    ThewMax -= equip.ThewMax;
-                    ManaMax -= equip.ManaMax;
+                    Attack -= equip.Attack.GetOneValue();
+                    Attack2 -= equip.Attack2.GetOneValue();
+                    Attack3 -= equip.Attack3.GetOneValue();
+                    Defend -= equip.Defend.GetOneValue();
+                    Defend2 -= equip.Defend2.GetOneValue();
+                    Defend3 -= equip.Defend3.GetOneValue();
+                    Evade -= equip.Evade.GetOneValue();
+                    LifeMax -= equip.LifeMax.GetOneValue();
+                    ThewMax -= equip.ThewMax.GetOneValue();
+                    ManaMax -= equip.ManaMax.GetOneValue();
 
                     if (!string.IsNullOrEmpty(equip.MagicIniWhenUse))
                     {
@@ -841,7 +841,7 @@ namespace Engine
                         break;
                 }
 
-                switch (equip.SpecialEffect)
+                switch (equip.SpecialEffect.GetOneValue())
                 {
                     case 1://不断恢复生命
                         _extraLifeRestorePercent = 0.0f;
@@ -875,11 +875,11 @@ namespace Engine
                 }
                 else
                 {
-                    AddMagicEffectPercent -= equip.AddMagicEffectPercent;
-                    AddMagicEffectAmount -= equip.AddMagicEffectAmount;
+                    AddMagicEffectPercent -= equip.AddMagicEffectPercent.GetOneValue();
+                    AddMagicEffectAmount -= equip.AddMagicEffectAmount.GetOneValue();
                 }
 
-                ChangeMoveSpeedPercent -= equip.ChangeMoveSpeedPercent;
+                ChangeMoveSpeedPercent -= equip.ChangeMoveSpeedPercent.GetOneValue();
 
                 if (!string.IsNullOrEmpty(equip.ReplaceMagic))
                 {
@@ -924,12 +924,12 @@ namespace Engine
         {
             if (drug != null && drug.Kind == Good.GoodKind.Drug)
             {
-                LifeMax += drug.LifeMax;
-                ThewMax += drug.ThewMax;
-                ManaMax += drug.ManaMax;
-                Life += drug.Life;
-                Thew += drug.Thew;
-                Mana += drug.Mana;
+                LifeMax += drug.LifeMax.GetOneValue();
+                ThewMax += drug.ThewMax.GetOneValue();
+                ManaMax += drug.ManaMax.GetOneValue();
+                Life += drug.Life.GetOneValue();
+                Thew += drug.Thew.GetOneValue();
+                Mana += drug.Mana.GetOneValue();
                 switch (drug.TheEffectType)
                 {
                     case Good.GoodEffectType.ClearFrozen:
@@ -1669,11 +1669,11 @@ namespace Engine
         {
             if (good == null) return false;
             var cost = good.Cost;
-            if (Money >= cost)
+            if (Money >= cost.GetMaxValue())
             {
                 if (GoodsListManager.AddGoodToList(good.FileName))
                 {
-                    Money -= cost;
+                    Money -= cost.GetMaxValue();
                     GuiManager.UpdateGoodsView();
                     return true;
                 }

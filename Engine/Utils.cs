@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Engine.Map;
 using Engine.Script;
+using Engine.Storage;
 using IniParser;
 using IniParser.Model;
 using Microsoft.Xna.Framework;
@@ -222,17 +223,27 @@ namespace Engine
             if (string.IsNullOrEmpty(fileName)) return null;
             try
             {
+                var filePathGame = Path.Combine(StorageBase.SaveGameDirectory, fileName);
+                if (Goods.ContainsKey(filePathGame))
+                    return Goods[filePathGame];
                 var filePath = @"ini\goods\" + fileName;
                 if (Goods.ContainsKey(filePath))
                     return Goods[filePath];
+
+                var path = "";
+                if (File.Exists(filePathGame))
+                {
+                    path = filePathGame;
+                }
                 else
                 {
-                    var good = new Good(filePath);
-                    if (good.IsOk)
-                    {
-                        Goods[filePath] = good;
-                        return good;
-                    }
+                    path = filePath;
+                }
+                var good = new Good(path);
+                if (good.IsOk)
+                {
+                    Goods[path] = good;
+                    return good;
                 }
             }
             catch (Exception)
