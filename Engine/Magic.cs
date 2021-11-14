@@ -140,6 +140,19 @@ namespace Engine
         private int _traceSpeed;
         private int _traceEnemyDelayMilliseconds;
 
+        private int _disableUse;
+
+        private int _lifeMax;
+        private int _ThewMax;
+        private int _ManaMax;
+        private int _attack;
+        private int _defend;
+        private int _evade;
+        private int _attack2;
+        private int _defend2;
+        private int _attack3;
+        private int _defend3;
+
         #region Leap
         private int _leapTimes;
         private int _leapFrame;
@@ -994,6 +1007,72 @@ namespace Engine
         {
             get { return _traceEnemyDelayMilliseconds; }
             set { _traceEnemyDelayMilliseconds = value; }
+        }
+
+        public int DisableUse
+        {
+            get { return _disableUse; }
+            set { _disableUse = value; }
+        }
+
+        public int LifeMax
+        {
+            get { return _lifeMax; }
+            set { _lifeMax = value; }
+        }
+
+        public int ThewMax
+        {
+            get { return _ThewMax; }
+            set { _ThewMax = value; }
+        }
+
+        public int ManaMax
+        {
+            get { return _ManaMax; }
+            set { _ManaMax = value; }
+        }
+
+        public int Attack
+        {
+            get { return _attack; }
+            set { _attack = value; }
+        }
+
+        public int Defend
+        {
+            get { return _defend; }
+            set { _defend = value; }
+        }
+
+        public int Evade
+        {
+            get { return _evade; }
+            set { _evade = value; }
+        }
+
+        public int Attack2
+        {
+            get { return _attack2; }
+            set { _attack2 = value; }
+        }
+
+        public int Defend2
+        {
+            get { return _defend2; }
+            set { _defend2 = value; }
+        }
+
+        public int Attack3
+        {
+            get { return _attack3; }
+            set { _attack3 = value; }
+        }
+
+        public int Defend3
+        {
+            get { return _defend3; }
+            set { _defend3 = value; }
         }
 
         #endregion

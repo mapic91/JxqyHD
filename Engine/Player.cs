@@ -149,7 +149,15 @@ namespace Engine
             {
                 if (value != null && value.TheMagic != null)
                 {
-                    _currentMagicInUse = value;
+                    if (value.TheMagic.DisableUse == 0)
+                    {
+                        _currentMagicInUse = value;
+                    }
+                    else
+                    {
+                        _currentMagicInUse = null;
+                        GuiManager.ShowMessage("该武功不能使用");
+                    }
                 }
                 else
                 {
@@ -328,6 +336,10 @@ namespace Engine
                 {
                     CurrentMagicInUse = info;
                     _isUseMagicByKeyborad = true;
+                    if (CurrentMagicInUse == null)
+                    {
+                        _isUseMagicByKeyborad = false;
+                    }
                 }
             }
         }
@@ -1046,6 +1058,19 @@ namespace Engine
             if (info.Exp >= levelupExp)
             {
                 info.TheMagic = info.TheMagic.GetLevel(info.TheMagic.CurrentLevel + 1);
+
+                //magic level up, add player properties
+                LifeMax += info.TheMagic.LifeMax;
+                ThewMax += info.TheMagic.ThewMax;
+                ManaMax += info.TheMagic.ManaMax;
+                Attack += info.TheMagic.Attack;
+                Defend += info.TheMagic.Defend;
+                Evade += info.TheMagic.Evade;
+                Attack2 += info.TheMagic.Attack2;
+                Defend2 += info.TheMagic.Defend2;
+                Attack3 += info.TheMagic.Attack3;
+                Defend3 += info.TheMagic.Defend3;
+
                 if (info.TheMagic.LevelupExp == 0)
                 {
                     //Magic is max level, make exp equal max exp
