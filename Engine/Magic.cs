@@ -153,6 +153,9 @@ namespace Engine
         private int _attack3;
         private int _defend3;
 
+        private string _flyIni;
+        private string _flyIni2;
+
         #region Leap
         private int _leapTimes;
         private int _leapFrame;
@@ -1075,6 +1078,18 @@ namespace Engine
             set { _defend3 = value; }
         }
 
+        public string FlyIni
+        {
+            get { return _flyIni; }
+            set { _flyIni = value; }
+        }
+
+        public string FlyIni2
+        {
+            get { return _flyIni2; }
+            set { _flyIni2 = value; }
+        }
+
         #endregion
 
         //noAttackFile - resolve recursive problem of AttackFile
@@ -1095,6 +1110,8 @@ namespace Engine
                     case "ActionFile":
                     case "NpcFile":
                     case "Type":
+                    case "FlyIni":
+                    case "FlyIni2":
                         info.SetValue(this, nameValue[1], null);
                         break;
                     case "Image":

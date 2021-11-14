@@ -67,6 +67,7 @@ namespace Engine
             get { return _flyIniReplace; }
             set
             {
+                RemoveMagicFromInfos(_flyIniReplace, AttackRadius);
                 if (value != null)
                 {
                     RemoveMagicFromInfos(FlyIni, AttackRadius);
@@ -74,7 +75,6 @@ namespace Engine
                 }
                 else
                 {
-                    RemoveMagicFromInfos(_flyIniReplace, AttackRadius);
                     AddMagicToInfos(FlyIni, AttackRadius);
                 }
                 _flyIniReplace = value;
@@ -86,6 +86,7 @@ namespace Engine
             get { return _flyIni2Replace; }
             set
             {
+                RemoveMagicFromInfos(_flyIni2Replace, AttackRadius);
                 if (value != null)
                 {
                     RemoveMagicFromInfos(FlyIni2, AttackRadius);
@@ -93,7 +94,6 @@ namespace Engine
                 }
                 else
                 {
-                    RemoveMagicFromInfos(_flyIni2Replace, AttackRadius);
                     AddMagicToInfos(FlyIni2, AttackRadius);
                 }
                 _flyIni2Replace = value;
@@ -1057,6 +1057,7 @@ namespace Engine
             var levelupExp = info.TheMagic.LevelupExp;
             if (info.Exp >= levelupExp)
             {
+                var oldLevelMagic = info.TheMagic;
                 info.TheMagic = info.TheMagic.GetLevel(info.TheMagic.CurrentLevel + 1);
 
                 //magic level up, add player properties
@@ -1070,6 +1071,33 @@ namespace Engine
                 Defend2 += info.TheMagic.Defend2;
                 Attack3 += info.TheMagic.Attack3;
                 Defend3 += info.TheMagic.Defend3;
+
+                //replace flyini
+                if (oldLevelMagic.FlyIni != info.TheMagic.FlyIni)
+                {
+                    if (!string.IsNullOrEmpty(oldLevelMagic.FlyIni))
+                    {
+                        FlyIniReplace = null;
+                    }
+
+                    if (!string.IsNullOrEmpty(info.TheMagic.FlyIni))
+                    {
+                        FlyIniReplace = Utils.GetMagic(info.TheMagic.FlyIni, false).GetLevel(AttackLevel);
+                    }
+                }
+
+                if (oldLevelMagic.FlyIni2 != info.TheMagic.FlyIni2)
+                {
+                    if (!string.IsNullOrEmpty(oldLevelMagic.FlyIni2))
+                    {
+                        FlyIni2Replace = null;
+                    }
+
+                    if (!string.IsNullOrEmpty(info.TheMagic.FlyIni2))
+                    {
+                        FlyIni2Replace = Utils.GetMagic(info.TheMagic.FlyIni2, false).GetLevel(AttackLevel);
+                    }
+                }
 
                 if (info.TheMagic.LevelupExp == 0)
                 {
