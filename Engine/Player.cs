@@ -276,6 +276,15 @@ namespace Engine
                             Dir = magicItemInfo.TheMagic.MagicDirectionWhenBeAttacked
                         });
                     }
+
+                    if (!string.IsNullOrEmpty(magicItemInfo.TheMagic.FlyIni))
+                    {
+                        FlyIniReplace = Utils.GetMagic(magicItemInfo.TheMagic.FlyIni, false).GetLevel(AttackLevel);
+                    }
+                    if (!string.IsNullOrEmpty(magicItemInfo.TheMagic.FlyIni2))
+                    {
+                        FlyIni2Replace = Utils.GetMagic(magicItemInfo.TheMagic.FlyIni2, false).GetLevel(AttackLevel);
+                    }
                 }
             }
         }
