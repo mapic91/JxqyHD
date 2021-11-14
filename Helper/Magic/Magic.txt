@@ -576,3 +576,47 @@ LevelupExp=6000
 Speed=10
 武功在3级时会替换普攻为magic-毒液.ini，武功在4级时没设置，Init里也没设置，则使用角色原来的普攻
 
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+设置武功在某等级时被敌人攻击时自动释放的武功：
+MagicToUseWhenBeAttacked - 当NPC的被攻击时，会释放该武功。
+                           释放的方向由MagicDirectionWhenBeAttacked决定。
+                           武功的等级由AttackLevel决定。
+MagicDirectionWhenBeAttacked - 默认0，当值为：
+    0 ：  目标位置为攻击该NPC的攻击者位置
+    1 ：  释放方向为被攻击到的武功的反方向，比如攻击该NPC的武功是往右飞的，
+          则该释放的武功方向往左。
+          如果武功是固定类的，不飞行的，则释放的方向为该NPC的当前朝向。
+    2 ：  释放的方向为该NPC的当前朝向
+比如：
+[Init]
+MagicToUseWhenBeAttacked=magic-蝙蝠.ini
+[Level3]
+MagicToUseWhenBeAttacked=magic-毒液.ini
+Effect=765
+ManaCost=25
+LevelupExp=3000
+Speed=10
+
+[Level4]
+Effect=945
+ManaCost=40
+LevelupExp=6000
+Speed=10
+武功在3级时被敌人攻击时自动释放的武功为magic-毒液.ini，武功在4级时没设置使用Init里的magic-蝙蝠.ini
+再比如：
+[Init]
+Name=爆炸类
+[Level3]
+MagicToUseWhenBeAttacked=magic-毒液.ini
+Effect=765
+ManaCost=25
+LevelupExp=3000
+Speed=10
+
+[Level4]
+Effect=945
+ManaCost=40
+LevelupExp=6000
+Speed=10
+武功在3级时被敌人攻击时自动释放的武功为magic-毒液.ini，武功在4级时没设置，Init里也没设置，所以没有

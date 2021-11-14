@@ -45,6 +45,7 @@ namespace Engine
 
     public struct MagicToUseInfoItem
     {
+        public string From;
         public Magic Magic;
         public int Dir;
     }
@@ -3832,6 +3833,20 @@ namespace Engine
                 return true;
             }
             return false;
+        }
+
+        public void RemoveMagicToUseWhenAttackedList(string from)
+        {
+            for (var node = MagicToUseWhenAttackedList.First; node != null;)
+            {
+                var info = node.Value;
+                var next = node.Next;
+                if (info.From == from)
+                {
+                    MagicToUseWhenAttackedList.Remove(node);
+                }
+                node = next;
+            }
         }
 
         public virtual void Draw(SpriteBatch spriteBatch)

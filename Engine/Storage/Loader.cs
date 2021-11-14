@@ -120,6 +120,7 @@ namespace Engine.Storage
                 Globals.ThePlayer = new Player(path);
                 Globals.TheCarmera.CenterPlayerInCamera();
                 GoodsListManager.ApplyEquipSpecialEffectFromList(Globals.ThePlayer);
+                Globals.ThePlayer.LoadMagicEffect();
             }
             catch (Exception exception)
             {

@@ -256,6 +256,30 @@ namespace Engine
         private MouseState _lastMouseState;
         private KeyboardState _lastKeyboardState;
 
+        public void LoadMagicEffect()
+        {
+            MagicListManager.SetMagicEffect(this);
+        }
+
+        public void LoadMagicEffect(MagicListManager.MagicItemInfo[] infos)
+        {
+            foreach (var magicItemInfo in infos)
+            {
+                if (magicItemInfo != null && magicItemInfo.TheMagic != null)
+                {
+                    if (!string.IsNullOrEmpty(magicItemInfo.TheMagic.MagicToUseWhenBeAttacked))
+                    {
+                        MagicToUseWhenAttackedList.AddLast(new MagicToUseInfoItem
+                        {
+                            From = magicItemInfo.TheMagic.FileName,
+                            Magic = Utils.GetMagic(magicItemInfo.TheMagic.MagicToUseWhenBeAttacked, false).GetLevel(AttackLevel),
+                            Dir = magicItemInfo.TheMagic.MagicDirectionWhenBeAttacked
+                        });
+                    }
+                }
+            }
+        }
+
         private void SetFlyIniAdditionalEffect(Magic.AddonEffect effect)
         {
             if (FlyIni != null) FlyIni.AdditionalEffect = effect;
@@ -792,6 +816,7 @@ namespace Engine
                 {
                     MagicToUseWhenAttackedList.AddLast(new MagicToUseInfoItem
                     {
+                        From = equip.FileName,
                         Magic = equip.MagicToUseWhenBeAttacked.GetLevel(AttackLevel),
                         Dir = equip.MagicDirectionWhenBeAttacked.GetOneValue()
                     });
@@ -900,17 +925,7 @@ namespace Engine
 
                 if (equip.MagicToUseWhenBeAttacked != null)
                 {
-                    for (var node = MagicToUseWhenAttackedList.First; node != null;)
-                    {
-                        var info = node.Value;
-                        var next = node.Next;
-                        if(info.Magic.FileName == equip.MagicToUseWhenBeAttacked.FileName)
-                        {
-                            MagicToUseWhenAttackedList.Remove(node);
-                            break;
-                        }
-                        node = next;
-                    }
+                    RemoveMagicToUseWhenAttackedList(equip.FileName);
                 }
             }
         }
@@ -1096,6 +1111,25 @@ namespace Engine
                     if (!string.IsNullOrEmpty(info.TheMagic.FlyIni2))
                     {
                         FlyIni2Replace = Utils.GetMagic(info.TheMagic.FlyIni2, false).GetLevel(AttackLevel);
+                    }
+                }
+
+                if (oldLevelMagic.MagicToUseWhenBeAttacked != info.TheMagic.MagicToUseWhenBeAttacked || 
+                    oldLevelMagic.MagicDirectionWhenBeAttacked != info.TheMagic.MagicDirectionWhenBeAttacked)
+                {
+                    if (!string.IsNullOrEmpty(oldLevelMagic.MagicToUseWhenBeAttacked))
+                    {
+                        RemoveMagicToUseWhenAttackedList(info.TheMagic.FileName);
+                    }
+
+                    if (!string.IsNullOrEmpty(info.TheMagic.MagicToUseWhenBeAttacked))
+                    {
+                        MagicToUseWhenAttackedList.AddLast(new MagicToUseInfoItem
+                        {
+                            From = info.TheMagic.FileName,
+                            Magic = Utils.GetMagic(info.TheMagic.MagicToUseWhenBeAttacked, false).GetLevel(AttackLevel),
+                            Dir = info.TheMagic.MagicDirectionWhenBeAttacked
+                        });
                     }
                 }
 

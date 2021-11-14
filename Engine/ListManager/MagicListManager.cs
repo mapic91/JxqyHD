@@ -516,5 +516,11 @@ namespace Engine.ListManager
                 Exp = exp;
             }
         }
+
+        public static void SetMagicEffect(Player player)
+        {
+            player.LoadMagicEffect(MagicList);
+            player.LoadMagicEffect(MagicListHide);
+        }
     }
 }
