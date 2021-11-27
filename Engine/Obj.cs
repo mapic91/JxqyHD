@@ -22,6 +22,7 @@ namespace Engine
         private StateMapList _objFile;
         private string _objFileName;
         private string _scriptFile;
+        private string _scriptFileRight;
         private int _canInteractDirectly;
         private string _timerScriptFile;
         private int _timerScriptInterval = Globals.DefaultNpcObjTimeScriptInterval;
@@ -104,6 +105,12 @@ namespace Engine
         {
             get { return _scriptFile; }
             set { _scriptFile = value; }
+        }
+
+        public string ScriptFileRight
+        {
+            get { return _scriptFileRight; }
+            set { _scriptFileRight = value; }
         }
 
         public int CanInteractDirectly
@@ -214,6 +221,11 @@ namespace Engine
         public bool HasInteractScript
         {
             get { return !string.IsNullOrEmpty(ScriptFile); }
+        }
+
+        public bool HasInteractScriptRight
+        {
+            get { return !string.IsNullOrEmpty(ScriptFileRight); }
         }
 
         public bool IsTrap
@@ -342,6 +354,7 @@ namespace Engine
                 {
                     case "ObjName":
                     case "ScriptFile":
+                    case "ScriptFileRight":
                     case "WavFile":
                     case "TimerScriptFile":
                     case "ReviveNpcIni":
@@ -402,6 +415,11 @@ namespace Engine
             {
                 AddKey(keyDataCollection, "ScriptFile", _scriptFile);
             }
+
+            if (_scriptFileRight != null)
+            {
+                AddKey(keyDataCollection, "ScriptFileRight", _scriptFileRight);
+            }
             if (_timerScriptFile != null)
             {
                 AddKey(keyDataCollection, "TimerScriptFile", _timerScriptFile);
@@ -416,11 +434,11 @@ namespace Engine
             }
         }
 
-        public void StartInteract()
+        public void StartInteract(bool isRight)
         {
             if (!IsRemoved)
             {
-                ScriptManager.RunScript(Utils.GetScriptParser(ScriptFile), this);
+                ScriptManager.RunScript(Utils.GetScriptParser(isRight ? ScriptFileRight : ScriptFile), this);
             }
         }
 

@@ -187,3 +187,8 @@ BuyIniFile=奸商.ini
 [OBJ]文件适用
 ScriptFileJustTouch - 默认0，如果大于0，则只要主角走到上面，就会触发ScriptFile
 
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+[NPC OBJ]文件适用
+ScriptFileRight - 设置鼠标右键点击运行的脚本

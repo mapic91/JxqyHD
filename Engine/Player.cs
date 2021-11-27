@@ -255,6 +255,7 @@ namespace Engine
 
         private MouseState _lastMouseState;
         private KeyboardState _lastKeyboardState;
+        private bool _isReleaseRightButtonAfterHasInteractiveTarget;
 
         public void LoadMagicEffect()
         {
@@ -1314,7 +1315,7 @@ namespace Engine
                 {
                     if(obj.ScriptFileJustTouch > 0 && !string.IsNullOrEmpty(obj.ScriptFile))
                     {
-                        obj.StartInteract();
+                        obj.StartInteract(false);
                     }
                 }
             }
@@ -1485,46 +1486,87 @@ namespace Engine
                 }
                 var rightButtonPressed = mouseState.RightButton == ButtonState.Pressed && _lastMouseState.RightButton != ButtonState.Pressed;
                 var isNoDelayMagic = CurrentMagicInUse != null && CurrentMagicInUse.TheMagic.MoveKind == 13 && CurrentMagicInUse.TheMagic.SpecialKind == 8;
-                if (!IsFightDisabled &&
-                    ControledCharacter == null && //Can't use magic when controling other character
-                    ((isNoDelayMagic && rightButtonPressed) || (!isNoDelayMagic && mouseState.RightButton == ButtonState.Pressed) || _isUseMagicByKeyborad)
-                   )
+                var isSelectedNpcRightInteract = Globals.OutEdgeNpc != null && !Globals.OutEdgeNpc.IsFighter &&
+                                                 Globals.OutEdgeNpc.HasInteractScriptRight;
+                if (_isReleaseRightButtonAfterHasInteractiveTarget == false &&
+                    mouseState.RightButton != ButtonState.Pressed)
                 {
-                    if (CurrentMagicInUse == null)
-                    {
-                        if (!_isUseMagicByKeyborad)
-                        {
-                            GuiManager.ShowMessage("请在武功栏使用鼠标右键选择武功");
-                        }
-                    }
-                    else if (CurrentMagicInUse.RemainColdMilliseconds > 0)
-                    {
-                        GuiManager.ShowMessage("武功尚未冷却");
-                    }
-                    else
-                    {
-                        if (!AttackClosedAnemy(character))
-                        {
-                            if (CurrentMagicInUse.TheMagic.BodyRadius > 0 &&
-                                (Globals.OutEdgeNpc == null || !Globals.OutEdgeNpc.IsEnemy))
-                            {
-                                GuiManager.ShowMessage("无有效目标");
-                            }
-                            else if (CurrentMagicInUse.TheMagic.MoveKind == 21 && Globals.OutEdgeNpc == null)
-                            {
-                                GuiManager.ShowMessage("无目标");
-                            }
-                            else
-                            {
-                                _autoAttackTarget = null;
-                                if (Globals.OutEdgeNpc != null)
-                                    UseMagic(CurrentMagicInUse.TheMagic, Globals.OutEdgeNpc.TilePosition, Globals.OutEdgeNpc);
-                                else UseMagic(CurrentMagicInUse.TheMagic, mouseTilePosition);
-                            }
-                        }
-                    }
-
+                    _isReleaseRightButtonAfterHasInteractiveTarget = true;
                 }
+                if (rightButtonPressed &&
+                    (isSelectedNpcRightInteract ||
+                     (Globals.OutEdgeObj != null && Globals.OutEdgeObj.HasInteractScriptRight)))
+                {
+                    if (Globals.OutEdgeNpc != null &&
+                             Globals.OutEdgeNpc != ControledCharacter &&
+                             Globals.OutEdgeNpc.HasInteractScriptRight)
+                    {
+                        if (_lastMouseState.LeftButton == ButtonState.Released)
+                        {
+                            _autoAttackTarget = null;
+                            if (character.InteractWith(Globals.OutEdgeNpc, _isRun, true))
+                            {
+                                _isReleaseRightButtonAfterHasInteractiveTarget = false;
+                            }
+                        }
+                    }
+                    else if (Globals.OutEdgeObj != null &&
+                             Globals.OutEdgeObj.HasInteractScriptRight)
+                    {
+                        if (_lastMouseState.LeftButton == ButtonState.Released)
+                        {
+                            _autoAttackTarget = null;
+                            if (character.InteractWith(Globals.OutEdgeObj, _isRun, true))
+                            {
+                                _isReleaseRightButtonAfterHasInteractiveTarget = false;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    if (!IsFightDisabled &&
+                        ControledCharacter == null && //Can't use magic when controling other character
+                        ((isNoDelayMagic && rightButtonPressed) || (!isNoDelayMagic && mouseState.RightButton == ButtonState.Pressed && !isSelectedNpcRightInteract && _isReleaseRightButtonAfterHasInteractiveTarget) || _isUseMagicByKeyborad)
+                    )
+                    {
+                        if (CurrentMagicInUse == null)
+                        {
+                            if (!_isUseMagicByKeyborad)
+                            {
+                                GuiManager.ShowMessage("请在武功栏使用鼠标右键选择武功");
+                            }
+                        }
+                        else if (CurrentMagicInUse.RemainColdMilliseconds > 0)
+                        {
+                            GuiManager.ShowMessage("武功尚未冷却");
+                        }
+                        else
+                        {
+                            if (!AttackClosedAnemy(character))
+                            {
+                                if (CurrentMagicInUse.TheMagic.BodyRadius > 0 &&
+                                    (Globals.OutEdgeNpc == null || !Globals.OutEdgeNpc.IsEnemy))
+                                {
+                                    GuiManager.ShowMessage("无有效目标");
+                                }
+                                else if (CurrentMagicInUse.TheMagic.MoveKind == 21 && Globals.OutEdgeNpc == null)
+                                {
+                                    GuiManager.ShowMessage("无目标");
+                                }
+                                else
+                                {
+                                    _autoAttackTarget = null;
+                                    if (Globals.OutEdgeNpc != null)
+                                        UseMagic(CurrentMagicInUse.TheMagic, Globals.OutEdgeNpc.TilePosition, Globals.OutEdgeNpc);
+                                    else UseMagic(CurrentMagicInUse.TheMagic, mouseTilePosition);
+                                }
+                            }
+                        }
+
+                    }
+                }
+                
 
                 if (keyboardState.IsKeyDown(Keys.V) &&
                 _lastKeyboardState.IsKeyUp(Keys.V) &&

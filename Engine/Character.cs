@@ -105,6 +105,7 @@ namespace Engine
         private Magic _magicToUseWhenDeath;
         private int _magicDirectionWhenDeath;
         private string _scriptFile;
+        private string _scriptFileRight;
         private int _canInteractDirectly;
         private string _deathScript;
         private string _timerScriptFile;
@@ -127,6 +128,7 @@ namespace Engine
         private Vector2 _destinationAttackPositionInWorld = Vector2.Zero;
         private LinkedList<Vector2> _path;
         private object _interactiveTarget;
+        private bool _isInteractiveRightScript;
         private bool _isInInteract;
         private bool _isRunToTarget;
         private bool _isDeath;
@@ -229,6 +231,8 @@ namespace Engine
             get { return _dropIni; }
             set { _dropIni = value; }
         }
+
+        public bool HasInteractiveTarget => _interactiveTarget != null;
 
 
         public class AddmagicEffectInfo
@@ -1010,6 +1014,12 @@ namespace Engine
             set { _scriptFile = value; }
         }
 
+        public string ScriptFileRight
+        {
+            get { return _scriptFileRight; }
+            set { _scriptFileRight = value; }
+        }
+
         public int CanInteractDirectly
         {
             get { return _canInteractDirectly; }
@@ -1031,6 +1041,11 @@ namespace Engine
         public bool HasInteractScript
         {
             get { return !string.IsNullOrEmpty(ScriptFile); }
+        }
+
+        public bool HasInteractScriptRight
+        {
+            get { return !string.IsNullOrEmpty(ScriptFileRight); }
         }
 
         public string DeathScript
@@ -1216,7 +1231,7 @@ namespace Engine
 
         public bool IsInteractive
         {
-            get { return (HasInteractScript || IsEnemy || IsFighterFriend || IsNoneFighter); }
+            get { return (HasInteractScript || HasInteractScriptRight || IsEnemy || IsFighterFriend || IsNoneFighter); }
         }
 
        
@@ -1379,6 +1394,7 @@ namespace Engine
             var distance = Vector2.Distance(from, to);
             //Sotre value in case of cleared in below code
             var interactTarget = _interactiveTarget;
+            var isInteractiveRightScript = _isInteractiveRightScript;
 
             if (TilePosition == tileFrom && tileFrom != tileTo)
             {
@@ -1488,6 +1504,7 @@ namespace Engine
                 Magic magicToUse;
                 if (AttackingIsOk(out magicToUse)) PerformeAttack(magicToUse);
                 _interactiveTarget = interactTarget;
+                _isInteractiveRightScript = isInteractiveRightScript;
                 if (InteractIsOk()) PerformeInteract();
                 if (IsRuning())
                 {
@@ -1674,6 +1691,7 @@ namespace Engine
                     case "FixedPos":
                     case "Name":
                     case "ScriptFile":
+                    case "ScriptFileRight":
                     case "DeathScript":
                     case "TimerScriptFile":
                     case "FlyInis":
@@ -2005,6 +2023,10 @@ namespace Engine
             if (_scriptFile != null)
             {
                 AddKey(keyDataCollection, "ScriptFile", _scriptFile);
+            }
+            if (_scriptFileRight != null)
+            {
+                AddKey(keyDataCollection, "ScriptFileRight", _scriptFileRight);
             }
             if (_deathScript != null)
             {
@@ -2629,10 +2651,12 @@ namespace Engine
             //keep value
             var attack = DestinationAttackTilePosition;
             var interact = _interactiveTarget;
+            var isInteractiveRightScript = _isInteractiveRightScript;
             WalkTo(destinationTilePosition);
             // restore
             DestinationAttackTilePosition = attack;
             _interactiveTarget = interact;
+            _isInteractiveRightScript = isInteractiveRightScript;
         }
 
         protected void RunToAndKeepingTarget(Vector2 destinationTilePosition)
@@ -2640,10 +2664,12 @@ namespace Engine
             //keep value
             var attack = DestinationAttackTilePosition;
             var interact = _interactiveTarget;
+            var isInteractiveRightScript = _isInteractiveRightScript;
             RunTo(destinationTilePosition);
             // restore
             DestinationAttackTilePosition = attack;
             _interactiveTarget = interact;
+            _isInteractiveRightScript = isInteractiveRightScript;
         }
 
         protected void PerformeAttack(Magic magicToUse)
@@ -2717,11 +2743,12 @@ namespace Engine
             _totalNonFightingSeconds = 0;
         }
 
-        public void InteractWith(object target, bool isRun = false)
+        public bool InteractWith(object target, bool isRun = false, bool isRightScript=false)
         {
             if (PerformActionOk())
             {
                 _interactiveTarget = target;
+                _isInteractiveRightScript = isRightScript;
                 _isRunToTarget = isRun;
 
                 Vector2 destinationTilePositon;
@@ -2729,7 +2756,8 @@ namespace Engine
                 bool canInteractDirectly;
                 if (!GetInteractTargetInfo(out destinationTilePositon, out interactDistance, out canInteractDirectly))
                 {
-                    return;
+                    _interactiveTarget = null;
+                    return false;
                 }
 
                 if (!canInteractDirectly)
@@ -2764,14 +2792,17 @@ namespace Engine
                         {
                             //Not find, can't move to target, do nothing.
                             _interactiveTarget = null;
-                            return;
+                            return false;
                         }
                     }
                 }
 
                 if (IsStanding() && InteractIsOk())
                     PerformeInteract();
+                return true;
             }
+
+            return false;
         }
 
         private bool GetInteractTargetInfo(out Vector2 tilePosition, out int interactDistance, out bool canInteractDirectly)
@@ -2830,26 +2861,26 @@ namespace Engine
                 var obj = _interactiveTarget as Obj;
                 if (character != null)
                 {
-                    character.StartInteract(this);
+                    character.StartInteract(this, _isInteractiveRightScript);
                     SetDirection(character.PositionInWorld - PositionInWorld);
                 }
                 else if (obj != null)
                 {
-                    obj.StartInteract();
+                    obj.StartInteract(_isInteractiveRightScript);
                     SetDirection(obj.PositionInWorld - PositionInWorld);
                 }
                 StandingImmediately();
             }
         }
 
-        public void StartInteract(Character from)
+        public void StartInteract(Character from, bool isRightScript)
         {
-            if (from != null && !string.IsNullOrEmpty(ScriptFile))
+            if (from != null && !string.IsNullOrEmpty(isRightScript ? ScriptFileRight : ScriptFile))
             {
                 _isInInteract = true;
                 _directionBeforInteract = CurrentDirection;
                 SetDirection(from.PositionInWorld - PositionInWorld);
-                _currentRunInteractScript = ScriptManager.RunScript(Utils.GetScriptParser(ScriptFile), this);
+                _currentRunInteractScript = ScriptManager.RunScript(Utils.GetScriptParser(isRightScript ? ScriptFileRight : ScriptFile), this);
             }
         }
 
