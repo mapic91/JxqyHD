@@ -79,7 +79,7 @@ namespace Engine
         private int _defend3;
         private int _exp;
         private int _levelUpExp;
-        private int _level;
+        protected int _level;
         private int _life;
         private int _lifeMax;
         private int _thew;
@@ -807,7 +807,7 @@ namespace Engine
 
         public int Level
         {
-            get { return _level; }
+            get { return Math.Abs(_level); }
             set { _level = value; }
         }
 
@@ -3117,6 +3117,49 @@ namespace Engine
                 Life = LifeMax;
                 Thew = ThewMax;
                 Mana = ManaMax;
+                Attack = detail.Attack;
+                Attack2 = detail.Attack2;
+                Attack3 = detail.Attack3;
+                Defend = detail.Defend;
+                Defend2 = detail.Defend2;
+                Defend3 = detail.Defend3;
+                Evade = detail.Evade;
+                LevelUpExp = detail.LevelUpExp;
+            }
+        }
+
+        public virtual void SetPropToLevel(int level)
+        {
+            if (LevelIni == null)
+            {
+                return;
+            }
+            Utils.LevelDetail detail = null;
+            if (LevelIni.ContainsKey(level))
+            {
+                detail = LevelIni[level];
+            }
+            if (detail != null)
+            {
+                var isFullLife = Life == LifeMax;
+                var isFullThew = Thew == ThewMax;
+                var isFullMana = Mana == ManaMax;
+                LifeMax = detail.Life;
+                ThewMax = detail.ThewMax;
+                ManaMax = detail.ManaMax;
+                if (isFullLife || Life > LifeMax)
+                {
+                    Life = LifeMax;
+                }
+                if (isFullThew || Thew > ThewMax)
+                {
+                    Thew = ThewMax;
+                }
+
+                if (isFullMana || Mana > ManaMax)
+                {
+                    Mana = ManaMax;
+                }
                 Attack = detail.Attack;
                 Attack2 = detail.Attack2;
                 Attack3 = detail.Attack3;

@@ -76,6 +76,7 @@ namespace Engine
             {
                 LevelIni = Utils.GetLevelLists(@"ini\level\level-npc.ini");
             }
+            Initlize();
         }
 
         public Npc(KeyDataCollection keyDataCollection)
@@ -84,6 +85,16 @@ namespace Engine
             if (LevelIni == null)
             {
                 LevelIni = Utils.GetLevelLists(@"ini\level\level-npc.ini");
+            }
+
+            Initlize();
+        }
+
+        private void Initlize()
+        {
+            if (_level < 0 && Globals.ThePlayer != null)
+            {
+                SetPropToLevel(Globals.ThePlayer.Level + Level);
             }
         }
         #endregion Ctor
