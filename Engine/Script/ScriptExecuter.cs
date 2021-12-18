@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 using Engine.Gui;
 using Engine.ListManager;
@@ -452,7 +453,11 @@ namespace Engine.Script
         private static readonly Regex IfParameterPatten = new Regex(@"(\$[_a-zA-Z0-9]+) *([><=]+).*?([-]?[0-9]+)");
         public static bool If(List<string> parameters)
         {
-            var parmeter = parameters[0];
+            return If(parameters[0]);
+        }
+
+        public static bool If(string parmeter)
+        {
             var match = IfParameterPatten.Match(parmeter);
             if (match.Success)
             {
@@ -1168,14 +1173,69 @@ namespace Engine.Script
                 TalkTextList.GetTextDetail(int.Parse(parameters[2])).Text);
         }
 
+        private static List<string> GetConditions(ref string str)
+        {
+            var conditions = new List<string>();
+            var outstr = new StringBuilder();
+            var curContion = new StringBuilder();
+            var inCondition = false;
+            for (var i = 0; i < str.Length; i++)
+            {
+                if (str[i] == '{')
+                {
+                    inCondition = true;
+                    curContion.Clear();
+                }
+                else if (inCondition)
+                {
+                    if (str[i] == '}')
+                    {
+                        inCondition = false;
+                        conditions.Add(curContion.ToString());
+                    }
+                    else
+                    {
+                        curContion.Append(str[i]);
+                    }
+                }
+                else
+                {
+                    outstr.Append(str[i]);
+                }
+            }
+
+            str = outstr.ToString();
+            return conditions;
+        }
+
         public static void ChooseEx(List<string> parameters)
         {
             var selections = new List<string>();
+            var isShows = new List<bool>();
             for (int i = 1; i < parameters.Count - 1; i++)
             {
-                selections.Add(Utils.RemoveStringQuotes(parameters[i]));
+                var str = Utils.RemoveStringQuotes(parameters[i]);
+                var conditions = GetConditions(ref str);
+                if (conditions.Count > 0)
+                {
+                    var isTrue = true;
+                    foreach (var condition in conditions)
+                    {
+                        if (!If(condition))
+                        {
+                            isTrue = false;
+                            break;
+                        }
+                    }
+                    isShows.Add(isTrue);
+                }
+                else
+                {
+                    isShows.Add(true);
+                }
+                selections.Add(str);
             }
-            GuiManager.ChooseEx(Utils.RemoveStringQuotes(parameters[0]),selections);
+            GuiManager.ChooseEx(Utils.RemoveStringQuotes(parameters[0]),selections, isShows);
         }
 
         public static bool IsChooseEnd(List<string> parameters)

@@ -391,10 +391,10 @@ namespace Engine.Gui
             DialogInterface.Select(message, selectA, selectionB);
         }
 
-        public static void ChooseEx(string message, List<string> selections)
+        public static void ChooseEx(string message, List<string> selections, List<bool> isShows)
         {
             ShowAllPanels(false);
-            SelectionInterface.Select(message,selections);
+            SelectionInterface.Select(message,selections, isShows);
         }
 
         public static bool IsSelectionEnd()

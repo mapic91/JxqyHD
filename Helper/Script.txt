@@ -444,6 +444,17 @@ Choose的扩展版本，Choose只可以2选1，ChooseEx可以多选1，比如：
 ChooseEx("请选择：","选择1","选择2","选择3",$XuanZhe);
 ChooseEx("请选择：","选择1","选择2","选择3","选择4","选择5",$XuanZhe);
 ChooseEx("请选择：","选择1","选择2","选择3","选择4","选择5","选择6",$XuanZhe);
+ChooseEx支持格式配置和控制是否显示的配置：
+格式配置：
+所有的格式配置都支持，比如<enter>，<color=Red>等
+ChooseEx("请<enter>选择：","选<color=Red>择1","选择<enter>2",$XuanZhe);
+是否显示：
+支持If函数的所有判断，比如：
+ChooseEx("请选择：","选择1{$abc == 1}","选择2","选择3",$XuanZhe);
+abc变量为1时，选择1选项才会出现
+ChooseEx("请选择：","选{$foo >= 3}择1{$abc == 1}","选择2","选择3",$XuanZhe);
+foo变量大于等于3，并且abc变量为1时，选择1选项才会出现
+
 
 ClearAllVar($var1, $var2 ...);
 清除所有变量，除了 $var1, $var2 ...（可设置0-n个）
