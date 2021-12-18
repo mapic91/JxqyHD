@@ -5,11 +5,14 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Engine.Gui.Base
 {
     public class TextGui : GuiItem
     {
+        private bool _autoHeight;
+        private bool _inRange;
         private int _startIndex;
         private int _endIndex;
         private int _drawInfoLineBegin;
@@ -23,6 +26,13 @@ namespace Engine.Gui.Base
         /// </summary>
         public int RealWidth;
         public int RealHeight;
+
+        /// <summary>
+        /// event fired when mouse is in real text rectangle area
+        /// </summary>
+        public event Action<object, MouseEvent> MouseEnterText;
+        public event Action<object, MouseEvent> MouseLeaveText;
+        public event Action<object, MouseLeftDownEvent> MouseLeftDownText;
 
         public string Text
         {
@@ -38,6 +48,14 @@ namespace Engine.Gui.Base
         private StringBuilder TextStream { set; get; }
         public Color DefaultColor { get; set; }
         protected Color CurrentColor { get; set; }
+        /// <summary>
+        /// color to override text color
+        /// </summary>
+        public Color OverrideColor { get; set; }
+        /// <summary>
+        /// If true, text color while use OverrideColor
+        /// </summary>
+        public bool UseOverrideColor { get; set; }
 
         private Color ActiveDefaultColor
         {
@@ -45,6 +63,19 @@ namespace Engine.Gui.Base
         }
         private bool _isInRangeDefaultColor;
         private Color _rangeDefaultColor;
+        protected Rectangle _textRect;
+
+        /// <summary>
+        /// rectangle in screen which compress all text
+        /// </summary>
+        public Rectangle RealScreenRectangle
+        {
+            get
+            {
+                return new Rectangle((int)ScreenPosition.X + _textRect.X, (int)ScreenPosition.Y + _textRect.Y, _textRect.Width,
+                    _textRect.Height);
+            }
+        }
 
         private Align ActiveAlign
         {
@@ -121,6 +152,7 @@ namespace Engine.Gui.Base
             Align align,
             Color defaultColor)
         {
+            _autoHeight = height <= 0;
             Parent = parent;
             Position = position;
             Width = width;
@@ -131,6 +163,20 @@ namespace Engine.Gui.Base
             DefaultColor = defaultColor;
             TextAlign = align;
             Text = text;// must be the last, because it invoke Caculate()
+
+            MouseMove += (arg1, arg2) =>
+            {
+                if (RealScreenRectangle.Contains(new Point((int)arg2.MouseScreenPosition.X, (int)arg2.MouseScreenPosition.Y)))
+                {
+                    _inRange = true;
+                    MouseEnterText?.Invoke(arg1, arg2);
+                }
+                else if (_inRange && !RealScreenRectangle.Contains(new Point((int)arg2.MouseScreenPosition.X, (int)arg2.MouseScreenPosition.Y)))
+                {
+                    _inRange = false;
+                    MouseLeaveText?.Invoke(arg1, arg2);
+                }
+            };
         }
 
         private bool IsReachRight(float x, float characterWidth)
@@ -334,7 +380,9 @@ namespace Engine.Gui.Base
                         _drawInfo.Add(new Info(
                             drawText,
                             new Vector2(x, y),
-                            CurrentColor));
+                            new Vector2(stringWidth, Font.LineSpacing + ExtureLineSpace),
+                            CurrentColor,
+                            CurrentColor == ActiveDefaultColor));
                         AddWdith(ref x, stringWidth);
                     }
                     _endIndex++;
@@ -347,9 +395,32 @@ namespace Engine.Gui.Base
             {
                 _drawInfo.Clear();
                 _endIndex = TextStream.Length;
+                _textRect = new Rectangle(0, 0, Width, Height);
                 Log.LogMessage("String [" + TextStream + "] format is bad!");
                 return false;
             }
+
+            if (_drawInfo.Count == 0)
+            {
+                _textRect = new Rectangle(0, 0, Width, Height);
+            }
+            else
+            {
+                var minX = _drawInfo.Min(info => info.Position.X);
+                var minY = _drawInfo.Min(info => info.Position.Y);
+                var maxX = _drawInfo.Max(info => info.Position.X + info.Size.X);
+                var maxY = _drawInfo.Max(info => info.Position.Y + info.Size.Y);
+                _textRect.X = (int)minX;
+                _textRect.Y = (int)minY;
+                _textRect.Width = (int)Math.Ceiling(maxX - minX);
+                _textRect.Height = (int)Math.Ceiling(maxY - minY);
+            }
+
+            if (_autoHeight)
+            {
+                Height = RealHeight;
+            }
+            
             return true;
         }
 
@@ -377,21 +448,40 @@ namespace Engine.Gui.Base
                 spriteBatch.DrawString(Font,
                     info.Text,
                     info.Position + screenPosition,
-                    info.DrawColor);
+                    UseOverrideColor ? OverrideColor : info.DrawColor);
             }
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            var mouseState = Mouse.GetState();
+            if (mouseState.LeftButton == ButtonState.Pressed &&
+                _lastMouseState.LeftButton == ButtonState.Released)
+            {
+                var screenPosition = new Vector2(mouseState.X, mouseState.Y);
+                if (RealScreenRectangle.Contains(new Point((int)screenPosition.X, (int)screenPosition.Y)))
+                {
+                    MouseLeftDownText?.Invoke(this, new MouseLeftDownEvent(screenPosition - ScreenPosition, screenPosition));
+                }
+            }
+            base.Update(gameTime);
         }
 
         private class Info
         {
             public string Text;
             public Vector2 Position;
+            public Vector2 Size;
             public Color DrawColor;
+            public bool IsDefaultColor;
 
-            public Info(string text, Vector2 position, Color drawColor)
+            public Info(string text, Vector2 position, Vector2 size, Color drawColor, bool isDefaultColor)
             {
                 Text = text;
                 Position = position;
+                Size = size;
                 DrawColor = drawColor;
+                IsDefaultColor = isDefaultColor;
             }
         }
 

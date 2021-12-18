@@ -7,8 +7,8 @@ namespace Engine.Gui
 {
     public class SelectionGui : GuiItem
     {
-        private LineText _messageText;
-        private List<LineText> _selectionLineTexts;
+        private TextGui _messageText;
+        private List<TextGui> _selectionLineTexts;
         private Color _normalColor = new Color(0,255,0)*0.8f;
         private Color _selectionColor = Color.Yellow*0.8f;
         private Texture2D _fadeTexture = TextureGenerator.GetColorTexture(
@@ -35,35 +35,40 @@ namespace Engine.Gui
 
             var startY = (Globals.WindowHeight - (selections.Count + 1) * (lineHeight + lineGap)) / 2;
 
-            _messageText = new LineText(null,
+            _messageText = new TextGui(null,
                 new Vector2(0, startY),
                 Globals.WindowWidth,
-                lineHeight,
-                LineText.Align.Center,
+                0,
+                Globals.FontSize12,
+                0,
+                lineGap,
                 message,
-                new Color(255,215,0) * 0.8f,
-                Globals.FontSize12);
+                new Color(255, 215, 0) * 0.8f,
+                TextGui.Align.Center);
 
-            startY += (lineHeight + lineGap);
+            startY += _messageText.RealHeight;
 
-            _selectionLineTexts = new List<LineText>();
+            _selectionLineTexts = new List<TextGui>();
             var index = 0;
             
             foreach(var selection in selections)
             {
-                var textGui = new LineText(null,
+                var textGui = new TextGui(null,
                 new Vector2(0, startY),
                 Globals.WindowWidth,
-                lineHeight,
-                LineText.Align.Center,
+                0,
+                Globals.FontSize12,
+                0,
+                lineGap,
                 selection,
                 _normalColor,
-                Globals.FontSize12);
+                TextGui.Align.Center);
 
-                textGui.MouseEnter += (arg1, arg2) => textGui.DrawColor = _selectionColor;
-                textGui.MouseLeave += (arg1, arg2) => textGui.DrawColor = _normalColor;
+                textGui.OverrideColor = _selectionColor;
+                textGui.MouseEnterText += (arg1, arg2) => textGui.UseOverrideColor = true;
+                textGui.MouseLeaveText += (arg1, arg2) => textGui.UseOverrideColor = false;
                 var currentIndex = index;
-                textGui.MouseLeftDown += (arg1, arg2) =>
+                textGui.MouseLeftDownText += (arg1, arg2) =>
                 {
                     IsInSelecting = false;
                     Selection = currentIndex;
@@ -72,7 +77,7 @@ namespace Engine.Gui
 
                 _selectionLineTexts.Add(textGui);
 
-                startY += (lineHeight + lineGap);
+                startY += textGui.RealHeight;
                 index += 1;
             }
 
