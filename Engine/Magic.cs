@@ -141,6 +141,7 @@ namespace Engine
         private int _traceEnemyDelayMilliseconds;
 
         private int _disableUse;
+        private int _lifeFullToUse;
 
         private int _lifeMax;
         private int _ThewMax;
@@ -1019,6 +1020,12 @@ namespace Engine
         {
             get { return _disableUse; }
             set { _disableUse = value; }
+        }
+
+        public int LifeFullToUse
+        {
+            get { return _lifeFullToUse; }
+            set { _lifeFullToUse = value; }
         }
 
         public int LifeMax

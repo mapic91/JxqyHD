@@ -823,6 +823,11 @@ namespace Engine
             }
         }
 
+        public bool IsFullLife
+        {
+            get { return _life == _lifeMax; }
+        }
+
         public int Thew
         {
             get { return _thew; }
@@ -2302,6 +2307,17 @@ namespace Engine
 
         public  virtual void UseMagic(Magic magicUse, Vector2 magicDestinationTilePosition, Character target = null)
         {
+            if (magicUse.LifeFullToUse > 0 && !IsFullLife)
+            {
+                if (IsPlayer ||
+                    (ControledMagicSprite != null && ControledMagicSprite.BelongCharacter.IsPlayer))
+                {
+                    GuiManager.ShowMessage("满血才能使用");
+                }
+
+                return;
+            }
+
             if (magicUse.MoveKind == 13 && magicUse.SpecialKind == 8)
             {
                 MagicUse = magicUse;
@@ -2709,6 +2725,16 @@ namespace Engine
             if (PerformActionOk())
             {
                 if (!CanPerformeAttack()) return;
+                if (magicToUse.LifeFullToUse > 0 && !IsFullLife)
+                {
+                    if (IsPlayer || 
+                        (ControledMagicSprite != null && ControledMagicSprite.BelongCharacter.IsPlayer))
+                    {
+                        GuiManager.ShowMessage("满血才能使用");
+                    }
+
+                    return;
+                }
 
                 //Check attck animations supporting current attack direction or not.
                 var canAttackDirCount = magicToUse.UseActionFile != null
