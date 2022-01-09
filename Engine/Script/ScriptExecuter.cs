@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Engine.Gui;
@@ -903,6 +904,11 @@ namespace Engine.Script
         public static void MergeNpc(List<string> parameters)
         {
             NpcManager.Merge(Utils.RemoveStringQuotes(parameters[0]));
+        }
+
+        public static void LoadOneNpc(List<string> parameters)
+        {
+            NpcManager.LoadOneNpc(parameters.Select(Utils.RemoveStringQuotes).ToList());
         }
 
         public static void LoadObj(List<string> parameters)

@@ -493,7 +493,7 @@ namespace Engine
             }
         }
 
-        public static bool Load(string fileName, bool clearCurrentNpcs = true)
+        public static bool Load(string fileName, bool clearCurrentNpcs = true, bool randOne=false)
         {
             var success = true;
             var filePath = Utils.GetNpcObjFilePath(fileName);
@@ -508,9 +508,19 @@ namespace Engine
                 if (!string.IsNullOrEmpty(fileName))
                 {
                     var list = Utils.GetAllKeyDataCollection(filePath, "NPC");
-                    foreach (var keyDataCollection in list)
+                    if (randOne)
                     {
-                        AddNpc(keyDataCollection);
+                        if (list.Count > 0)
+                        {
+                            AddNpc(list[Globals.TheRandom.Next(list.Count)]);
+                        }
+                    }
+                    else
+                    {
+                        foreach (var keyDataCollection in list)
+                        {
+                            AddNpc(keyDataCollection);
+                        }
                     }
                 }
             }
@@ -520,6 +530,18 @@ namespace Engine
                 success = false;
             }
             return success;
+        }
+
+        public static bool LoadOneNpc(List<string> fileNames, bool clearCurrentNpcs = true)
+        {
+            ClearAllNpcAndKeepPartner();
+            foreach (var fileName in fileNames)
+            {
+                Load(fileName, false, true);
+            }
+
+            _fileName = "";
+            return true;
         }
 
         public static void Merge(string fileName)

@@ -669,6 +669,9 @@ namespace Engine.Script
                         case "SetNpcMagicToUseWhenBeAttacked":
                             ScriptExecuter.SetNpcMagicToUseWhenBeAttacked(parameters);
                             break;
+                        case "LoadOneNpc":
+                            ScriptExecuter.LoadOneNpc(parameters);
+                            break;
                         default:
                             throw new Exception("无此函数");
                     }
