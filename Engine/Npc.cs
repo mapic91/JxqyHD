@@ -254,7 +254,9 @@ namespace Engine
             {
                 if (IsEnemy)
                 {
-                    if (StopFindingTarget == 0)
+                    //AIType - 1 - rand move, rand attack
+                    if ((StopFindingTarget == 0 && AIType != 1) || 
+                        (AIType == 1 && IsStanding() && Globals.TheRandom.Next(100) > 70))
                     {
                         FollowTarget = (IsAIDisabled || _blindMilliseconds > 0) ? null : NpcManager.GetLiveClosestOtherGropEnemy(Group, PositionInWorld);
                         if (NoAutoAttackPlayer == 0 && FollowTarget == null)
@@ -321,14 +323,25 @@ namespace Engine
             {
                 //Character found follow target and move to follow target.
                 //This may cause character move far away from the initial base tile position.
-                //Assing ActionPathTilePositionList value to null,
-                //when get next time, new path is generated use new base tile postion.
+                //Assigning ActionPathTilePositionList value to null,
+                //when get next time, new path is generated use new base tile position.
                 ActionPathTilePositionList = null;
+            }
+            else
+            {
+                if (AIType == 1 && IsStanding())
+                {
+                    var poses = GetRandTilePath(2, false, 10);
+                    if (poses.Count == 2)
+                    {
+                        WalkTo(poses[1]);
+                    }
+                }
             }
 
             ////Follow target not found, do something else.
             if ((FollowTarget == null || !IsFollowTargetFound) &&
-                !(IsFighterKind && IsAIDisabled)) //Fighter can't move when AI diaabled
+                !(IsFighterKind && IsAIDisabled)) //Fighter can't move when AI disabled
             {
                 var isFlyer = Kind == (int)CharacterKind.Flyer;
                 const int randWalkPosibility = 400;

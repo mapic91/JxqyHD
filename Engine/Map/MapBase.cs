@@ -687,8 +687,8 @@ namespace Engine.Map
             do
             {
                 maxtry--;
-                randPosition.X = tilePostion.X + Globals.TheRandom.Next(0, max);
-                randPosition.Y = tilePostion.Y + Globals.TheRandom.Next(0, max);
+                randPosition.X = tilePostion.X + Globals.TheRandom.Next(-max, max);
+                randPosition.Y = tilePostion.Y + Globals.TheRandom.Next(-max, max);
             } while (!IsTileInMapRange(randPosition) && maxtry >= 0);
 
             return maxtry< 0 ? Vector2.Zero : randPosition;

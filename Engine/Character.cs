@@ -170,6 +170,8 @@ namespace Engine
         private string _visibleVariableName;
         private int _visibleVariableValue;
 
+        private int _aiType;
+
         /// <summary>
         /// List of the fixed path tile position.
         /// When load <see cref="FixedPos"/>, <see cref="FixedPos"/> is converted to list and stored on this value.
@@ -1106,6 +1108,12 @@ namespace Engine
             set { _visibleVariableValue = value; }
         }
 
+        public int AIType
+        {
+            get { return _aiType; }
+            set { _aiType = value; }
+        }
+
         public bool IsVisibleByVariable = true;
 
         public bool IsObstacle
@@ -1630,15 +1638,19 @@ namespace Engine
         /// <param name="count">Path step count.</param>
         /// <param name="isFlyer">If false, tile position is obstacle for character is no added to path.</param>
         /// <returns>The rand path.</returns>
-        protected List<Vector2> GetRandTilePath(int count, bool isFlyer)
+        protected List<Vector2> GetRandTilePath(int count, bool isFlyer, int maxOffset = -1)
         {
             var path = new List<Vector2>() { TilePosition };
 
             var maxTry = count * 3;//For performace, otherwise method may run forever.
-            var maxOffset = 10;
+
             if (isFlyer)
             {
-                maxOffset = 15;
+                maxOffset = maxOffset == -1 ? 15 : maxOffset;
+            }
+            else
+            {
+                maxOffset = maxOffset == -1 ? 10 : maxOffset;
             }
 
             for (var i = 1; i < count; i++)
@@ -3451,7 +3463,7 @@ namespace Engine
         /// <param name="target">The target</param>
         public void NotifyFighterAndAllNeighbor(Character target)
         {
-            if (target == null || (!IsEnemy && !IsNoneFighter) || !IsStanding()) return;
+            if (target == null || (!IsEnemy && !IsNoneFighter) || FollowTarget != null) return;
             var characters = IsEnemy ? NpcManager.GetNeighborEnemy(this) : NpcManager.GetNeighborNuturalFighter(this);
             characters.Add(this);
             foreach (var character in characters)
