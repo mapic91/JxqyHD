@@ -672,6 +672,9 @@ namespace Engine.Script
                         case "LoadOneNpc":
                             ScriptExecuter.LoadOneNpc(parameters);
                             break;
+                        case "AddNpcProperty":
+                            ScriptExecuter.AddNpcProperty(parameters);
+                            break;
                         default:
                             throw new Exception("无此函数");
                     }

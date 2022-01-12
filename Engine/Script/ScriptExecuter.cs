@@ -2281,5 +2281,20 @@ namespace Engine.Script
                 npc.MagicDirectionWhenBeAttacked = magicDirectionWhenBeAttacked;
             }
         }
+
+        public static void AddNpcProperty(List<string> parameters)
+        {
+            var name = Utils.RemoveStringQuotes(parameters[0]);
+            var npcs = NpcManager.GetAllNpcs(name);
+            if (Globals.ThePlayer != null && Globals.ThePlayer.Name == name)
+            {
+                npcs.Add(Globals.ThePlayer);
+            }
+            var info = typeof(Character).GetProperty(Utils.RemoveStringQuotes(parameters[1]));
+            foreach (var character in npcs)
+            {
+                info.SetValue(character, (int)info.GetValue(character, null) + int.Parse(parameters[2]), null);
+            }
+        }
     }
 }
