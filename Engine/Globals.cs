@@ -162,11 +162,18 @@ namespace Engine
                 if (int.TryParse(setting["RunSpeedFold"], out value))
                     RunSpeedFold = value;
 
-                float fv;
-                if (float.TryParse(setting["SoundEffectVolume"], out fv))
-                    SoundEffect.MasterVolume = fv;
-                if(float.TryParse(setting["MusicVolume"], out fv))
-                    BackgroundMusic.SetVolume(fv);
+                try
+                {
+                    float fv;
+                    if (float.TryParse(setting["SoundEffectVolume"], out fv))
+                        SoundEffect.MasterVolume = fv;
+                    if (float.TryParse(setting["MusicVolume"], out fv))
+                        BackgroundMusic.SetVolume(fv);
+                }
+                catch (Exception e)
+                {
+    
+                }
             }
             catch (Exception)
             {
@@ -218,8 +225,15 @@ namespace Engine
                 {
                     section["Width"] = WindowWidth.ToString();
                     section["Height"] = WindowHeight.ToString();
-                    section["SoundEffectVolume"] = SoundEffect.MasterVolume.ToString();
-                    section["MusicVolume"] = BackgroundMusic.GetVolume().ToString();
+                    try
+                    {
+                        section["SoundEffectVolume"] = SoundEffect.MasterVolume.ToString();
+                        section["MusicVolume"] = BackgroundMusic.GetVolume().ToString();
+                    }
+                    catch (Exception e)
+                    {
+                        
+                    }
                     section["MaxMagicUnit"] = MagicManager.MaxMagicUnit.ToString();
                     section["RunSpeedFold"] = RunSpeedFold.ToString();
                 }

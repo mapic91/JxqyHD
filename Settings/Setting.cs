@@ -52,8 +52,15 @@ namespace Settings
             Globals.WindowWidth =  mode.Width;
             Globals.WindowHeight = mode.Height;
             Globals.IsFullScreen = !_windowMode.Checked;
-            SoundEffect.MasterVolume = _soundEffectVolume.Value/100f;
-            BackgroundMusic.SetVolume(_musicVolume.Value/100f);
+            try
+            {
+                SoundEffect.MasterVolume = _soundEffectVolume.Value / 100f;
+                BackgroundMusic.SetVolume(_musicVolume.Value / 100f);
+            }
+            catch (Exception exception)
+            {
+
+            }
             MagicManager.MaxMagicUnit = (int)_maxMagicUintCtl.Value;
             Globals.RunSpeedFold = _runSpeed.Value;
 
