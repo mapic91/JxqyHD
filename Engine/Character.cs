@@ -190,7 +190,7 @@ namespace Engine
         #endregion Field
 
         #region Protected properties
-        protected virtual bool IsMagicFromCache { get { return true; } }
+        public virtual bool IsMagicFromCache { get { return true; } }
         protected string LevelIniFile { set; get; }
 
         /// <summary>
@@ -931,6 +931,20 @@ namespace Engine
             }
         }
 
+        public void AddFlyInis(string magicFileName, int distance)
+        {
+            if (string.IsNullOrEmpty(_flyInis))
+            {
+                _flyInis = magicFileName + ":" + distance + ";";
+            }
+            else
+            {
+                _flyInis += (_flyInis.EndsWith(";") ? "" : ";") + magicFileName + ":" + distance + ";";
+            }
+            
+            _flyIniInfos.Add(new FlyIniInfoItem(distance, Utils.GetMagic(magicFileName, IsMagicFromCache).GetLevel(AttackLevel)));
+        }
+
         public Magic MagicToUseWhenLifeLow
         {
             get { return _magicToUseWhenLifeLow; }
@@ -1279,6 +1293,10 @@ namespace Engine
             if (_flyIni2 != null) _flyIni2 = _flyIni2.GetLevel(AttackLevel);
             AddMagicToInfos(_flyIni, AttackRadius, true);
             AddMagicToInfos(_flyIni2, AttackRadius, true);
+            foreach (var flyIniInfoItem in _flyIniInfos)
+            {
+                flyIniInfoItem.TheMagic = flyIniInfoItem.TheMagic.GetLevel(AttackLevel);
+            }
             _flyIniInfos.Sort();
 
             if (_magicToUseWhenLifeLow != null)

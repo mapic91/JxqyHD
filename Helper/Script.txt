@@ -679,6 +679,25 @@ c - 加多少，可以是负数，负数就是减少
 AddNpcProperty("刺客","LifeMax", 100)
 AddNpcProperty("刺客","Life", 100)
 
+ChangeFlyIni(a,b)
+a - npc的名字，所有该名字的npc（不包括主角）的FlyIni都会被改变
+b - Magic文件名
+比如：
+ChangeFlyIni("刺客", "magic-暗器2.ini")
+
+ChangeFlyIni2(a,b)
+a - npc的名字，所有该名字的npc（不包括主角）的FlyIni2都会被改变
+b - Magic文件名
+比如：
+ChangeFlyIni2("刺客", "magic-暗器2.ini")
+
+AddFlyInis(a,b,c)
+a - npc的名字，所有该名字的npc（不包括主角）的FlyInis都会增加武功
+b - Magic文件名
+c - 使用距离
+比如：
+AddFlyInis("刺客", "magic-暗器2.ini", 5)
+
 
 ///////////////////////////////////////////////////////////////////
 //////////////////    Implemented   End  /////////////////////////

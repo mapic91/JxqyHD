@@ -675,6 +675,15 @@ namespace Engine.Script
                         case "AddNpcProperty":
                             ScriptExecuter.AddNpcProperty(parameters);
                             break;
+                        case "ChangeFlyIni":
+                            ScriptExecuter.ChangeFlyIni(parameters);
+                            break;
+                        case "ChangeFlyIni2":
+                            ScriptExecuter.ChangeFlyIni2(parameters);
+                            break;
+                        case "AddFlyInis":
+                            ScriptExecuter.AddFlyInis(parameters);
+                            break;
                         default:
                             throw new Exception("无此函数");
                     }

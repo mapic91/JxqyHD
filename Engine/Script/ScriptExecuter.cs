@@ -2296,5 +2296,39 @@ namespace Engine.Script
                 info.SetValue(character, (int)info.GetValue(character, null) + int.Parse(parameters[2]), null);
             }
         }
+
+        public static void ChangeFlyIni(List<string> parameters)
+        {
+            var name = Utils.RemoveStringQuotes(parameters[0]);
+            var npcs = NpcManager.GetAllNpcs(name);
+            var magicName = Utils.RemoveStringQuotes(parameters[1]);
+            foreach (var character in npcs)
+            {
+                character.FlyIni = Utils.GetMagic(magicName, character.IsMagicFromCache);
+            }
+        }
+
+        public static void ChangeFlyIni2(List<string> parameters)
+        {
+            var name = Utils.RemoveStringQuotes(parameters[0]);
+            var npcs = NpcManager.GetAllNpcs(name);
+            var magicName = Utils.RemoveStringQuotes(parameters[1]);
+            foreach (var character in npcs)
+            {
+                character.FlyIni2 = Utils.GetMagic(magicName, character.IsMagicFromCache);
+            }
+        }
+
+        public static void AddFlyInis(List<string> parameters)
+        {
+            var name = Utils.RemoveStringQuotes(parameters[0]);
+            var npcs = NpcManager.GetAllNpcs(name);
+            var magicName = Utils.RemoveStringQuotes(parameters[1]);
+            var distance = int.Parse(parameters[2]);
+            foreach (var character in npcs)
+            {
+                character.AddFlyInis(magicName, distance);
+            }
+        }
     }
 }

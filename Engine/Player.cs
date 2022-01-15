@@ -450,7 +450,7 @@ namespace Engine
 
         #region Protected method
 
-        protected override bool IsMagicFromCache
+        public override bool IsMagicFromCache
         {
             get { return false; }
         }
