@@ -141,9 +141,9 @@ namespace Engine.Gui
                 if (good.ManaMax.GetMaxValue() != 0)
                     effect.AppendLine("气" + good.ManaMax.GetUIString());
                 if (good.SpecialEffect.GetMaxValue() == 1)
-                    effect.AppendLine(string.Format("不断恢复生命 {0}%/秒", good.SpecialEffectValue));
+                    effect.AppendLine(string.Format("不断恢复生命 {0}%/秒", good.SpecialEffectValue.GetUIString()));
                 if (good.ChangeMoveSpeedPercent.GetMaxValue() != 0)
-                    effect.AppendLine(string.Format("移动速度 {0:+#;-#}%", good.ChangeMoveSpeedPercent));
+                    effect.AppendLine(string.Format("移动速度 {0:+#;-#}%", good.ChangeMoveSpeedPercent.GetUIString()));
                 if (good.AddMagicEffectPercent.GetMaxValue() > 0 || good.AddMagicEffectAmount.GetMaxValue() > 0)
                 {
                     var showName = "所有武功";
@@ -151,8 +151,8 @@ namespace Engine.Gui
                     else if (!string.IsNullOrEmpty(good.AddMagicEffectType)) showName = good.AddMagicEffectType;
                     effect.AppendLine(string.Format("{0} 攻击{1}{2}",
                         showName,
-                        good.AddMagicEffectPercent.GetMaxValue() > 0 ? (" +" + good.AddMagicEffectPercent.GetUIString() + "%") : "",
-                        good.AddMagicEffectAmount.GetMaxValue() > 0 ? (" +" + good.AddMagicEffectAmount.GetUIString()) : ""));
+                        good.AddMagicEffectPercent.GetMaxValue() > 0 ? (good.AddMagicEffectPercent.GetUIString() + "%") : "",
+                        good.AddMagicEffectAmount.GetMaxValue() > 0 ? (good.AddMagicEffectAmount.GetUIString()) : ""));
                 }
                 if (!string.IsNullOrEmpty(good.Intro))
                     intro = good.Intro;
