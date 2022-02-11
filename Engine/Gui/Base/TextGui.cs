@@ -186,7 +186,7 @@ namespace Engine.Gui.Base
 
         private bool IsReachBottom(float y)
         {
-            return Height > 0 && y + Font.LineSpacing + ExtureLineSpace > Height;
+            return !_autoHeight && Height > 0 && y + Font.LineSpacing + ExtureLineSpace > Height;
         }
 
         private void AddWdith(ref float x, float charecterWidth)
