@@ -23,6 +23,7 @@ namespace Engine
         private bool _destroyOnEnd;
         private LinkedList<Sprite> _superModeDestroySprites;
         private List<Character> _leapedCharacters;
+        private List<Character> _carrayUser4Characters = new List<Character>();
         private Character _closedCharecter;
         private float _flyMagicElapsedMilliSeconds;
         private float _summonElapsedMilliseconds;
@@ -282,7 +283,21 @@ namespace Engine
         private bool CharacterHited(Character character)
         {
             if (character == null) return false;
+
             var destroy = true;
+
+            if (BelongMagic.CarryUser == 4 && BelongCharacter.MovedByMagicSprite == this)
+            {
+                if (_carrayUser4Characters.Exists(c => c == character))
+                {
+                    return false;
+                }
+                _carrayUser4Characters.Add(character);
+                character.MovedByMagicSprite = this;
+                character.MovedByMagicSpriteOffset = character.PositionInWorld - this.PositionInWorld;
+
+                destroy = false;
+            }
 
             if(BelongMagic.BlindMilliseconds > 0)
             {
@@ -666,6 +681,20 @@ namespace Engine
                 return;
             }
 
+            if (BelongMagic.CarryUser == 4)
+            {
+                foreach (var character in _carrayUser4Characters.ToArray())
+                {
+                    var characters = NpcManager.FindEnemiesInTileDistance(BelongCharacter, character.TilePosition, 1);
+                    foreach (var collision in characters)
+                    {
+                        if (!_carrayUser4Characters.Exists(c => c == collision))
+                        {
+                            CharacterHited(collision);
+                        }
+                    }
+                }
+            }
 
             bool characterHited = false;
             if (BelongMagic.AttackAll > 0)

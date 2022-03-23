@@ -100,7 +100,7 @@ namespace Engine
             }
         }
 
-        public static Vector2 FindPosMeet(Vector2 startTile, Func<Vector2, bool> condition)
+        public static Vector2 FindPosMeet(Vector2 startTile, int dir, Func<Vector2, bool> condition)
         {
             if (condition(startTile)) return startTile;
             var visted = new LinkedList<Vector2>();
@@ -131,13 +131,17 @@ namespace Engine
                 var current = needFindNeighbors.First.Value;
                 var neighbors = FindAllNeighbors(current);
                 findedNeighbors.AddLast(current);
-                foreach(var neighbor in neighbors)
+                for(var i = 0; i < neighbors.Count; i++)
                 {
-                    if(!visted.Contains(neighbor) && condition(neighbor))
+                    var neighbor = neighbors[i];
+                    if (dir < 0 || dir == i)
                     {
-                        return neighbor;
+                        if (!visted.Contains(neighbor) && condition(neighbor))
+                        {
+                            return neighbor;
+                        }
+                        visted.AddLast(neighbor);
                     }
-                    visted.AddLast(neighbor);
                 }
             }
             

@@ -372,7 +372,21 @@ namespace Engine
         /// </summary>
         public bool IsInTransport { get; set; }
 
-        public MagicSprite MovedByMagicSprite { set; get; }
+        private MagicSprite _movedByMagicSprite;
+
+        public MagicSprite MovedByMagicSprite
+        {
+            get
+            {
+                return _movedByMagicSprite;
+            }
+            set
+            {
+                _movedByMagicSprite = value;
+                StandingImmediately();
+            }
+        }
+        public Vector2 MovedByMagicSpriteOffset { set; get; }
 
         public MagicSprite BoundByMagicSprite { set; get; }
         public float BouncedVelocity { set; get; }
@@ -3875,32 +3889,35 @@ namespace Engine
                 {
                     if (MovedByMagicSprite.BelongMagic.CarryUser == 3)
                     {
-                        var fp = Engine.PathFinder.FindPosMeet(TilePosition, p => !HasObstacle(p) && !MapBase.Instance.IsObstacleForCharacter(p));
+                        //find opposite direction of magic move direction, otherwise character may pass through wall 
+                        var fp = Engine.PathFinder.FindPosMeet(TilePosition, Utils.GetDirectionIndex(-MovedByMagicSprite.MoveDirection, 8), p => !HasObstacle(p) && !MapBase.Instance.IsObstacleForCharacter(p));
                         TilePosition = fp;
                     }
                     MovedByMagicSprite = null;
                 }
                 else
                 {
-                    if(MovedByMagicSprite.BelongMagic.CarryUser == 3)
+                    if(MovedByMagicSprite.BelongMagic.CarryUser == 3 || MovedByMagicSprite.BelongMagic.CarryUser == 4)
                     {
-                        if(MapBase.Instance.IsObstacleForCharacter(MovedByMagicSprite.TilePosition))
+                        if(MapBase.Instance.IsObstacleForCharacter(TilePosition))
                         {
-                            var fp = Engine.PathFinder.FindPosMeet(TilePosition, p => !HasObstacle(p) && !MapBase.Instance.IsObstacleForCharacter(p));
+                            //find opposite direction of magic move direction, otherwise character may pass through wall 
+                            var fp = Engine.PathFinder.FindPosMeet(TilePosition, Utils.GetDirectionIndex(-MovedByMagicSprite.MoveDirection, 8), p => !HasObstacle(p) && !MapBase.Instance.IsObstacleForCharacter(p));
                             TilePosition = fp;
                             SetDirection(MovedByMagicSprite.MoveDirection);
+                            MovedByMagicSprite.Destroy();
                         } 
                         else
                         {
-                            PositionInWorld = MovedByMagicSprite.PositionInWorld;
+                            PositionInWorld = MovedByMagicSprite.PositionInWorld + MovedByMagicSpriteOffset;
                             SetDirection(MovedByMagicSprite.MoveDirection);
                         }
                     }
                     else
                     {
-                        if (CheckLinearlyMove(TilePosition, MovedByMagicSprite.TilePosition))
+                        if (CheckLinearlyMove(TilePosition, MapBase.ToTilePosition(MovedByMagicSprite.PositionInWorld + MovedByMagicSpriteOffset)))
                         {
-                            PositionInWorld = MovedByMagicSprite.PositionInWorld;
+                            PositionInWorld = MovedByMagicSprite.PositionInWorld + MovedByMagicSpriteOffset;
                             SetDirection(MovedByMagicSprite.MoveDirection);
                         }
                         else

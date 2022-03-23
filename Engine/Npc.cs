@@ -303,14 +303,17 @@ namespace Engine
                 }
             }
 
-            if (!CheckKeepDistanceWhenFriendDeath() && !KeepDistanceWhenLifeLow() && MagicToUseWhenLifeLow != null && LifeMax > 0 && Life/(float)LifeMax <= LifeLowPercent/100.0f)
+            if (MovedByMagicSprite == null)
             {
-                PerformeAttack(PositionInWorld+Utils.GetDirection8(CurrentDirection), MagicToUseWhenLifeLow);
-            }
-            else
-            {
-                //Follow target
-                PerformeFollow();
+                if (!CheckKeepDistanceWhenFriendDeath() && !KeepDistanceWhenLifeLow() && MagicToUseWhenLifeLow != null && LifeMax > 0 && Life / (float)LifeMax <= LifeLowPercent / 100.0f)
+                {
+                    PerformeAttack(PositionInWorld + Utils.GetDirection8(CurrentDirection), MagicToUseWhenLifeLow);
+                }
+                else
+                {
+                    //Follow target
+                    PerformeFollow();
+                }
             }
 
             //Attack interval
