@@ -1015,6 +1015,11 @@ namespace Engine.Script
             GuiManager.AddMemo(detail.Text);
         }
 
+        public static void DelMemo(List<string> parameters)
+        {
+            GuiManager.DelMemo(Utils.RemoveStringQuotes(parameters[0]));
+        }
+
         public static void DelGoods(List<string> parameters, object belongObject)
         {
             if (parameters.Count == 0)

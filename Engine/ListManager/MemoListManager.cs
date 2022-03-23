@@ -96,5 +96,40 @@ namespace Engine.ListManager
                 MemoList.AddFirst(lines[i]);
             }
         }
+
+        public static void DelMemo(string text)
+        {
+            text = "●" + text;
+            var lines = Utils.SpliteStringInCharCount(text, 10);
+            var count = lines.Count;
+            for (var line = MemoList.First; line != MemoList.Last; line = line.Next)
+            {
+                if (line.Value == lines[0])
+                {
+                    var find = line;
+                    line = line.Next;
+                    for (var i = 1; i < lines.Count; i++)
+                    {
+                        if (line == null || line.Value != lines[i])
+                        {
+                            find = null;
+                            break;
+                        }
+                        line = line.Next;
+                    }
+
+                    if (find != null)
+                    {
+                        for (var i = 0; i < lines.Count; i++)
+                        {
+                            var remove = find;
+                            find = find.Next;
+                            MemoList.Remove(remove);
+                        }
+                        return;
+                    }
+                }
+            }
+        }
     }
 }

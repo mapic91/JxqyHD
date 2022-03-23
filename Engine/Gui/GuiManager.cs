@@ -428,6 +428,12 @@ namespace Engine.Gui
             UpdateMemoView();
         }
 
+        public static void DelMemo(string text)
+        {
+            MemoListManager.DelMemo(text);
+            UpdateMemoView();
+        }
+
         /// <summary>
         /// Use good at bottom gui.
         /// </summary>

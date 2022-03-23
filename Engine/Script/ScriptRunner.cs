@@ -313,6 +313,9 @@ namespace Engine.Script
                         case "AddToMemo":
                             ScriptExecuter.AddToMemo(parameters);
                             break;
+                        case "DelMemo":
+                            ScriptExecuter.DelMemo(parameters);
+                            break;
                         case "DelGoods":
                             ScriptExecuter.DelGoods(parameters, BelongObject);
                             break;
