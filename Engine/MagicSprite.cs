@@ -37,6 +37,8 @@ namespace Engine
         private int _currentEffectMana;
         private bool _canLeap;
 
+        private Vector2 _lastTilePosition;
+
         private Npc _summonedNpc;
 
         private bool _isInMoveBack;
@@ -275,6 +277,11 @@ namespace Engine
                 SetPath(path);
                 PositionInWorld = path.First.Value;
                 Velocity = belongMagic.Speed * Globals.MagicBasespeed;
+            }
+
+            if (!string.IsNullOrEmpty(BelongMagic.MagicWhenNewPos))
+            {
+                _lastTilePosition = TilePosition;
             }
 
             return true;
@@ -1058,6 +1065,15 @@ namespace Engine
             {
                 _waitMilliSeconds -= (float)gameTime.ElapsedGameTime.TotalMilliseconds;
                 return;
+            }
+
+            if (!string.IsNullOrEmpty(BelongMagic.MagicWhenNewPos))
+            {
+                if (_lastTilePosition != TilePosition)
+                {
+                    MagicManager.AddFixedPositionMagicSprite(BelongCharacter, Utils.GetMagic(BelongMagic.MagicWhenNewPos, BelongCharacter.IsMagicFromCache), MapBase.ToPixelPosition(_lastTilePosition), true);
+                    _lastTilePosition = TilePosition;
+                }
             }
 
             if (_parasitiferCharacter != null)

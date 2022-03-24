@@ -160,6 +160,8 @@ namespace Engine
         private string _magicToUseWhenBeAttacked;
         private int _magicDirectionWhenBeAttacked;
 
+        private string _magicWhenNewPos;
+
         #region Leap
         private int _leapTimes;
         private int _leapFrame;
@@ -1112,6 +1114,12 @@ namespace Engine
             set { _magicDirectionWhenBeAttacked = value; }
         }
 
+        public string MagicWhenNewPos
+        {
+            get { return _magicWhenNewPos; }
+            set { _magicWhenNewPos = value; }
+        }
+
         #endregion
 
         //noAttackFile - resolve recursive problem of AttackFile
@@ -1135,6 +1143,7 @@ namespace Engine
                     case "FlyIni":
                     case "FlyIni2":
                     case "MagicToUseWhenBeAttacked":
+                    case "MagicWhenNewPos":
                         info.SetValue(this, nameValue[1], null);
                         break;
                     case "Image":

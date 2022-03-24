@@ -135,7 +135,7 @@ namespace Engine
                 destroyOnEnd);
         }
 
-        private static void AddFixedPositionMagicSprite(Character user, Magic magic, Vector2 destination, bool destroyOnEnd)
+        public static void AddFixedPositionMagicSprite(Character user, Magic magic, Vector2 destination, bool destroyOnEnd)
         {
             AddMagicSprite(GetFixedPositionMagicSprite(
                 user,
