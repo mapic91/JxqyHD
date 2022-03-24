@@ -27,8 +27,8 @@ namespace Engine.Weather
             {
                 _texture = TextureGenerator.GetRaniDrop();
             }
-            _rainSound = Utils.GetSoundEffect("背-下雨.wav").CreateInstance();
-            _thunderSound = Utils.GetSoundEffect("背-打雷.wav").CreateInstance();
+            _rainSound = Utils.GetSoundEffect("背-下雨.wav")?.CreateInstance();
+            _thunderSound = Utils.GetSoundEffect("背-打雷.wav")?.CreateInstance();
         }
         private static void GenerateRainDrops()
         {
@@ -54,12 +54,19 @@ namespace Engine.Weather
             if (_isRaining)
             {
                 Sprite.DrawColor = MapBase.DrawColor = RainMapColor;
-                _rainSound.IsLooped = true;
-                _rainSound.Play();
+                if (_rainSound != null)
+                {
+                    _rainSound.IsLooped = true;
+                    _rainSound.Play();
+                }
+                
             }
             else
             {
-                _rainSound.Stop();
+                if (_rainSound != null)
+                {
+                    _rainSound.Stop();
+                }
             }
         }
 
