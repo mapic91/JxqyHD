@@ -352,7 +352,7 @@ namespace Engine
             get
             {
                 return !(IsDeath || IsHide || IsInTransport || !IsVisible ||  !IsVisibleByVariable ||
-                         (MovedByMagicSprite != null && MovedByMagicSprite.BelongMagic.HideUserWhenCarry > 0));
+                         (MovedByMagicSprite != null && MovedByMagicSprite.BelongMagic.HideUserWhenCarry > 0 && MovedByMagicSprite.BelongCharacter == this));
             }
         }
 
