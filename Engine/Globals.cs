@@ -110,6 +110,7 @@ namespace Engine
         public static int SaveLoadSelectionIndex;
         public static bool IsUseThewWhenNormalRun = false;
         public static bool ShowMapPos = false;
+        public static bool ScriptShowMapPos = false;
 
         private static bool _isInputDisabled;
         private static bool _isInputDisabledDirty;

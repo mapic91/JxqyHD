@@ -687,6 +687,9 @@ namespace Engine.Script
                         case "AddFlyInis":
                             ScriptExecuter.AddFlyInis(parameters);
                             break;
+                        case "SetShowMapPos":
+                            ScriptExecuter.SetShowMapPos(parameters);
+                            break;
                         default:
                             throw new Exception("无此函数");
                     }

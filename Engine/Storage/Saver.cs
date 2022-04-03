@@ -28,6 +28,7 @@ namespace Engine.Storage
             state.AddKey("Time", string.Format(
                 "{0:yyyy} 年{0:MM} 月{0:dd} 日 {0:HH} 时{0:mm} 分{0:ss} 秒", 
                 DateTime.Now));
+            state.AddKey("ScriptShowMapPos", Globals.ScriptShowMapPos ? "1" : "0");
 
             //Save npc obj
             NpcManager.SaveNpc();

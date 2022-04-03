@@ -25,6 +25,14 @@ namespace Engine.Storage
                 ObjManager.Load(state["Obj"]);
                 BackgroundMusic.Play(state["Bgm"]);
                 Globals.PlayerIndex = int.Parse(state["Chr"]);
+                if (state.ContainsKey("ScriptShowMapPos"))
+                {
+                    Globals.ScriptShowMapPos = int.Parse(state["ScriptShowMapPos"]) > 0;
+                }
+                else
+                {
+                    Globals.ScriptShowMapPos = false;
+                }
 
                 //option
                 var option = data["Option"];

@@ -574,6 +574,10 @@ namespace Engine
                         break;
                     case GameState.StateType.Playing:
                         DrawGamePlay(gameTime);
+                        if (Globals.ShowMapPos || Globals.ScriptShowMapPos)
+                        {
+                            DrawMapPos(_spriteBatch);
+                        }
                         break;
                     case GameState.StateType.EndAds:
                         DrawAds(gameTime);
@@ -588,11 +592,6 @@ namespace Engine
             if (IsInEditMode)
             {
                 DrawGameInfo(_spriteBatch);
-            }
-
-            if (Globals.ShowMapPos)
-            {
-                DrawMapPos(_spriteBatch);
             }
 
             _spriteBatch.End();

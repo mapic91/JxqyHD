@@ -2335,5 +2335,11 @@ namespace Engine.Script
                 character.AddFlyInis(magicName, distance);
             }
         }
+
+        public static void SetShowMapPos(List<string> parameters)
+        {
+            var v = int.Parse(parameters[0]);
+            Globals.ScriptShowMapPos = v > 0;
+        }
     }
 }
