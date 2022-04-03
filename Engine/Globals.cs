@@ -109,6 +109,7 @@ namespace Engine
         public static bool IsFullScreen = true;
         public static int SaveLoadSelectionIndex;
         public static bool IsUseThewWhenNormalRun = false;
+        public static bool ShowMapPos = false;
 
         private static bool _isInputDisabled;
         private static bool _isInputDisabledDirty;
@@ -161,7 +162,8 @@ namespace Engine
                     MagicManager.MaxMagicUnit = value;
                 if (int.TryParse(setting["RunSpeedFold"], out value))
                     RunSpeedFold = value;
-
+                if (int.TryParse(setting["ShowMapPos"], out value))
+                    ShowMapPos = value > 0;
                 try
                 {
                     float fv;
