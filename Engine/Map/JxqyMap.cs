@@ -85,7 +85,7 @@ namespace Engine.Map
             offset = 16512;
         }
 
-        private bool LoadHead(byte[] buf, ref int offset)
+        private bool LoadHead(byte[] buf, ref int offset, string mapFileNameWithoutExtension)
         {
             var headInfo = Globals.LocalEncoding.GetString(buf, 0, "MAP File Ver".Length);
             if (!headInfo.Equals("MAP File Ver")) return false;
@@ -94,6 +94,10 @@ namespace Engine.Map
             while (buf[offset + len] != 0) len++;
             if (len > 0) len--;
             _mpcDirPath = Globals.LocalEncoding.GetString(buf, offset + 1, len);
+            if (string.IsNullOrEmpty(_mpcDirPath))
+            {
+                _mpcDirPath = "mpc\\map\\" + mapFileNameWithoutExtension;
+            }
             offset = 68;
             _mapColumnCounts = Utils.GetLittleEndianIntegerFromByteArray(buf, ref offset);
             _mapRowCounts = Utils.GetLittleEndianIntegerFromByteArray(buf, ref offset);
@@ -206,10 +210,10 @@ namespace Engine.Map
         protected override bool LoadMapInternal(string mapFilePath)
         {
             var buf = File.ReadAllBytes(mapFilePath);
-            return LoadMapFromBuffer(buf);
+            return LoadMapFromBuffer(buf, Path.GetFileNameWithoutExtension(mapFilePath));
         }
 
-        private bool LoadMapFromBuffer(byte[] buf)
+        private bool LoadMapFromBuffer(byte[] buf, string mapFileNameWithoutExtension)
         {
             //Clear ingnored traps list
             _ingnoredTrapsIndex.Clear();
@@ -224,7 +228,7 @@ namespace Engine.Map
             var offset = 0;
             try
             {
-                if (!LoadHead(buf, ref offset)) return false;
+                if (!LoadHead(buf, ref offset, mapFileNameWithoutExtension)) return false;
                 LoadMpc(buf, ref offset);
                 LoadMapTiles(buf, ref offset);
             }
