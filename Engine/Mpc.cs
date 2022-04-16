@@ -76,7 +76,15 @@ namespace Engine
                         var colorcount = buf[datastart++];
                         for (var ci = 0; ci < colorcount; ci++)
                         {
-                            data[dataidx++] = Palette[buf[datastart++]];
+                            var idx = buf[datastart++];
+                            if (idx >= Palette.Length)
+                            {
+                                data[dataidx++] = Color.Transparent;
+                            }
+                            else
+                            {
+                                data[dataidx++] = Palette[idx];
+                            }
                         }
                     }
                 }
