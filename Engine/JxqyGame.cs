@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using Engine.Benchmark;
@@ -77,6 +78,12 @@ namespace Engine
 
         public JxqyGame()
         {
+            CultureInfo culture = CultureInfo.CurrentCulture;
+            if (culture.TwoLetterISOLanguageName != "zh")
+            {
+                MessageBox.Show("请将系统区域改为中文，否则无法正常运行。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = false;
