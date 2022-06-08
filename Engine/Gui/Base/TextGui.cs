@@ -17,6 +17,7 @@ namespace Engine.Gui.Base
         private int _endIndex;
         private int _drawInfoLineBegin;
         private readonly List<Info> _drawInfo = new List<Info>();
+        private bool _isLeftDown;
         public SpriteFont Font { set; get; }
         public int ExtureCharacterSpace { set; get; }
         public int ExtureLineSpace { set; get; }
@@ -33,6 +34,7 @@ namespace Engine.Gui.Base
         public event Action<object, MouseEvent> MouseEnterText;
         public event Action<object, MouseEvent> MouseLeaveText;
         public event Action<object, MouseLeftDownEvent> MouseLeftDownText;
+        public event Action<object, MouseLeftUpEvent> MouseLeftUpText;
 
         public string Text
         {
@@ -462,6 +464,16 @@ namespace Engine.Gui.Base
                 if (RealScreenRectangle.Contains(new Point((int)screenPosition.X, (int)screenPosition.Y)))
                 {
                     MouseLeftDownText?.Invoke(this, new MouseLeftDownEvent(screenPosition - ScreenPosition, screenPosition));
+                }
+            }
+
+            if (mouseState.LeftButton == ButtonState.Released &&
+                _lastMouseState.LeftButton == ButtonState.Pressed)
+            {
+                var screenPosition = new Vector2(mouseState.X, mouseState.Y);
+                if (RealScreenRectangle.Contains(new Point((int)screenPosition.X, (int)screenPosition.Y)))
+                {
+                    MouseLeftUpText?.Invoke(this, new MouseLeftUpEvent(screenPosition - ScreenPosition, screenPosition));
                 }
             }
             base.Update(gameTime);

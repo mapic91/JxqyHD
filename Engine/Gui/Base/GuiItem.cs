@@ -8,7 +8,7 @@ namespace Engine.Gui.Base
 {
     public class GuiItem
     {
-        protected MouseState _lastMouseState;
+        protected MouseState _lastMouseState = Mouse.GetState();
         private bool _isShow = true;
         private bool _isClicked;
         private bool _isRightClicked;
