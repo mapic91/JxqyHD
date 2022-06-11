@@ -542,7 +542,7 @@ namespace Engine
         private bool CanRun()
         {
             if (IsRunDisabled) return false;
-            if (IsNotUseThewWhenRun || !IsInFighting) return true;
+            if (IsNotUseThewWhenRun || (!Globals.IsUseThewWhenNormalRun && !IsInFighting)) return true;
             if (Thew > 0) return true;
             return false;
         }
