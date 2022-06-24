@@ -948,7 +948,7 @@ namespace Engine.Script
             try
             {
                 var parser = new FileIniDataParser();
-                var data = parser.ReadFile(filePath);
+                var data = parser.ReadFile(filePath, Globals.LocalEncoding);
                 var count = int.Parse(data["Header"]["Count"]);
                 var rand = Globals.TheRandom.Next(1, count + 1);
                 return data[rand.ToString()]["IniFile"];

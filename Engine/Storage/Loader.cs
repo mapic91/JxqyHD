@@ -16,7 +16,7 @@ namespace Engine.Storage
             try
             {
                 var parser = new FileIniDataParser();
-                var data = parser.ReadFile(StorageBase.GameIniFilePath);
+                var data = parser.ReadFile(StorageBase.GameIniFilePath, Globals.LocalEncoding);
 
                 //state
                 var state = data["State"];

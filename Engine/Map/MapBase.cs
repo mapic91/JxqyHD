@@ -375,7 +375,7 @@ namespace Engine.Map
             try
             {
                 var parser = new FileIniDataParser();
-                var data = parser.ReadFile(filePath);
+                var data = parser.ReadFile(filePath, Globals.LocalEncoding);
                 foreach (var section in data.Sections)
                 {
                     var list = new Dictionary<int, string>();
