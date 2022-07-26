@@ -172,6 +172,9 @@ namespace Engine
 
         private int _aiType;
 
+        private int _reviveMilliseconds;
+        private float _leftMillisecondsToRevive;
+
         /// <summary>
         /// List of the fixed path tile position.
         /// When load <see cref="FixedPos"/>, <see cref="FixedPos"/> is converted to list and stored on this value.
@@ -898,6 +901,8 @@ namespace Engine
             }
         }
 
+        public int IsBodyIniAdded { get; set; }
+
         public virtual Magic FlyIni
         {
             get { return _flyIni; }
@@ -1145,6 +1150,18 @@ namespace Engine
         {
             get { return _aiType; }
             set { _aiType = value; }
+        }
+
+        public int ReviveMilliseconds
+        {
+            get { return _reviveMilliseconds; }
+            set { _reviveMilliseconds = value; }
+        }
+
+        public int LeftMillisecondsToRevive
+        {
+            set { _leftMillisecondsToRevive = value;}
+            get { return (int)_leftMillisecondsToRevive; }
         }
 
         public bool IsVisibleByVariable = true;
@@ -1807,6 +1824,13 @@ namespace Engine
                             BuyIniString = Utils.Base64Encode(str);
                         }
                         break;
+                    case "IsDeath":
+                    case "IsDeathInvoked":
+                        {
+                            var integerValue = int.Parse(keyData.Value);
+                            info.SetValue(this, integerValue != 0, null);
+                        }
+                        break;
                     default:
                         {
                             var integerValue = int.Parse(keyData.Value);
@@ -2090,6 +2114,11 @@ namespace Engine
                 AddKey(keyDataCollection, "TimerScriptInterval", _timerScriptInterval);
             }
             AddKey(keyDataCollection, "DropIni", _dropIni);
+            AddKey(keyDataCollection, "ReviveMilliseconds", ReviveMilliseconds);
+            AddKey(keyDataCollection, "LeftMillisecondsToRevive", LeftMillisecondsToRevive);
+            AddKey(keyDataCollection, "IsBodyIniAdded", IsBodyIniAdded);
+            AddKey(keyDataCollection, "IsDeath", IsDeath);
+            AddKey(keyDataCollection, "IsDeathInvoked", IsDeathInvoked);
         }
 
         #endregion Save load method
@@ -2430,6 +2459,11 @@ namespace Engine
         {
             if (IsDeathInvoked) return;
             IsDeathInvoked = true;
+
+            if (ReviveMilliseconds > 0)
+            {
+                LeftMillisecondsToRevive = ReviveMilliseconds;
+            }
 
             InvisibleByMagicTime = 0;
 
@@ -3324,6 +3358,7 @@ namespace Engine
             Life = LifeMax;
             IsDeath = false;
             IsDeathInvoked = false;
+            IsBodyIniAdded = 0;
         }
 
         public void FullThew()
@@ -3599,6 +3634,17 @@ namespace Engine
             if(!IsVisibleByVariable)
             {
                 return;
+            }
+
+            if (_leftMillisecondsToRevive > 0)
+            {
+                _leftMillisecondsToRevive -= (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                if (_leftMillisecondsToRevive <= 0)
+                {
+                    FullLife();
+                    StandingImmediately(true);
+                    return;
+                }
             }
 
             if (!IsDeathInvoked && !IsDeath)

@@ -885,18 +885,28 @@ namespace Engine
                 var npc = node.Value;
                 var next = node.Next;
                 npc.Update(gameTime);
-                if (npc.IsDeath)
+                if (npc.IsDeath && npc.IsBodyIniAdded == 0)
                 {
+                    npc.IsBodyIniAdded = 1;
                     if (npc.IsBodyIniOk &&
                         !npc.IsNodAddBody &&
                         npc.SummonedByMagicSprite == null) //Not summoned npc
                     {
+                        
                         npc.BodyIni.PositionInWorld = npc.PositionInWorld;
                         npc.BodyIni.CurrentDirection = npc.CurrentDirection;
+                        if (npc.ReviveMilliseconds > 0)
+                        {
+                            npc.BodyIni.IsRemoved = false;
+                            npc.BodyIni.MillisecondsToRemove = npc.LeftMillisecondsToRevive;
+                        }
                         ObjManager.AddObj(npc.BodyIni);
                     }
                     ObjManager.AddObj(GoodDrop.GetDropObj(npc));
-                    DeleteNpc(node);
+                    if (npc.ReviveMilliseconds == 0)
+                    {
+                        DeleteNpc(node);
+                    }
                 }
                 node = next;
             }

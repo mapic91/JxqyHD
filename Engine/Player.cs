@@ -1348,7 +1348,7 @@ namespace Engine
 
                 foreach (var one in NpcManager.NpcsInView)
                 {
-                    if (!one.IsInteractive || !one.IsVisible) continue;
+                    if (!one.IsInteractive || !one.IsVisible || one.IsDeath) continue;
                     var texture = one.GetCurrentTexture();
                     if (Collider.IsPixelCollideForNpcObj(mouseWorldPosition,
                         one.RegionInWorld,
@@ -1368,7 +1368,7 @@ namespace Engine
                 {
                     foreach (var one in ObjManager.ObjsInView)
                     {
-                        if (!one.IsInteractive || one.ScriptFileJustTouch > 0) continue;
+                        if (!one.IsInteractive || one.ScriptFileJustTouch > 0 || one.IsRemoved) continue;
                         var texture = one.GetCurrentTexture();
                         if (mouseTilePosition == one.TilePosition ||
                             Collider.IsPixelCollideForNpcObj(mouseWorldPosition,

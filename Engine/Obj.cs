@@ -34,6 +34,7 @@ namespace Engine
         private int _offY;
         private string _reviveNpcIni;
         private int _scriptFileJustTouch;
+        private float _millisecondsToRemove;
 
         #region Public properties
 
@@ -237,6 +238,12 @@ namespace Engine
         {
             get { return Kind == 2; }
         }
+
+        public int MillisecondsToRemove
+        {
+            get { return (int)_millisecondsToRemove; }
+            set { _millisecondsToRemove = value; }
+        }
         #endregion
 
         #region Ctor
@@ -432,6 +439,7 @@ namespace Engine
             {
                 AddKey(keyDataCollection, "TimerScriptInterval", _timerScriptInterval);
             }
+            AddKey(keyDataCollection, "MillisecondsToRemove", MillisecondsToRemove);
         }
 
         public void StartInteract(bool isRight)
@@ -445,6 +453,15 @@ namespace Engine
         private ScriptParser _timeScriptParserCache;
         public override void Update(GameTime gameTime)
         {
+            if (_millisecondsToRemove > 0)
+            {
+                _millisecondsToRemove -= (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                if (_millisecondsToRemove <= 0)
+                {
+                    IsRemoved = true;
+                }
+            }
+
             if (!string.IsNullOrEmpty(_timerScriptFile))
             {
                 _timerScriptIntervlElapsed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
