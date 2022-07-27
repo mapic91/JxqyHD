@@ -339,7 +339,7 @@ namespace Engine
             {
                 if ((DestinationMapPosX != 0 || DestinationMapPosY != 0) && IsStanding())
                 {
-                    if (TilePosition.X == DestinationMapPosX && TilePosition.Y == DestinationMapPosY)
+                    if (MapX == DestinationMapPosX && MapY == DestinationMapPosY)
                     {
                         DestinationMapPosX = 0;
                         DestinationMapPosY = 0;
@@ -348,6 +348,13 @@ namespace Engine
                     {
                         Engine.PathFinder.TemporaryDisableRestrict = true;
                         WalkTo(new Vector2(DestinationMapPosX, DestinationMapPosY), Engine.PathFinder.PathType.PerfectMaxPlayerTry);
+                        if (Path == null || //no path
+                            (Path.Count == 2 && NpcManager.IsObstacle(DestinationMapPosX, DestinationMapPosY))) //left one step, by has npc in destination
+                        {
+                            //Can't walk to destination, may blocked by other npc, cancel move to destination position
+                            DestinationMapPosX = 0;
+                            DestinationMapPosY = 0;
+                        }
                     }
                 }
                 else
