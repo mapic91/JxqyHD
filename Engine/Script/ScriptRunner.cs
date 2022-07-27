@@ -690,6 +690,9 @@ namespace Engine.Script
                         case "SetShowMapPos":
                             ScriptExecuter.SetShowMapPos(parameters);
                             break;
+                        case "SetNpcDestination":
+                            ScriptExecuter.SetNpcDestination(parameters);
+                            break;
                         default:
                             throw new Exception("无此函数");
                     }

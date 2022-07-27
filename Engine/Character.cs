@@ -1217,6 +1217,9 @@ namespace Engine
             }
         }
 
+        public int DestinationMapPosX { set; get; }
+        public int DestinationMapPosY { set; get; }
+
         public LinkedList<Vector2> Path
         {
             get { return _path; }
@@ -2119,6 +2122,8 @@ namespace Engine
             AddKey(keyDataCollection, "IsBodyIniAdded", IsBodyIniAdded);
             AddKey(keyDataCollection, "IsDeath", IsDeath);
             AddKey(keyDataCollection, "IsDeathInvoked", IsDeathInvoked);
+            AddKey(keyDataCollection, "DestinationMapPosX", DestinationMapPosX);
+            AddKey(keyDataCollection, "DestinationMapPosY", DestinationMapPosY);
         }
 
         #endregion Save load method

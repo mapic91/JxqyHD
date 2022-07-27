@@ -2341,5 +2341,18 @@ namespace Engine.Script
             var v = int.Parse(parameters[0]);
             Globals.ScriptShowMapPos = v > 0;
         }
+
+        public static void SetNpcDestination(List<string> parameters)
+        {
+            var name = Utils.RemoveStringQuotes(parameters[0]);
+            var npcs = NpcManager.GetAllNpcs(name);
+            var x = int.Parse(parameters[1]);
+            var y = int.Parse(parameters[2]);
+            foreach (var npc in npcs)
+            {
+                npc.DestinationMapPosX = x;
+                npc.DestinationMapPosY = y;
+            }
+        }
     }
 }

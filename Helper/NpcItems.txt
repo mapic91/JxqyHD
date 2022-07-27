@@ -212,3 +212,9 @@ AIType - 默认0，使用原版的ai
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ReviveMilliseconds - 默认0，如果大于0表示多少毫秒后复活
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+DestinationMapPosX - 默认0
+DestinationMapPosY - 默认0
+效果同脚本SetNpcDestination(a,b,c)，向位置(DestinationMapPosX,DestinationMapPosY)移动，中途发现敌人会攻击

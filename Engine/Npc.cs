@@ -250,7 +250,7 @@ namespace Engine
                 (IsEnemy && FollowTarget.IsEnemy && FollowTarget.Group == Group) || // Follow target relation changed
                 (IsFighterFriend && (FollowTarget.IsFighterFriend || FollowTarget.IsPlayer)) || // Follow target relation changed
                 IsAIDisabled || //Npc AI is disabled.
-                _blindMilliseconds > 0) 
+                _blindMilliseconds > 0)
             {
                 if (IsEnemy)
                 {
@@ -301,6 +301,11 @@ namespace Engine
                 {
                     MoveToPlayer();
                 }
+
+                if (FollowTarget == null)
+                {
+                    IsFollowTargetFound = false;
+                }
             }
 
             if (MovedByMagicSprite == null)
@@ -332,14 +337,31 @@ namespace Engine
             }
             else
             {
-                if (AIType == 1 && IsStanding())
+                if ((DestinationMapPosX != 0 || DestinationMapPosY != 0) && IsStanding())
                 {
-                    var poses = GetRandTilePath(2, false, 10);
-                    if (poses.Count == 2)
+                    if (TilePosition.X == DestinationMapPosX && TilePosition.Y == DestinationMapPosY)
                     {
-                        WalkTo(poses[1]);
+                        DestinationMapPosX = 0;
+                        DestinationMapPosY = 0;
+                    }
+                    else
+                    {
+                        Engine.PathFinder.TemporaryDisableRestrict = true;
+                        WalkTo(new Vector2(DestinationMapPosX, DestinationMapPosY), Engine.PathFinder.PathType.PerfectMaxPlayerTry);
                     }
                 }
+                else
+                {
+                    if (AIType == 1 && IsStanding())
+                    {
+                        var poses = GetRandTilePath(2, false, 10);
+                        if (poses.Count == 2)
+                        {
+                            WalkTo(poses[1]);
+                        }
+                    }
+                }
+                
             }
 
             ////Follow target not found, do something else.
