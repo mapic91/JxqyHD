@@ -243,6 +243,8 @@ namespace Engine
 
         public Character ControledCharacter;
 
+        public int WalkIsRun { set; get; }
+
         #endregion
 
         public Player() { }
@@ -668,6 +670,7 @@ namespace Engine
             AddKey(keyDataCollection, "IsRunDisabled", IsRunDisabled);
             AddKey(keyDataCollection, "IsJumpDisabled", IsJumpDisabled);
             AddKey(keyDataCollection, "IsFightDisabled", IsFightDisabled);
+            AddKey(keyDataCollection, "WalkIsRun", WalkIsRun);
         }
 
         public override void SetMagicFile(string fileName)
@@ -1278,7 +1281,8 @@ namespace Engine
 
         public bool canRun(KeyboardState keyboardState)
         {
-            return (keyboardState.IsKeyDown(Keys.LeftShift) ||
+            return (WalkIsRun > 0 ||
+                    keyboardState.IsKeyDown(Keys.LeftShift) ||
                       keyboardState.IsKeyDown(Keys.RightShift)) &&
                       !IsRunDisabled;;
         }

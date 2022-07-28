@@ -2354,5 +2354,13 @@ namespace Engine.Script
                 npc.DestinationMapPosY = y;
             }
         }
+
+        public static void SetWalkIsRun(List<string> parameters)
+        {
+            if (Globals.ThePlayer != null)
+            {
+                Globals.ThePlayer.WalkIsRun = int.Parse(parameters[0]);
+            }
+        }
     }
 }

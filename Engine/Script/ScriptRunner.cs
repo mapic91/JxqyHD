@@ -693,6 +693,9 @@ namespace Engine.Script
                         case "SetNpcDestination":
                             ScriptExecuter.SetNpcDestination(parameters);
                             break;
+                        case "SetWalkIsRun":
+                            ScriptExecuter.SetWalkIsRun(parameters);
+                            break;
                         default:
                             throw new Exception("无此函数");
                     }
