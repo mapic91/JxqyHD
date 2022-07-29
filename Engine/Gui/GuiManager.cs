@@ -41,6 +41,7 @@ namespace Engine.Gui
 
         public static ToolTipGuiBase ToolTipInterface;
         public static MessageGui MessageInterface;
+        public static SystemMsgGui SystemMsgInterface;
         public static DialogGui DialogInterface;
         public static LittleHeadGui LittleHeadInterface;
 
@@ -147,6 +148,9 @@ namespace Engine.Gui
             MessageInterface = new MessageGui();
             _allGuiItems.AddLast(MessageInterface);
             _panels.AddLast(MessageInterface);
+
+            SystemMsgInterface = new SystemMsgGui();
+            _allGuiItems.AddLast(SystemInterface);
 
             DialogInterface = new DialogGui();
             _allGuiItems.AddLast(DialogInterface);
@@ -371,6 +375,11 @@ namespace Engine.Gui
         public static void ShowMessage(string message)
         {
             MessageInterface.ShowMessage(message);
+        }
+
+        public static void ShowSystemMsg(string message, float stayMilliSecond)
+        {
+            SystemMsgInterface.ShowMsg(message, stayMilliSecond);
         }
 
         public static void ShowDialog(string text, int portraitIndex = -1)
@@ -761,6 +770,7 @@ namespace Engine.Gui
             }
 
             MessageInterface.Update(gameTime);
+            SystemMsgInterface.Update(gameTime);
 
             _lastMouseState = mouseState;
             _lastKeyboardState = keyboardState;
@@ -793,6 +803,7 @@ namespace Engine.Gui
                 BottomInterface.Draw(spriteBatch);
                 ToolTipInterface.Draw(spriteBatch);
                 MessageInterface.Draw(spriteBatch);
+                SystemMsgInterface.Draw(spriteBatch);
                 DialogInterface.Draw(spriteBatch);
                 SelectionInterface.Draw(spriteBatch);
 

@@ -2362,5 +2362,16 @@ namespace Engine.Script
                 Globals.ThePlayer.WalkIsRun = int.Parse(parameters[0]);
             }
         }
+
+        public static void ShowSystemMsg(List<string> parameters)
+        {
+            var msg = Utils.RemoveStringQuotes(parameters[0]);
+            var stayTime = 3000.0f;
+            if (parameters.Count == 2)
+            {
+                stayTime = int.Parse(parameters[1]);
+            }
+            GuiManager.ShowSystemMsg(msg, stayTime);
+        }
     }
 }

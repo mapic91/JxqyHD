@@ -696,6 +696,9 @@ namespace Engine.Script
                         case "SetWalkIsRun":
                             ScriptExecuter.SetWalkIsRun(parameters);
                             break;
+                        case "ShowSystemMsg":
+                            ScriptExecuter.ShowSystemMsg(parameters);
+                            break;
                         default:
                             throw new Exception("无此函数");
                     }
