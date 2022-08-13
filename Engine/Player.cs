@@ -1424,19 +1424,6 @@ namespace Engine
                             character.InteractWith(Globals.OutEdgeObj, _isRun);
                         }
                     }
-                    else if (_isRun)
-                    {
-                        if (CanRun())
-                        {
-                            _autoAttackTarget = null;
-                            character.RunTo(mouseTilePosition);
-                        }
-                        else
-                        {
-                            _autoAttackTarget = null;
-                            character.WalkTo(mouseTilePosition);
-                        }
-                    }
                     else if (keyboardState.IsKeyDown(Keys.LeftAlt) ||
                              keyboardState.IsKeyDown(Keys.RightAlt))
                     {
@@ -1450,6 +1437,19 @@ namespace Engine
                         {
                             _autoAttackTarget = null;
                             character.PerformeAttack(mouseWorldPosition, GetRamdomMagicWithUseDistance(AttackRadius));
+                        }
+                    }
+                    else if (_isRun)
+                    {
+                        if (CanRun())
+                        {
+                            _autoAttackTarget = null;
+                            character.RunTo(mouseTilePosition);
+                        }
+                        else
+                        {
+                            _autoAttackTarget = null;
+                            character.WalkTo(mouseTilePosition);
                         }
                     }
                     else
