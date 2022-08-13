@@ -28,6 +28,7 @@ namespace Engine.Gui.Base
         public event Action<object, MouseEvent> MouseScrollUp;
         public event Action<object, MouseEvent> MouseScrollDown;
         public event Action<object, GameTime> OnUpdate;
+        public bool CanEatMouseState = true;
 
         public virtual bool IsShow
         {
@@ -279,7 +280,7 @@ namespace Engine.Gui.Base
                 }
             }
 
-            if (IsClicked || IsRightClicked)
+            if (CanEatMouseState &&(IsClicked || IsRightClicked))
                 GuiManager.IsMouseStateEated = true;
 
             if (IsClicked && ClickedTexture != null)

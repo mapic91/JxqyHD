@@ -28,6 +28,7 @@ namespace Engine.Gui
 
         public SystemMsgGui()
         {
+            CanEatMouseState = false;
             Width = Globals.WindowWidth - (int)ScreenPosition.X;
             Height = 300;
             Position = new Vector2(50, Globals.WindowHeight - Height - 50);
@@ -40,6 +41,7 @@ namespace Engine.Gui
                 3,
                 "",
                 Color.White);
+            _message.CanEatMouseState = false;
         }
 
         public void ShowMsg(string msg, float stayMilliSecond)
