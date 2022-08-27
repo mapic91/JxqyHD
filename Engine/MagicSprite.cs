@@ -659,6 +659,11 @@ namespace Engine
                     var player = Globals.ThePlayer;
                     var exp = Utils.GetCharacterDeathExp(Globals.ThePlayer, character);
                     player.AddExp(exp, true);
+
+                    if (BelongCharacter.IsPartner && BelongCharacter.CanLevelUp > 0)
+                    {
+                        BelongCharacter.AddExp(exp);
+                    }
                 }
             }
         }

@@ -298,24 +298,6 @@ namespace Engine
             if (FlyIni2 != null) FlyIni2.AdditionalEffect = effect;
         }
 
-        private void ToLevel(int exp)
-        {
-            if (LevelIni != null)
-            {
-                var count = LevelIni.Count;
-                var i = 1;
-                for (; i <= count; i++)
-                {
-                    if (LevelIni.ContainsKey(i))
-                    {
-                        if (LevelIni[i].LevelUpExp > exp)
-                            break;
-                    }
-                }
-                SetLevelTo(i);
-            }
-        }
-
         private bool MouseInBound()
         {
             var mouseState = Mouse.GetState();
@@ -1063,13 +1045,7 @@ namespace Engine
                 }
             }
 
-            if(LevelUpExp <= 0) return;
-            Exp += amount;
-            if (Exp > LevelUpExp)
-            {
-                GuiManager.ShowMessage(Name + "的等级提升了");
-                ToLevel(Exp);
-            }
+            base.AddExp(amount);
         }
 
         public void AddMagicExp(MagicListManager.MagicItemInfo info, int amount)

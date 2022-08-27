@@ -80,6 +80,7 @@ namespace Engine
         private int _exp;
         private int _levelUpExp;
         protected int _level;
+        protected int _canLevelUp;
         private int _life;
         private int _lifeMax;
         private int _thew;
@@ -812,6 +813,12 @@ namespace Engine
         {
             get { return _levelUpExp; }
             set { _levelUpExp = value; }
+        }
+
+        public int CanLevelUp
+        {
+            get { return _canLevelUp; }
+            set { _canLevelUp = value; }
         }
 
         public int Life
@@ -3201,6 +3208,35 @@ namespace Engine
         /// </summary>
         /// <param name="magicFileName"></param>
         public virtual void AddMagic(string magicFileName) { }
+
+        public void AddExp(int amount)
+        {
+            if (LevelUpExp <= 0) return;
+            Exp += amount;
+            if (Exp > LevelUpExp)
+            {
+                GuiManager.ShowMessage(Name + "的等级提升了");
+                ToLevel(Exp);
+            }
+        }
+
+        private void ToLevel(int exp)
+        {
+            if (LevelIni != null)
+            {
+                var count = LevelIni.Count;
+                var i = 1;
+                for (; i <= count; i++)
+                {
+                    if (LevelIni.ContainsKey(i))
+                    {
+                        if (LevelIni[i].LevelUpExp > exp)
+                            break;
+                    }
+                }
+                SetLevelTo(i);
+            }
+        }
 
         /// <summary>
         /// Level up to level
