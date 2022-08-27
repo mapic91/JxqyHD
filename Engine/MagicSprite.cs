@@ -660,7 +660,9 @@ namespace Engine
                     var exp = Utils.GetCharacterDeathExp(Globals.ThePlayer, character);
                     player.AddExp(exp, true);
 
-                    if (BelongCharacter.IsPartner && BelongCharacter.CanLevelUp > 0)
+                    if (BelongCharacter.CanLevelUp > 0 && 
+                        ((isSummonedByPlayerorPartner && BelongCharacter.SummonedByMagicSprite.BelongCharacter.IsPartner) || 
+                                                       BelongCharacter.IsPartner))
                     {
                         BelongCharacter.AddExp(exp);
                     }
