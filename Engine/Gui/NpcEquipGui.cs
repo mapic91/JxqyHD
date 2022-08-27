@@ -242,7 +242,6 @@ namespace Engine.Gui
             var sourceData = sourceItem.Data as GoodsGui.GoodItemData;
 
             var good = GetGood(data.Pos);
-            GoodsListManager.EquipListItemToNpcAndEquiping(_curCharacter, sourceData.Index, good);
             if (GoodsListManager.EquipListItemToNpcAndEquiping(_curCharacter, sourceData.Index, good))
             {
                 GuiManager.UpdateGoodsView();
