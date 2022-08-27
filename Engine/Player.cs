@@ -34,20 +34,7 @@ namespace Engine
         private float _autoAttackTimer;
         private Character _autoAttackTarget;
         private bool _autoAttackIsRun;
-        /// <summary>
-        /// Used to add extra life restore when equiping special equipment
-        /// </summary>
-        private float _extraLifeRestorePercent;
 
-        /// <summary>
-        /// Used to override character's FlyIni when equiping special equipment 
-        /// </summary>
-        private Magic _flyIniReplace;
-        /// <summary>
-        ///  Used to override character's FlyIni2 when equiping special equipment 
-        /// </summary>
-        private Magic _flyIni2Replace;
-        
 
         private MagicListManager.MagicItemInfo _currentMagicInUse;
         private MagicListManager.MagicItemInfo _xiuLianMagic;
@@ -60,44 +47,6 @@ namespace Engine
         public Character AutoAttackTarget
         {
             set { _autoAttackTarget = value; }
-        }
-
-        public Magic FlyIniReplace
-        {
-            get { return _flyIniReplace; }
-            set
-            {
-                RemoveMagicFromInfos(_flyIniReplace, AttackRadius);
-                if (value != null)
-                {
-                    RemoveMagicFromInfos(FlyIni, AttackRadius);
-                    AddMagicToInfos(value, AttackRadius);
-                }
-                else
-                {
-                    AddMagicToInfos(FlyIni, AttackRadius);
-                }
-                _flyIniReplace = value;
-            }
-        }
-
-        public Magic FlyIni2Replace
-        {
-            get { return _flyIni2Replace; }
-            set
-            {
-                RemoveMagicFromInfos(_flyIni2Replace, AttackRadius);
-                if (value != null)
-                {
-                    RemoveMagicFromInfos(FlyIni2, AttackRadius);
-                    AddMagicToInfos(value, AttackRadius);
-                }
-                else
-                {
-                    AddMagicToInfos(FlyIni2, AttackRadius);
-                }
-                _flyIni2Replace = value;
-            }
         }
 
         public bool IsNotUseThewWhenRun { set; get; }
@@ -292,12 +241,6 @@ namespace Engine
             }
         }
 
-        private void SetFlyIniAdditionalEffect(Magic.AddonEffect effect)
-        {
-            if (FlyIni != null) FlyIni.AdditionalEffect = effect;
-            if (FlyIni2 != null) FlyIni2.AdditionalEffect = effect;
-        }
-
         private bool MouseInBound()
         {
             var mouseState = Mouse.GetState();
@@ -485,7 +428,7 @@ namespace Engine
 
             if (MagicUse.GoodsName != null && !string.IsNullOrEmpty(MagicUse.GoodsName.FileName))
             {
-                if (!GoodsListManager.DeleteGood(MagicUse.GoodsName.FileName, 1))
+                if (!GoodsListManager.DeleteGoodInBag(MagicUse.GoodsName.FileName, 1))
                 {
                     GuiManager.ShowMessage("缺少物品" + MagicUse.GoodsName.Name);
                     return false;
@@ -700,27 +643,12 @@ namespace Engine
         /// <param name="justEffectType">Don't applay Attack, Defend,Evade,LifeMax,ThewMax,ManaMax, just equip effect</param>
         public void Equiping(Good equip, Good currentEquip, bool justEffectType = false)
         {
-            //Save for restore
-            var life = Life;
-            var thew = Thew;
-            var mana = Mana;
+            base.Equiping(equip, currentEquip, justEffectType);
 
-            UnEquiping(currentEquip, justEffectType);
             if (equip != null)
             {
                 if (!justEffectType)
                 {
-                    Attack += equip.Attack.GetOneValue();
-                    Attack2 += equip.Attack2.GetOneValue();
-                    Attack3 += equip.Attack3.GetOneValue();
-                    Defend += equip.Defend.GetOneValue();
-                    Defend2 += equip.Defend2.GetOneValue();
-                    Defend3 += equip.Defend3.GetOneValue();
-                    Evade += equip.Evade.GetOneValue();
-                    LifeMax += equip.LifeMax.GetOneValue();
-                    ThewMax += equip.ThewMax.GetOneValue();
-                    ManaMax += equip.ManaMax.GetOneValue();
-
                     if (!string.IsNullOrEmpty(equip.MagicIniWhenUse))
                     {
                         if (MagicListManager.IsMagicHided(equip.MagicIniWhenUse))
@@ -751,77 +679,13 @@ namespace Engine
                     case Good.GoodEffectType.ManaRestore:
                         IsManaRestore = true;
                         break;
-                    case Good.GoodEffectType.EnemyFrozen:
-                        SetFlyIniAdditionalEffect(Magic.AddonEffect.Frozen);
-                        break;
-                    case Good.GoodEffectType.EnemyPoisoned:
-                        SetFlyIniAdditionalEffect(Magic.AddonEffect.Poision);
-                        break;
-                    case Good.GoodEffectType.EnemyPetrified:
-                        SetFlyIniAdditionalEffect(Magic.AddonEffect.Petrified);
-                        break;
                 }
-
-                switch (equip.SpecialEffect.GetOneValue())
-                {
-                    case 1://不断恢复生命
-                        _extraLifeRestorePercent = equip.SpecialEffectValue.GetOneValue() / 100.0f;
-                        break;
-                }
-
-                if (!string.IsNullOrEmpty(equip.FlyIni))
-                {
-                    FlyIniReplace = Utils.GetMagic(equip.FlyIni, IsMagicFromCache).GetLevel(AttackLevel);
-                }
-                if (!string.IsNullOrEmpty(equip.FlyIni2))
-                {
-                    FlyIni2Replace = Utils.GetMagic(equip.FlyIni2, IsMagicFromCache).GetLevel(AttackLevel);
-                }
-
-                if (!string.IsNullOrEmpty(equip.AddMagicEffectName))
-                {
-                    if (!AddMagicEffectWithName.ContainsKey(equip.AddMagicEffectName))
-                    {
-                        AddMagicEffectWithName[equip.AddMagicEffectName] = new Dictionary<string, AddmagicEffectInfo>();
-                    }
-                    AddMagicEffectWithName[equip.AddMagicEffectName][equip.Name] = new AddmagicEffectInfo(equip.AddMagicEffectPercent.GetOneValue(), equip.AddMagicEffectAmount.GetOneValue());
-                }
-                else if (!string.IsNullOrEmpty(equip.AddMagicEffectType))
-                {
-                    if (!AddMagicEffectWithType.ContainsKey(equip.AddMagicEffectType))
-                    {
-                        AddMagicEffectWithType[equip.AddMagicEffectType] = new Dictionary<string, AddmagicEffectInfo>();
-                    }
-                    AddMagicEffectWithType[equip.AddMagicEffectType][equip.Name] = new AddmagicEffectInfo(equip.AddMagicEffectPercent.GetOneValue(), equip.AddMagicEffectAmount.GetOneValue());
-                }
-                else
-                {
-                    AddMagicEffectPercent += equip.AddMagicEffectPercent.GetOneValue();
-                    AddMagicEffectAmount += equip.AddMagicEffectAmount.GetOneValue();
-                }
-
-                ChangeMoveSpeedPercent += equip.ChangeMoveSpeedPercent.GetOneValue();
 
                 if (!string.IsNullOrEmpty(equip.ReplaceMagic))
                 {
                     _replacedMagic[equip.ReplaceMagic] = equip.UseReplaceMagic;
                 }
-
-                if(equip.MagicToUseWhenBeAttacked != null)
-                {
-                    MagicToUseWhenAttackedList.AddLast(new MagicToUseInfoItem
-                    {
-                        From = equip.FileName,
-                        Magic = equip.MagicToUseWhenBeAttacked.GetLevel(AttackLevel),
-                        Dir = equip.MagicDirectionWhenBeAttacked.GetOneValue()
-                    });
-                }
             }
-
-            //Restore
-            Life = life;
-            Thew = thew;
-            Mana = mana;
         }
 
         public void UnEquiping(Good equip, bool justEffectType = false)
@@ -830,17 +694,6 @@ namespace Engine
             {
                 if (!justEffectType)
                 {
-                    Attack -= equip.Attack.GetOneValue();
-                    Attack2 -= equip.Attack2.GetOneValue();
-                    Attack3 -= equip.Attack3.GetOneValue();
-                    Defend -= equip.Defend.GetOneValue();
-                    Defend2 -= equip.Defend2.GetOneValue();
-                    Defend3 -= equip.Defend3.GetOneValue();
-                    Evade -= equip.Evade.GetOneValue();
-                    LifeMax -= equip.LifeMax.GetOneValue();
-                    ThewMax -= equip.ThewMax.GetOneValue();
-                    ManaMax -= equip.ManaMax.GetOneValue();
-
                     if (!string.IsNullOrEmpty(equip.MagicIniWhenUse))
                     {
                         var info = MagicListManager.SetMagicHide(equip.MagicIniWhenUse, true);
@@ -866,52 +719,7 @@ namespace Engine
                     case Good.GoodEffectType.ManaRestore:
                         IsManaRestore = false;
                         break;
-                    case Good.GoodEffectType.EnemyFrozen:
-                    case Good.GoodEffectType.EnemyPoisoned:
-                    case Good.GoodEffectType.EnemyPetrified:
-                        SetFlyIniAdditionalEffect(Magic.AddonEffect.None);
-                        break;
                 }
-
-                switch (equip.SpecialEffect.GetOneValue())
-                {
-                    case 1://不断恢复生命
-                        _extraLifeRestorePercent = 0.0f;
-                        break;
-                }
-
-                if (!string.IsNullOrEmpty(equip.FlyIni))
-                {
-                    FlyIniReplace = null;
-                }
-                if (!string.IsNullOrEmpty(equip.FlyIni2))
-                {
-                    FlyIni2Replace = null;
-                }
-
-                if (!string.IsNullOrEmpty(equip.AddMagicEffectName))
-                {
-                    AddMagicEffectWithName[equip.AddMagicEffectName].Remove(equip.Name);
-                    if (AddMagicEffectWithName[equip.AddMagicEffectName].Count == 0)
-                    {
-                        AddMagicEffectWithName.Remove(equip.AddMagicEffectName);
-                    }
-                }
-                else if (!string.IsNullOrEmpty(equip.AddMagicEffectType))
-                {
-                    AddMagicEffectWithType[equip.AddMagicEffectType].Remove(equip.Name);
-                    if (AddMagicEffectWithType[equip.AddMagicEffectType].Count == 0)
-                    {
-                        AddMagicEffectWithType.Remove(equip.AddMagicEffectType);
-                    }
-                }
-                else
-                {
-                    AddMagicEffectPercent -= equip.AddMagicEffectPercent.GetOneValue();
-                    AddMagicEffectAmount -= equip.AddMagicEffectAmount.GetOneValue();
-                }
-
-                ChangeMoveSpeedPercent -= equip.ChangeMoveSpeedPercent.GetOneValue();
 
                 if (!string.IsNullOrEmpty(equip.ReplaceMagic))
                 {
@@ -1564,7 +1372,7 @@ namespace Engine
                 _standingMilliseconds += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
                 if (_standingMilliseconds >= 1000)
                 {
-                    Life += (int)((ListRestorePercent + _extraLifeRestorePercent) * LifeMax);
+                    Life += (int)(ListRestorePercent * LifeMax);
                     Thew += (int)(ThewRestorePercent * ThewMax);
                     if (IsManaRestore)
                     {

@@ -201,6 +201,26 @@ namespace Engine.ListManager
             }
         }
 
+        public static bool EquipListItemToNpcAndEquiping(Character character, int index1, Good npcCurEquip)
+        {
+            if (IndexInRange(index1))
+            {
+                if (npcCurEquip != null)
+                {
+                    if (!AddGoodToList(npcCurEquip.FileName))
+                    {
+                        return false;
+                    }
+                }
+                var temp = GoodsList[index1];
+                DeleteGoodInBag(temp.TheGood.FileName, 1);
+                character.Equiping(temp.TheGood, npcCurEquip);
+                return true;
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// If return true, newIndex is the new index
         /// </summary>
@@ -487,7 +507,21 @@ namespace Engine.ListManager
             return false;
         }
 
-        public static bool DeleteGood(string fileName, int amount)
+        public static bool NpcUnEquiping(Character character, Good equip, out int goodIndex)
+        {
+            goodIndex = -1;
+            if (equip == null) return false;
+            Good g;
+            if (AddGoodToList(equip.FileName, out goodIndex, out g))
+            {
+                character.UnEquiping(equip);
+                return true;
+            }
+
+            return false;
+        }
+
+        public static bool DeleteGoodInBag(string fileName, int amount)
         {
             if (amount <= 0) return false;
             switch (Type)
@@ -496,6 +530,10 @@ namespace Engine.ListManager
                 {
                     for (var i = ListIndexBegin; i <= ListIndexEnd; i++)
                     {
+                        if (IsInEquipRange(i))
+                        {
+                            continue;
+                        }
                         var info = GoodsList[i];
                         if (info != null && info.TheGood != null)
                         {
@@ -510,6 +548,14 @@ namespace Engine.ListManager
                                 {
                                     GoodsList[i] = null;
                                 }
+
+                                var good = info.TheGood;
+                                if (good.Kind == Good.GoodKind.Equipment && good.NoNeedToEquip.GetOneValue() > 0)
+                                {
+                                    if (Globals.ThePlayer != null)
+                                        Globals.ThePlayer.UnEquiping(good);
+                                }
+
                                 GuiManager.UpdateGoodItemView(i);
                                 return true;
                             }
@@ -522,6 +568,10 @@ namespace Engine.ListManager
                     var indexToDelete = new List<int>();
                     for (var i = ListIndexBegin; i <= ListIndexEnd; i++)
                     {
+                        if (IsInEquipRange(i))
+                        {
+                            continue;
+                        }
                         var info = GoodsList[i];
                         if (info != null && info.TheGood != null)
                         {
@@ -532,6 +582,13 @@ namespace Engine.ListManager
                                 if (amount == 0)
                                 {
                                     break;
+                                }
+
+                                var good = info.TheGood;
+                                if (good.Kind == Good.GoodKind.Equipment && good.NoNeedToEquip.GetOneValue() > 0)
+                                {
+                                    if (Globals.ThePlayer != null)
+                                        Globals.ThePlayer.UnEquiping(good);
                                 }
                             }
                         }
@@ -566,70 +623,93 @@ namespace Engine.ListManager
             var info = GetItemInfo(goodIndex);
             if (info == null) return;
             var good = info.TheGood;
+            if (good == null) return;
+            var user = Globals.ThePlayer as Character;
+            if (GuiManager.NpcEquipInterface.IsShow)
+            {
+                user = GuiManager.NpcEquipInterface.CurCharacter;
+            }
             if (good.User != null && good.User.Length > 0)
             {
-                if (!good.User.Contains(Globals.ThePlayer.Name))
+                if (!good.User.Contains(user.Name))
                 {
                     //Current player can't use this good
                     GuiManager.ShowMessage("使用者：" + string.Join("，", good.User));
                     return;
                 }
             }
-            if (good.MinUserLevel.GetOneValue() > 0 && Globals.ThePlayer.Level < good.MinUserLevel.GetOneValue())
+
+            if (good.Kind == Good.GoodKind.Equipment)
             {
-                GuiManager.ShowMessage("需要等级" + good.MinUserLevel);
-                return;
-            }
-            if (good != null)
-            {
-                switch (good.Kind)
+                if (good.MinUserLevel.GetOneValue() > 0 && user.Level < good.MinUserLevel.GetOneValue())
                 {
-                    case Good.GoodKind.Drug:
+                    GuiManager.ShowMessage("需要等级" + good.MinUserLevel);
+                    return;
+                }
+            }
+            else
+            {
+                if (good.MinUserLevel.GetOneValue() > 0 && Globals.ThePlayer.Level < good.MinUserLevel.GetOneValue())
+                {
+                    GuiManager.ShowMessage("需要等级" + good.MinUserLevel);
+                    return;
+                }
+            }
+           
+            switch (good.Kind)
+            {
+                case Good.GoodKind.Drug:
+                {
+                    if (info.RemainColdMilliseconds > 0)
+                    {
+                        GuiManager.ShowMessage("该物品尚未冷却");
+                        return;
+                    }
+
+                    if (info.TheGood.ColdMilliSeconds.GetOneValue() > 0)
+                    {
+                        info.RemainColdMilliseconds = info.TheGood.ColdMilliSeconds.GetOneValue();
+                    }
+
+                    if (Globals.ThePlayer.UseDrug(good))
+                    {
+
+                        if (info.Count == 1)
+                            GoodsList[goodIndex] = null;
+                        else
+                            info.Count -= 1;
+                    }
+                    var sound = Utils.GetSoundEffect("界-使用物品.wav");
+                    if (sound != null)
+                    {
+                        sound.Play();
+                    }
+                }
+                    break;
+                case Good.GoodKind.Equipment:
+                    if (good.NoNeedToEquip.GetOneValue() == 0)
+                    {
+                        if (GuiManager.NpcEquipInterface.IsShow)
                         {
-                            if (info.RemainColdMilliseconds > 0)
-                            {
-                                GuiManager.ShowMessage("该物品尚未冷却");
-                                return;
-                            }
-
-                            if (info.TheGood.ColdMilliSeconds.GetOneValue() > 0)
-                            {
-                                info.RemainColdMilliseconds = info.TheGood.ColdMilliSeconds.GetOneValue();
-                            }
-
-                            if (Globals.ThePlayer.UseDrug(good))
-                            {
-
-                                if (info.Count == 1)
-                                    GoodsList[goodIndex] = null;
-                                else
-                                    info.Count -= 1;
-                            }
-                            var sound = Utils.GetSoundEffect("界-使用物品.wav");
-                            if (sound != null)
-                            {
-                                sound.Play();
-                            }
+                            GuiManager.NpcEquipInterface.EquipGood(goodIndex);
                         }
-                        break;
-                    case Good.GoodKind.Equipment:
-                        if (good.NoNeedToEquip.GetOneValue() == 0)
+                        else
                         {
                             GuiManager.EquipInterface.EquipGood(goodIndex);
                         }
-                        break;
-                    case Good.GoodKind.Event:
-                        {
-                            ScriptManager.RunScript(Utils.GetScriptParser(
-                                good.Script, null, Utils.ScriptCategory.Good), good);
-                        }
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    }
+                    break;
+                case Good.GoodKind.Event:
+                {
+                    ScriptManager.RunScript(Utils.GetScriptParser(
+                        good.Script, null, Utils.ScriptCategory.Good), good);
                 }
-
-                GuiManager.UpdateGoodItemView(goodIndex);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
+
+            GuiManager.UpdateGoodItemView(goodIndex);
         }
 
         public static Good Get(int index)

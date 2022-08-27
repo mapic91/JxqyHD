@@ -191,6 +191,69 @@ namespace Engine
 
         protected bool IsSitted;
 
+        //npc装备
+        private int _canEquip;
+        private string _headEquip;
+        private string _neckEquip;
+        private string _bodyEquip;
+        private string _backEquip;
+        private string _handEquip;
+        private string _wristEquip;
+        private string _footEquip;
+        private string _backgroundTextureEquip;
+        /// <summary>
+        /// Used to add extra life restore when equiping special equipment
+        /// </summary>
+        protected float _extraLifeRestorePercent;
+        private float _standingMilliseconds;
+
+        /// <summary>
+        /// Used to override character's FlyIni when equiping special equipment 
+        /// </summary>
+        private Magic _flyIniReplace;
+        /// <summary>
+        ///  Used to override character's FlyIni2 when equiping special equipment 
+        /// </summary>
+        private Magic _flyIni2Replace;
+
+        public Magic FlyIniReplace
+        {
+            get { return _flyIniReplace; }
+            set
+            {
+                RemoveMagicFromInfos(_flyIniReplace, AttackRadius);
+                if (value != null)
+                {
+                    RemoveMagicFromInfos(FlyIni, AttackRadius);
+                    AddMagicToInfos(value, AttackRadius);
+                }
+                else
+                {
+                    AddMagicToInfos(FlyIni, AttackRadius);
+                }
+                _flyIniReplace = value;
+            }
+        }
+
+        public Magic FlyIni2Replace
+        {
+            get { return _flyIni2Replace; }
+            set
+            {
+                RemoveMagicFromInfos(_flyIni2Replace, AttackRadius);
+                if (value != null)
+                {
+                    RemoveMagicFromInfos(FlyIni2, AttackRadius);
+                    AddMagicToInfos(value, AttackRadius);
+                }
+                else
+                {
+                    AddMagicToInfos(FlyIni2, AttackRadius);
+                }
+                _flyIni2Replace = value;
+            }
+        }
+
         #endregion Field
 
         #region Protected properties
@@ -236,6 +299,60 @@ namespace Engine
         {
             get { return _dropIni; }
             set { _dropIni = value; }
+        }
+
+        public int CanEquip
+        {
+            get { return _canEquip; }
+            set { _canEquip = value; }
+        }
+
+        public string HeadEquip
+        {
+            get { return _headEquip; }
+            set { _headEquip = value; }
+        }
+
+        public string NeckEquip
+        {
+            get { return _neckEquip; }
+            set { _neckEquip = value; }
+        }
+
+        public string BodyEquip
+        {
+            get { return _bodyEquip; }
+            set { _bodyEquip = value; }
+        }
+
+        public string BackEquip
+        {
+            get { return _backEquip; }
+            set { _backEquip = value; }
+        }
+
+        public string HandEquip
+        {
+            get { return _handEquip; }
+            set { _handEquip = value; }
+        }
+
+        public string WristEquip
+        {
+            get { return _wristEquip; }
+            set { _wristEquip = value; }
+        }
+
+        public string FootEquip
+        {
+            get { return _footEquip; }
+            set { _footEquip = value; }
+        }
+
+        public string BackgroundTextureEquip
+        {
+            get { return _backgroundTextureEquip; }
+            set { _backgroundTextureEquip = value; }
         }
 
         public bool HasInteractiveTarget => _interactiveTarget != null;
@@ -1354,6 +1471,39 @@ namespace Engine
             {
                 _magicToUseWhenDeath = _magicToUseWhenDeath.GetLevel(AttackLevel);
             }
+
+            if (CanEquip > 0)
+            {
+                if (!string.IsNullOrEmpty(HeadEquip))
+                {
+                    Equiping(Utils.GetGood(HeadEquip), null, true);
+                }
+                if (!string.IsNullOrEmpty(NeckEquip))
+                {
+                    Equiping(Utils.GetGood(NeckEquip), null, true);
+                }
+                if (!string.IsNullOrEmpty(BodyEquip))
+                {
+                    Equiping(Utils.GetGood(BodyEquip), null, true);
+                }
+                if (!string.IsNullOrEmpty(BackEquip))
+                {
+                    Equiping(Utils.GetGood(BackEquip), null, true);
+                }
+                if (!string.IsNullOrEmpty(HandEquip))
+                {
+                    Equiping(Utils.GetGood(HandEquip), null, true);
+                }
+                if (!string.IsNullOrEmpty(WristEquip))
+                {
+                    Equiping(Utils.GetGood(WristEquip), null, true);
+                }
+                if (!string.IsNullOrEmpty(FootEquip))
+                {
+                    Equiping(Utils.GetGood(FootEquip), null, true);
+                }
+            }
+           
         }
 
         /// <summary>
@@ -1774,6 +1924,14 @@ namespace Engine
                     case "DropIni":
                     case "VisibleVariableName":
                     case "BuyIniString":
+                    case "HeadEquip":
+                    case "NeckEquip":
+                    case "BodyEquip":
+                    case "BackEquip":
+                    case "HandEquip":
+                    case "WristEquip":
+                    case "FootEquip":
+                    case "BackgroundTextureEquip":
                         info.SetValue(this, keyData.Value, null);
                         break;
                     case "NpcIni":
@@ -2131,6 +2289,16 @@ namespace Engine
             AddKey(keyDataCollection, "IsDeathInvoked", IsDeathInvoked);
             AddKey(keyDataCollection, "DestinationMapPosX", DestinationMapPosX);
             AddKey(keyDataCollection, "DestinationMapPosY", DestinationMapPosY);
+
+            AddKey(keyDataCollection, "CanEquip", _canEquip);
+            AddKey(keyDataCollection, "HeadEquip", _headEquip);
+            AddKey(keyDataCollection, "NeckEquip", _neckEquip);
+            AddKey(keyDataCollection, "BodyEquip", _bodyEquip);
+            AddKey(keyDataCollection, "BackEquip", _backEquip);
+            AddKey(keyDataCollection, "HandEquip", _handEquip);
+            AddKey(keyDataCollection, "WristEquip", _wristEquip);
+            AddKey(keyDataCollection, "FootEquip", _footEquip);
+            AddKey(keyDataCollection, "BackgroundTextureEquip", _backgroundTextureEquip);
         }
 
         #endregion Save load method
@@ -3145,6 +3313,249 @@ namespace Engine
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="equip"></param>
+        /// <param name="currentEquip"></param>
+        /// <param name="justEffectType">Don't applay Attack, Defend,Evade,LifeMax,ThewMax,ManaMax, just equip effect</param>
+        public void Equiping(Good equip, Good currentEquip, bool justEffectType = false)
+        {
+            //Save for restore
+            var life = Life;
+            var thew = Thew;
+            var mana = Mana;
+
+            UnEquiping(currentEquip, justEffectType);
+            if (equip != null)
+            {
+                if (!justEffectType)
+                {
+                    Attack += equip.Attack.GetOneValue();
+                    Attack2 += equip.Attack2.GetOneValue();
+                    Attack3 += equip.Attack3.GetOneValue();
+                    Defend += equip.Defend.GetOneValue();
+                    Defend2 += equip.Defend2.GetOneValue();
+                    Defend3 += equip.Defend3.GetOneValue();
+                    Evade += equip.Evade.GetOneValue();
+                    LifeMax += equip.LifeMax.GetOneValue();
+                    ThewMax += equip.ThewMax.GetOneValue();
+                    ManaMax += equip.ManaMax.GetOneValue();
+                }
+
+                switch (equip.TheEffectType)
+                {
+                    case Good.GoodEffectType.EnemyFrozen:
+                        SetFlyIniAdditionalEffect(Magic.AddonEffect.Frozen);
+                        break;
+                    case Good.GoodEffectType.EnemyPoisoned:
+                        SetFlyIniAdditionalEffect(Magic.AddonEffect.Poision);
+                        break;
+                    case Good.GoodEffectType.EnemyPetrified:
+                        SetFlyIniAdditionalEffect(Magic.AddonEffect.Petrified);
+                        break;
+                }
+
+                switch (equip.SpecialEffect.GetOneValue())
+                {
+                    case 1://不断恢复生命
+                        _extraLifeRestorePercent = equip.SpecialEffectValue.GetOneValue() / 100.0f;
+                        break;
+                }
+
+                if (!string.IsNullOrEmpty(equip.FlyIni))
+                {
+                    FlyIniReplace = Utils.GetMagic(equip.FlyIni, IsMagicFromCache).GetLevel(AttackLevel);
+                }
+                if (!string.IsNullOrEmpty(equip.FlyIni2))
+                {
+                    FlyIni2Replace = Utils.GetMagic(equip.FlyIni2, IsMagicFromCache).GetLevel(AttackLevel);
+                }
+
+                if (!string.IsNullOrEmpty(equip.AddMagicEffectName))
+                {
+                    if (!AddMagicEffectWithName.ContainsKey(equip.AddMagicEffectName))
+                    {
+                        AddMagicEffectWithName[equip.AddMagicEffectName] = new Dictionary<string, AddmagicEffectInfo>();
+                    }
+                    AddMagicEffectWithName[equip.AddMagicEffectName][equip.Name] = new AddmagicEffectInfo(equip.AddMagicEffectPercent.GetOneValue(), equip.AddMagicEffectAmount.GetOneValue());
+                }
+                else if (!string.IsNullOrEmpty(equip.AddMagicEffectType))
+                {
+                    if (!AddMagicEffectWithType.ContainsKey(equip.AddMagicEffectType))
+                    {
+                        AddMagicEffectWithType[equip.AddMagicEffectType] = new Dictionary<string, AddmagicEffectInfo>();
+                    }
+                    AddMagicEffectWithType[equip.AddMagicEffectType][equip.Name] = new AddmagicEffectInfo(equip.AddMagicEffectPercent.GetOneValue(), equip.AddMagicEffectAmount.GetOneValue());
+                }
+                else
+                {
+                    AddMagicEffectPercent += equip.AddMagicEffectPercent.GetOneValue();
+                    AddMagicEffectAmount += equip.AddMagicEffectAmount.GetOneValue();
+                }
+
+                ChangeMoveSpeedPercent += equip.ChangeMoveSpeedPercent.GetOneValue();
+
+                if (equip.MagicToUseWhenBeAttacked != null)
+                {
+                    MagicToUseWhenAttackedList.AddLast(new MagicToUseInfoItem
+                    {
+                        From = equip.FileName,
+                        Magic = equip.MagicToUseWhenBeAttacked.GetLevel(AttackLevel),
+                        Dir = equip.MagicDirectionWhenBeAttacked.GetOneValue()
+                    });
+                }
+
+                if (equip.NoNeedToEquip.GetOneValue() == 0 && !(this is Player))
+                {
+                    switch (equip.Part)
+                    {
+                        case Good.EquipPosition.None:
+                            break;
+                        case Good.EquipPosition.Head:
+                            _headEquip = equip.FileName;
+                            break;
+                        case Good.EquipPosition.Neck:
+                            _neckEquip = equip.FileName;
+                            break;
+                        case Good.EquipPosition.Body:
+                            _bodyEquip = equip.FileName;
+                            break;
+                        case Good.EquipPosition.Back:
+                            _backEquip = equip.FileName;
+                            break;
+                        case Good.EquipPosition.Hand:
+                            _handEquip = equip.FileName;
+                            break;
+                        case Good.EquipPosition.Wrist:
+                            _wristEquip = equip.FileName;
+                            break;
+                        case Good.EquipPosition.Foot:
+                            _footEquip = equip.FileName;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                }
+            }
+
+            //Restore
+            Life = life;
+            Thew = thew;
+            Mana = mana;
+        }
+
+        public void UnEquiping(Good equip, bool justEffectType = false)
+        {
+            if (equip != null)
+            {
+                if (!justEffectType)
+                {
+                    Attack -= equip.Attack.GetOneValue();
+                    Attack2 -= equip.Attack2.GetOneValue();
+                    Attack3 -= equip.Attack3.GetOneValue();
+                    Defend -= equip.Defend.GetOneValue();
+                    Defend2 -= equip.Defend2.GetOneValue();
+                    Defend3 -= equip.Defend3.GetOneValue();
+                    Evade -= equip.Evade.GetOneValue();
+                    LifeMax -= equip.LifeMax.GetOneValue();
+                    ThewMax -= equip.ThewMax.GetOneValue();
+                    ManaMax -= equip.ManaMax.GetOneValue();
+                }
+                switch (equip.TheEffectType)
+                {
+                    case Good.GoodEffectType.EnemyFrozen:
+                    case Good.GoodEffectType.EnemyPoisoned:
+                    case Good.GoodEffectType.EnemyPetrified:
+                        SetFlyIniAdditionalEffect(Magic.AddonEffect.None);
+                        break;
+                }
+
+                switch (equip.SpecialEffect.GetOneValue())
+                {
+                    case 1://不断恢复生命
+                        _extraLifeRestorePercent = 0.0f;
+                        break;
+                }
+
+                if (!string.IsNullOrEmpty(equip.FlyIni))
+                {
+                    FlyIniReplace = null;
+                }
+                if (!string.IsNullOrEmpty(equip.FlyIni2))
+                {
+                    FlyIni2Replace = null;
+                }
+
+                if (!string.IsNullOrEmpty(equip.AddMagicEffectName))
+                {
+                    AddMagicEffectWithName[equip.AddMagicEffectName].Remove(equip.Name);
+                    if (AddMagicEffectWithName[equip.AddMagicEffectName].Count == 0)
+                    {
+                        AddMagicEffectWithName.Remove(equip.AddMagicEffectName);
+                    }
+                }
+                else if (!string.IsNullOrEmpty(equip.AddMagicEffectType))
+                {
+                    AddMagicEffectWithType[equip.AddMagicEffectType].Remove(equip.Name);
+                    if (AddMagicEffectWithType[equip.AddMagicEffectType].Count == 0)
+                    {
+                        AddMagicEffectWithType.Remove(equip.AddMagicEffectType);
+                    }
+                }
+                else
+                {
+                    AddMagicEffectPercent -= equip.AddMagicEffectPercent.GetOneValue();
+                    AddMagicEffectAmount -= equip.AddMagicEffectAmount.GetOneValue();
+                }
+
+                ChangeMoveSpeedPercent -= equip.ChangeMoveSpeedPercent.GetOneValue();
+
+                if (equip.MagicToUseWhenBeAttacked != null)
+                {
+                    RemoveMagicToUseWhenAttackedList(equip.FileName);
+                }
+
+                if (equip.NoNeedToEquip.GetOneValue() == 0 && !(this is Player))
+                {
+                    switch (equip.Part)
+                    {
+                        case Good.EquipPosition.None:
+                            break;
+                        case Good.EquipPosition.Head:
+                            _headEquip = null;
+                            break;
+                        case Good.EquipPosition.Neck:
+                            _neckEquip = null;
+                            break;
+                        case Good.EquipPosition.Body:
+                            _bodyEquip = null;
+                            break;
+                        case Good.EquipPosition.Back:
+                            _backEquip = null;
+                            break;
+                        case Good.EquipPosition.Hand:
+                            _handEquip = null;
+                            break;
+                        case Good.EquipPosition.Wrist:
+                            _wristEquip = null;
+                            break;
+                        case Good.EquipPosition.Foot:
+                            _footEquip = null;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                }
+            }
+        }
+
+        protected void SetFlyIniAdditionalEffect(Magic.AddonEffect effect)
+        {
+            if (FlyIni != null) FlyIni.AdditionalEffect = effect;
+            if (FlyIni2 != null) FlyIni2.AdditionalEffect = effect;
+        }
+
+        /// <summary>
         /// Add amount of life. Amount can be negative.
         /// If list is less than 0.Character is death and <see cref="Death"/> is invoked.
         /// </summary>
@@ -3704,6 +4115,20 @@ namespace Engine
                         }
                         ScriptManager.RunScript(_timeScriptParserCache, this);
                     }
+                }
+
+                if (_extraLifeRestorePercent > 0)
+                {
+                    if ((IsStanding() || IsWalking()) && BodyFunctionWell)
+                    {
+                        _standingMilliseconds += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                        if (_standingMilliseconds >= 1000)
+                        {
+                            Life += (int)(_extraLifeRestorePercent * LifeMax);
+                            _standingMilliseconds = 0f;
+                        }
+                    }
+                    else _standingMilliseconds = 0f;
                 }
             }
 

@@ -15,8 +15,14 @@ namespace Engine.Gui
 
         public static void DropHandler(object arg1, DragDropItem.DropEvent arg2)
         {
-            var item = (DragDropItem)arg1;
             var sourceItem = arg2.Source;
+
+            if (sourceItem.Data is NpcEquipGui.NpcEquipItemInfo)
+            {
+                return;
+            }
+
+            var item = (DragDropItem)arg1;
             var data = item.Data as GoodItemData;
             var sourceData = sourceItem.Data as GoodItemData;
             if (data != null && sourceData != null)
