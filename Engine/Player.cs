@@ -987,7 +987,7 @@ namespace Engine
             base.FullLife();
         }
 
-        public override void SetLevelTo(int level)
+        public override void LevelUpTo(int level)
         {
             if (LevelIni == null)
             {

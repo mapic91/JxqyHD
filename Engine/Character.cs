@@ -3645,7 +3645,7 @@ namespace Engine
                             break;
                     }
                 }
-                SetLevelTo(i);
+                LevelUpTo(i);
             }
         }
 
@@ -3667,7 +3667,7 @@ namespace Engine
             }
             if (detail != null)
             {
-                LifeMax = detail.Life;
+                LifeMax = detail.LifeMax;
                 ThewMax = detail.ThewMax;
                 ManaMax = detail.ManaMax;
                 Life = LifeMax;
@@ -3682,6 +3682,46 @@ namespace Engine
                 Evade = detail.Evade;
                 LevelUpExp = detail.LevelUpExp;
             }
+        }
+
+        public virtual void LevelUpTo(int level)
+        {
+            if (LevelIni == null)
+            {
+                Level = level;
+                return;
+            }
+            Utils.LevelDetail detail = null, currentDetail = null;
+            if (LevelIni.ContainsKey(level) &&
+                LevelIni.ContainsKey(Level))
+            {
+                detail = LevelIni[level];
+                currentDetail = LevelIni[Level];
+            }
+            if (detail != null)
+            {
+                LifeMax += (detail.LifeMax - currentDetail.LifeMax);
+                ThewMax += (detail.ThewMax - currentDetail.ThewMax);
+                ManaMax += (detail.ManaMax - currentDetail.ManaMax);
+                Life = LifeMax;
+                Thew = ThewMax;
+                Mana = ManaMax;
+                Attack += (detail.Attack - currentDetail.Attack);
+                Attack2 += (detail.Attack2 - currentDetail.Attack2);
+                Attack3 += (detail.Attack3 - currentDetail.Attack3);
+                Defend += (detail.Defend - currentDetail.Defend);
+                Defend2 += (detail.Defend2 - currentDetail.Defend2);
+                Defend3 += (detail.Defend3 - currentDetail.Defend3);
+                Evade += (detail.Evade - currentDetail.Evade);
+                LevelUpExp = detail.LevelUpExp;
+            }
+            else
+            {
+                Exp = 0;
+                LevelUpExp = 0;
+            }
+
+            Level = level;
         }
 
         public virtual void SetPropToLevel(int level)
