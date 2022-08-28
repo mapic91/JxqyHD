@@ -399,7 +399,10 @@ namespace Engine
                     break;
                 case 2:
                     character.SetPoisonSeconds(BelongMagic.SpecialKindMilliSeconds > 0 ? BelongMagic.SpecialKindMilliSeconds / 1000.0f : BelongMagic.EffectLevel + 1, BelongMagic.NoSpecialKindEffect == 0);
-                    character.PoisonByCharacterName = BelongCharacter.Name;
+                    if (BelongCharacter is Player || BelongCharacter.IsPartner)
+                    {
+                        character.PoisonByCharacterName = BelongCharacter.Name;
+                    }
                     break;
                 case 3:
                     character.SetPetrifySeconds(BelongMagic.SpecialKindMilliSeconds > 0 ? BelongMagic.SpecialKindMilliSeconds / 1000.0f : BelongMagic.EffectLevel + 1, BelongMagic.NoSpecialKindEffect == 0);
@@ -417,7 +420,10 @@ namespace Engine
                     if (!character.IsPoisoned)
                     {
                         character.SetPoisonSeconds(BelongCharacter.Level / 10 + 1, BelongMagic.NoSpecialKindEffect == 0);
-                        character.PoisonByCharacterName = BelongCharacter.Name;
+                        if (BelongCharacter is Player || BelongCharacter.IsPartner)
+                        {
+                            character.PoisonByCharacterName = BelongCharacter.Name;
+                        }
                     }
                     break;
                 case Magic.AddonEffect.Petrified:
@@ -1300,7 +1306,10 @@ namespace Engine
                                 if (BelongMagic.RangePoison > 0)
                                 {
                                     target.SetPoisonSeconds(BelongMagic.RangePoison/1000.0f, BelongMagic.NoSpecialKindEffect == 0);
-                                    target.PoisonByCharacterName = BelongCharacter.Name;
+                                    if (BelongCharacter is Player || BelongCharacter.IsPartner)
+                                    {
+                                        target.PoisonByCharacterName = BelongCharacter.Name;
+                                    }
                                 }
                                 if (BelongMagic.RangePetrify > 0)
                                 {
