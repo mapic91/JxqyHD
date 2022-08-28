@@ -2291,6 +2291,8 @@ namespace Engine
             AddKey(keyDataCollection, "DestinationMapPosX", DestinationMapPosX);
             AddKey(keyDataCollection, "DestinationMapPosY", DestinationMapPosY);
 
+            AddKey(keyDataCollection, "CanLevelUp", _canLevelUp);
+
             AddKey(keyDataCollection, "CanEquip", _canEquip);
             AddKey(keyDataCollection, "HeadEquip", _headEquip);
             AddKey(keyDataCollection, "NeckEquip", _neckEquip);
@@ -4296,9 +4298,9 @@ namespace Engine
                     AddLife(-10);
                     if (IsDeathInvoked && !string.IsNullOrEmpty(PoisonByCharacterName))
                     {
-                        var exp = Utils.GetCharacterDeathExp(Globals.ThePlayer, this);
                         if (PoisonByCharacterName == Globals.ThePlayer.Name)
                         {
+                            var exp = Utils.GetCharacterDeathExp(Globals.ThePlayer, this);
                             Globals.ThePlayer.AddExp(exp, true);
                         }
                         else
@@ -4306,6 +4308,7 @@ namespace Engine
                             var npc = NpcManager.GetNpc(PoisonByCharacterName);
                             if (npc != null && npc.CanLevelUp > 0)
                             {
+                                var exp = Utils.GetCharacterDeathExp(npc, this);
                                 npc.AddExp(exp);
                             }
                         }
