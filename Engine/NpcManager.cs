@@ -147,6 +147,7 @@ namespace Engine
             {
                 if ((ignoreList == null || ignoreList.All(item => npc != item)) && (withInvisible || npc.IsVisible) && (npc.IsEnemy ||(withNetural && npc.IsNoneFighter)))
                 {
+                    if(npc.IsDeathInvoked) continue;
                     var distance = Vector2.Distance(positionInWorld, npc.PositionInWorld);
                     if (distance < closedDistance)
                     {
