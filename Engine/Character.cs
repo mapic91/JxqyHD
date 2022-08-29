@@ -2,6 +2,7 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Windows.Forms;
 using Engine.Gui;
 using Engine.ListManager;
 using Engine.Map;
@@ -3701,6 +3702,27 @@ namespace Engine
                 detail = LevelIni[level];
                 currentDetail = LevelIni[Level];
             }
+
+            var isMaxLevel = false;
+            if (detail == null)
+            {
+                if (level > LevelIni.Count)
+                {
+                    isMaxLevel = true;
+                    for (var i = level; i >= 1; i--)
+                    {
+                        if (LevelIni.ContainsKey(i))
+                        {
+                            detail = LevelIni[i];
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show(string.Format("{0}的LevelIni没设置等级{1}", Name, level));
+                }
+            }
             if (detail != null)
             {
                 LifeMax += (detail.LifeMax - currentDetail.LifeMax);
@@ -3718,7 +3740,8 @@ namespace Engine
                 Evade += (detail.Evade - currentDetail.Evade);
                 LevelUpExp = detail.LevelUpExp;
             }
-            else
+
+            if(isMaxLevel)
             {
                 Exp = 0;
                 LevelUpExp = 0;
