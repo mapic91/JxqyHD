@@ -2207,6 +2207,7 @@ namespace Engine
             AddKey(keyDataCollection, "Exp", _exp);
             AddKey(keyDataCollection, "LevelUpExp", _levelUpExp);
             AddKey(keyDataCollection, "Level", _level);
+            AddKey(keyDataCollection, "LevelIni", LevelIniFile);
             AddKey(keyDataCollection, "Life", _life);
             AddKey(keyDataCollection, "LifeMax", _lifeMax);
             AddKey(keyDataCollection, "Thew", _thew);

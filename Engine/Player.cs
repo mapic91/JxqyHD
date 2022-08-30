@@ -590,7 +590,6 @@ namespace Engine
             base.Save(keyDataCollection);
             AddKey(keyDataCollection, "Money", Money);
             AddKey(keyDataCollection, "CurrentUseMagicIndex", CurrentUseMagicIndex);
-            AddKey(keyDataCollection, "LevelIni", LevelIniFile);
             AddKey(keyDataCollection, "ManaLimit", ManaLimit);
             AddKey(keyDataCollection, "IsRunDisabled", IsRunDisabled);
             AddKey(keyDataCollection, "IsJumpDisabled", IsJumpDisabled);
