@@ -732,6 +732,16 @@ b - 停留多少毫秒，默认3000
 ShowSystemMsg("消息<color=Red>红色")
 ShowSystemMsg("测试消息", 6000)
 
+SetAllNpcScript(a,b)
+设置所有NPC名字是a的ScriptFile为b
+比如：
+SetAllNpcScript("刺客","对话.txt");
+
+SetAllNpcDeathScript(a,b)
+设置所有NPC名字是a的DeathScript为b
+比如：
+SetAllNpcDeathScript("刺客","死亡.txt");
+
 ///////////////////////////////////////////////////////////////////
 //////////////////    Implemented   End  /////////////////////////
 /////////////////////////////////////////////////////////////////

@@ -729,6 +729,16 @@ namespace Engine.Script
             }
         }
 
+        public static void SetAllNpcScript(List<string> parameters)
+        {
+            var npcs = NpcManager.GetAllNpcs(Utils.RemoveStringQuotes(parameters[0]));
+            var scripFileName = Utils.RemoveStringQuotes(parameters[1]);
+            foreach (var npc in npcs)
+            {
+                npc.ScriptFile = scripFileName;
+            }
+        }
+
         public static void SetNpcDeathScript(List<string> parameters, object belongObject)
         {
             if(parameters.Count == 2)
@@ -784,6 +794,16 @@ namespace Engine.Script
                 File.WriteAllText(savePath, data.ToString(), Globals.LocalEncoding);
             }
             
+        }
+
+        public static void SetAllNpcDeathScript(List<string> parameters)
+        {
+            var npcs = NpcManager.GetAllNpcs(Utils.RemoveStringQuotes(parameters[0]));
+            var scripFileName = Utils.RemoveStringQuotes(parameters[1]);
+            foreach (var npc in npcs)
+            {
+                npc.DeathScript = scripFileName;
+            }
         }
 
         public static void SetNpcLevel(List<string> parameters, object belongObject)

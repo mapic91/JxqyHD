@@ -243,8 +243,14 @@ namespace Engine.Script
                         case "SetNpcScript":
                             ScriptExecuter.SetNpcScript(parameters, BelongObject);
                             break;
+                        case "SetAllNpcScript":
+                            ScriptExecuter.SetAllNpcScript(parameters);
+                            break;
                         case "SetNpcDeathScript":
                             ScriptExecuter.SetNpcDeathScript(parameters, BelongObject);
+                            break;
+                        case "SetAllNpcDeathScript":
+                            ScriptExecuter.SetAllNpcDeathScript(parameters);
                             break;
                         case "SetNpcLevel":
                             ScriptExecuter.SetNpcLevel(parameters, BelongObject);
