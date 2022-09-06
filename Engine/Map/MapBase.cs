@@ -650,6 +650,8 @@ namespace Engine.Map
             _mapFileNameWithoutExtension = Path.GetFileNameWithoutExtension(path);
             _mapFileName = Path.GetFileName(path);
             LittelMapTexture = Utils.LoadTexture2DFromFile(@"map\littlemap\" + _mapFileNameWithoutExtension + ".png");
+
+            GC.Collect();
         }
 
         protected abstract bool LoadMapInternal(string mapFilePath);
