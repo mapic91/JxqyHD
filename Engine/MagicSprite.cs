@@ -1249,7 +1249,7 @@ namespace Engine
 
             if (!_isInDestroy)
             {
-                if (BelongMagic.RangeEffect > 0)
+                if (BelongMagic.RangeEffect > 0 && (_paths == null || _paths.Count < 2))
                 {
                     _rangeElapsedMilliseconds += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
                     if (_rangeElapsedMilliseconds >= BelongMagic.RangeTimeInerval)
