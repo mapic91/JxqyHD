@@ -76,7 +76,18 @@ namespace Engine
             {
                 using (var stream = new FileStream(filePath, FileMode.Open))
                 {
-                    return Texture2D.FromStream(Globals.TheGame.GraphicsDevice, stream);
+                    var texture = Texture2D.FromStream(Globals.TheGame.GraphicsDevice, stream);
+                    var data = new Color[texture.Width * texture.Height];
+                    texture.GetData(data);
+                    for (var i = 0; i < data.Length; i++)
+                    {
+                        if (data[i].A != 0xFF)
+                        {
+                            data[i] = new Color(data[i].R, data[i].G, data[i].B) * (data[i].A / 255f);
+                        }
+                    }
+                    texture.SetData(data);
+                    return texture;
                 }
             }
             catch (Exception)
