@@ -24,6 +24,7 @@ namespace Engine
         private LinkedList<Sprite> _superModeDestroySprites;
         private List<Character> _leapedCharacters;
         private List<Character> _carrayUser4Characters = new List<Character>();
+        private List<Character> _passThroughedCharacters;
         private Character _closedCharecter;
         private float _flyMagicElapsedMilliSeconds;
         private float _summonElapsedMilliseconds;
@@ -292,6 +293,15 @@ namespace Engine
             if (character == null) return false;
 
             var destroy = true;
+
+            if (BelongMagic.PassThrough > 0)
+            {
+                if (_passThroughedCharacters.Contains(character))
+                {
+                    return false;
+                }
+                _passThroughedCharacters.Add(character);
+            }
 
             if (BelongMagic.CarryUser == 4 && BelongCharacter.MovedByMagicSprite == this)
             {
@@ -806,6 +816,11 @@ namespace Engine
                 //Initilize leap
                 _leapedCharacters = new List<Character>();
                 _canLeap = true;
+            }
+
+            if (BelongMagic.PassThrough > 0)
+            {
+                _passThroughedCharacters = new List<Character>();
             }
 
             //Start play FlyingImage
