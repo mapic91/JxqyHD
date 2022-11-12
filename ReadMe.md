@@ -1,6 +1,6 @@
 # 剑侠情缘外传 月影传说 高清版
 
-## Enviroment Setup
+## Environment Setup
 ### Requirement
 1. XNA
 2. Visual Studio 2013
