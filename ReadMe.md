@@ -12,7 +12,7 @@
 4. Set the build target path to the game resource dir.
 5. Compile and run.
 
-###Screenshots
+### Screenshots
 ![01](Screenshots/01.jpg)
 
 ![02](Screenshots/02.jpg)
