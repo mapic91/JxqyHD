@@ -1289,6 +1289,52 @@ namespace Engine.Script
             return false;
         }
 
+        public static void ChooseMultiple(List<string> parameters)
+        {
+            var selections = new List<string>();
+            var isShows = new List<bool>();
+            for (int i = 4; i < parameters.Count - 1; i++)
+            {
+                var str = Utils.RemoveStringQuotes(parameters[i]);
+                var conditions = GetConditions(ref str);
+                if (conditions.Count > 0)
+                {
+                    var isTrue = true;
+                    foreach (var condition in conditions)
+                    {
+                        if (!If(condition))
+                        {
+                            isTrue = false;
+                            break;
+                        }
+                    }
+                    isShows.Add(isTrue);
+                }
+                else
+                {
+                    isShows.Add(true);
+                }
+                selections.Add(str);
+            }
+            GuiManager.ChooseMultiple(int.Parse(parameters[0]), int.Parse(parameters[1]), parameters[2], Utils.RemoveStringQuotes(parameters[3]), selections, isShows);
+        }
+
+        public static bool IsChooseMultipleEnd(List<string> parameters)
+        {
+            if (GuiManager.IsChooseMultipleEnd())
+            {
+                var varName = "$" + Utils.RemoveStringQuotes(parameters[2]);
+                var result = GuiManager.GetChooseMultipleResult();
+                for (var i = 0; i < result.Count; i++)
+                {
+                    Variables[varName + i] = result[i];
+                }
+                
+                return true;
+            }
+            return false;
+        }
+
         public static void RunScript(List<string> parameters, object belongObject)
         {
             RunScript(Utils.RemoveStringQuotes(parameters[0]), belongObject);

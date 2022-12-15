@@ -129,6 +129,9 @@ namespace Engine.Script
                         case "ChooseEx":
                             isEnd = ScriptExecuter.IsChooseExEnd(_currentCode.Parameters);
                             break;
+                        case "ChooseMultiple":
+                            isEnd = ScriptExecuter.IsChooseMultipleEnd(_currentCode.Parameters);
+                            break;
                         case "PlayMovie":
                             isEnd = !ScriptExecuter.IsInPlayingMovie;
                             break;
@@ -393,6 +396,10 @@ namespace Engine.Script
                             break;
                         case "ChooseEx":
                             ScriptExecuter.ChooseEx(parameters);
+                            isEnd = false;
+                            break;
+                        case "ChooseMultiple":
+                            ScriptExecuter.ChooseMultiple(parameters);
                             isEnd = false;
                             break;
                         case "RunScript":

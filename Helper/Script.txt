@@ -456,6 +456,25 @@ ChooseEx("请选择：","选{$foo >= 3}择1{$abc == 1}","选择2","选择3",$XuanZhe);
 foo变量大于等于3，并且abc变量为1时，选择1选项才会出现
 
 
+ChooseMultiple(columonCount, chooseCount, varName, message, a, b, c, d, e, ...)
+多选
+columonCount - 排几列，比如3，表示选择项目排3列
+chooseCount - 要选几个，比如2，表示要选择2个
+varName - 用来记录选择的变量名字，比如choose，要选两个，则$choose0和$choose1里面存了选择了第几个
+message - 提示消息
+a, b, c, d, e, ... - 具体的选择项目
+格式配置：
+所有的格式配置都支持，比如<enter>，<color=Red>等
+ChooseMultiple(3, 3, "choose", "请选择", "选<color=Red>择1", "选择2", "选择3","选择4","选择5","选择6","选择7","选择8")
+是否显示：
+支持If函数的所有判断，比如：
+ChooseMultiple(3, 3, "choose", "请选择", "选{$foo >= 3}择1{$abc == 1}", "选择2", "选择3","选择4","选择5","选择6","选择7","选择8")
+foo变量大于等于3，并且abc变量为1时，选择1选项才会出现
+比如：
+ChooseMultiple(3, 3, "choose", "请选择", "选择1", "选择2", "选择3","选择4","选择5","选择6","选择7","选择8")
+表示排3列，要选择3个，$choose0，$choose1，$choose2里面存了是第几个选择
+
+
 ClearAllVar($var1, $var2 ...);
 清除所有变量，除了 $var1, $var2 ...（可设置0-n个）
 比如：

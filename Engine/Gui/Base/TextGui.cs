@@ -223,6 +223,11 @@ namespace Engine.Gui.Base
                         _drawInfo[i].Position += offset;
                     }
                 }
+
+                for (var i = _drawInfoLineBegin; i < drawInfoLineEnd; i++)
+                {
+                    RealWidth = (int)Math.Max(RealWidth, _drawInfo[i].Position.X + _drawInfo[i].Size.X);
+                }
             }
 
             _drawInfoLineBegin = drawInfoLineEnd;
@@ -369,7 +374,6 @@ namespace Engine.Gui.Base
                         }
                         if (IsReachRight(x, stringWidth))
                         {
-                            RealWidth = Math.Max(RealWidth, (int)x);
                             AlignLineText(x);
                             AddLinespace(ref y);
                             if (IsReachBottom(y))
