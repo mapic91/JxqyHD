@@ -2439,5 +2439,23 @@ namespace Engine.Script
             }
             GuiManager.ShowSystemMsg(msg, stayTime);
         }
+
+        public static void RandRun(List<string> parameters, object belongObj)
+        {
+            var v = 0;
+            if (Variables.ContainsKey(parameters[0]))
+            {
+                v = Variables[parameters[0]];
+            }
+
+            if (Globals.TheRandom.Next(100) <= v)
+            {
+                RunScript(Utils.RemoveStringQuotes(parameters[1]), belongObj);
+            }
+            else
+            {
+                RunScript(Utils.RemoveStringQuotes(parameters[2]), belongObj);
+            }
+        }
     }
 }

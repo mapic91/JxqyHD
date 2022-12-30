@@ -712,6 +712,9 @@ namespace Engine.Script
                         case "ShowSystemMsg":
                             ScriptExecuter.ShowSystemMsg(parameters);
                             break;
+                        case "RandRun":
+                            ScriptExecuter.RandRun(parameters, BelongObject);
+                            break;
                         default:
                             throw new Exception("无此函数");
                     }
