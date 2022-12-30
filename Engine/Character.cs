@@ -2232,6 +2232,7 @@ namespace Engine
             AddKey(keyDataCollection, "VisibleVariableValue", _visibleVariableValue);
             AddKey(keyDataCollection, "Group", _group);
             AddKey(keyDataCollection, "NoAutoAttackPlayer", _noAutoAttackPlayer);
+            AddKey(keyDataCollection, "Invincible", _invincible);
             if (_bodyIni != null)
             {
                 AddKey(keyDataCollection,
