@@ -10,6 +10,7 @@ namespace Engine.Gui
     {
         private Dictionary<string, Asf> _headIco = new Dictionary<string, Asf>();
         private List<GuiItem> _heads = new List<GuiItem>();
+        private List<TextGui> _lvs = new List<TextGui>();
         private List<Npc> _curPartners = new List<Npc>();
         public LittleHeadGui()
         {
@@ -21,6 +22,7 @@ namespace Engine.Gui
             for (var i = 0; i < _curPartners.Count; i++)
             {
                 _heads[i].Update(gameTime);
+                _lvs[i].Text = "LV" + _curPartners[i].Level;
             }
 
             var partners = NpcManager.GetAllPartner();
@@ -58,6 +60,7 @@ namespace Engine.Gui
                 if (_headIco[name] == null) continue;
 
                 GuiItem item;
+                TextGui text;
                 if (_heads.Count < i + 1)
                 {
                     item = new GuiItem();
@@ -72,16 +75,30 @@ namespace Engine.Gui
                             GuiManager.GoodsInterface.IsShow = true;
                         }
                     };
+
+                    text = new TextGui(item, //Level
+                        new Vector2(0, 0),
+                        0,
+                        0,
+                        Globals.FontSize7,
+                        0,
+                        0,
+                        "",
+                        Color.White);
+                    _lvs.Add(text);
                 }
                 else
                 {
                     item = _heads[i];
+                    text = _lvs[i];
                 }
 
                 item.BaseTexture = new Texture(_headIco[name]);
                 item.Width = item.BaseTexture.Width;
                 item.Height = item.BaseTexture.Height;
                 item.Position = new Vector2(x, y);
+
+                text.Position = new Vector2(item.Width + 3, item.Height - Globals.FontSize7.MeasureString("LV").Y);
 
                 y += item.Height + 2;
             }
@@ -92,6 +109,7 @@ namespace Engine.Gui
             for (var i = 0; i < _curPartners.Count; i++)
             {
                 _heads[i].Draw(spriteBatch);
+                _lvs[i].Draw(spriteBatch);
             }
         }
     }
