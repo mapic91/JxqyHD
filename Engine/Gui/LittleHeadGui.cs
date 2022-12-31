@@ -22,7 +22,7 @@ namespace Engine.Gui
             for (var i = 0; i < _curPartners.Count; i++)
             {
                 _heads[i].Update(gameTime);
-                _lvs[i].Text = "LV" + _curPartners[i].Level;
+                _lvs[i].Text = _curPartners[i].CanLevelUp > 0 ? "LV" + _curPartners[i].Level : "";
             }
 
             var partners = NpcManager.GetAllPartner();
