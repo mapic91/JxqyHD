@@ -59,7 +59,7 @@ namespace Settings
             }
             catch (Exception exception)
             {
-
+                MessageBox.Show(exception.ToString());
             }
             MagicManager.MaxMagicUnit = (int)_maxMagicUintCtl.Value;
             Globals.RunSpeedFold = _runSpeed.Value;
