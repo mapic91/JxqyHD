@@ -1007,121 +1007,133 @@ namespace Engine
                 origin = destination;
             }
 
-            switch (magic.MoveKind)
+            if (magic.RoundMoveColockwise == 0 && magic.RoundMoveAnticlockwise == 0)
             {
-                case 1:
-                    AddFixedPositionMagicSprite(user, magic, destination, true);
-                    break;
-                case 2:
-                    AddMagicSprite(GetMoveMagicSprite(user, magic, origin, destination, false, GetSpeedRatio(destination - origin)));
-                    break;
-                case 3:
-                    AddLineMoveMagicSprite(user, magic, origin, destination, false);
-                    break;
-                case 4:
-                    AddCircleMoveMagicSprite(user, magic, origin, false);
-                    break;
-                case 5:
-                    AddHeartMoveMagicSprite(user, magic, origin, false);
-                    break;
-                case 6:
-                    AddSpiralMoveMagicSprite(user, magic, origin, destination, false);
-                    break;
-                case 7:
-                    AddSectorMoveMagicSprite(user, magic, origin, destination, false);
-                    break;
-                case 8:
-                    AddRandomSectorMoveMagicSprite(user, magic, origin, destination, false);
-                    break;
-                case 9:
-                    AddFixedWallMagicSprite(user, magic, origin, destination, true);
-                    break;
-                case 10:
-                    AddWallMoveMagicSprite(user, magic, origin, destination, false);
-                    break;
-                case 11:
-                    {
-                        switch (magic.Region)
+                switch (magic.MoveKind)
+                {
+                    case 1:
+                        AddFixedPositionMagicSprite(user, magic, destination, true);
+                        break;
+                    case 2:
+                        AddMagicSprite(GetMoveMagicSprite(user, magic, origin, destination, false, GetSpeedRatio(destination - origin)));
+                        break;
+                    case 3:
+                        AddLineMoveMagicSprite(user, magic, origin, destination, false);
+                        break;
+                    case 4:
+                        AddCircleMoveMagicSprite(user, magic, origin, false);
+                        break;
+                    case 5:
+                        AddHeartMoveMagicSprite(user, magic, origin, false);
+                        break;
+                    case 6:
+                        AddSpiralMoveMagicSprite(user, magic, origin, destination, false);
+                        break;
+                    case 7:
+                        AddSectorMoveMagicSprite(user, magic, origin, destination, false);
+                        break;
+                    case 8:
+                        AddRandomSectorMoveMagicSprite(user, magic, origin, destination, false);
+                        break;
+                    case 9:
+                        AddFixedWallMagicSprite(user, magic, origin, destination, true);
+                        break;
+                    case 10:
+                        AddWallMoveMagicSprite(user, magic, origin, destination, false);
+                        break;
+                    case 11:
                         {
-                            case 1:
-                                AddSquareFixedPositionMagicSprite(user, magic, destination, true);
-                                break;
-                            case 2:
-                                AddCrossFixedPositionMagicSprite(user, magic, origin, true);
-                                break;
-                            case 3:
-                                AddRegtangleFixedPositionMagicSprite(user, magic, origin, destination, true);
-                                break;
-                            case 4:
-                                AddIsoscelesTriangleMagicSprite(user, magic, origin, destination, true);
-                                break;
-                            case 5:
-                                AddVTypeFixedPOsitionMagicSprite(user, magic, origin, destination, true);
-                                break;
-                            case 6:
-                                AddRegionFileMagicSprite(user, magic, origin, destination, true);
-                                break;
+                            switch (magic.Region)
+                            {
+                                case 1:
+                                    AddSquareFixedPositionMagicSprite(user, magic, destination, true);
+                                    break;
+                                case 2:
+                                    AddCrossFixedPositionMagicSprite(user, magic, origin, true);
+                                    break;
+                                case 3:
+                                    AddRegtangleFixedPositionMagicSprite(user, magic, origin, destination, true);
+                                    break;
+                                case 4:
+                                    AddIsoscelesTriangleMagicSprite(user, magic, origin, destination, true);
+                                    break;
+                                case 5:
+                                    AddVTypeFixedPOsitionMagicSprite(user, magic, origin, destination, true);
+                                    break;
+                                case 6:
+                                    AddRegionFileMagicSprite(user, magic, origin, destination, true);
+                                    break;
+                            }
+                            break;
+                        }
+                    case 13:
+                    case 23:
+                        AddFollowCharacterMagicSprite(user, magic, origin, true, target);
+                        break;
+                    case 15:
+                        AddSuperModeMagic(user, magic, origin, true);
+                        break;
+                    case 16:
+                        AddFollowEnemyMagicSprite(user, magic, origin, destination, false);
+                        break;
+                    case 17:
+                        AddThrowMagicSprite(user, magic, origin, destination, true);
+                        break;
+                    case 18:
+                        //Empty
+                        break;
+                    case 19:
+                        {
+                            var info = new Kind19MagicInfo(magic.KeepMilliseconds, magic, user);
+                            _kind19Magics.AddLast(info);
                         }
                         break;
-                    }
-                case 13:
-                case 23:
-                    AddFollowCharacterMagicSprite(user, magic, origin, true, target);
-                    break;
-                case 15:
-                    AddSuperModeMagic(user, magic, origin, true);
-                    break;
-                case 16:
-                    AddFollowEnemyMagicSprite(user, magic, origin, destination, false);
-                    break;
-                case 17:
-                    AddThrowMagicSprite(user, magic, origin, destination, true);
-                    break;
-                case 18:
-                    //Empty
-                    break;
-                case 19:
-                {
-                    var info = new Kind19MagicInfo(magic.KeepMilliseconds, magic, user);
-                    _kind19Magics.AddLast(info);
-                }
-                    break;
-                case 20:
-                {
-                    //Can't use transport magic when in transport
-                    if (!user.IsInTransport)
-                    {
-                        user.IsInTransport = true;
-                        AddFixedPositionMagicSprite(user, magic, destination, true);
-                    }
-                }
-                    break;
-                case 21:
-                {
-                    var player = user as Player;
-                    if (player != null && 
-                        target != null &&
-                        !target.IsDeathInvoked && // Can't control dead people
-                        target.Level <= magic.MaxLevel
-                        )
-                    {
-                        player.ControledCharacter = target;
-                        AddFixedPositionMagicSprite(user, magic, user.PositionInWorld, true);
-                    }
-                }
-                    break;
-                case 22:
-                {
-                    AddFixedPositionMagicSprite(user, magic, destination, true);
-                }
-                    break;
-                case 24:
-                {
-                    AddVMoveMagicSprite(user, magic, origin, destination, false);
-                }
-                    break;
+                    case 20:
+                        {
+                            //Can't use transport magic when in transport
+                            if (!user.IsInTransport)
+                            {
+                                user.IsInTransport = true;
+                                AddFixedPositionMagicSprite(user, magic, destination, true);
+                            }
+                        }
+                        break;
+                    case 21:
+                        {
+                            var player = user as Player;
+                            if (player != null &&
+                                target != null &&
+                                !target.IsDeathInvoked && // Can't control dead people
+                                target.Level <= magic.MaxLevel
+                                )
+                            {
+                                player.ControledCharacter = target;
+                                AddFixedPositionMagicSprite(user, magic, user.PositionInWorld, true);
+                            }
+                        }
+                        break;
+                    case 22:
+                        {
+                            AddFixedPositionMagicSprite(user, magic, destination, true);
+                        }
+                        break;
+                    case 24:
+                        {
+                            AddVMoveMagicSprite(user, magic, origin, destination, false);
+                        }
+                        break;
 
+                }
             }
+            else
+            {
+                for (var i = 0; i < magic.RoundMoveCount; i++)
+                {
+                    var magicSprite = GetFixedPositionMagicSprite(user, magic, user.PositionInWorld, true);
+                    AddMagicSprite(magicSprite, i);
+                }
+            }
+          
 
             //Magic side effect
             if (magic.SideEffectProbability > 0 && 

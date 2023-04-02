@@ -13,6 +13,11 @@ namespace Engine
 {
     public class MagicSprite : Sprite
     {
+        private class RoundMoveInfo
+        {
+            public float CurDegree;
+        }
+
         private Character _belongCharacter;
         private Magic _belongMagic;
         private Vector2 _moveDirection;
@@ -30,6 +35,8 @@ namespace Engine
         private float _summonElapsedMilliseconds;
         private float _rangeElapsedMilliseconds;
         private float _waitMilliSeconds;
+
+        private RoundMoveInfo _roundMoveInfo;
 
         private int _leftLeapTimes;
         private int _currentEffect;
@@ -72,6 +79,14 @@ namespace Engine
                     if (BelongMagic.CarryUser > 0 && BelongMagic.CarryUserSpriteIndex == value)
                     {
                         BelongCharacter.MovedByMagicSprite = this;
+                    }
+
+                    if (BelongMagic.RoundMoveColockwise > 0 || BelongMagic.RoundMoveAnticlockwise > 0)
+                    {
+                        _roundMoveInfo = new RoundMoveInfo();
+                        _roundMoveInfo.CurDegree = (BelongMagic.RoundMoveColockwise > 0 ? -1 : 1) *
+                                                   (360f * _index / BelongMagic.RoundMoveCount);
+                        SetRoundMove();
                     }
                 }
             }
@@ -1085,6 +1100,24 @@ namespace Engine
             PlayFrames(framesToPlay);
         }
 
+        private void SetRoundMove()
+        {
+            if (BelongMagic.RoundRadius <= 0)
+            {
+                return;
+            }
+            var x = BelongCharacter.PositionInWorld.X +
+                    Math.Cos(_roundMoveInfo.CurDegree * Math.PI / 180f) * BelongMagic.RoundRadius;
+            var y = BelongCharacter.PositionInWorld.Y +
+                    Math.Sin(_roundMoveInfo.CurDegree * Math.PI / 180f) * BelongMagic.RoundRadius;
+            PositionInWorld = new Vector2((float)x, (float)y);
+            var dir = PositionInWorld - BelongCharacter.PositionInWorld;
+            dir.Normalize();
+            _moveDirection.X = BelongMagic.RoundMoveColockwise > 0 ? -dir.Y : dir.Y;
+            _moveDirection.Y = BelongMagic.RoundMoveColockwise > 0 ? dir.X : -dir.X;
+            SetDirection(_moveDirection);
+        }
+
         public override void Update(GameTime gameTime)
         {
             if (IsDestroyed) return;
@@ -1095,6 +1128,14 @@ namespace Engine
             {
                 _waitMilliSeconds -= (float)gameTime.ElapsedGameTime.TotalMilliseconds;
                 return;
+            }
+
+            if (BelongMagic.RoundMoveColockwise > 0 || BelongMagic.RoundMoveAnticlockwise > 0)
+            {
+                _roundMoveInfo.CurDegree += (BelongMagic.RoundMoveColockwise > 0 ? 1 : -1) *
+                                            BelongMagic.RoundMoveDegreeSpeed *
+                                            (float)gameTime.ElapsedGameTime.TotalSeconds;
+                SetRoundMove();
             }
 
             if (!string.IsNullOrEmpty(BelongMagic.MagicWhenNewPos))

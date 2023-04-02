@@ -69,6 +69,11 @@ namespace Engine
         private int _moveImitateUser;
         private int _circleMoveColockwise;
         private int _circleMoveAnticlockwise;
+        private int _roundMoveColockwise;
+        private int _roundMoveAnticlockwise;
+        private int _roundMoveCount = 1;
+        private int _roundMoveDegreeSpeed = 1;
+        private int _roundRadius = 1;
         private int _passThrough;
         private int _passThroughWithDestroyEffect;
         private int _passThroughWall;
@@ -660,6 +665,36 @@ namespace Engine
         {
             get { return _circleMoveAnticlockwise; }
             set { _circleMoveAnticlockwise = value; }
+        }
+
+        public int RoundMoveColockwise
+        {
+            get { return _roundMoveColockwise; }
+            set { _roundMoveColockwise = value; }
+        }
+
+        public int RoundMoveAnticlockwise
+        {
+            get { return _roundMoveAnticlockwise; }
+            set { _roundMoveAnticlockwise = value; }
+        }
+
+        public int RoundMoveCount
+        {
+            get { return _roundMoveCount; }
+            set { _roundMoveCount = value; }
+        }
+
+        public int RoundMoveDegreeSpeed
+        {
+            get { return _roundMoveDegreeSpeed; }
+            set { _roundMoveDegreeSpeed = value; }
+        }
+
+        public int RoundRadius
+        {
+            get { return _roundRadius; }
+            set { _roundRadius = value; }
         }
 
         public int PassThrough
