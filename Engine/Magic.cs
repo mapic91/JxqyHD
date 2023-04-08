@@ -201,6 +201,11 @@ namespace Engine
         private int _secondMagicDelay;
         #endregion Second magic
 
+        private int _jumpToTarget;
+        private int _jumpMoveSpeed = 32;
+        private Magic _jumpEndMagic;
+
+
         #region Public properties
         public AddonEffect AdditionalEffect { set; get; }
         public string Type { set; get; }
@@ -221,6 +226,10 @@ namespace Engine
                 if (_parasiticMagic != null)
                 {
                     _parasiticMagic.ItemInfo = value;
+                }
+                if (_jumpEndMagic != null)
+                {
+                    _jumpEndMagic.ItemInfo = value;
                 }
             }
             get { return _iteminfo; }
@@ -1155,6 +1164,24 @@ namespace Engine
             set { _magicWhenNewPos = value; }
         }
 
+        public int JumpToTarget
+        {
+            get { return _jumpToTarget; }
+            set { _jumpToTarget = value; }
+        }
+
+        public int JumpMoveSpeed
+        {
+            get { return _jumpMoveSpeed; }
+            set { _jumpMoveSpeed = value; }
+        }
+
+        public Magic JumpEndMagic
+        {
+            get { return _jumpEndMagic; }
+            set { _jumpEndMagic = value; }
+        }
+
         #endregion
 
         //noAttackFile - resolve recursive problem of AttackFile
@@ -1207,6 +1234,7 @@ namespace Engine
                     case "ParasiticMagic":
                     case "SecondMagicFile":
                     case "RandMagicFile":
+                    case "JumpEndMagic":
                         info.SetValue(this, Utils.GetMagic(nameValue[1], false), null);
                         break;
                     case "RegionFile":
@@ -1333,6 +1361,10 @@ namespace Engine
             if (magic.SecondMagicFile != null)
             {
                 magic.SecondMagicFile = magic.SecondMagicFile.GetLevel(level);
+            }
+            if (magic.JumpEndMagic != null)
+            {
+                magic.JumpEndMagic = magic.JumpEndMagic.GetLevel(level);
             }
 
             magic.AdditionalEffect = AdditionalEffect;

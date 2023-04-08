@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Windows.Forms;
 using Engine.Gui;
+using Engine.Lib;
 using Engine.ListManager;
 using Engine.Map;
 using Engine.Script;
@@ -191,6 +192,21 @@ namespace Engine
         protected bool IsInLoopWalk;
 
         protected bool IsSitted;
+
+        //bezier
+        private bool _inBezierMove;
+        private bool _inBezierMoveToRealPosition;
+        private Vector2 _bezierStartWorldPos;
+        private Vector2 _bezierEndWorldPos;
+        private Vector2 _bezierMoveLineDir;
+        private Vector2 _bezierLastRealWorldPosition;
+        private float _bezierTotalLineLength;
+        private float _bezierMoveSpeed;
+        private List<Vector2> _bezierPoints;
+        private float _totalBezierLength;
+        private float _movedBezierLength;
+        private float _stepBezierLength;
+        private Action<Character> _bezierMoveOnEnd;
 
         //npc装备
         private int _canEquip;
@@ -2381,7 +2397,8 @@ namespace Engine
                 IsPetrified ||
                 IsInTransport ||
                 MovedByMagicSprite != null ||
-                BouncedVelocity > 0) return false;
+                BouncedVelocity > 0 ||
+                _inBezierMove) return false;
             return true;
         }
 
@@ -2545,6 +2562,133 @@ namespace Engine
                 PlayFrames(FrameEnd - FrameBegin);
                 OnSitDown();
             }
+        }
+
+        public void BezierMoveTo(Vector2 destinationTilePosition, float speed, Action<Character> onEnd)
+        {
+            var curTilePosition = TilePosition;
+            if (curTilePosition == destinationTilePosition)
+            {
+                onEnd?.Invoke(this);
+                return;
+            }
+
+            _inBezierMove = true;
+            _inBezierMoveToRealPosition = false;
+            _bezierStartWorldPos = PositionInWorld;
+            _bezierMoveSpeed = speed;
+            _bezierEndWorldPos = MapBase.ToPixelPosition(destinationTilePosition);
+            _bezierLastRealWorldPosition = PositionInWorld;
+            _movedBezierLength = 0;
+            _stepBezierLength = 0;
+            _totalBezierLength = 0;
+            _bezierMoveOnEnd = onEnd;
+
+            var dir = _bezierEndWorldPos - _bezierStartWorldPos;
+            _bezierTotalLineLength = dir.Length();
+            _bezierMoveLineDir = Vector2.Normalize(dir);
+            SetDirection(dir);
+            var perpendicular = dir.X < 0? new Vector2(-dir.Y, dir.X) : new Vector2(dir.Y, -dir.X);
+            perpendicular.Normalize();
+            var halfPoint = (_bezierStartWorldPos + dir / 2) + perpendicular * Math.Max((Math.Abs(perpendicular.Y) * 100), 20);
+
+            _bezierPoints =
+                BezierCurve.Bezier2D(new List<Vector2>() { _bezierStartWorldPos, halfPoint, _bezierEndWorldPos },
+                    Math.Max((int)dir.Length() / 10, 5));
+            for (var i = 1; i < _bezierPoints.Count; i++)
+            {
+                _totalBezierLength += (_bezierPoints[i] - _bezierPoints[i - 1]).Length();
+            }
+
+        }
+
+        public void UpdateBezierMove(GameTime gameTime)
+        {
+            if (!_inBezierMove)
+            {
+                return;
+            }
+
+            var movedLength = (float)gameTime.ElapsedGameTime.TotalSeconds * _bezierMoveSpeed;
+            if (_inBezierMoveToRealPosition)
+            {
+                var length = (_bezierLastRealWorldPosition - PositionInWorld).Length();
+                if (length <= movedLength)
+                {
+                    PositionInWorld = _bezierLastRealWorldPosition;
+                    _inBezierMove = false;
+                    _bezierMoveOnEnd?.Invoke(this);
+                    return;
+                }
+                else
+                {
+                    var dir = (_bezierLastRealWorldPosition - PositionInWorld);
+                    dir.Normalize();
+                    PositionInWorld += dir * movedLength;
+                }
+            }
+            else
+            {
+                _stepBezierLength += movedLength;
+                _movedBezierLength += movedLength;
+                var curPos = PositionInWorld;
+                var i = 0;
+                for (; i < _bezierPoints.Count; i++)
+                {
+                    var length = (_bezierPoints[i] - curPos).Length();
+                    if (length < _stepBezierLength)
+                    {
+                        _stepBezierLength -= length;
+                        curPos = _bezierPoints[i];
+                    }
+                    else if (length == _stepBezierLength)
+                    {
+                        curPos = _bezierPoints[i];
+                        _stepBezierLength = 0;
+                        i++;
+                        break;
+                    }
+                    else
+                    {
+                        var dir = (_bezierPoints[i] - curPos);
+                        dir.Normalize();
+                        curPos += dir * _stepBezierLength;
+                        _stepBezierLength = 0;
+                        break;
+                    }
+                }
+
+                PositionInWorld = curPos;
+                for (; i > 0; i--)
+                {
+                    _bezierPoints.RemoveAt(0);
+                }
+
+
+                if (_bezierPoints.Count == 0)
+                {
+                    _inBezierMove = false;
+                    _bezierMoveOnEnd?.Invoke(this);
+                    return;
+                }
+            }
+
+            if (!_inBezierMoveToRealPosition)
+            {
+                //convert to line move pos
+                var curRealWorldPos = _bezierStartWorldPos + _bezierMoveLineDir * _bezierTotalLineLength *
+                    (_movedBezierLength / _totalBezierLength);
+                var curRealTilePos = MapBase.ToTilePosition(curRealWorldPos);
+                if (MapBase.Instance.IsObstacleForCharacterJump(curRealTilePos))
+                {
+                    //block by jump blocker, move to last real position
+                    _inBezierMoveToRealPosition = true;
+                    _stepBezierLength = 0;
+                    return;
+                }
+                _bezierLastRealWorldPosition = curRealWorldPos;
+            }
+          
         }
 
         protected virtual void MagicUsedHook(Magic magic)
@@ -4285,6 +4429,8 @@ namespace Engine
             }
 
             if (IsDeath) return;
+
+            UpdateBezierMove(gameTime);
 
             if (_isInInteract && IsInteractEnd())
             {

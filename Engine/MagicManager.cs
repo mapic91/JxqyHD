@@ -1007,7 +1007,7 @@ namespace Engine
                 origin = destination;
             }
 
-            if (magic.RoundMoveColockwise == 0 && magic.RoundMoveAnticlockwise == 0)
+            if (magic.RoundMoveColockwise == 0 && magic.RoundMoveAnticlockwise == 0 && magic.JumpToTarget == 0)
             {
                 switch (magic.MoveKind)
                 {
@@ -1125,7 +1125,7 @@ namespace Engine
 
                 }
             }
-            else
+            else if(magic.RoundMoveColockwise > 0 || magic.RoundMoveAnticlockwise > 0)
             {
                 for (var i = 0; i < magic.RoundMoveCount; i++)
                 {
@@ -1159,6 +1159,17 @@ namespace Engine
             if (magic.DieAfterUse > 0)
             {
                 user.Death();
+            }
+
+            if (magic.JumpToTarget > 0)
+            {
+                user.BezierMoveTo(MapBase.ToTilePosition(destination), magic.JumpMoveSpeed, character =>
+                {
+                    if (magic.JumpEndMagic != null)
+                    {
+                        UseMagic(user, magic.JumpEndMagic, user.PositionInWorld, user.PositionInWorld);
+                    }
+                });
             }
         }
 
