@@ -180,7 +180,7 @@ namespace Engine.ListManager
             for (var i = EquipIndexBegin; i <= EquipIndexEnd; i++)
             {
                 var good = Get(i);
-                if (good != null && Utils.EqualNoCase(good.MagicIniWhenUse, fileName))
+                if (good != null && Utils.EqualNoCase(good.MagicIniWhenUse.GetValue(), fileName))
                 {
                     return true;
                 }

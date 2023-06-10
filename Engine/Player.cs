@@ -231,11 +231,11 @@ namespace Engine
 
                     if (!string.IsNullOrEmpty(magicItemInfo.TheMagic.FlyIni))
                     {
-                        FlyIniReplace = Utils.GetMagic(magicItemInfo.TheMagic.FlyIni, false).GetLevel(AttackLevel);
+                        AddFlyIniReplace(Utils.GetMagic(magicItemInfo.TheMagic.FlyIni, false).GetLevel(AttackLevel));
                     }
                     if (!string.IsNullOrEmpty(magicItemInfo.TheMagic.FlyIni2))
                     {
-                        FlyIni2Replace = Utils.GetMagic(magicItemInfo.TheMagic.FlyIni2, false).GetLevel(AttackLevel);
+                        AddFlyIni2Replace(Utils.GetMagic(magicItemInfo.TheMagic.FlyIni2, false).GetLevel(AttackLevel));
                     }
                 }
             }
@@ -648,11 +648,11 @@ namespace Engine
             {
                 if (!justEffectType)
                 {
-                    if (!string.IsNullOrEmpty(equip.MagicIniWhenUse))
+                    if (!string.IsNullOrEmpty(equip.MagicIniWhenUse.GetValue()))
                     {
-                        if (MagicListManager.IsMagicHided(equip.MagicIniWhenUse))
+                        if (MagicListManager.IsMagicHided(equip.MagicIniWhenUse.GetValue()))
                         {
-                            var info = MagicListManager.SetMagicHide(equip.MagicIniWhenUse, false);
+                            var info = MagicListManager.SetMagicHide(equip.MagicIniWhenUse.GetValue(), false);
                             if (info != null)
                             {
                                 GuiManager.ShowMessage("武功" + info.TheMagic.Name + "已可使用");
@@ -665,7 +665,7 @@ namespace Engine
                         }
                         else
                         {
-                            AddMagic(equip.MagicIniWhenUse);
+                            AddMagic(equip.MagicIniWhenUse.GetValue());
                         }
                     }
                 }
@@ -680,22 +680,23 @@ namespace Engine
                         break;
                 }
 
-                if (!string.IsNullOrEmpty(equip.ReplaceMagic))
+                if (!string.IsNullOrEmpty(equip.ReplaceMagic.GetValue()))
                 {
-                    _replacedMagic[equip.ReplaceMagic] = equip.UseReplaceMagic;
+                    _replacedMagic[equip.ReplaceMagic.GetValue()] = Utils.GetMagic(equip.UseReplaceMagic.GetValue(), false);
                 }
             }
         }
 
         public void UnEquiping(Good equip, bool justEffectType = false)
         {
+            base.UnEquiping(equip, justEffectType);
             if (equip != null)
             {
                 if (!justEffectType)
                 {
-                    if (!string.IsNullOrEmpty(equip.MagicIniWhenUse))
+                    if (!string.IsNullOrEmpty(equip.MagicIniWhenUse.GetValue()))
                     {
-                        var info = MagicListManager.SetMagicHide(equip.MagicIniWhenUse, true);
+                        var info = MagicListManager.SetMagicHide(equip.MagicIniWhenUse.GetValue(), true);
                         if (info != null)
                         {
                             GuiManager.ShowMessage("武功" + info.TheMagic.Name + "已不可使用");
@@ -720,12 +721,12 @@ namespace Engine
                         break;
                 }
 
-                if (!string.IsNullOrEmpty(equip.ReplaceMagic))
+                if (!string.IsNullOrEmpty(equip.ReplaceMagic.GetValue()))
                 {
-                    _replacedMagic.Remove(equip.ReplaceMagic);
+                    _replacedMagic.Remove(equip.ReplaceMagic.GetValue());
                 }
 
-                if (equip.MagicToUseWhenBeAttacked != null)
+                if (!string.IsNullOrEmpty(equip.MagicToUseWhenBeAttacked.GetValue()))
                 {
                     RemoveMagicToUseWhenAttackedList(equip.FileName);
                 }
@@ -888,12 +889,12 @@ namespace Engine
                 {
                     if (!string.IsNullOrEmpty(oldLevelMagic.FlyIni))
                     {
-                        FlyIniReplace = null;
+                        RemoveFlyIniReplace(Utils.GetMagic(oldLevelMagic.FlyIni, false).GetLevel(AttackLevel));
                     }
 
                     if (!string.IsNullOrEmpty(info.TheMagic.FlyIni))
                     {
-                        FlyIniReplace = Utils.GetMagic(info.TheMagic.FlyIni, false).GetLevel(AttackLevel);
+                        AddFlyIniReplace(Utils.GetMagic(info.TheMagic.FlyIni, false).GetLevel(AttackLevel));
                     }
                 }
 
@@ -901,12 +902,12 @@ namespace Engine
                 {
                     if (!string.IsNullOrEmpty(oldLevelMagic.FlyIni2))
                     {
-                        FlyIni2Replace = null;
+                        RemoveFlyIni2Replace(Utils.GetMagic(oldLevelMagic.FlyIni2, false).GetLevel(AttackLevel));
                     }
 
                     if (!string.IsNullOrEmpty(info.TheMagic.FlyIni2))
                     {
-                        FlyIni2Replace = Utils.GetMagic(info.TheMagic.FlyIni2, false).GetLevel(AttackLevel);
+                        AddFlyIni2Replace(Utils.GetMagic(info.TheMagic.FlyIni2, false).GetLevel(AttackLevel));
                     }
                 }
 

@@ -44,9 +44,9 @@ namespace Engine
 
         public string Script { set; get; }
         public bool IsOk { private set; get; }
-        public string FlyIni { set; get; }
-        public string FlyIni2 { set; get; }
-        public string MagicIniWhenUse { set; get; }
+        public AttrString FlyIni { set; get; }
+        public AttrString FlyIni2 { set; get; }
+        public AttrString MagicIniWhenUse { set; get; }
 
         public string[] User { set; get; }
         public AttrInt MinUserLevel { set; get; }
@@ -58,10 +58,10 @@ namespace Engine
 
         public AttrInt ChangeMoveSpeedPercent { set; get; }
         public AttrInt ColdMilliSeconds { set; get; }
-        public string ReplaceMagic { set; get; }
-        public Magic UseReplaceMagic { set; get; }
+        public AttrString ReplaceMagic { set; get; }
+        public AttrString UseReplaceMagic { set; get; }
 
-        public Magic MagicToUseWhenBeAttacked { set; get; }
+        public AttrString MagicToUseWhenBeAttacked { set; get; }
         public AttrInt MagicDirectionWhenBeAttacked { set; get; }
 
         public AttrInt NoNeedToEquip { set; get; }
@@ -75,6 +75,14 @@ namespace Engine
                     if (p.PropertyType == typeof(AttrInt))
                     {
                         var v = (AttrInt)p.GetValue(this, null);
+                        if (v.IsRand())
+                        {
+                            return true;
+                        }
+                    }
+                    else if (p.PropertyType == typeof(AttrString))
+                    {
+                        var v = (AttrString)p.GetValue(this, null);
                         if (v.IsRand())
                         {
                             return true;
@@ -222,12 +230,8 @@ namespace Engine
                     case "Name":
                     case "Intro":
                     case "Script":
-                    case "FlyIni":
-                    case "FlyIni2":
-                    case "MagicIniWhenUse":
                     case "AddMagicEffectName":
                     case "AddMagicEffectType":
-                    case "ReplaceMagic":
                         info.SetValue(this, value, null);
                         break;
                     case "Kind":
@@ -273,11 +277,13 @@ namespace Engine
                             User = value.Split(',');
                         }
                         break;
+                    case "FlyIni":
+                    case "FlyIni2":
+                    case "MagicIniWhenUse":
+                    case "ReplaceMagic":
                     case "UseReplaceMagic":
-                        UseReplaceMagic = Utils.GetMagic(value, false);
-                        break;
                     case "MagicToUseWhenBeAttacked":
-                        MagicToUseWhenBeAttacked = Utils.GetMagic(value, false);
+                        info.SetValue(this, new AttrString(value), null);
                         break;
                     default:
                         info.SetValue(this, new AttrInt(value), null);
@@ -346,6 +352,11 @@ namespace Engine
                     }
                     
                 }
+                else if (p.PropertyType == typeof(AttrString))
+                {
+                    var v = (AttrString)p.GetValue(this, null);
+                    keyDataCollection.AddKey(p.Name, v.GetString());
+                }
                 else if (p.PropertyType == typeof(Asf))
                 {
                     var v = (Asf)p.GetValue(this, null);
@@ -387,7 +398,7 @@ namespace Engine
         {
             var good = (Good)MemberwiseClone();
             var names = new List<string>();
-            var kv = new Dictionary<string, int>();
+            var kv = new Dictionary<string, object>();
             foreach (var p in this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
             {
                 if (p.PropertyType == typeof(AttrInt))
@@ -407,6 +418,17 @@ namespace Engine
                         names.Add(p.Name);
                         kv[p.Name] = value;
                         p.SetValue(good, new AttrInt(value), null);
+                    }
+                }
+                else if (p.PropertyType == typeof(AttrString))
+                {
+                    var v = (AttrString)p.GetValue(this, null);
+                    if (v.IsRand())
+                    {
+                        var value = v.GetOneValue();
+                        names.Add(p.Name);
+                        kv[p.Name] = value;
+                        p.SetValue(good, new AttrString(value), null);
                     }
                 }
             }

@@ -227,47 +227,50 @@ namespace Engine
         /// <summary>
         /// Used to override character's FlyIni when equiping special equipment 
         /// </summary>
-        private Magic _flyIniReplace;
+        private List<string> _flyIniReplace = new List<string>();
         /// <summary>
         ///  Used to override character's FlyIni2 when equiping special equipment 
         /// </summary>
-        private Magic _flyIni2Replace;
+        private List<string> _flyIni2Replace = new List<string>();
 
-        public Magic FlyIniReplace
+
+        public void AddFlyIniReplace(Magic magic)
         {
-            get { return _flyIniReplace; }
-            set
+            if (_flyIniReplace.Count == 0)
             {
-                RemoveMagicFromInfos(_flyIniReplace, AttackRadius);
-                if (value != null)
-                {
-                    RemoveMagicFromInfos(FlyIni, AttackRadius);
-                    AddMagicToInfos(value, AttackRadius);
-                }
-                else
-                {
-                    AddMagicToInfos(FlyIni, AttackRadius);
-                }
-                _flyIniReplace = value;
+                RemoveMagicFromInfos(FlyIni, AttackRadius);
+            }
+            AddMagicToInfos(magic, AttackRadius);
+            _flyIniReplace.Add(magic.FileName);
+        }
+
+        public void RemoveFlyIniReplace(Magic magic)
+        {
+            RemoveMagicFromInfos(magic, AttackRadius);
+            _flyIniReplace.Remove(magic.FileName);
+            if (_flyIniReplace.Count == 0)
+            {
+                AddMagicToInfos(FlyIni, AttackRadius);
             }
         }
 
-        public Magic FlyIni2Replace
+        public void AddFlyIni2Replace(Magic magic)
         {
-            get { return _flyIni2Replace; }
-            set
+            if (_flyIni2Replace.Count == 0)
             {
-                RemoveMagicFromInfos(_flyIni2Replace, AttackRadius);
-                if (value != null)
-                {
-                    RemoveMagicFromInfos(FlyIni2, AttackRadius);
-                    AddMagicToInfos(value, AttackRadius);
-                }
-                else
-                {
-                    AddMagicToInfos(FlyIni2, AttackRadius);
-                }
-                _flyIni2Replace = value;
+                RemoveMagicFromInfos(FlyIni2, AttackRadius);
+            }
+            AddMagicToInfos(magic, AttackRadius);
+            _flyIni2Replace.Add(magic.FileName);
+        }
+
+        public void RemoveFlyIni2Replace(Magic magic)
+        {
+            RemoveMagicFromInfos(magic, AttackRadius);
+            _flyIni2Replace.Remove(magic.FileName);
+            if (_flyIni2Replace.Count == 0)
+            {
+                AddMagicToInfos(FlyIni2, AttackRadius);
             }
         }
 
@@ -3512,13 +3515,13 @@ namespace Engine
                         break;
                 }
 
-                if (!string.IsNullOrEmpty(equip.FlyIni))
+                if (!string.IsNullOrEmpty(equip.FlyIni.GetValue()))
                 {
-                    FlyIniReplace = Utils.GetMagic(equip.FlyIni, IsMagicFromCache).GetLevel(AttackLevel);
+                    AddFlyIniReplace(Utils.GetMagic(equip.FlyIni.GetValue(), IsMagicFromCache).GetLevel(AttackLevel));
                 }
-                if (!string.IsNullOrEmpty(equip.FlyIni2))
+                if (!string.IsNullOrEmpty(equip.FlyIni2.GetValue()))
                 {
-                    FlyIni2Replace = Utils.GetMagic(equip.FlyIni2, IsMagicFromCache).GetLevel(AttackLevel);
+                    AddFlyIni2Replace(Utils.GetMagic(equip.FlyIni2.GetValue(), IsMagicFromCache).GetLevel(AttackLevel));
                 }
 
                 if (!string.IsNullOrEmpty(equip.AddMagicEffectName))
@@ -3545,12 +3548,12 @@ namespace Engine
 
                 ChangeMoveSpeedPercent += equip.ChangeMoveSpeedPercent.GetOneValue();
 
-                if (equip.MagicToUseWhenBeAttacked != null)
+                if (!string.IsNullOrEmpty(equip.MagicToUseWhenBeAttacked.GetValue()))
                 {
                     MagicToUseWhenAttackedList.AddLast(new MagicToUseInfoItem
                     {
                         From = equip.FileName,
-                        Magic = equip.MagicToUseWhenBeAttacked.GetLevel(AttackLevel),
+                        Magic = Utils.GetMagic(equip.MagicToUseWhenBeAttacked.GetValue(), false).GetLevel(AttackLevel),
                         Dir = equip.MagicDirectionWhenBeAttacked.GetOneValue()
                     });
                 }
@@ -3627,13 +3630,13 @@ namespace Engine
                         break;
                 }
 
-                if (!string.IsNullOrEmpty(equip.FlyIni))
+                if (!string.IsNullOrEmpty(equip.FlyIni.GetValue()))
                 {
-                    FlyIniReplace = null;
+                    RemoveFlyIniReplace(Utils.GetMagic(equip.FlyIni.GetValue(), IsMagicFromCache).GetLevel(AttackLevel));
                 }
-                if (!string.IsNullOrEmpty(equip.FlyIni2))
+                if (!string.IsNullOrEmpty(equip.FlyIni2.GetValue()))
                 {
-                    FlyIni2Replace = null;
+                    RemoveFlyIni2Replace(Utils.GetMagic(equip.FlyIni2.GetValue(), IsMagicFromCache).GetLevel(AttackLevel));
                 }
 
                 if (!string.IsNullOrEmpty(equip.AddMagicEffectName))
@@ -3660,7 +3663,7 @@ namespace Engine
 
                 ChangeMoveSpeedPercent -= equip.ChangeMoveSpeedPercent.GetOneValue();
 
-                if (equip.MagicToUseWhenBeAttacked != null)
+                if (!string.IsNullOrEmpty(equip.MagicToUseWhenBeAttacked.GetValue()))
                 {
                     RemoveMagicToUseWhenAttackedList(equip.FileName);
                 }
