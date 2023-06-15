@@ -458,96 +458,104 @@ namespace Engine
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            //Update mouse scroll state.
-            MouseScrollHandler.Update();
-
-            UpdateGameActiveState(gameTime);
-
-            if (IsPaused || IsFocusLost)
+            try
             {
+                //Update mouse scroll state.
+                MouseScrollHandler.Update();
+
+                UpdateGameActiveState(gameTime);
+
+                if (IsPaused || IsFocusLost)
+                {
+                    base.Update(gameTime);
+                    SuppressDraw();
+                    return;
+                }
+
+                var mouseState = Mouse.GetState();
+                var keyboardState = Keyboard.GetState();
+
+                //Fullscreen toggle
+                if (!IsInEditMode &&
+                    (keyboardState.IsKeyDown(Keys.LeftAlt) || keyboardState.IsKeyDown(Keys.RightAlt)))
+                {
+                    if (keyboardState.IsKeyDown(Keys.Enter) &&
+                        LastKeyboardState.IsKeyUp(Keys.Enter))
+                    {
+                        _graphics.ToggleFullScreen();
+                        Globals.IsFullScreen = !Globals.IsFullScreen;
+                    }
+                }
+
+                //Map layer draw toggle
+                if (IsInEditMode)
+                {
+                    if (keyboardState.IsKeyDown(Keys.D1) && LastKeyboardState.IsKeyUp(Keys.D1))
+                        MapBase.SwitchLayerDraw(0);
+                    if (keyboardState.IsKeyDown(Keys.D2) && LastKeyboardState.IsKeyUp(Keys.D2))
+                        MapBase.SwitchLayerDraw(1);
+                    if (keyboardState.IsKeyDown(Keys.D3) && LastKeyboardState.IsKeyUp(Keys.D3))
+                        MapBase.SwitchLayerDraw(2);
+                    if (keyboardState.IsKeyDown(Keys.D4) && LastKeyboardState.IsKeyUp(Keys.D4))
+                        MapBase.SwitchLayerDraw(3);
+                    if (keyboardState.IsKeyDown(Keys.D5) && LastKeyboardState.IsKeyUp(Keys.D5))
+                        MapBase.SwitchLayerDraw(4);
+                }
+
+                if (ScriptExecuter.IsInPlayingMovie)
+                {
+                    //Stop movie when Esc key pressed
+                    if (keyboardState.IsKeyDown(Keys.Escape) &&
+                        LastKeyboardState.IsKeyUp(Keys.Escape))
+                    {
+                        ScriptExecuter.StopMovie();
+                    }
+                }
+                else
+                {
+                    //Update GUI first, GUI will decide whether user input be intercepted or pass through
+                    GuiManager.Update(gameTime);
+
+                    switch (GameState.State)
+                    {
+                        case GameState.StateType.Start:
+                            ScriptManager.RunScript(Utils.GetScriptParser("title.txt"));
+                            GameState.State = GameState.StateType.Title;
+                            break;
+                        case GameState.StateType.Title:
+                            break;
+                        case GameState.StateType.Playing:
+                            if (IsGamePlayPaused) break;
+                            UpdatePlaying(gameTime);
+                            GoodsListManager.Update(gameTime);
+                            break;
+                        case GameState.StateType.EndAds:
+                            _elapsedSecondsAd += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                            if (_elapsedSecondsAd >= AdKeepSeconds ||
+                                (keyboardState.IsKeyDown(Keys.Escape) &&
+                                 LastKeyboardState.IsKeyUp(Keys.Escape)))
+                            {
+                                Exit();
+                            }
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                }
+
+                //Update script after GuiManager, because script executing rely GUI state.
+                ScriptManager.Update(gameTime);
+
+                LastKeyboardState = Keyboard.GetState();
+                LastMouseState = mouseState;
+
                 base.Update(gameTime);
-                SuppressDraw();
-                return;
             }
-
-            var mouseState = Mouse.GetState();
-            var keyboardState = Keyboard.GetState();
-
-            //Fullscreen toggle
-            if (!IsInEditMode &&
-                (keyboardState.IsKeyDown(Keys.LeftAlt) || keyboardState.IsKeyDown(Keys.RightAlt)))
+            catch (Exception e)
             {
-                if (keyboardState.IsKeyDown(Keys.Enter) &&
-                    LastKeyboardState.IsKeyUp(Keys.Enter))
-                {
-                    _graphics.ToggleFullScreen();
-                    Globals.IsFullScreen = !Globals.IsFullScreen;
-                }
+                MessageBox.Show(e + Environment.NewLine + e.StackTrace, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw;
             }
-
-            //Map layer draw toggle
-            if (IsInEditMode)
-            {
-                if (keyboardState.IsKeyDown(Keys.D1) && LastKeyboardState.IsKeyUp(Keys.D1))
-                    MapBase.SwitchLayerDraw(0);
-                if (keyboardState.IsKeyDown(Keys.D2) && LastKeyboardState.IsKeyUp(Keys.D2))
-                    MapBase.SwitchLayerDraw(1);
-                if (keyboardState.IsKeyDown(Keys.D3) && LastKeyboardState.IsKeyUp(Keys.D3))
-                    MapBase.SwitchLayerDraw(2);
-                if (keyboardState.IsKeyDown(Keys.D4) && LastKeyboardState.IsKeyUp(Keys.D4))
-                    MapBase.SwitchLayerDraw(3);
-                if (keyboardState.IsKeyDown(Keys.D5) && LastKeyboardState.IsKeyUp(Keys.D5))
-                    MapBase.SwitchLayerDraw(4);
-            }
-
-            if (ScriptExecuter.IsInPlayingMovie)
-            {
-                //Stop movie when Esc key pressed
-                if (keyboardState.IsKeyDown(Keys.Escape) &&
-                    LastKeyboardState.IsKeyUp(Keys.Escape))
-                {
-                    ScriptExecuter.StopMovie();
-                }
-            }
-            else
-            {
-                //Update GUI first, GUI will decide whether user input be intercepted or pass through
-                GuiManager.Update(gameTime);
-
-                switch (GameState.State)
-                {
-                    case GameState.StateType.Start:
-                        ScriptManager.RunScript(Utils.GetScriptParser("title.txt"));
-                        GameState.State = GameState.StateType.Title;
-                        break;
-                    case GameState.StateType.Title:
-                        break;
-                    case GameState.StateType.Playing:
-                        if (IsGamePlayPaused) break;
-                        UpdatePlaying(gameTime);
-                        GoodsListManager.Update(gameTime);
-                        break;
-                    case GameState.StateType.EndAds:
-                        _elapsedSecondsAd += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                        if (_elapsedSecondsAd >= AdKeepSeconds ||
-                            (keyboardState.IsKeyDown(Keys.Escape) &&
-                             LastKeyboardState.IsKeyUp(Keys.Escape)))
-                        {
-                            Exit();
-                        }
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
-
-            //Update script after GuiManager, because script executing rely GUI state.
-            ScriptManager.Update(gameTime);
-
-            LastKeyboardState = Keyboard.GetState();
-            LastMouseState = mouseState;
-
-            base.Update(gameTime);
         }
 
         /// <summary>
