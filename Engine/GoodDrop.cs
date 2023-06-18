@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace Engine
 {
@@ -109,7 +110,41 @@ namespace Engine
 
             if (!string.IsNullOrEmpty(character.DropIni))
             {
-                var obj = new Obj(@"ini\obj\" + character.DropIni);
+                var ini = character.DropIni;
+                if (ini.EndsWith("]"))
+                {
+                    var badFormat = false;
+                    var startIdx = ini.LastIndexOf("[", StringComparison.Ordinal);
+                    if (startIdx != -1)
+                    {
+                        var rand = 0;
+                        if (int.TryParse(ini.Substring(startIdx + 1, ini.Length - startIdx - 2), out rand))
+                        {
+                            if (Globals.TheRandom.Next(100) > rand)
+                            {
+                                return null;
+                            }
+                        }
+                        else
+                        {
+                            badFormat = true;
+                        }
+                    }
+                    else
+                    {
+                        badFormat = true;
+                    }
+
+                    if (badFormat)
+                    {
+                        MessageBox.Show("DropIni格式错误，无法解析，角色名=" + character.Name + " DropIni=" + character.DropIni);
+                    }
+                    else
+                    {
+                        ini = ini.Substring(0, startIdx);
+                    }
+                }
+                var obj = new Obj(@"ini\obj\" + ini);
                 obj.TilePosition = character.TilePosition;
                 return obj;
             }
