@@ -19,7 +19,8 @@ namespace Engine
                 var offY = point.Y - region.Top;
                 var data = new Color[texture.Width * texture.Height];
                 texture.GetData(data);
-                if (!TextureGenerator.IsColorTransparentForNpcObj(data[offX + offY * texture.Width]))
+                var idx = offX + offY * texture.Width;
+                if (idx < data.Length && !TextureGenerator.IsColorTransparentForNpcObj(data[idx]))
                     return true;
             }
             return false;
