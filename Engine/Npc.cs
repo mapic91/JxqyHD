@@ -242,6 +242,16 @@ namespace Engine
                 _blindMilliseconds -= (float)gameTime.ElapsedGameTime.TotalMilliseconds;
             }
 
+            if (KeepAttackX > 0 || KeepAttackY > 0)
+            {
+                if (State == (int)CharacterState.Stand || State == (int)CharacterState.Stand1 || State == (int)CharacterState.FightStand)
+                {
+                    Attacking(new Vector2(KeepAttackX, KeepAttackY));
+                }
+                base.Update(gameTime);
+                return;
+            }
+
             //Find follow target
             if (!IsFollowTargetFound || // Not find target.
                 FollowTarget == null || // Follow target not assign.

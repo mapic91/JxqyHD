@@ -715,6 +715,9 @@ namespace Engine.Script
                         case "RandRun":
                             ScriptExecuter.RandRun(parameters, BelongObject);
                             break;
+                        case "SetKeepAttack":
+                            ScriptExecuter.SetKeepAttack(parameters, BelongObject);
+                            break;
                         default:
                             throw new Exception("无此函数");
                     }

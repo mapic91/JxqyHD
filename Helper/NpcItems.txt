@@ -246,3 +246,9 @@ HandEquip - 手
 WristEquip - 手腕
 FootEquip - 脚
 BackgroundTextureEquip - 不设置用默认的（UI_Settings.ini文件里的NpcEquip项目），设置了装备界面用这个背景，可以是asf，png，jpg文件的路径，比如：asf\ui\common\panel7b.asf
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+持续攻击：
+KeepAttackX - 持续攻击地图位置x，默认0，大于0生效
+KeepAttackY - 持续攻击地图位置y，默认0，大于0生效

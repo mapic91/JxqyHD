@@ -193,6 +193,9 @@ namespace Engine
 
         protected bool IsSitted;
 
+        private int _keepAttackX;
+        private int _keepAttackY;
+
         //bezier
         private bool _inBezierMove;
         private bool _inBezierMoveToRealPosition;
@@ -319,6 +322,18 @@ namespace Engine
         {
             get { return _dropIni; }
             set { _dropIni = value; }
+        }
+
+        public int KeepAttackX
+        {
+            get { return _keepAttackX; }
+            set { _keepAttackX = value; }
+        }
+
+        public int KeepAttackY
+        {
+            get { return _keepAttackY; }
+            set { _keepAttackY = value; }
         }
 
         public int CanEquip
@@ -2324,6 +2339,8 @@ namespace Engine
             AddKey(keyDataCollection, "WristEquip", _wristEquip);
             AddKey(keyDataCollection, "FootEquip", _footEquip);
             AddKey(keyDataCollection, "BackgroundTextureEquip", _backgroundTextureEquip);
+            AddKey(keyDataCollection, "KeepAttackX", _keepAttackX);
+            AddKey(keyDataCollection, "KeepAttackY", _keepAttackY);
         }
 
         #endregion Save load method

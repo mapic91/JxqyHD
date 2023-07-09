@@ -2457,5 +2457,17 @@ namespace Engine.Script
                 RunScript(Utils.RemoveStringQuotes(parameters[2]), belongObj);
             }
         }
+
+        public static void SetKeepAttack(List<string> parameters, object belongObject)
+        {
+            var npcs = NpcManager.GetAllNpcs(Utils.RemoveStringQuotes(parameters[0]));
+            var x = int.Parse(parameters[1]);
+            var y = int.Parse(parameters[2]);
+            foreach (var npc in npcs)
+            {
+                npc.KeepAttackX = x;
+                npc.KeepAttackY = y;
+            }
+        }
     }
 }
