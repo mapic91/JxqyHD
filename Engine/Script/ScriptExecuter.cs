@@ -2499,5 +2499,16 @@ namespace Engine.Script
                 Globals.ThePlayer.SetFrozenSeconds(seconds, true);
             }
         }
+
+        public static void DelGoodByName(List<string> parameters, object belongObject)
+        {
+            var name = Utils.RemoveStringQuotes(parameters[0]);
+            var count = 0;
+            if (parameters.Count > 1)
+            {
+                count = int.Parse(parameters[1]);
+            }
+            GuiManager.DeleteGood(name, count);
+        }
     }
 }

@@ -470,6 +470,68 @@ namespace Engine.ListManager
             }
         }
 
+        /// <summary>
+        /// Delete good by it's Name attribute.
+        /// </summary>
+        /// <param name="name">Good Name attribute</param>
+        /// <param name="count">Count to delete. Delete all if is zero or negative.</param>
+        public static void DeleteGood(string name, int count)
+        {
+            var totalDeletedCount = 0;
+            for (var i = ListIndexBegin; i <= ListIndexEnd; i++)
+            {
+                if (GoodsList[i] != null &&
+                    GoodsList[i].TheGood != null &&
+                    Utils.EqualNoCase(GoodsList[i].TheGood.Name, name))
+                {
+                    var deleteCount = 0;
+                    var info = GoodsList[i];
+                    var good = info.TheGood;
+                    if (count <= 0)
+                    {
+                        GoodsList[i] = null;
+                    }
+                    else
+                    {
+                        if (info.Count > count - totalDeletedCount)
+                        {
+                            deleteCount = count - totalDeletedCount;
+                            info.Count -= count - totalDeletedCount;
+                            totalDeletedCount = count;
+                        }
+                        else
+                        {
+                            deleteCount = info.Count;
+                            totalDeletedCount += info.Count;
+                            GoodsList[i] = null;
+                        }
+                    }
+
+                    //if goods is unequiped
+                    if (i >= EquipIndexBegin && i <= EquipIndexEnd && GoodsList[i] == null)
+                    {
+                        if (Globals.ThePlayer != null)
+                            Globals.ThePlayer.UnEquiping(good);
+                    }
+                    else if (good.Kind == Good.GoodKind.Equipment && good.NoNeedToEquip.GetOneValue() > 0)
+                    {
+                        if (Globals.ThePlayer != null)
+                        {
+                            for (var c = 0; c < deleteCount; c++)
+                            {
+                                Globals.ThePlayer.UnEquiping(good);
+                            }
+                        }
+                    }
+
+                    if (count > 0 && totalDeletedCount == count)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
         public static bool CanEquip(int goodIndex, Good.EquipPosition position)
         {
             return (!IsInEquipRange(goodIndex) &&

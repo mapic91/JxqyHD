@@ -491,6 +491,12 @@ namespace Engine.Gui
             UpdateGoodsView();
         }
 
+        public static void DeleteGood(string name, int count)
+        {
+            GoodsListManager.DeleteGood(name, count);
+            UpdateGoodsView();
+        }
+
         public static void EquipGoods(int goodListIndex, Good.EquipPosition part)
         {
             if (!GoodsListManager.CanEquip(goodListIndex, part)) return;

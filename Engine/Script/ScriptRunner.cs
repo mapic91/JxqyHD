@@ -727,6 +727,9 @@ namespace Engine.Script
                         case "FrozenMillisecond":
                             ScriptExecuter.FrozenMillisecond(parameters, BelongObject);
                             break;
+                        case "DelGoodByName":
+                            ScriptExecuter.DelGoodByName(parameters, BelongObject);
+                            break;
                         default:
                             throw new Exception("无此函数");
                     }
