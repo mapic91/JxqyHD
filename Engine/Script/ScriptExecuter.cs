@@ -2469,5 +2469,35 @@ namespace Engine.Script
                 npc.KeepAttackY = y;
             }
         }
+
+        public static void PetrifyMillisecond(List<string> parameters, object belongObject)
+        {
+            if (Globals.ThePlayer != null)
+            {
+                var seconds = int.Parse(parameters[0]) / 1000f;
+                seconds = Globals.ThePlayer.PetrifiedSeconds < seconds ? seconds : Globals.ThePlayer.PetrifiedSeconds;
+                Globals.ThePlayer.SetPetrifySeconds(seconds, true);
+            }
+        }
+
+        public static void PoisonMillisecond(List<string> parameters, object belongObject)
+        {
+            if (Globals.ThePlayer != null)
+            {
+                var seconds = int.Parse(parameters[0]) / 1000f;
+                seconds = Globals.ThePlayer.PoisonSeconds < seconds ? seconds : Globals.ThePlayer.PoisonSeconds;
+                Globals.ThePlayer.SetPoisonSeconds(seconds, true);
+            }
+        }
+
+        public static void FrozenMillisecond(List<string> parameters, object belongObject)
+        {
+            if (Globals.ThePlayer != null)
+            {
+                var seconds = int.Parse(parameters[0]) / 1000f;
+                seconds = Globals.ThePlayer.FrozenSeconds < seconds ? seconds : Globals.ThePlayer.FrozenSeconds;
+                Globals.ThePlayer.SetFrozenSeconds(seconds, true);
+            }
+        }
     }
 }

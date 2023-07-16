@@ -718,6 +718,15 @@ namespace Engine.Script
                         case "SetKeepAttack":
                             ScriptExecuter.SetKeepAttack(parameters, BelongObject);
                             break;
+                        case "PetrifyMillisecond":
+                            ScriptExecuter.PetrifyMillisecond(parameters, BelongObject);
+                            break;
+                        case "PoisonMillisecond":
+                            ScriptExecuter.PoisonMillisecond(parameters, BelongObject);
+                            break;
+                        case "FrozenMillisecond":
+                            ScriptExecuter.FrozenMillisecond(parameters, BelongObject);
+                            break;
                         default:
                             throw new Exception("无此函数");
                     }
