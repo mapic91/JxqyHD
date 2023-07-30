@@ -2180,6 +2180,33 @@ namespace Engine
 
         #region Public method
         public abstract bool HasObstacle(Vector2 tilePosition);
+
+        public virtual bool UseDrug(Good drug)
+        {
+            if (drug != null && drug.Kind == Good.GoodKind.Drug)
+            {
+                LifeMax += drug.LifeMax.GetOneValue();
+                ThewMax += drug.ThewMax.GetOneValue();
+                ManaMax += drug.ManaMax.GetOneValue();
+                Life += drug.Life.GetOneValue();
+                Thew += drug.Thew.GetOneValue();
+                Mana += drug.Mana.GetOneValue();
+                switch (drug.TheEffectType)
+                {
+                    case Good.GoodEffectType.ClearFrozen:
+                        ClearFrozen();
+                        break;
+                    case Good.GoodEffectType.ClearPoison:
+                        ClearPoison();
+                        break;
+                    case Good.GoodEffectType.ClearPetrifaction:
+                        ClearPetrifaction();
+                        break;
+                }
+                return true;
+            }
+            return false;
+        }
         #endregion Public method
 
         #region Save load method

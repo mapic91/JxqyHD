@@ -730,6 +730,28 @@ namespace Engine
             return null;
         }
 
+        public static void ForEachFriendFighter(Action<Character> action)
+        {
+            foreach (var npc in _list)
+            {
+                if (npc.IsFighterFriend)
+                {
+                    action(npc);
+                }
+            }
+        }
+
+        public static void ForEachPartner(Action<Character> action)
+        {
+            foreach (var npc in _list)
+            {
+                if (npc.IsPartner)
+                {
+                    action(npc);
+                }
+            }
+        }
+
         public static bool IsObstacle(int tileX, int tileY)
         {
             foreach (var npc in _list)

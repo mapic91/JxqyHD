@@ -66,6 +66,10 @@ namespace Engine
 
         public AttrInt NoNeedToEquip { set; get; }
 
+        public AttrInt FollowPartnerHasDrugEffect { set; get; }
+
+        public AttrInt FighterFriendHasDrugEffect { set; get; }
+
         public bool HasRandAttr
         {
             get

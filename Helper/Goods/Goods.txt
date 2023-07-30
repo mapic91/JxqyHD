@@ -179,3 +179,10 @@ FlyIni=magic-a.ini[3],magic-b.ini[60]
 
 FlyIni=magic-a.ini,magic-b.ini[60]
 有权重的随机，magic-a.ini没有设置权重，默认是1
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+药品是否同伴也生效：
+FighterFriendHasDrugEffect - 大于0表示，主角使用药品，所有战斗类同伴都有一样的药品效果。Kind == 1 或 Kind == 3，并且 Relation == 0
+FollowPartnerHasDrugEffect - 大于0表示，主角使用药品，跟随类同伴也有一样的药品效果。Kind == 3
+FighterFriendHasDrugEffect比FollowPartnerHasDrugEffect优先级高，先判断FighterFriendHasDrugEffect

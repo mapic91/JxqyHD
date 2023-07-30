@@ -750,29 +750,28 @@ namespace Engine
             }
         }
 
-        public bool UseDrug(Good drug)
+        public override bool UseDrug(Good drug)
         {
             if (drug != null && drug.Kind == Good.GoodKind.Drug)
             {
-                LifeMax += drug.LifeMax.GetOneValue();
-                ThewMax += drug.ThewMax.GetOneValue();
-                ManaMax += drug.ManaMax.GetOneValue();
-                Life += drug.Life.GetOneValue();
-                Thew += drug.Thew.GetOneValue();
-                Mana += drug.Mana.GetOneValue();
-                switch (drug.TheEffectType)
+                var ret = base.UseDrug(drug);
+
+                if (drug.FighterFriendHasDrugEffect.GetOneValue() > 0)
                 {
-                    case Good.GoodEffectType.ClearFrozen:
-                        ClearFrozen();
-                        break;
-                    case Good.GoodEffectType.ClearPoison:
-                        ClearPoison();
-                        break;
-                    case Good.GoodEffectType.ClearPetrifaction:
-                        ClearPetrifaction();
-                        break;
+                    NpcManager.ForEachFriendFighter(character =>
+                    {
+                        character.UseDrug(drug);
+                    });
                 }
-                return true;
+                else if (drug.FollowPartnerHasDrugEffect.GetOneValue() > 0)
+                {
+                    NpcManager.ForEachPartner(character =>
+                    {
+                        character.UseDrug(drug);
+                    });
+                }
+
+                return ret;
             }
             return false;
         }
