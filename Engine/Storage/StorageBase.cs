@@ -44,6 +44,11 @@ namespace Engine.Storage
             get {return @"save\game\" + "Goods" + Globals.PlayerIndex + ".ini";}
         }
 
+        public static string GetMagicListPath(string fileName)
+        {
+            return SaveGameDirectory + @"\" + fileName;
+        }
+
         public static bool IsIndexInRange(int index)
         {
             return (index >= SaveIndexBegin && index <= SaveIndexEnd);

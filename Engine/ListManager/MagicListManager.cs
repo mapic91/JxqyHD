@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Engine.Gui;
 using Engine.Gui.Base;
@@ -14,8 +15,25 @@ namespace Engine.ListManager
         public static int StoreIndexBegin = 1;
         public static int StoreIndexEnd = 36;
         public static int HideStartIndex = 1000;
-        private static MagicItemInfo[] MagicList = new MagicItemInfo[MaxMagic + 1];
-        private static MagicItemInfo[] MagicListHide = new MagicItemInfo[MaxMagic + 1];
+        private static MagicItemInfo[] _MagicList = new MagicItemInfo[MaxMagic + 1];
+        private static MagicItemInfo[] _MagicListHide = new MagicItemInfo[MaxMagic + 1];
+        private static MagicItemInfo[] MagicList
+        {
+            get
+            {
+                return IsInReplaceMagicList ? ReplaceMagicList[CurrentReplaceMagicListFilePath] : _MagicList;
+            }
+        }
+
+        private static MagicItemInfo[] MagicListHide
+        {
+            get { return IsInReplaceMagicList ? ReplaceMagicListHide[CurrentReplaceMagicListFilePath] : _MagicListHide; }
+        }
+
+        private static bool IsInReplaceMagicList;
+        private static string CurrentReplaceMagicListFilePath;
+        private static Dictionary<string, MagicItemInfo[]> ReplaceMagicList = new Dictionary<string, MagicItemInfo[]>();
+        private static Dictionary<string, MagicItemInfo[]> ReplaceMagicListHide = new Dictionary<string, MagicItemInfo[]>();
 
         public static int XiuLianIndex = 49;
         public static int BottomIndexBegin = 40;
@@ -33,13 +51,12 @@ namespace Engine.ListManager
             MaxMagic = Math.Max(0, StoreIndexEnd);
             MaxMagic = Math.Max(MaxMagic, BottomIndexEnd);
             MaxMagic = Math.Max(MaxMagic, XiuLianIndex);
-            MagicList = new MagicItemInfo[MaxMagic + 1];
-            MagicListHide = new MagicItemInfo[MaxMagic + 1];
+            _MagicList = new MagicItemInfo[MaxMagic + 1];
+            _MagicListHide = new MagicItemInfo[MaxMagic + 1];
         }
-        public static void LoadList(string filePath)
+
+        private static bool LoadList(string filePath, MagicItemInfo[] list, MagicItemInfo[] hideList)
         {
-            RenewList();
-            GuiManager.UpdateMagicView();// clear
             try
             {
                 var parser = new FileIniDataParser();
@@ -57,24 +74,32 @@ namespace Engine.ListManager
                             );
                         if (head >= HideStartIndex)
                         {
-                            MagicListHide[head - HideStartIndex] = info;
+                            hideList[head - HideStartIndex] = info;
                         }
                         else
                         {
-                            MagicList[head] = info;
+                            list[head] = info;
                         }
                     }
                 }
             }
             catch (Exception exception)
             {
-                RenewList();
                 Log.LogFileLoadError("Magic list", filePath, exception);
+                return false;
             }
+
+            return true;
+        }
+
+        public static void LoadPlayerList(string filePath)
+        {
+            RenewList();
+            LoadList(filePath, _MagicList, _MagicListHide);
             GuiManager.UpdateMagicView();
         }
 
-        public static void SaveList(string filePath)
+        private static void SaveList(string filePath, MagicItemInfo[] list, MagicItemInfo[] hideList)
         {
             try
             {
@@ -83,7 +108,7 @@ namespace Engine.ListManager
                 var count = 0;
                 for (var i = 1; i <= MaxMagic; i++)
                 {
-                    var item = MagicList[i];
+                    var item = list[i];
                     if (item != null && item.TheMagic != null)
                     {
                         count++;
@@ -94,7 +119,7 @@ namespace Engine.ListManager
                         section.AddKey("Exp", item.Exp.ToString());
                     }
 
-                    item = MagicListHide[i];
+                    item = hideList[i];
                     if (item != null && item.TheMagic != null)
                     {
                         var index = HideStartIndex + i;
@@ -113,6 +138,79 @@ namespace Engine.ListManager
             {
                 Log.LogFileSaveError("Magic list", filePath, exception);
             }
+        }
+
+        public static void SavePlayerList(string filePath)
+        {
+            SaveList(filePath, _MagicList, _MagicListHide);
+        }
+
+        public static void SaveReplaceList()
+        {
+            foreach (var key in ReplaceMagicList.Keys)
+            {
+                SaveList(key, ReplaceMagicList[key], ReplaceMagicListHide[key]);
+            }
+        }
+
+        public static void ClearReplaceList()
+        {
+            ReplaceMagicList.Clear();
+            ReplaceMagicListHide.Clear();
+        }
+
+        public static void ReplaceListTo(string filePath, List<string> magicFileNamesList)
+        {
+            IsInReplaceMagicList = true;
+            CurrentReplaceMagicListFilePath = filePath;
+            if (ReplaceMagicList.ContainsKey(filePath))
+            {
+                //do nothing
+            }
+            else if (File.Exists(filePath))
+            {
+                ReplaceMagicList[filePath] = new MagicItemInfo[MaxMagic + 1];
+                ReplaceMagicListHide[filePath] = new MagicItemInfo[MaxMagic + 1];
+                LoadList(filePath, ReplaceMagicList[filePath], ReplaceMagicListHide[filePath]);
+            }
+            else
+            {
+                ReplaceMagicList[filePath] = new MagicItemInfo[MaxMagic + 1];
+                ReplaceMagicListHide[filePath] = new MagicItemInfo[MaxMagic + 1];
+                var listI = 0;
+                for (var i = BottomIndexBegin; i <= BottomIndexEnd; i++)
+                {
+                    if (listI < magicFileNamesList.Count)
+                    {
+                        ReplaceMagicList[filePath][i] = new MagicItemInfo(magicFileNamesList[listI], 1, 0);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                    listI++;
+                }
+
+                for (var i = StoreIndexBegin; i <= StoreIndexEnd; i++)
+                {
+                    if (listI < magicFileNamesList.Count)
+                    {
+                        ReplaceMagicList[filePath][i] = new MagicItemInfo(magicFileNamesList[listI], 1, 0);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                    listI++;
+                }
+            }
+            GuiManager.UpdateMagicView();
+        }
+
+        public static void StopReplace()
+        {
+            IsInReplaceMagicList = false;
+            GuiManager.UpdateMagicView();
         }
 
         public static bool IndexInRange(int index)
@@ -190,11 +288,11 @@ namespace Engine.ListManager
                 null;
         }
 
-        public static int GetIndex(string fileName)
+        public static int GetNonReplaceIndex(string fileName)
         {
             for (var i = 1; i <= MaxMagic; i++)
             {
-                var info = MagicList[i];
+                var info = _MagicList[i];
                 if (info != null)
                 {
                     var magic = info.TheMagic;
@@ -264,12 +362,12 @@ namespace Engine.ListManager
             return 0;
         }
 
-        public static int GetFreeIndex()
+        public static int GetNonReplaceFreeIndex()
         {
             var index = -1;
             for (var i = StoreIndexBegin; i <= StoreIndexEnd; i++)
             {
-                if (MagicList[i] == null)
+                if (_MagicList[i] == null)
                 {
                     index = i;
                     break;
@@ -280,7 +378,7 @@ namespace Engine.ListManager
             {
                 for (var i = BottomIndexBegin; i <= BottomIndexEnd; i++)
                 {
-                    if (MagicList[i] == null)
+                    if (_MagicList[i] == null)
                     {
                         index = i;
                         break;
@@ -290,20 +388,20 @@ namespace Engine.ListManager
             return index;
         }
 
-        public static MagicItemInfo GetMagic(string fileName)
+        public static MagicItemInfo GetNonReplaceMagic(string fileName)
         {
             if (string.IsNullOrEmpty(fileName)) return null;
 
             for (var i = 1; i <= MaxMagic; i++)
             {
-                if (MagicList[i] != null)
+                if (_MagicList[i] != null)
                 {
-                    var magic = MagicList[i].TheMagic;
+                    var magic = _MagicList[i].TheMagic;
                     if (magic != null)
                     {
                         if (Utils.EqualNoCase(magic.FileName, fileName))
                         {
-                            return MagicList[i];
+                            return _MagicList[i];
                         }
                     }
                 }
@@ -312,9 +410,9 @@ namespace Engine.ListManager
             return null;
         }
 
-        public static int GetMagicLevel(string fileName)
+        public static int GetNonReplaceMagicLevel(string fileName)
         {
-            var info = GetMagic(fileName);
+            var info = GetNonReplaceMagic(fileName);
             if (info != null && info.TheMagic != null)
             {
                 return info.Level;
@@ -330,9 +428,9 @@ namespace Engine.ListManager
 
             for (var i = 1; i <= MaxMagic; i++)
             {
-                if (MagicList[i] != null)
+                if (_MagicList[i] != null)
                 {
-                    var magic = MagicList[i].TheMagic;
+                    var magic = _MagicList[i].TheMagic;
                     if (magic != null)
                     {
                         if (Utils.EqualNoCase(magic.FileName, fileName))
@@ -345,12 +443,12 @@ namespace Engine.ListManager
                 }
             }
 
-            index = GetFreeIndex();
+            index = GetNonReplaceFreeIndex();
 
             if (index != -1)
             {
-                MagicList[index] = new MagicItemInfo(fileName, 1, 0);
-                outMagic = MagicList[index].TheMagic;
+                _MagicList[index] = new MagicItemInfo(fileName, 1, 0);
+                outMagic = _MagicList[index].TheMagic;
                 return true;
             }
             return false;
@@ -358,15 +456,15 @@ namespace Engine.ListManager
 
         public static void DelMagic(string fileName, Player player)
         {
-            for (var i = 0; i < MagicList.Length; i++)
+            for (var i = 0; i < _MagicList.Length; i++)
             {
-                var info = MagicList[i];
+                var info = _MagicList[i];
                 if (info != null)
                 {
                     if (info.TheMagic != null && Utils.EqualNoCase(fileName, info.TheMagic.FileName))
                     {
                         player.OnDeleteMagic(info);
-                        MagicList[i] = null;
+                        _MagicList[i] = null;
                     }
                 }
             }
@@ -375,9 +473,9 @@ namespace Engine.ListManager
 
         public static void ClearLearnedMagic(Player player)
         {
-            for (var i = 0; i < MagicList.Length; i++)
+            for (var i = 0; i < _MagicList.Length; i++)
             {
-                var info = MagicList[i];
+                var info = _MagicList[i];
                 if (info != null)
                 {
                     if (info.TheMagic != null)
@@ -385,12 +483,12 @@ namespace Engine.ListManager
                         if (!GoodsListManager.IsMagicInEquipedEquip(info.TheMagic.FileName))
                         {
                             player.OnDeleteMagic(info);
-                            MagicList[i] = null;
+                            _MagicList[i] = null;
                         }
                     }
                     else
                     {
-                        MagicList[i] = null;
+                        _MagicList[i] = null;
                     }
                 }
             }
@@ -401,9 +499,9 @@ namespace Engine.ListManager
         {
             for (var i = 1; i <= MaxMagic; i++)
             {
-                if (MagicListHide[i] != null)
+                if (_MagicListHide[i] != null)
                 {
-                    var magic = MagicListHide[i].TheMagic;
+                    var magic = _MagicListHide[i].TheMagic;
                     if (magic != null)
                     {
                         if (Utils.EqualNoCase(magic.FileName, fileName))
@@ -420,18 +518,18 @@ namespace Engine.ListManager
         {
             if (isHide)
             {
-                var index = GetIndex(fileName);
+                var index = GetNonReplaceIndex(fileName);
                 if (index != -1)
                 {
-                    var info = MagicList[index];
+                    var info = _MagicList[index];
                     for (var i = 1; i <= MaxMagic; i++)
                     {
-                        if (MagicListHide[i] == null)
+                        if (_MagicListHide[i] == null)
                         {
-                            MagicListHide[i] = info;
-                            MagicList[index] = null;
+                            _MagicListHide[i] = info;
+                            _MagicList[index] = null;
 
-                            if (index == XiuLianIndex && Globals.ThePlayer != null)
+                            if (!IsInReplaceMagicList && index == XiuLianIndex && Globals.ThePlayer != null)
                             {
                                 Globals.ThePlayer.XiuLianMagic = null;
                             }
@@ -445,19 +543,19 @@ namespace Engine.ListManager
             {
                 for (var i = 1; i <= MaxMagic; i++)
                 {
-                    if (MagicListHide[i] != null)
+                    if (_MagicListHide[i] != null)
                     {
-                        var magic = MagicListHide[i].TheMagic;
+                        var magic = _MagicListHide[i].TheMagic;
                         if (magic != null)
                         {
                             if (Utils.EqualNoCase(magic.FileName, fileName))
                             {
-                                var info = MagicListHide[i];
+                                var info = _MagicListHide[i];
                                 for (var j = StoreIndexBegin; j <= StoreIndexEnd; j++)
                                 {
-                                    if (MagicList[j] == null)
+                                    if (_MagicList[j] == null)
                                     {
-                                        MagicList[j] = info;
+                                        _MagicList[j] = info;
                                         return info;
                                     }
                                 }
@@ -471,9 +569,9 @@ namespace Engine.ListManager
             return null;
         }
 
-        public static void SetMagicLevel(string fileName, int level)
+        public static void SetNonReplaceMagicLevel(string fileName, int level)
         {
-            var info = GetMagic(fileName);
+            var info = GetNonReplaceMagic(fileName);
             if (info == null || info.TheMagic == null) return;
 
             info.Exp = level > 1 ? info.TheMagic.GetLevel(level - 1).LevelupExp : 0;
@@ -519,8 +617,8 @@ namespace Engine.ListManager
 
         public static void SetMagicEffect(Player player)
         {
-            player.LoadMagicEffect(MagicList);
-            player.LoadMagicEffect(MagicListHide);
+            player.LoadMagicEffect(_MagicList);
+            player.LoadMagicEffect(_MagicListHide);
         }
     }
 }

@@ -1092,21 +1092,56 @@ namespace Engine
             set
             {
                 _flyInis = value;
-                var strs = value.Split(new []{';', '；'});
-                foreach (var str in strs)
+                foreach (var tuple in ParseMagicList(value))
                 {
-                    if (!string.IsNullOrEmpty(str))
-                    {
-                        var strinfo = str.Split(new []{ ':' , '：'});
-                        if (strinfo.Length == 2)
-                        {
-                            var useDistance = 0;
-                            int.TryParse(strinfo[1], out useDistance);
-                            _flyIniInfos.Add(new FlyIniInfoItem(useDistance, Utils.GetMagic(strinfo[0], IsMagicFromCache)));
-                        }
-                    }
+                    _flyIniInfos.Add(new FlyIniInfoItem(tuple.Item2, Utils.GetMagic(tuple.Item1, IsMagicFromCache)));
                 }
             }
+        }
+
+        public static List<Tuple<string, int>> ParseMagicList(string listStr)
+        {
+            var ret = new List<Tuple<string, int>>();
+            if (string.IsNullOrEmpty(listStr))
+            {
+                return ret;
+            }
+            var strs = listStr.Split(new []{';', '；'});
+            foreach (var str in strs)
+            {
+                if (!string.IsNullOrEmpty(str))
+                {
+                    var strinfo = str.Split(new []{ ':' , '：'});
+                    var useDistance = 0;
+                    if (strinfo.Length == 2)
+                    {
+                        int.TryParse(strinfo[1], out useDistance);
+                    }
+                    ret.Add(new Tuple<string, int>(strinfo[0], useDistance));
+                }
+            }
+
+            return ret;
+        }
+
+        public static List<string> ParseMagicListNoDistance(string listStr)
+        {
+            var ret = new List<string>();
+            if (string.IsNullOrEmpty(listStr))
+            {
+                return ret;
+            }
+            var strs = listStr.Split(new []{';', '；'});
+            foreach (var str in strs)
+            {
+                if (!string.IsNullOrEmpty(str))
+                {
+                    var strinfo = str.Split(new []{ ':' , '：'});
+                    ret.Add(strinfo[0]);
+                }
+            }
+
+            return ret;
         }
 
         public void AddFlyInis(string magicFileName, int distance)
@@ -1119,8 +1154,26 @@ namespace Engine
             {
                 _flyInis += (_flyInis.EndsWith(";") ? "" : ";") + magicFileName + ":" + distance + ";";
             }
-            
-            _flyIniInfos.Add(new FlyIniInfoItem(distance, Utils.GetMagic(magicFileName, IsMagicFromCache).GetLevel(AttackLevel)));
+
+            if (_changeCharacterByMagicSprite == null ||
+                string.IsNullOrEmpty(_changeCharacterByMagicSprite.BelongMagic.ReplaceMagic))
+            {
+                _flyIniInfos.Add(new FlyIniInfoItem(distance, Utils.GetMagic(magicFileName, IsMagicFromCache).GetLevel(AttackLevel)));
+            }
+        }
+
+        public bool RemoveMagicFromFlyIniInfos(string magicFileName)
+        {
+            for (var i = 0; i < _flyIniInfos.Count; i++)
+            {
+                if (_flyIniInfos[i].TheMagic.FileName.EndsWith(magicFileName))
+                {
+                    _flyIniInfos.RemoveAt(i);
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public Magic MagicToUseWhenLifeLow
@@ -1185,6 +1238,15 @@ namespace Engine
         }
 
         public MagicSprite LastAttackerMagicSprite;
+
+        protected void AddMagicsToFlyIniInfos(string listStr)
+        {
+            foreach (var tuple in ParseMagicList(listStr))
+            {
+                _flyIniInfos.Add(new FlyIniInfoItem(tuple.Item2 ==  0 ? AttackRadius : tuple.Item2, Utils.GetMagic(tuple.Item1, IsMagicFromCache).GetLevel(AttackLevel)));
+            }
+            _flyIniInfos.Sort();
+        }
 
         protected void AddMagicToInfos(Magic magic, int useDistance, bool notResort = false)
         {
@@ -4128,6 +4190,7 @@ namespace Engine
         {
             _changeCharacterByMagicSprite = magicSprite;
             _changeCharacterByMagicSpriteTime = magicSprite.BelongMagic.Effect;
+            OnReplaceMagicList(magicSprite.BelongMagic, magicSprite.BelongMagic.ReplaceMagic);
             StandingImmediately(true);
         }
 
@@ -4135,7 +4198,36 @@ namespace Engine
         {
             _changeCharacterByMagicSprite = magicSprite;
             _changeCharacterByMagicSpriteTime = magicSprite.BelongMagic.MorphMilliseconds;
+            OnReplaceMagicList(magicSprite.BelongMagic, magicSprite.BelongMagic.ReplaceMagic);
             StandingImmediately(true);
+        }
+
+        protected void RemoveMagicsFromFlyIniInfos(string listStr)
+        {
+            foreach (var tuple in ParseMagicList(listStr))
+            {
+                RemoveMagicFromFlyIniInfos(tuple.Item1);
+            }
+        }
+
+        protected virtual void OnReplaceMagicList(Magic reasonMagic, string listStr)
+        {
+            if (string.IsNullOrEmpty(listStr))
+            {
+                return;
+            }
+
+            RemoveMagicsFromFlyIniInfos(_flyInis);
+            AddMagicsToFlyIniInfos(listStr);
+        }
+
+        protected virtual void OnRecoverFromReplaceMagicList(Magic reasonMagic)
+        {
+            foreach (var tuple in ParseMagicList(reasonMagic.ReplaceMagic))
+            {
+                RemoveMagicFromFlyIniInfos(tuple.Item1);
+            }
+            AddMagicsToFlyIniInfos(_flyInis);
         }
 
         public void RemoveAbnormalState()
@@ -4432,6 +4524,11 @@ namespace Engine
                 _changeCharacterByMagicSpriteTime -= (float)gameTime.ElapsedGameTime.TotalMilliseconds;
                 if (_changeCharacterByMagicSpriteTime <= 0)
                 {
+                    if (!string.IsNullOrEmpty(_changeCharacterByMagicSprite.BelongMagic.ReplaceMagic))
+                    {
+                        OnRecoverFromReplaceMagicList(_changeCharacterByMagicSprite.BelongMagic);
+                    }
+
                     _changeCharacterByMagicSpriteTime = 0;
                     _changeCharacterByMagicSprite = null;
                     SetState((CharacterState)State, true);

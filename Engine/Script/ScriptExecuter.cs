@@ -1154,7 +1154,7 @@ namespace Engine.Script
         {
             var fileName = Utils.RemoveStringQuotes(parameters[0]);
             var level = int.Parse(parameters[1]);
-            MagicListManager.SetMagicLevel(fileName, level);
+            MagicListManager.SetNonReplaceMagicLevel(fileName, level);
             GuiManager.XiuLianInterface.UpdateItem();
         }
 
@@ -2184,7 +2184,7 @@ namespace Engine.Script
 
         public static void CheckFreeMagicSpace(List<string> parameters)
         {
-            Variables[parameters[0]] = MagicListManager.GetFreeIndex() == -1 ? 0 : 1;
+            Variables[parameters[0]] = MagicListManager.GetNonReplaceFreeIndex() == -1 ? 0 : 1;
         }
 
         public static void GetPlayerState(List<string> parameters)
@@ -2224,7 +2224,7 @@ namespace Engine.Script
         {
             if (parameters.Count == 2)
             {
-                Variables[parameters[1]] = MagicListManager.GetMagicLevel(Utils.RemoveStringQuotes(parameters[0]));
+                Variables[parameters[1]] = MagicListManager.GetNonReplaceMagicLevel(Utils.RemoveStringQuotes(parameters[0]));
             }
         }
 
@@ -2272,7 +2272,7 @@ namespace Engine.Script
                 mapX = (int)dest.X;
                 mapY = (int)dest.Y;
             }
-            var magicInfo = MagicListManager.GetMagic(magicFileName);
+            var magicInfo = MagicListManager.GetNonReplaceMagic(magicFileName);
             if (magicInfo != null)
             {
                 Globals.ThePlayer.UseMagic(magicInfo.TheMagic, new Vector2(mapX, mapY));

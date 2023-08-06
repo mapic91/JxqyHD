@@ -176,14 +176,17 @@ namespace Engine.Gui
 
         public static void Load(string magicListPath, string goodsListPath, string memoListPath)
         {
-            MagicListManager.LoadList(magicListPath);
+            MagicListManager.StopReplace();
+            MagicListManager.ClearReplaceList();
+            MagicListManager.LoadPlayerList(magicListPath);
             GoodsListManager.LoadList(goodsListPath);
             MemoListManager.LoadList(memoListPath);
         }
 
         public static void Save(string magicListPath, string goodsListPath, string memoListPath)
         {
-            MagicListManager.SaveList(magicListPath);
+            MagicListManager.SavePlayerList(magicListPath);
+            MagicListManager.SaveReplaceList();
             GoodsListManager.SaveList(goodsListPath);
             MemoListManager.SaveList(memoListPath);
         }

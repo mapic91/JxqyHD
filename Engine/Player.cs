@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Engine.Gui;
 using Engine.ListManager;
 using Engine.Map;
 using Engine.Script;
+using Engine.Storage;
 using IniParser.Model;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -580,6 +582,26 @@ namespace Engine
         protected override void OnSitDown()
         {
             _sittedMilliseconds = 0;
+        }
+
+        protected override void OnReplaceMagicList(Magic reasonMagic, string list)
+        {
+            var index = Globals.ThePlayer.CurrentUseMagicIndex;
+            var magics = ParseMagicListNoDistance(list);
+            var path = StorageBase.SaveGameDirectory + @"\" + Name + "_" + reasonMagic.Name + "_" + string.Join("_", magics) + ".ini";
+            MagicListManager.ReplaceListTo(path, magics);
+            Globals.ThePlayer.CurrentUseMagicIndex = index;
+            Globals.ThePlayer.XiuLianMagic = MagicListManager.GetItemInfo(
+                MagicListManager.XiuLianIndex);
+        }
+
+        protected override void OnRecoverFromReplaceMagicList(Magic reasonMagic)
+        {
+            var index = Globals.ThePlayer.CurrentUseMagicIndex;
+            MagicListManager.StopReplace();
+            Globals.ThePlayer.CurrentUseMagicIndex = index;
+            Globals.ThePlayer.XiuLianMagic = MagicListManager.GetItemInfo(
+                MagicListManager.XiuLianIndex);
         }
 
         #endregion Protected method

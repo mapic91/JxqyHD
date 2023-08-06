@@ -391,8 +391,8 @@ namespace GameEditor
         {
             if (Globals.ThePlayer == null) return;
             var index = Globals.ThePlayer.CurrentUseMagicIndex;
-            MagicListManager.SaveList(StorageBase.MagicListFilePath);
-            MagicListManager.LoadList(StorageBase.MagicListFilePath);
+            MagicListManager.SavePlayerList(StorageBase.MagicListFilePath);
+            MagicListManager.LoadPlayerList(StorageBase.MagicListFilePath);
             Globals.ThePlayer.CurrentUseMagicIndex = index;
             Globals.ThePlayer.XiuLianMagic = MagicListManager.GetItemInfo(
                 MagicListManager.XiuLianIndex);

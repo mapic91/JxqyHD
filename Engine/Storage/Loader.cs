@@ -154,7 +154,9 @@ namespace Engine.Storage
 
         private static void LoadMagicGoodList()
         {
-            MagicListManager.LoadList(StorageBase.MagicListFilePath);
+            MagicListManager.StopReplace();
+            MagicListManager.ClearReplaceList();
+            MagicListManager.LoadPlayerList(StorageBase.MagicListFilePath);
             GoodsListManager.LoadList(StorageBase.GoodsListFilePath);
         }
 

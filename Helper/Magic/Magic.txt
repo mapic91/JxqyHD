@@ -99,6 +99,10 @@ FlyingImage使用方向0，碰到敌人就爆炸，LifeFrame完也爆炸.
       DefendAddPercent-设置变身后防御力增加百分之多少，默认0
       EvadeAddPercent-设置变身后身法增加百分之多少，默认0
       SpeedAddPercent-设置变身后移动速度增加百分之多少，默认0
+      ReplaceMagic-设置变身后拥有的武功列表，文件在ini\magic文件夹下。
+          格式：文件名;文件名;文件名...    比如：magic-飞刀.ini;magic-蜂王毒刺.ini;
+          格式：武功文件名:距离[;][武功文件名:距离][;]....    比如：magic-飞刀.ini:3;magic-蜂王毒刺.ini:1;
+          如果是玩家，武功可升级。如果是NPC，武功会替换FlyInis属性，结束变身后恢复原来的。
 [8] - 解除异常状态( 冰冻，毒，石化)
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>：
@@ -487,6 +491,7 @@ AttackAddPercent-设置变身后攻击力增加百分之多少，默认0
 DefendAddPercent-设置变身后防御力增加百分之多少，默认0
 EvadeAddPercent-设置变身后身法增加百分之多少，默认0
 SpeedAddPercent-设置变身后移动速度增加百分之多少，默认0
+ReplaceMagic-解释见SpecialKind=7
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 致盲：

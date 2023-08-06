@@ -167,6 +167,8 @@ namespace Engine
 
         private string _magicWhenNewPos;
 
+        private string _replaceMagic;
+
         #region Leap
         private int _leapTimes;
         private int _leapFrame;
@@ -1164,6 +1166,12 @@ namespace Engine
             set { _magicWhenNewPos = value; }
         }
 
+        public string ReplaceMagic
+        {
+            get { return _replaceMagic; }
+            set { _replaceMagic = value; }
+        }
+
         public int JumpToTarget
         {
             get { return _jumpToTarget; }
@@ -1206,6 +1214,7 @@ namespace Engine
                     case "FlyIni2":
                     case "MagicToUseWhenBeAttacked":
                     case "MagicWhenNewPos":
+                    case "ReplaceMagic":
                         info.SetValue(this, nameValue[1], null);
                         break;
                     case "Image":
