@@ -586,8 +586,12 @@ namespace Engine
 
         protected override void OnReplaceMagicList(Magic reasonMagic, string list)
         {
+            if (string.IsNullOrEmpty(list))
+            {
+                return;
+            }
             var index = Globals.ThePlayer.CurrentUseMagicIndex;
-            var magics = ParseMagicListNoDistance(list);
+            var magics =  list == "无" ? new List<string>() : ParseMagicListNoDistance(list);
             var path = StorageBase.SaveGameDirectory + @"\" + Name + "_" + reasonMagic.Name + "_" + string.Join("_", magics) + ".ini";
             MagicListManager.ReplaceListTo(path, magics);
             Globals.ThePlayer.CurrentUseMagicIndex = index;
@@ -597,6 +601,10 @@ namespace Engine
 
         protected override void OnRecoverFromReplaceMagicList(Magic reasonMagic)
         {
+            if (string.IsNullOrEmpty(reasonMagic.ReplaceMagic))
+            {
+                return;
+            }
             var index = Globals.ThePlayer.CurrentUseMagicIndex;
             MagicListManager.StopReplace();
             Globals.ThePlayer.CurrentUseMagicIndex = index;

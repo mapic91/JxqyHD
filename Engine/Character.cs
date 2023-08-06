@@ -3047,6 +3047,10 @@ namespace Engine
         {
             var minDistance = int.MaxValue;
             var result = 0;
+            if (_flyIniInfos.Count == 0)
+            {
+                return AttackRadius;
+            }
             for (var i = 0; i < _flyIniInfos.Count; i++)
             {
                 var distance = Math.Abs(toTargetDistance - _flyIniInfos[i].UseDistance);
@@ -3127,7 +3131,7 @@ namespace Engine
                     if (canSeeTarget)
                     {
                         magicToUse = GetRamdomMagicWithUseDistance(attackRadius);
-                        return true;
+                        return magicToUse != null;
                     }
 
                     MoveToTarget(DestinationAttackTilePosition, _isRunToTarget);
@@ -3144,7 +3148,7 @@ namespace Engine
                         _isRunToTarget))
                     {
                         magicToUse = GetRamdomMagicWithUseDistance(attackRadius);
-                        return true;
+                        return magicToUse != null;
                     }
                 }
             }
@@ -4201,7 +4205,7 @@ namespace Engine
             OnReplaceMagicList(magicSprite.BelongMagic, magicSprite.BelongMagic.ReplaceMagic);
             StandingImmediately(true);
         }
-
+        private List<FlyIniInfoItem> _replaceMagicListBackup = new List<FlyIniInfoItem>();
         protected void RemoveMagicsFromFlyIniInfos(string listStr)
         {
             foreach (var tuple in ParseMagicList(listStr))
@@ -4217,17 +4221,24 @@ namespace Engine
                 return;
             }
 
-            RemoveMagicsFromFlyIniInfos(_flyInis);
-            AddMagicsToFlyIniInfos(listStr);
+            _replaceMagicListBackup.Clear();
+            _replaceMagicListBackup.AddRange(_flyIniInfos);
+            _flyIniInfos.Clear();
+            if (listStr != "无")
+            {
+                AddMagicsToFlyIniInfos(listStr);
+            }
         }
 
         protected virtual void OnRecoverFromReplaceMagicList(Magic reasonMagic)
         {
-            foreach (var tuple in ParseMagicList(reasonMagic.ReplaceMagic))
+            if (string.IsNullOrEmpty(reasonMagic.ReplaceMagic))
             {
-                RemoveMagicFromFlyIniInfos(tuple.Item1);
+                return;
             }
-            AddMagicsToFlyIniInfos(_flyInis);
+            _flyIniInfos.Clear();
+            _flyIniInfos.AddRange(_replaceMagicListBackup);
+            _replaceMagicListBackup.Clear();
         }
 
         public void RemoveAbnormalState()
@@ -4524,10 +4535,7 @@ namespace Engine
                 _changeCharacterByMagicSpriteTime -= (float)gameTime.ElapsedGameTime.TotalMilliseconds;
                 if (_changeCharacterByMagicSpriteTime <= 0)
                 {
-                    if (!string.IsNullOrEmpty(_changeCharacterByMagicSprite.BelongMagic.ReplaceMagic))
-                    {
-                        OnRecoverFromReplaceMagicList(_changeCharacterByMagicSprite.BelongMagic);
-                    }
+                    OnRecoverFromReplaceMagicList(_changeCharacterByMagicSprite.BelongMagic);
 
                     _changeCharacterByMagicSpriteTime = 0;
                     _changeCharacterByMagicSprite = null;
