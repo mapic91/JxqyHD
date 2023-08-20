@@ -720,7 +720,7 @@ namespace Engine.ListManager
             {
                 if (good.MinUserLevel.GetOneValue() > 0 && user.Level < good.MinUserLevel.GetOneValue())
                 {
-                    GuiManager.ShowMessage("需要等级" + good.MinUserLevel);
+                    GuiManager.ShowMessage("需要等级" + good.MinUserLevel.GetOneValue());
                     return;
                 }
             }
@@ -728,7 +728,7 @@ namespace Engine.ListManager
             {
                 if (good.MinUserLevel.GetOneValue() > 0 && Globals.ThePlayer.Level < good.MinUserLevel.GetOneValue())
                 {
-                    GuiManager.ShowMessage("需要等级" + good.MinUserLevel);
+                    GuiManager.ShowMessage("需要等级" + good.MinUserLevel.GetOneValue());
                     return;
                 }
             }
