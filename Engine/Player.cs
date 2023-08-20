@@ -680,18 +680,28 @@ namespace Engine
                 {
                     if (!string.IsNullOrEmpty(equip.MagicIniWhenUse.GetValue()))
                     {
-                        if (MagicListManager.IsMagicHided(equip.MagicIniWhenUse.GetValue()))
+                        var isHide = MagicListManager.IsMagicHided(equip.MagicIniWhenUse.GetValue());
+                        var hasHideValue = false;
+                        if (!isHide)
+                        {
+                            hasHideValue = MagicListManager.GetNonReplaceMagic(equip.MagicIniWhenUse.GetValue())?.HideCount > 0;
+                        }
+                        if (isHide || hasHideValue)
                         {
                             var info = MagicListManager.SetMagicHide(equip.MagicIniWhenUse.GetValue(), false);
-                            if (info != null)
+                            if (isHide)
                             {
-                                GuiManager.ShowMessage("武功" + info.TheMagic.Name + "已可使用");
-                                GuiManager.UpdateMagicView();
+                                if (info != null)
+                                {
+                                    GuiManager.ShowMessage("武功" + info.TheMagic.Name + "已可使用");
+                                    GuiManager.UpdateMagicView();
+                                }
+                                else
+                                {
+                                    GuiManager.ShowMessage("Good-MagicIniWhenUse错误");
+                                }
                             }
-                            else
-                            {
-                                GuiManager.ShowMessage("Good-MagicIniWhenUse错误");
-                            }
+                           
                         }
                         else
                         {
@@ -729,11 +739,14 @@ namespace Engine
                         var info = MagicListManager.SetMagicHide(equip.MagicIniWhenUse.GetValue(), true);
                         if (info != null)
                         {
-                            GuiManager.ShowMessage("武功" + info.TheMagic.Name + "已不可使用");
+                            if (info.HideCount == 0)
+                            {
+                                GuiManager.ShowMessage("武功" + info.TheMagic.Name + "已不可使用");
 
-                            OnDeleteMagic(info);
+                                OnDeleteMagic(info);
 
-                            GuiManager.UpdateMagicView();
+                                GuiManager.UpdateMagicView();
+                            }
                         }
                         else
                         {

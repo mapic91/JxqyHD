@@ -67,11 +67,12 @@ namespace Engine.ListManager
                     if (int.TryParse(sectionData.SectionName, out head))
                     {
                         var section = data[sectionData.SectionName];
+                        var hideCount = section.ContainsKey("HideCount") ? int.Parse(section["HideCount"]) : 0;
                         var info = new MagicItemInfo(
                             section["IniFile"],
                             int.Parse(section["Level"]),
-                            int.Parse(section["Exp"])
-                            );
+                            int.Parse(section["Exp"]),
+                                hideCount);
                         if (head >= HideStartIndex)
                         {
                             hideList[head - HideStartIndex] = info;
@@ -117,6 +118,7 @@ namespace Engine.ListManager
                         section.AddKey("IniFile", item.TheMagic.FileName);
                         section.AddKey("Level", item.Level.ToString());
                         section.AddKey("Exp", item.Exp.ToString());
+                        section.AddKey("HideCount", item.HideCount.ToString());
                     }
 
                     item = hideList[i];
@@ -128,6 +130,7 @@ namespace Engine.ListManager
                         section.AddKey("IniFile", item.TheMagic.FileName);
                         section.AddKey("Level", item.Level.ToString());
                         section.AddKey("Exp", item.Exp.ToString());
+                        section.AddKey("HideCount", item.HideCount.ToString());
                     }
                 }
                 data["Head"].AddKey("Count", count.ToString());
@@ -182,7 +185,7 @@ namespace Engine.ListManager
                 {
                     if (listI < magicFileNamesList.Count)
                     {
-                        ReplaceMagicList[filePath][i] = new MagicItemInfo(magicFileNamesList[listI], 1, 0);
+                        ReplaceMagicList[filePath][i] = new MagicItemInfo(magicFileNamesList[listI], 1, 0, 1);
                     }
                     else
                     {
@@ -195,7 +198,7 @@ namespace Engine.ListManager
                 {
                     if (listI < magicFileNamesList.Count)
                     {
-                        ReplaceMagicList[filePath][i] = new MagicItemInfo(magicFileNamesList[listI], 1, 0);
+                        ReplaceMagicList[filePath][i] = new MagicItemInfo(magicFileNamesList[listI], 1, 0, 1);
                     }
                     else
                     {
@@ -447,7 +450,7 @@ namespace Engine.ListManager
 
             if (index != -1)
             {
-                _MagicList[index] = new MagicItemInfo(fileName, 1, 0);
+                _MagicList[index] = new MagicItemInfo(fileName, 1, 0, 1);
                 outMagic = _MagicList[index].TheMagic;
                 return true;
             }
@@ -522,6 +525,11 @@ namespace Engine.ListManager
                 if (index != -1)
                 {
                     var info = _MagicList[index];
+                    info.HideCount--;
+                    if (info.HideCount > 0)
+                    {
+                        return info;
+                    }
                     for (var i = 1; i <= MaxMagic; i++)
                     {
                         if (_MagicListHide[i] == null)
@@ -541,6 +549,14 @@ namespace Engine.ListManager
             }
             else
             {
+                var index = GetNonReplaceIndex(fileName);
+                if (index != -1)
+                {
+                    var info = _MagicList[index];
+                    info.HideCount++;
+                    return info;
+                }
+
                 for (var i = 1; i <= MaxMagic; i++)
                 {
                     if (_MagicListHide[i] != null)
@@ -551,6 +567,8 @@ namespace Engine.ListManager
                             if (Utils.EqualNoCase(magic.FileName, fileName))
                             {
                                 var info = _MagicListHide[i];
+                                _MagicListHide[i] = null;
+                                info.HideCount = 1;
                                 for (var j = StoreIndexBegin; j <= StoreIndexEnd; j++)
                                 {
                                     if (_MagicList[j] == null)
@@ -582,6 +600,7 @@ namespace Engine.ListManager
         {
             private float _remainColdMilliseconds;
             public Magic TheMagic { set; get; }
+            public int HideCount { set; get; }
 
             public int Level
             {
@@ -603,7 +622,7 @@ namespace Engine.ListManager
                 }
             }
 
-            public MagicItemInfo(string iniFile, int level, int exp)
+            public MagicItemInfo(string iniFile, int level, int exp, int hideCount)
             {
                 var magic = Utils.GetMagic(iniFile, false);
                 if (magic != null)
@@ -612,6 +631,7 @@ namespace Engine.ListManager
                     TheMagic.ItemInfo = this;
                 }
                 Exp = exp;
+                HideCount = hideCount;
             }
         }
 
