@@ -68,11 +68,13 @@ namespace Engine.ListManager
                     {
                         var section = data[sectionData.SectionName];
                         var hideCount = section.ContainsKey("HideCount") ? int.Parse(section["HideCount"]) : 0;
+                        var lastIndexWhenHide = section.ContainsKey("LastIndexWhenHide") ? int.Parse(section["LastIndexWhenHide"]) : 0;
                         var info = new MagicItemInfo(
                             section["IniFile"],
                             int.Parse(section["Level"]),
                             int.Parse(section["Exp"]),
                                 hideCount);
+                        info.LastIndexWhenHide = lastIndexWhenHide;
                         if (head >= HideStartIndex)
                         {
                             hideList[head - HideStartIndex] = info;
@@ -119,6 +121,7 @@ namespace Engine.ListManager
                         section.AddKey("Level", item.Level.ToString());
                         section.AddKey("Exp", item.Exp.ToString());
                         section.AddKey("HideCount", item.HideCount.ToString());
+                        section.AddKey("LastIndexWhenHide", item.LastIndexWhenHide.ToString());
                     }
 
                     item = hideList[i];
@@ -131,6 +134,7 @@ namespace Engine.ListManager
                         section.AddKey("Level", item.Level.ToString());
                         section.AddKey("Exp", item.Exp.ToString());
                         section.AddKey("HideCount", item.HideCount.ToString());
+                        section.AddKey("LastIndexWhenHide", item.LastIndexWhenHide.ToString());
                     }
                 }
                 data["Head"].AddKey("Count", count.ToString());
@@ -534,6 +538,7 @@ namespace Engine.ListManager
                     {
                         if (_MagicListHide[i] == null)
                         {
+                            info.LastIndexWhenHide = index;
                             _MagicListHide[i] = info;
                             _MagicList[index] = null;
 
@@ -569,15 +574,27 @@ namespace Engine.ListManager
                                 var info = _MagicListHide[i];
                                 _MagicListHide[i] = null;
                                 info.HideCount = 1;
-                                for (var j = StoreIndexBegin; j <= StoreIndexEnd; j++)
+                                int j;
+                                if (_MagicList[info.LastIndexWhenHide] == null)
                                 {
-                                    if (_MagicList[j] == null)
+                                    j = info.LastIndexWhenHide;
+                                }
+                                else
+                                {
+                                    for (j = StoreIndexBegin; j <= StoreIndexEnd; j++)
                                     {
-                                        _MagicList[j] = info;
-                                        return info;
+                                        if (_MagicList[j] == null)
+                                        {
+                                            break;
+                                        }
                                     }
                                 }
-                                break;
+                                _MagicList[j] = info;
+                                if (!IsInReplaceMagicList && j == XiuLianIndex && Globals.ThePlayer != null)
+                                {
+                                    Globals.ThePlayer.XiuLianMagic = info;
+                                }
+                                return info;
                             }
                         }
                     }
@@ -601,6 +618,7 @@ namespace Engine.ListManager
             private float _remainColdMilliseconds;
             public Magic TheMagic { set; get; }
             public int HideCount { set; get; }
+            public int LastIndexWhenHide { set; get; }
 
             public int Level
             {

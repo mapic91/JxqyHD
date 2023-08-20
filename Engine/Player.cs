@@ -430,7 +430,7 @@ namespace Engine
 
             if (MagicUse.GoodsName != null && !string.IsNullOrEmpty(MagicUse.GoodsName.FileName))
             {
-                if (!GoodsListManager.DeleteGoodInBag(MagicUse.GoodsName.FileName, 1))
+                if (!GoodsListManager.DeleteGoodInBag(MagicUse.GoodsName.FileName, 1, true))
                 {
                     GuiManager.ShowMessage("缺少物品" + MagicUse.GoodsName.Name);
                     return false;

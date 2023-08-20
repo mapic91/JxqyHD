@@ -598,7 +598,7 @@ namespace Engine.ListManager
             return false;
         }
 
-        public static bool DeleteGoodInBag(string fileName, int amount)
+        public static bool DeleteGoodInBag(string fileName, int amount, bool includeEquipped = false)
         {
             if (amount <= 0) return false;
             switch (Type)
@@ -607,7 +607,7 @@ namespace Engine.ListManager
                 {
                     for (var i = ListIndexBegin; i <= ListIndexEnd; i++)
                     {
-                        if (IsInEquipRange(i))
+                        if (!includeEquipped && IsInEquipRange(i))
                         {
                             continue;
                         }
@@ -630,7 +630,20 @@ namespace Engine.ListManager
                                 if (good.Kind == Good.GoodKind.Equipment && good.NoNeedToEquip.GetOneValue() > 0)
                                 {
                                     if (Globals.ThePlayer != null)
+                                    {
+                                        for (var k = 0; k < amount; k++)
+                                        {
+                                            Globals.ThePlayer.UnEquiping(good);
+                                        }
+                                    }
+                                }
+
+                                if (IsInEquipRange(i) && info.Count == 0)
+                                {
+                                    if (Globals.ThePlayer != null)
+                                    {
                                         Globals.ThePlayer.UnEquiping(good);
+                                    }
                                 }
 
                                 GuiManager.UpdateGoodItemView(i);
@@ -645,7 +658,7 @@ namespace Engine.ListManager
                     var indexToDelete = new List<int>();
                     for (var i = ListIndexBegin; i <= ListIndexEnd; i++)
                     {
-                        if (IsInEquipRange(i))
+                        if (!includeEquipped && IsInEquipRange(i))
                         {
                             continue;
                         }
@@ -665,7 +678,16 @@ namespace Engine.ListManager
                                 if (good.Kind == Good.GoodKind.Equipment && good.NoNeedToEquip.GetOneValue() > 0)
                                 {
                                     if (Globals.ThePlayer != null)
+                                    {
                                         Globals.ThePlayer.UnEquiping(good);
+                                    }
+                                }
+                                if (IsInEquipRange(i))
+                                {
+                                    if (Globals.ThePlayer != null)
+                                    {
+                                        Globals.ThePlayer.UnEquiping(good);
+                                    }
                                 }
                             }
                         }

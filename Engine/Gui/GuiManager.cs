@@ -313,6 +313,10 @@ namespace Engine.Gui
             {
                 BottomInterface.UpdateGoodItem(listIndex);
             }
+            else if (GoodsListManager.IsInEquipRange(listIndex))
+            {
+                EquipInterface.UpdateItems();
+            }
         }
 
         public static void UpdateMemoView()
