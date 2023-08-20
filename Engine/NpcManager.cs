@@ -204,6 +204,8 @@ namespace Engine
                 {
                     target = GetLiveClosestOtherGropEnemy(finder.Group, targetPositionInWorld);
                 }
+
+                return target;
             }
 
             if (finder.IsPlayer || finder.IsFighterFriend)

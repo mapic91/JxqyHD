@@ -1373,6 +1373,10 @@ namespace Engine
             set { _aiType = value; }
         }
 
+        public bool IsRandMoveRandAttack => AIType == 1 || AIType == 2;
+
+        public bool IsNotFightBackWhenBeHit => AIType == 2;
+
         public int ReviveMilliseconds
         {
             get { return _reviveMilliseconds; }
@@ -4370,7 +4374,7 @@ namespace Engine
         /// <param name="target">The target</param>
         public void NotifyFighterAndAllNeighbor(Character target)
         {
-            if (target == null || (!IsEnemy && !IsNoneFighter) || FollowTarget != null) return;
+            if (target == null || (!IsEnemy && !IsNoneFighter) || FollowTarget != null || IsNotFightBackWhenBeHit) return;
             var characters = IsEnemy ? NpcManager.GetNeighborEnemy(this) : NpcManager.GetNeighborNuturalFighter(this);
             characters.Add(this);
             foreach (var character in characters)

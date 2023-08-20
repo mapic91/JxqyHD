@@ -265,8 +265,8 @@ namespace Engine
                 if (IsEnemy)
                 {
                     //AIType - 1 - rand move, rand attack
-                    if ((StopFindingTarget == 0 && AIType != 1) || 
-                        (AIType == 1 && IsStanding() && Globals.TheRandom.Next(100) > 70))
+                    if ((StopFindingTarget == 0 && !IsRandMoveRandAttack) || 
+                        (IsRandMoveRandAttack && IsStanding() && Globals.TheRandom.Next(100) > 70))
                     {
                         FollowTarget = (IsAIDisabled || _blindMilliseconds > 0) ? null : NpcManager.GetLiveClosestOtherGropEnemy(Group, PositionInWorld);
                         if (NoAutoAttackPlayer == 0 && FollowTarget == null)
@@ -369,7 +369,7 @@ namespace Engine
                 }
                 else
                 {
-                    if (AIType == 1 && IsStanding())
+                    if (IsRandMoveRandAttack && IsStanding())
                     {
                         var poses = GetRandTilePath(2, false, 10);
                         if (poses.Count == 2)
