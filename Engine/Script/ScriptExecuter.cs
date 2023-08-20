@@ -2510,5 +2510,11 @@ namespace Engine.Script
             }
             GuiManager.DeleteGood(name, count);
         }
+
+        public static void GetGoodsNumByName(List<string> parameters, object belongObject)
+        {
+            Variables["$GoodsNum"] = GoodsListManager.GetGoodsNumByName(
+                Utils.RemoveStringQuotes(parameters[0]));
+        }
     }
 }

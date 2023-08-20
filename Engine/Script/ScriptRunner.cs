@@ -730,6 +730,9 @@ namespace Engine.Script
                         case "DelGoodByName":
                             ScriptExecuter.DelGoodByName(parameters, BelongObject);
                             break;
+                        case "GetGoodsNumByName":
+                            ScriptExecuter.GetGoodsNumByName(parameters, BelongObject);
+                            break;
                         default:
                             throw new Exception("无此函数");
                     }

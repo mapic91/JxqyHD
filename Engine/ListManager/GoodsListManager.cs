@@ -437,6 +437,21 @@ namespace Engine.ListManager
             }
         }
 
+        public static int GetGoodsNumByName(string name)
+        {
+            var count = 0;
+            for (var i = ListIndexBegin; i <= ListIndexEnd; i++)
+            {
+                var info = GoodsList[i];
+                if (info != null && info.TheGood != null && info.TheGood.Name == name)
+                {
+                    count += info.Count;
+                }
+            }
+
+            return count;
+        }
+
         public static void DeleteGood(string fileName)
         {
             var i = ListIndexBegin;
