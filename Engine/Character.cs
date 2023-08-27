@@ -3585,7 +3585,7 @@ namespace Engine
         /// <param name="equip"></param>
         /// <param name="currentEquip"></param>
         /// <param name="justEffectType">Don't applay Attack, Defend,Evade,LifeMax,ThewMax,ManaMax, just equip effect</param>
-        public void Equiping(Good equip, Good currentEquip, bool justEffectType = false)
+        public virtual void Equiping(Good equip, Good currentEquip, bool justEffectType = false)
         {
             //Save for restore
             var life = Life;
@@ -3711,7 +3711,7 @@ namespace Engine
             Mana = mana;
         }
 
-        public void UnEquiping(Good equip, bool justEffectType = false)
+        public virtual void UnEquiping(Good equip, bool justEffectType = false)
         {
             if (equip != null)
             {

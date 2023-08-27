@@ -670,7 +670,7 @@ namespace Engine
         /// <param name="equip"></param>
         /// <param name="currentEquip"></param>
         /// <param name="justEffectType">Don't applay Attack, Defend,Evade,LifeMax,ThewMax,ManaMax, just equip effect</param>
-        public void Equiping(Good equip, Good currentEquip, bool justEffectType = false)
+        public override void Equiping(Good equip, Good currentEquip, bool justEffectType = false)
         {
             base.Equiping(equip, currentEquip, justEffectType);
 
@@ -727,7 +727,7 @@ namespace Engine
             }
         }
 
-        public void UnEquiping(Good equip, bool justEffectType = false)
+        public override void UnEquiping(Good equip, bool justEffectType = false)
         {
             base.UnEquiping(equip, justEffectType);
             if (equip != null)
