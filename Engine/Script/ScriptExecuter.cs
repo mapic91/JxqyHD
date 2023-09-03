@@ -1293,7 +1293,7 @@ namespace Engine.Script
         {
             var selections = new List<string>();
             var isShows = new List<bool>();
-            for (int i = 4; i < parameters.Count - 1; i++)
+            for (int i = 4; i < parameters.Count; i++)
             {
                 var str = Utils.RemoveStringQuotes(parameters[i]);
                 var conditions = GetConditions(ref str);
