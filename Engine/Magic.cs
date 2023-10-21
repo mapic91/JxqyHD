@@ -94,6 +94,9 @@ namespace Engine
         private int _coldMilliSeconds;
         private int _changeToFriendMilliseconds;
 
+        private Magic _magicToUseWhenKillEnemy;
+        private int _magicDirectionWhenKillEnemy;
+
         private int _rangeEffect;
         private int _rangeAddLife;
         private int _rangeAddMana;
@@ -822,6 +825,19 @@ namespace Engine
             set { _changeToFriendMilliseconds = value; }
         }
 
+        public Magic MagicToUseWhenKillEnemy
+        {
+            get { return _magicToUseWhenKillEnemy; }
+            set { _magicToUseWhenKillEnemy = value; }
+        }
+
+        public int MagicDirectionWhenKillEnemy
+        {
+            get { return _magicDirectionWhenKillEnemy; }
+            set { _magicDirectionWhenKillEnemy = value; }
+        }
+
+
         public int RangeEffect
         {
             get { return _rangeEffect; }
@@ -1189,7 +1205,6 @@ namespace Engine
             get { return _jumpEndMagic; }
             set { _jumpEndMagic = value; }
         }
-
         #endregion
 
         //noAttackFile - resolve recursive problem of AttackFile
@@ -1244,6 +1259,7 @@ namespace Engine
                     case "SecondMagicFile":
                     case "RandMagicFile":
                     case "JumpEndMagic":
+                    case "MagicToUseWhenKillEnemy":
                         info.SetValue(this, Utils.GetMagic(nameValue[1], false), null);
                         break;
                     case "RegionFile":
@@ -1374,6 +1390,10 @@ namespace Engine
             if (magic.JumpEndMagic != null)
             {
                 magic.JumpEndMagic = magic.JumpEndMagic.GetLevel(level);
+            }
+            if (magic.MagicToUseWhenKillEnemy != null)
+            {
+                magic.MagicToUseWhenKillEnemy = magic.MagicToUseWhenKillEnemy.GetLevel(level);
             }
 
             magic.AdditionalEffect = AdditionalEffect;

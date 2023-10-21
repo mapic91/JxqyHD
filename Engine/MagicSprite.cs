@@ -664,23 +664,39 @@ namespace Engine
                                                     BelongCharacter.SummonedByMagicSprite.BelongCharacter.IsPartner));
                 var isControledByPlayer = (BelongCharacter.ControledMagicSprite != null &&
                                            BelongCharacter.ControledMagicSprite.BelongCharacter.IsPlayer);
-                //Hited character death
-                if (!isInDeath && //Alive before hited
-                    character.IsInDeathing && //Death after hited
-                    (BelongCharacter.IsPlayer ||
-                    BelongCharacter.IsPartner ||
-                    isSummonedByPlayerorPartner ||
-                    isControledByPlayer))
+                var isKill = !isInDeath && //Alive before hited
+                             (character.IsInDeathing || character.IsDeath);
+                if (isKill)
                 {
-                    var player = Globals.ThePlayer;
-                    var exp = Utils.GetCharacterDeathExp(Globals.ThePlayer, character);
-                    player.AddExp(exp, true);
-                    if (BelongCharacter.CanLevelUp > 0 && 
-                        ((isSummonedByPlayerorPartner && BelongCharacter.SummonedByMagicSprite.BelongCharacter.IsPartner) || 
-                         BelongCharacter.IsPartner))
+                    if ((BelongCharacter.IsPlayer ||
+                         BelongCharacter.IsPartner ||
+                         isSummonedByPlayerorPartner ||
+                         isControledByPlayer))
                     {
-                        var npcExp = Utils.GetCharacterDeathExp(BelongCharacter, character);
-                        BelongCharacter.AddExp(npcExp);
+                        var player = Globals.ThePlayer;
+                        var exp = Utils.GetCharacterDeathExp(Globals.ThePlayer, character);
+                        player.AddExp(exp, true);
+                        if (BelongCharacter.CanLevelUp > 0 && 
+                            ((isSummonedByPlayerorPartner && BelongCharacter.SummonedByMagicSprite.BelongCharacter.IsPartner) || 
+                             BelongCharacter.IsPartner))
+                        {
+                            var npcExp = Utils.GetCharacterDeathExp(BelongCharacter, character);
+                            BelongCharacter.AddExp(npcExp);
+                        }
+                    }
+                    
+                    if (BelongMagic.MagicToUseWhenKillEnemy != null)
+                    {
+                        Vector2 pos = BelongCharacter.PositionInWorld;
+                        if (BelongMagic.MagicDirectionWhenKillEnemy == 1)
+                        {
+                            pos = character.PositionInWorld + Utils.GetDirection8(character.CurrentDirection);
+                        }
+                        else if (BelongMagic.MagicDirectionWhenKillEnemy == 2)
+                        {
+                            pos = character.PositionInWorld + Utils.GetDirection8(BelongCharacter.CurrentDirection);
+                        }
+                        MagicManager.UseMagic(BelongCharacter, BelongMagic.MagicToUseWhenKillEnemy, character.PositionInWorld, pos);
                     }
                 }
             }

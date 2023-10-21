@@ -648,4 +648,14 @@ MagicWhenNewPos=球.ini
 JumpToTarget - 默认0，大于0表示，释放者会跳跃到技能目标点，中途有跳跃阻挡会停下来
 JumpMoveSpeed - 默认32，跳跃运动的速度，多少像素每秒
 JumpEndMagic - 武功文件名，跳跃结束后使用的武功，比如：magic-毒液.ini
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+设置武功在杀死敌人后，在敌人处释放的武功：
+MagicToUseWhenKillEnemy - 当NPC的被该武功杀死时，会释放该武功。
+                           释放的方向由MagicDirectionWhenKillEnemy决定。
+                           武功的等级由杀死敌人的武功等级决定。
+MagicDirectionWhenKillEnemy - 默认0，当值为：
+    0 ：  目标位置为该武功释放者的位置
+    1 ：  被杀的敌人的当前朝向。
+    2 ：  释放者的当前朝向
 
