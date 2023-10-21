@@ -2318,7 +2318,7 @@ namespace Engine
             AddKey(keyDataCollection, "VisionRadius", _visionRadius);
             AddKey(keyDataCollection, "DialogRadius", _dialogRadius);
             AddKey(keyDataCollection, "AttackRadius", _attackRadius);
-            AddKey(keyDataCollection, "Dir", _dir);
+            AddKey(keyDataCollection, "Dir", CurrentDirection);
             keyDataCollection.AddKey("MapX", MapX.ToString());
             keyDataCollection.AddKey("MapY", MapY.ToString());
             AddKey(keyDataCollection, "Lum", _lum);
