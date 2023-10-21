@@ -651,7 +651,7 @@ JumpEndMagic - 武功文件名，跳跃结束后使用的武功，比如：magic-毒液.ini
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 设置武功在杀死敌人后，在敌人处释放的武功：
-MagicToUseWhenKillEnemy - 当NPC的被该武功杀死时，会释放该武功。
+MagicToUseWhenKillEnemy - 当NPC被该武功杀死时，会释放该武功。
                            释放的方向由MagicDirectionWhenKillEnemy决定。
                            武功的等级由杀死敌人的武功等级决定。
 MagicDirectionWhenKillEnemy - 默认0，当值为：
