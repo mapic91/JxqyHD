@@ -1220,6 +1220,7 @@ namespace Engine
                 if (ControledCharacter != null)
                 {
                     character = ControledCharacter;
+                    _isRun = false;
                 }
                 if (mouseState.LeftButton == ButtonState.Pressed)
                 {
@@ -1228,8 +1229,11 @@ namespace Engine
                         (Globals.OutEdgeNpc.IsEnemy || Globals.OutEdgeNpc.IsNoneFighter))
                     {
                         character.Attacking(Globals.OutEdgeNpc.TilePosition, _isRun);
-                        _autoAttackTarget = Globals.OutEdgeNpc;
-                        _autoAttackIsRun = _isRun;
+                        if (ControledCharacter == null)
+                        {
+                            _autoAttackTarget = Globals.OutEdgeNpc;
+                            _autoAttackIsRun = _isRun;
+                        }
                     }
                     else if (Globals.OutEdgeNpc != null &&
                         Globals.OutEdgeNpc != ControledCharacter &&
