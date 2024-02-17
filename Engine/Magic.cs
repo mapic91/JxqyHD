@@ -210,6 +210,10 @@ namespace Engine
         private int _jumpMoveSpeed = 32;
         private Magic _jumpEndMagic;
 
+        private int _addThewRestorePercent;
+        private int _addManaRestorePercent;
+        private int _addLifeRestorePercent;
+
 
         #region Public properties
         public AddonEffect AdditionalEffect { set; get; }
@@ -1205,6 +1209,25 @@ namespace Engine
             get { return _jumpEndMagic; }
             set { _jumpEndMagic = value; }
         }
+
+        public int AddThewRestorePercent
+        {
+            get { return _addThewRestorePercent; }
+            set { _addThewRestorePercent = value; }
+        }
+
+        public int AddManaRestorePercent
+        {
+            get { return _addManaRestorePercent; }
+            set { _addManaRestorePercent = value; }
+        }
+
+        public int AddLifeRestorePercent
+        {
+            get { return _addLifeRestorePercent; }
+            set { _addLifeRestorePercent = value; }
+        }
+
         #endregion
 
         //noAttackFile - resolve recursive problem of AttackFile

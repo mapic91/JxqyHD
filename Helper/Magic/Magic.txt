@@ -545,10 +545,29 @@ Attack2 - 另外一套攻击值
 Defend2 - 另外一套防御值
 Attack3 - 另外一套攻击值
 Defend3 - 另外一套防御值
+AddLifeRestorePercent - 增加多少千分比的生命恢复速度
+AddThewRestorePercent - 增加多少千分比的体力恢复速度
+AddManaRestorePercent - 增加多少千分比的内力恢复速度
 比如：
 [Level4]
 LifeMax=100
 则当该武功升级到4级，加最大生命100
+
+比如：
+[Level1]
+Effect=340
+ManaCost=6
+LevelupExp=600
+MoveKind=1
+
+[Level2]
+Effect=600
+ManaCost=9
+LevelupExp=2000
+MoveKind=11
+AddLifeRestorePercent=12
+
+则当武功升级到2级，永久增加生命恢复百分比1.2%，即1秒多恢复总血量的1.2%
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

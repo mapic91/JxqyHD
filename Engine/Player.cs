@@ -25,7 +25,7 @@ namespace Engine
         private int _money;
         private const int ThewUseAmountWhenAttack = 5;
         private const int ThewUseAmountWhenJump = 10;
-        private const float ListRestorePercent = 0.01f;
+        private const float LifeRestorePercent = 0.01f;
         private const float ThewRestorePercent = 0.03f;
         private const float ManaRestorePercent = 0.02f;
         private const int MaxAutoInteractTileDistance = 13;
@@ -36,6 +36,10 @@ namespace Engine
         private float _autoAttackTimer;
         private Character _autoAttackTarget;
         private bool _autoAttackIsRun;
+
+        private int _addThewRestorePercent;
+        private int _addManaRestorePercent;
+        private int _addLifeRestorePercent;
 
 
         private MagicListManager.MagicItemInfo _currentMagicInUse;
@@ -195,6 +199,24 @@ namespace Engine
         public Character ControledCharacter;
 
         public int WalkIsRun { set; get; }
+
+        public int AddThewRestorePercent
+        {
+            get { return _addThewRestorePercent; }
+            set { _addThewRestorePercent = value; }
+        }
+
+        public int AddManaRestorePercent
+        {
+            get { return _addManaRestorePercent; }
+            set { _addManaRestorePercent = value; }
+        }
+
+        public int AddLifeRestorePercent
+        {
+            get { return _addLifeRestorePercent; }
+            set { _addLifeRestorePercent = value; }
+        }
 
         #endregion
 
@@ -625,6 +647,9 @@ namespace Engine
             AddKey(keyDataCollection, "IsJumpDisabled", IsJumpDisabled);
             AddKey(keyDataCollection, "IsFightDisabled", IsFightDisabled);
             AddKey(keyDataCollection, "WalkIsRun", WalkIsRun);
+            AddKey(keyDataCollection, "AddLifeRestorePercent", AddLifeRestorePercent);
+            AddKey(keyDataCollection, "AddManaRestorePercent", AddManaRestorePercent);
+            AddKey(keyDataCollection, "AddThewRestorePercent", AddThewRestorePercent);
         }
 
         public override void SetMagicFile(string fileName)
@@ -902,8 +927,8 @@ namespace Engine
         {
             if (info == null ||
                 info.TheMagic == null ||
-                info.TheMagic.LevelupExp == 0 //Max level
-                )
+                info.TheMagic.LevelupExp == 0 ||//Max level
+                amount == 0)
             {
                 return;
             }
@@ -925,6 +950,9 @@ namespace Engine
                 Defend2 += info.TheMagic.Defend2;
                 Attack3 += info.TheMagic.Attack3;
                 Defend3 += info.TheMagic.Defend3;
+                AddLifeRestorePercent += info.TheMagic.AddLifeRestorePercent;
+                AddThewRestorePercent += info.TheMagic.AddThewRestorePercent;
+                AddManaRestorePercent += info.TheMagic.AddManaRestorePercent;
 
                 //replace flyini
                 if (oldLevelMagic.FlyIni != info.TheMagic.FlyIni)
@@ -1418,8 +1446,9 @@ namespace Engine
                 _standingMilliseconds += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
                 if (_standingMilliseconds >= 1000)
                 {
-                    Life += (int)(ListRestorePercent * LifeMax);
-                    Thew += (int)(ThewRestorePercent * ThewMax);
+                    Life += (int)((LifeRestorePercent + AddLifeRestorePercent / 1000f) * LifeMax);
+                    Thew += (int)((ThewRestorePercent + AddThewRestorePercent / 1000f) * ThewMax);
+                    Mana += (int)((AddManaRestorePercent / 1000f) * ManaMax);
                     if (IsManaRestore)
                     {
                         Mana += (int)(ManaMax * ManaRestorePercent);
