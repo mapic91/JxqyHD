@@ -236,6 +236,10 @@ namespace Engine
         /// </summary>
         private List<string> _flyIni2Replace = new List<string>();
 
+        private int _hurtPlayerInterval;
+        private int _hurtPlayerLife;
+        private int _hurtPlayerRadius = 1;
+        private float _hurtPlayerIntervalTimer;
 
         public void AddFlyIniReplace(Magic magic)
         {
@@ -1097,6 +1101,24 @@ namespace Engine
                     _flyIniInfos.Add(new FlyIniInfoItem(tuple.Item2, Utils.GetMagic(tuple.Item1, IsMagicFromCache)));
                 }
             }
+        }
+
+        public int HurtPlayerInterval
+        {
+            get { return _hurtPlayerInterval; }
+            set { _hurtPlayerInterval = value; }
+        }
+
+        public int HurtPlayerLife
+        {
+            get { return _hurtPlayerLife; }
+            set { _hurtPlayerLife = value; }
+        }
+
+        public int HurtPlayerRadius
+        {
+            get { return _hurtPlayerRadius; }
+            set { _hurtPlayerRadius = value; }
         }
 
         public static List<Tuple<string, int>> ParseMagicList(string listStr)
@@ -2434,6 +2456,9 @@ namespace Engine
             AddKey(keyDataCollection, "BackgroundTextureEquip", _backgroundTextureEquip);
             AddKey(keyDataCollection, "KeepAttackX", _keepAttackX);
             AddKey(keyDataCollection, "KeepAttackY", _keepAttackY);
+            AddKey(keyDataCollection, "HurtPlayerInterval", HurtPlayerInterval);
+            AddKey(keyDataCollection, "HurtPlayerLife", HurtPlayerLife);
+            AddKey(keyDataCollection, "HurtPlayerRadius", HurtPlayerRadius, 1);
         }
 
         #endregion Save load method
@@ -4495,6 +4520,20 @@ namespace Engine
                         }
                     }
                     else _standingMilliseconds = 0f;
+                }
+
+                if (HurtPlayerInterval > 0)
+                {
+                    _hurtPlayerIntervalTimer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                    if (_hurtPlayerIntervalTimer >= HurtPlayerInterval)
+                    {
+                        _hurtPlayerIntervalTimer = 0;
+                        if (Engine.PathFinder.GetViewTileDistance(TilePosition,
+                                Globals.PlayerKindCharacter.TilePosition) <= _hurtPlayerRadius)
+                        {
+                            Globals.ThePlayer.DecreaseLifeAddHurt(_hurtPlayerLife);
+                        }
+                    }
                 }
             }
 
