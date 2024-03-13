@@ -83,6 +83,12 @@ namespace Engine
         private int _bounce;
         private int _bounceHurt;
         private int _ball;
+        private int _bounceFly;
+        private int _bounceFlySpeed = 32;
+        private int _bounceFlyEndHurt;
+        private int _bounceFlyTouchHurt;
+        private Magic _bounceFlyEndMagic;
+        private int _magicDirectionWhenBounceFlyEnd;
         private int _sticky;
         private int _solid;
         private int _noExplodeWhenLifeFrameEnd;
@@ -769,6 +775,42 @@ namespace Engine
             set { _ball = value; }
         }
 
+        public int BounceFly
+        {
+            get { return _bounceFly; }
+            set { _bounceFly = value; }
+        }
+
+        public int BounceFlySpeed
+        {
+            get { return _bounceFlySpeed; }
+            set { _bounceFlySpeed = value; }
+        }
+
+        public int BounceFlyEndHurt
+        {
+            get { return _bounceFlyEndHurt; }
+            set { _bounceFlyEndHurt = value; }
+        }
+
+        public int BounceFlyTouchHurt
+        {
+            get { return _bounceFlyTouchHurt; }
+            set { _bounceFlyTouchHurt = value; }
+        }
+
+        public Magic BounceFlyEndMagic
+        {
+            get { return _bounceFlyEndMagic; }
+            set { _bounceFlyEndMagic = value; }
+        }
+
+        public int MagicDirectionWhenBounceFlyEnd
+        {
+            get { return _magicDirectionWhenBounceFlyEnd; }
+            set { _magicDirectionWhenBounceFlyEnd = value; }
+        }
+
         public int Sticky
         {
             get { return _sticky; }
@@ -1283,6 +1325,7 @@ namespace Engine
                     case "RandMagicFile":
                     case "JumpEndMagic":
                     case "MagicToUseWhenKillEnemy":
+                    case "BounceFlyEndMagic":
                         info.SetValue(this, Utils.GetMagic(nameValue[1], false), null);
                         break;
                     case "RegionFile":
@@ -1417,6 +1460,11 @@ namespace Engine
             if (magic.MagicToUseWhenKillEnemy != null)
             {
                 magic.MagicToUseWhenKillEnemy = magic.MagicToUseWhenKillEnemy.GetLevel(level);
+            }
+
+            if (magic.BounceFlyEndMagic != null)
+            {
+                magic.BounceFlyEndMagic = magic.BounceFlyEndMagic.GetLevel(level);
             }
 
             magic.AdditionalEffect = AdditionalEffect;

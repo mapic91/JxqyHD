@@ -672,6 +672,14 @@ namespace Engine
             return null;
         }
 
+        public static bool IsEnemy(Character a, Character b)
+        {
+            if ((!a.IsPlayer && !a.IsFighter) || (!b.IsPlayer && !b.IsFighter)) return false;
+            if ((a.IsPlayer || a.IsFighterFriend) && !b.IsPlayer && !b.IsPartner && !b.IsFighterFriend) return true;
+            if ((b.IsPlayer || b.IsFighterFriend) && !a.IsPlayer && !a.IsPartner && !a.IsFighterFriend) return true;
+            return a.Group != b.Group;
+        }
+
         public static Npc GetEnemy(Vector2 tilePosition, bool withNeutral)
         {
             return GetEnemy((int)tilePosition.X, (int)tilePosition.Y, withNeutral);

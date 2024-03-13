@@ -3865,7 +3865,7 @@ namespace Engine
         /// <param name="amount">Amount must be positive, oherwise no effect.</param>
         public void DecreaseLifeAddHurt(int amount)
         {
-            if (amount <= 0 || Invincible > 0) return;
+            if (amount <= 0 || Invincible > 0 || Life <= 0) return;
 
             foreach (var magicSprite in MagicSpritesInEffect)
             {

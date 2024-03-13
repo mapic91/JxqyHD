@@ -362,6 +362,55 @@ namespace Engine
 
             }
 
+            if (BelongMagic.BounceFly > 0)
+            {
+                var direction = (RealMoveDirection == Vector2.Zero) ? (character.PositionInWorld - PositionInWorld) : RealMoveDirection;
+                if (direction != Vector2.Zero)
+                {
+                    var endTile =
+                        PathFinder.FindDistanceTileInDirection(character.TilePosition, direction, BelongMagic.BounceFly);
+                    character.BezierMoveTo(endTile, BelongMagic.BounceFlySpeed, cha =>
+                    {
+                        if (BelongMagic.BounceFlyEndMagic != null)
+                        {
+                            Vector2 pos = BelongCharacter.PositionInWorld;
+                            if (BelongMagic.MagicDirectionWhenBounceFlyEnd == 1)
+                            {
+                                pos = character.PositionInWorld + Utils.GetDirection8(character.CurrentDirection);
+                            }
+                            else if (BelongMagic.MagicDirectionWhenBounceFlyEnd == 2)
+                            {
+                                pos = character.PositionInWorld + Utils.GetDirection8(BelongCharacter.CurrentDirection);
+                            }
+                            MagicManager.UseMagic(BelongCharacter, BelongMagic.BounceFlyEndMagic, character.PositionInWorld, pos);
+                        }
+
+                        if (BelongMagic.BounceFlyEndHurt > 0)
+                        {
+                            character.DecreaseLifeAddHurt(BelongMagic.BounceFlyEndHurt);
+                        }
+
+                        if (BelongMagic.BounceFlyTouchHurt > 0)
+                        {
+                            var neighbors = PathFinder.FindAllNeighbors(character.TilePosition);
+                            neighbors.Add(character.TilePosition);
+                            foreach (var neighbor in neighbors)
+                            {
+                                var npc = NpcManager.GetFighter(neighbor);
+                                if (npc != null  && npc != character && NpcManager.IsEnemy(npc, BelongCharacter))
+                                {
+                                    endTile =
+                                        PathFinder.FindDistanceTileInDirection(npc.TilePosition, direction, BelongMagic.BounceFly);
+                                    npc.BezierMoveTo(endTile, BelongMagic.BounceFlySpeed, null);
+                                    character.DecreaseLifeAddHurt(BelongMagic.BounceFlyTouchHurt);
+                                    npc.DecreaseLifeAddHurt(BelongMagic.BounceFlyTouchHurt);
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+
             if (BelongMagic.Ball > 0)
             {
                 destroy = false;
