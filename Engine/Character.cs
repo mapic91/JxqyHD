@@ -166,6 +166,8 @@ namespace Engine
         private MagicSprite _weakByMagicSprite;
         private float _weakByMagicSpriteTime;
 
+        private MagicSprite _changeFlyIniByMagicSprite;
+
         private int _noDropWhenDie;
 
         private int _invincible;
@@ -897,7 +899,9 @@ namespace Engine
 
         public int RealAttack
         {
-            get { return (int) (Attack * (100 + (_changeCharacterByMagicSprite != null ? _changeCharacterByMagicSprite.BelongMagic.AttackAddPercent : 0)) / 100.0f); }
+            get { return (int) (Attack * ((100 + 
+                                          (_changeCharacterByMagicSprite != null ? _changeCharacterByMagicSprite.BelongMagic.AttackAddPercent : 0) + 
+                                          (_changeFlyIniByMagicSprite != null ? _changeFlyIniByMagicSprite.BelongMagic.AttackAddPercent : 0)) / 100.0f)); }
         }
 
         public int Attack2
@@ -4234,6 +4238,36 @@ namespace Engine
             OnReplaceMagicList(magicSprite.BelongMagic, magicSprite.BelongMagic.ReplaceMagic);
             StandingImmediately(true);
         }
+
+        public void FlyIniChangeBy(MagicSprite magicSprite)
+        {
+            RemoveFlyIniChangeBy();
+            _changeFlyIniByMagicSprite = magicSprite;
+            if (!string.IsNullOrEmpty(magicSprite.BelongMagic.SpecialKind9ReplaceFlyIni))
+            {
+                AddFlyIniReplace(Utils.GetMagic(magicSprite.BelongMagic.SpecialKind9ReplaceFlyIni, false).GetLevel(AttackLevel));
+            }
+            if (!string.IsNullOrEmpty(magicSprite.BelongMagic.SpecialKind9ReplaceFlyIni2))
+            {
+                AddFlyIniReplace(Utils.GetMagic(magicSprite.BelongMagic.SpecialKind9ReplaceFlyIni2, false).GetLevel(AttackLevel));
+            }
+        }
+
+        private void RemoveFlyIniChangeBy()
+        {
+            if (_changeFlyIniByMagicSprite != null)
+            {
+                if (!string.IsNullOrEmpty(_changeFlyIniByMagicSprite.BelongMagic.SpecialKind9ReplaceFlyIni))
+                {
+                    RemoveFlyIniReplace(Utils.GetMagic(_changeFlyIniByMagicSprite.BelongMagic.SpecialKind9ReplaceFlyIni, false).GetLevel(AttackLevel));
+                }
+                if (!string.IsNullOrEmpty(_changeFlyIniByMagicSprite.BelongMagic.SpecialKind9ReplaceFlyIni2))
+                {
+                    RemoveFlyIniReplace(Utils.GetMagic(_changeFlyIniByMagicSprite.BelongMagic.SpecialKind9ReplaceFlyIni2, false).GetLevel(AttackLevel));
+                }
+                _changeFlyIniByMagicSprite = null;
+            }
+        }
         private List<FlyIniInfoItem> _replaceMagicListBackup = new List<FlyIniInfoItem>();
         protected void RemoveMagicsFromFlyIniInfos(string listStr)
         {
@@ -4584,6 +4618,12 @@ namespace Engine
                     _changeCharacterByMagicSprite = null;
                     SetState((CharacterState)State, true);
                 }
+            }
+
+            if (_changeFlyIniByMagicSprite != null && (_changeFlyIniByMagicSprite.IsInDestroy ||
+                _changeFlyIniByMagicSprite.IsDestroyed))
+            {
+                RemoveFlyIniChangeBy();
             }
 
             if (SppedUpByMagicSprite != null || _changeCharacterByMagicSprite != null)

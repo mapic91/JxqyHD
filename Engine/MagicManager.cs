@@ -713,6 +713,10 @@ namespace Engine
                         user.RemoveAbnormalState();
                         AddMagicSprite(sprite);
                         break;
+                    case 9:
+                        user.FlyIniChangeBy(sprite);
+                        AddMagicSprite(sprite);
+                        break;
                 }
             }
             else if (magic.MoveKind == 23)

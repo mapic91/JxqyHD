@@ -135,6 +135,9 @@ namespace Engine
 
         private int _blindMilliseconds;
 
+        private string _specialKind9ReplaceFlyIni;
+        private string _specialKind9ReplaceFlyIni2;
+
         private Asf _useActionFile;
 
         private int _bodyRadius;
@@ -1054,6 +1057,18 @@ namespace Engine
             set{ _blindMilliseconds = value; }
         }
 
+        public string SpecialKind9ReplaceFlyIni
+        {
+            get { return _specialKind9ReplaceFlyIni; }
+            set { _specialKind9ReplaceFlyIni = value; }
+        }
+
+        public string SpecialKind9ReplaceFlyIni2
+        {
+            get { return _specialKind9ReplaceFlyIni2; }
+            set { _specialKind9ReplaceFlyIni2 = value; }
+        }
+
         public Asf UseActionFile
         {
             get { return _useActionFile; }
@@ -1295,6 +1310,8 @@ namespace Engine
                     case "MagicToUseWhenBeAttacked":
                     case "MagicWhenNewPos":
                     case "ReplaceMagic":
+                    case "SpecialKind9ReplaceFlyIni":
+                    case "SpecialKind9ReplaceFlyIni2":
                         info.SetValue(this, nameValue[1], null);
                         break;
                     case "Image":

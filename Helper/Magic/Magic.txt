@@ -105,6 +105,10 @@ FlyingImage使用方向0，碰到敌人就爆炸，LifeFrame完也爆炸.
           如果为空不替换，如果为无（ReplaceMagic=无），则替换为一个武功都没有。
           如果是玩家，变身时使用武功，武功可升级。如果是NPC，所有武功会替换成ReplaceMagic设置的，结束变身后恢复原来的。
 [8] - 解除异常状态( 冰冻，毒，石化)
+[9] - 替换普攻，普攻攻击力暂时提升。
+      SpecialKind9ReplaceFlyIni - 替换普攻,比如：SpecialKind9ReplaceFlyIni=magic-飞刀.ini
+      SpecialKind9ReplaceFlyIni2 - 替换普攻2,比如：SpecialKind9ReplaceFlyIni2=magic-飞刀.ini
+      AttackAddPercent-设置攻击力增加百分之多少，默认0
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>：
 ThewCost - 消耗多少体力
