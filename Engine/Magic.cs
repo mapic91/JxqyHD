@@ -223,6 +223,13 @@ namespace Engine
         private int _addManaRestorePercent;
         private int _addLifeRestorePercent;
 
+        private int _hitCountToChangeMagic;
+        private Magic _changeMagic;
+        private int _hitCountFlyRadius;
+        private int _hitCountFlyAngleSpeed;
+        private Asf _hitCountFlyingImage;
+        private Asf _hitCountVanishImage;
+
 
         #region Public properties
         public AddonEffect AdditionalEffect { set; get; }
@@ -1285,6 +1292,42 @@ namespace Engine
             set { _addLifeRestorePercent = value; }
         }
 
+        public int HitCountToChangeMagic
+        {
+            get { return _hitCountToChangeMagic; }
+            set { _hitCountToChangeMagic = value; }
+        }
+
+        public Magic ChangeMagic
+        {
+            get { return _changeMagic; }
+            set { _changeMagic = value; }
+        }
+
+        public int HitCountFlyRadius
+        {
+            get { return _hitCountFlyRadius; }
+            set { _hitCountFlyRadius = value; }
+        }
+
+        public int HitCountFlyAngleSpeed
+        {
+            get { return _hitCountFlyAngleSpeed; }
+            set { _hitCountFlyAngleSpeed = value; }
+        }
+
+        public Asf HitCountFlyingImage
+        {
+            get { return _hitCountFlyingImage; }
+            set { _hitCountFlyingImage = value; }
+        }
+
+        public Asf HitCountVanishImage
+        {
+            get { return _hitCountVanishImage; }
+            set { _hitCountVanishImage = value; }
+        }
+
         #endregion
 
         //noAttackFile - resolve recursive problem of AttackFile
@@ -1325,6 +1368,8 @@ namespace Engine
                     case "VanishImage":
                     case "SuperModeImage":
                     case "LeapImage":
+                    case "HitCountFlyingImage":
+                    case "HitCountVanishImage":
                         info.SetValue(this, Utils.GetAsf(@"asf\effect\", nameValue[1]), null);
                         break;
                     case "AttackFile":
@@ -1343,6 +1388,7 @@ namespace Engine
                     case "JumpEndMagic":
                     case "MagicToUseWhenKillEnemy":
                     case "BounceFlyEndMagic":
+                    case "ChangeMagic":
                         info.SetValue(this, Utils.GetMagic(nameValue[1], false), null);
                         break;
                     case "RegionFile":
@@ -1482,6 +1528,11 @@ namespace Engine
             if (magic.BounceFlyEndMagic != null)
             {
                 magic.BounceFlyEndMagic = magic.BounceFlyEndMagic.GetLevel(level);
+            }
+
+            if (magic.ChangeMagic != null)
+            {
+                magic.ChangeMagic = magic.ChangeMagic.GetLevel(level);
             }
 
             magic.AdditionalEffect = AdditionalEffect;

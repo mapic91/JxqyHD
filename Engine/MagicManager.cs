@@ -926,6 +926,19 @@ namespace Engine
         {
             if (user == null || magic == null) return;
 
+            if (magic.HitCountToChangeMagic > 0 && magic.ChangeMagic != null)
+            {
+                Tuple<Magic, List<Character.FlyCountInfo>> sprites;
+                if (user.ChangeMagicCounter.TryGetValue(magic.FileName, out sprites))
+                {
+                    if (sprites.Item2.Count >= magic.HitCountToChangeMagic)
+                    {
+                        user.DestroyChangeMagicFlySprite(magic);
+                        magic = magic.ChangeMagic;
+                    }
+                }
+            }
+
             if (magic.SecondMagicFile != null)
             {
                 AddUseMagicItem(new UseMagicInfoItem(magic.SecondMagicDelay, user, magic.SecondMagicFile, origin, destination, target));

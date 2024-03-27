@@ -741,6 +741,44 @@ namespace Engine.Map
             var magicSprites = MagicManager.MagicSpritesInView;
             var npcs = NpcManager.NpcsInView;
             var objs = ObjManager.ObjsInView;
+            var characterFlyCounts = new List<Sprite>();
+            foreach (var npc in npcs)
+            {
+                foreach (var kv in npc.ChangeMagicCounter)
+                {
+                    foreach (var info in kv.Value.Item2)
+                    {
+                        characterFlyCounts.Add(info.Sprite);
+                    }
+                }
+
+                foreach (var kv in npc.ChangeMagicCounterDestroy)
+                {
+                    foreach (var info in kv.Value.Item2)
+                    {
+                        characterFlyCounts.Add(info.Sprite);
+                    }
+                }
+            }
+
+            if (Globals.ThePlayer != null)
+            {
+                foreach (var kv in Globals.ThePlayer.ChangeMagicCounter)
+                {
+                    foreach (var info in kv.Value.Item2)
+                    {
+                        characterFlyCounts.Add(info.Sprite);
+                    }
+                }
+
+                foreach (var kv in Globals.ThePlayer.ChangeMagicCounterDestroy)
+                {
+                    foreach (var info in kv.Value.Item2)
+                    {
+                        characterFlyCounts.Add(info.Sprite);
+                    }
+                }
+            }
 
             //Draw body
             foreach (var obj in objs)
@@ -786,6 +824,14 @@ namespace Engine.Map
                     {
                         if (x == magicSprite.MapX && y == magicSprite.MapY)
                             magicSprite.Draw(spriteBatch);
+                    }
+
+                    foreach (var sprite in characterFlyCounts)
+                    {
+                        if (x == sprite.MapX && y == sprite.MapY)
+                        {
+                            sprite.Draw(spriteBatch);
+                        }
                     }
                 }
             }

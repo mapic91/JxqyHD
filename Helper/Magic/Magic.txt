@@ -695,4 +695,12 @@ MagicDirectionWhenKillEnemy - 默认0，当值为：
     0 ：  目标位置为该武功释放者的位置
     1 ：  被杀的敌人的当前朝向。
     2 ：  释放者的当前朝向
-
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+变更武功：
+HitCountToChangeMagic - 默认0，大于0表示武功击中敌人多少次后，当释放该武功时，改为释放ChangeMagic
+ChangeMagic - 武功文件名
+HitCountFlyRadius - 半径
+HitCountFlyAngleSpeed - 角速度，一秒多少度
+HitCountFlyingImage - 武功每次击中敌人后，都会出现一个武功图像，以主角为圆心HitCountFlyRadius为半径，HitCountFlyAngleSpeed角速度，做时针运动，且不会爆炸。设置运动的武功图像文件，文件在asf\effect\文件夹下
+HitCountVanishImage - 如果武功图像积攒到HitCountToChangeMagic个，再次该武功时，主角释放的“不是”该武功，而是武功ChangeMagic。这时“以主角为圆心做时针运动的那些武功图像”会立刻爆炸。设置爆炸图像文件，文件在asf\effect\文件夹下

@@ -243,6 +243,18 @@ namespace Engine
         private int _hurtPlayerRadius = 1;
         private float _hurtPlayerIntervalTimer;
 
+        private Dictionary<string, Tuple<Magic, List<FlyCountInfo>>> _changeMagicCounter = new Dictionary<string, Tuple<Magic, List<FlyCountInfo>>>();
+        private Dictionary<string, Tuple<Magic, List<FlyCountInfo>>> _changeMagicCounterDestroy = new Dictionary<string, Tuple<Magic, List<FlyCountInfo>>>();
+
+        public Dictionary<string, Tuple<Magic, List<FlyCountInfo>>> ChangeMagicCounter
+        {
+            get { return _changeMagicCounter; }
+        }
+        public Dictionary<string, Tuple<Magic, List<FlyCountInfo>>> ChangeMagicCounterDestroy
+        {
+            get { return _changeMagicCounterDestroy; }
+        }
+
         public void AddFlyIniReplace(Magic magic)
         {
             if (_flyIniReplace.Count == 0)
@@ -4524,6 +4536,8 @@ namespace Engine
                 }
             }
 
+            UpdateChangeMagicFlySprite(gameTime);
+
             if (!IsDeathInvoked && !IsDeath)
             {
                 if (!string.IsNullOrEmpty(_timerScriptFile))
@@ -4977,6 +4991,120 @@ namespace Engine
                     MagicToUseWhenAttackedList.Remove(node);
                 }
                 node = next;
+            }
+        }
+
+        public class FlyCountInfo
+        {
+            public Sprite Sprite;
+            public double ElaspedTime;
+
+            public FlyCountInfo(Sprite sprite)
+            {
+                Sprite = sprite;
+            }
+        }
+
+        public void AddChangeMagicFlySprite(Magic magic)
+        {
+            Tuple<Magic, List<FlyCountInfo>> sprites;
+            if (!_changeMagicCounter.TryGetValue(magic.FileName, out sprites))
+            {
+                sprites = new Tuple<Magic, List<FlyCountInfo>>(magic, new List<FlyCountInfo>());
+                _changeMagicCounter.Add(magic.FileName, sprites);
+            }
+
+            if (sprites.Item2.Count < magic.HitCountToChangeMagic && magic.HitCountFlyingImage != null)
+            {
+                var info = new FlyCountInfo(new Sprite(new Vector2(-888, -888), 0, magic.HitCountFlyingImage));
+                if (sprites.Item2.Count > 0)
+                {
+                    info.ElaspedTime = sprites.Item2[0].ElaspedTime;
+                }
+                sprites.Item2.Add(info);
+            }
+        }
+
+
+        public void DestroyChangeMagicFlySprite(Magic magic)
+        {
+            Tuple<Magic, List<FlyCountInfo>> sprites;
+            if (_changeMagicCounter.TryGetValue(magic.FileName, out sprites))
+            {
+                var spritesDestroy = new Tuple<Magic, List<FlyCountInfo>>(magic, new List<FlyCountInfo>());
+                _changeMagicCounterDestroy.Add(magic.FileName, spritesDestroy);
+                foreach (var info in sprites.Item2)
+                {
+                    var countInfo = new FlyCountInfo(new Sprite(info.Sprite.PositionInWorld, 0, magic.HitCountVanishImage));
+                    countInfo.ElaspedTime = info.ElaspedTime;
+                    countInfo.Sprite.CurrentDirection = info.Sprite.CurrentDirection;
+                    countInfo.Sprite.PlayCurrentDirOnce();
+                    spritesDestroy.Item2.Add(countInfo);
+                }
+
+                _changeMagicCounter.Remove(magic.FileName);
+            }
+        }
+
+        private void UpdateChangeMagicFlySprite(GameTime gameTime)
+        {
+            var needRemove = new List<string>();
+            foreach (var kv in _changeMagicCounterDestroy)
+            {
+                var magic = kv.Value.Item1;
+                var infos = kv.Value.Item2;
+                var gap = 360 / infos.Count;
+                for (var i = 0; i < infos.Count; i++)
+                {
+                    var info = infos[i];
+                    var angle = gap * i + info.ElaspedTime * magic.HitCountFlyAngleSpeed;
+                    var radians = angle * Math.PI / 180;
+                    var pos = PositionInWorld + new Vector2((float)Math.Cos(radians) * magic.HitCountFlyRadius,
+                        (float)Math.Sin(radians) * magic.HitCountFlyRadius);
+                    info.Sprite.PositionInWorld = pos;
+                    if (!info.Sprite.IsInPlaying)
+                    {
+                        needRemove.Add(kv.Key);
+                        break;
+                    }
+                    info.Sprite.Update(gameTime);
+                }
+            }
+
+            foreach (var fileName in needRemove)
+            {
+                _changeMagicCounterDestroy.Remove(fileName);
+            }
+
+            foreach (var kv in _changeMagicCounter)
+            {
+                var magic = kv.Value.Item1;
+                var infos = kv.Value.Item2;
+                var gap = 360 / infos.Count;
+                for (var i = 0; i < infos.Count; i++)
+                {
+                    var info = infos[i];
+                    info.ElaspedTime += gameTime.ElapsedGameTime.TotalSeconds;
+                    var angle = gap * i + info.ElaspedTime * magic.HitCountFlyAngleSpeed;
+                    var radians = angle * Math.PI / 180;
+                    var pos = PositionInWorld + new Vector2((float)Math.Cos(radians) * magic.HitCountFlyRadius,
+                        (float)Math.Sin(radians) * magic.HitCountFlyRadius);
+                    info.Sprite.PositionInWorld = pos;
+                    var dir = info.Sprite.PositionInWorld - PositionInWorld;
+                    if (dir != Vector2.Zero)
+                    {
+                        dir.Normalize();
+                        dir = new Vector2(-dir.Y, dir.X);
+                        var lastFrameIndex = info.Sprite.CurrentFrameIndex;
+                        info.Sprite.SetDirection(dir);
+                        if (lastFrameIndex != info.Sprite.CurrentFrameIndex || !info.Sprite.IsInPlaying)
+                        {
+                            info.Sprite.EndPlayCurrentDirOnce();
+                            info.Sprite.PlayCurrentDirOnce();
+                        }
+                    }
+                    info.Sprite.Update(gameTime);
+                }
             }
         }
 

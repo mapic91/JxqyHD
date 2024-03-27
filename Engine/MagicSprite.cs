@@ -309,6 +309,11 @@ namespace Engine
 
             var destroy = true;
 
+            if (BelongMagic.HitCountToChangeMagic > 0)
+            {
+                BelongCharacter.AddChangeMagicFlySprite(BelongMagic);
+            }
+
             if (BelongMagic.CarryUser == 4 && BelongCharacter.MovedByMagicSprite == this)
             {
                 if (_carrayUser4Characters.Exists(c => c == character))
