@@ -2516,5 +2516,10 @@ namespace Engine.Script
             Variables["$GoodsNum"] = GoodsListManager.GetGoodsNumByName(
                 Utils.RemoveStringQuotes(parameters[0]));
         }
+
+        public static void StopSound(List<string> parameters, object belongObject)
+        {
+            SoundManager.StopAllSound();
+        }
     }
 }

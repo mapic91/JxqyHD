@@ -61,6 +61,14 @@ namespace Engine
                 soundEffect.Play();
         }
 
+        public static void StopAllSound()
+        {
+            foreach (var kv in _soundEffectInstances)
+            {
+                kv.Value.Stop(true);
+            }
+        }
+
         public static void ClearCache()
         {
             _soundEffectInstances.Clear();

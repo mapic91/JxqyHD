@@ -733,6 +733,9 @@ namespace Engine.Script
                         case "GetGoodsNumByName":
                             ScriptExecuter.GetGoodsNumByName(parameters, BelongObject);
                             break;
+                        case "StopSound":
+                            ScriptExecuter.StopSound(parameters, BelongObject);
+                            break;
                         default:
                             throw new Exception("无此函数");
                     }
