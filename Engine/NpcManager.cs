@@ -591,6 +591,10 @@ namespace Engine
                     {
                         _list.Remove(node);
                     }
+                    else
+                    {
+                        npc.CancleAttackTarget();
+                    }
                     node = next;
                 }
                 for (var node = _hideList.First; node != null;)
@@ -601,6 +605,10 @@ namespace Engine
                     if (!npc.IsPartner)
                     {
                         _hideList.Remove(node);
+                    }
+                    else
+                    {
+                        npc.CancleAttackTarget();
                     }
                     node = next;
                 }
@@ -1022,6 +1030,19 @@ namespace Engine
                 }
             }
             return null;
+        }
+
+        public static bool HasNpc(Character target)
+        {
+            foreach (var npc in _list)
+            {
+                if(npc == target)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

@@ -1147,7 +1147,7 @@ namespace Engine
         {
             if(_autoAttackTarget != null)
             {
-                if (_autoAttackTarget.IsDeathInvoked)
+                if (_autoAttackTarget.IsDeathInvoked || !_autoAttackTarget.IsEnemy || !NpcManager.HasNpc(_autoAttackTarget) )
                 {
                     _autoAttackTarget = null;
                 }
